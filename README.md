@@ -1,3 +1,5 @@
+WAMPEE
+
 Just Extract Archive on USB Key, or Hard Drive, or external Disk then simply launch Wampee.exe
 
 Wampee is the 32 bit Portable version of WampServer 2.1
