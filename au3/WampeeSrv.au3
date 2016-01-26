@@ -6,7 +6,7 @@
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_AU3Check_Stop_OnWarning=y
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-#cs ----------------------------------------------------------------------------
+#cs -----------------------------------------------------------------------------
 
  AutoIt Version: 3.3.5.6 (beta)
  Author:         Herve Leclerc (herve.leclerc@alterway.fr)
@@ -14,7 +14,7 @@
  Script Function:
 	Wampee Start Stop
 
-#ce ----------------------------------------------------------------------------
+#ce -----------------------------------------------------------------------------
 #include <file.au3>
 #include <Constants.au3>
 
