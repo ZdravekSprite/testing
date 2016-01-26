@@ -2,15 +2,15 @@
 #RequireAdmin
 #include-once
 
-#cs ----------------------------------------------------------------------------
+#cs -----------------------------------------------------------------------------
 
  AutoIt Version: 3.3.5.6 (beta)
- Author:         Hervé Leclerc herve.leclerc@alterway.fr
+ Author:         HervÃ© Leclerc herve.leclerc@alterway.fr
 
  Script Function:
 	Template AutoIt script.
 
-#ce ----------------------------------------------------------------------------
+#ce -----------------------------------------------------------------------------
 
 ; Script Start
 #include <file.au3>
@@ -59,8 +59,8 @@ $tamanhoy=$tamanhox/2
 $posicaox=(@DesktopWidth/2)-(511/2)
 $posicaoy=(@DesktopHeight/2)-(124/2);
 
-$Path_Logo = @ScriptDir & "\resources\wampserver.png" ;Chemin vert le fichier .png à afficher
-$Time_Splash = 1500 ;Durée d'affichage de l'image .png
+$Path_Logo = @ScriptDir & "\resources\wampserver.png" ;Chemin vert le fichier .png Ã  afficher
+$Time_Splash = 1500 ;DurÃ©e d'affichage de l'image .png
 MySplash($Path_Logo, $Time_Splash)
 
 ; Begin
