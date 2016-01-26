@@ -1,7 +1,7 @@
 #NoTrayIcon
 #RequireAdmin
 #include <file.au3>
-#cs ----------------------------------------------------------------------------
+#cs -----------------------------------------------------------------------------
 
  AutoIt Version: 3.3.5.6 (beta)
  Author:         Herve Leclerc (herve.leclerc@alterway.fr)
@@ -9,7 +9,7 @@
  Script Function:
 	Wampee Start Stop
 
-#ce ----------------------------------------------------------------------------
+#ce -----------------------------------------------------------------------------
 Global $apache_proc_name
 Global $mysql_proc_name
 
