@@ -5,12 +5,12 @@
 #include <StaticConstants.au3>
 #include <WindowsConstants.au3>
 #include "wampserver-funcs.au3"
-#cs ----------------------------------------------------------------------------
+#cs -----------------------------------------------------------------------------
 
  AutoIt Version: 3.3.5.6 (beta)
  Author:         Herve Leclerc (herve.leclerc@alterway.fr)
 
-#ce ----------------------------------------------------------------------------
+#ce -----------------------------------------------------------------------------
 Opt("GUIOnEventMode", 1)
 
 $Form = GUICreate("Create an application", 320, 113, 353, 182)
