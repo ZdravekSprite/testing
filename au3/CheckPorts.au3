@@ -15,12 +15,12 @@
 #include <WindowsConstants.au3>
 #include <UpdownConstants.au3>
 #include <file.au3>
-#cs ----------------------------------------------------------------------------
+#cs -----------------------------------------------------------------------------
 
  AutoIt Version: 3.3.5.6 (beta)
  Author:         Herve Leclerc (herve.leclerc@alterway.fr)
 
-#ce ----------------------------------------------------------------------------
+#ce -----------------------------------------------------------------------------
 
 Opt("GUIOnEventMode", 1)
 Global $wampserverGUI
