@@ -12,12 +12,12 @@ export default new Router({
       component: Home
     },
     {
-      path: '/gallery',
+      path: '/galerija',
       name: 'gallery',
       component: () => import('./views/Gallery')
     },
     {
-      path: '/contact',
+      path: '/kontakt',
       name: 'contact',
       component: () => import('./views/Contact')
     }
