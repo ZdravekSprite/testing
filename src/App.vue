@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header />
+    <Header  h1="ANDY-ISOLIERTECHNIK" h2="REVOLUCIONARNA KVALITETA I SIGURNOST" />
     <Menu />
     <router-view/>
     <Footer />

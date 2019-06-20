@@ -1,5 +1,16 @@
 <template>
   <header>
-    <h1>Header.vue</h1>
+    <h1>{{ h1 }}</h1>
+    <h2>{{ h2 }}</h2>
   </header>
 </template>
+
+<script>
+export default {
+  name: 'Header',
+  props: {
+    h1: String,
+    h2: String
+  }
+}
+</script>
