@@ -1,7 +1,7 @@
 <template>
-  <div class="contact">
-    <h1>Contact.vue</h1>
-  </div>
+  <main class="contact">
+    <h3>Contact.vue</h3>
+  </main>
 </template>
 
 <script>

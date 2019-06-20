@@ -1,7 +1,7 @@
 <template>
-  <div class="home">
-    <h1>Home.vue</h1>
-  </div>
+  <main class="home">
+    <h3>Home.vue</h3>
+  </main>
 </template>
 
 <script>

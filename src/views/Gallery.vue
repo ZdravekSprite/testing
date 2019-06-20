@@ -1,7 +1,7 @@
 <template>
-  <div class="gallery">
-    <h1>Gallery.vue</h1>
-  </div>
+  <main class="gallery">
+    <h3>Gallery.vue</h3>
+  </main>
 </template>
 
 <script>
