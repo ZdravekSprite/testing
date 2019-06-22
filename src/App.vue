@@ -76,7 +76,7 @@ header, nav, main {
   padding: 15px 30px;
 }
 @media (min-width: 768px) {
-  header, nav, main {
+  header, nav, main, .conteiner {
       width: 750px;
   }
 }
@@ -95,19 +95,19 @@ header, nav, main {
   }
 }
 @media (min-width: 992px) {
-  header, nav, main {
-      width: 970px;
+  header, nav, main, .conteiner {
+    width: 970px;
   }
 }
 @media (min-width: 1200px) {
-  header, nav, main {
+  header, nav, main, .conteiner {
     width: 1170px;
   }
 }
 header {
   grid-area: header;
   margin-top: 15px;
-  padding-top: 26px;
+  padding-top: 27px;
   display:grid  !important;
   grid-template-columns: auto auto;
   grid-template-areas:
@@ -116,7 +116,7 @@ header {
 }
 h1 {
   grid-area: title;
-  padding-top: 19px;
+  padding-top: 18px;
 }
 a, a:visited, a:hover {
   display: inline-block;
@@ -144,7 +144,7 @@ header span {
 }
 header form input[type=text] {
   grid-area: search;
-  font-weight: 500 !important;
+  font-weight: 700 !important;
   border-radius: 0px;
   border: 1px solid #eee;
   padding: 7px;
@@ -189,14 +189,48 @@ nav a {
   line-height: 1.42857143;
 }
 main {
-  padding-top: 30px;
+  padding-top: 40px;
+  height: 940px;
 }
-footer {
-  grid-area: footer;
-  text-align: center;
+.conteiner {
+  margin: 0 auto;
+  padding: 0 15px;
+}
+#footer-sidebar {
+  padding-top: 20px;
+  background: #252525;
+  padding-bottom: 50px !important;
+  color: #777777;
+  font-weight: lighter;
+  display: grid;
+}
+#colophon {
   padding: 15px;
   background: #0c0c0c;
   padding-bottom: 4px;
-  color: #777;
+  color: #777777;
+}
+#colophon a {
+  color: #999999;
+  font-weight: lighter;
+}
+footer {
+  grid-area: footer;
+  margin-top: 30px;
+  width: 100%;
+}
+aside {
+  margin: 0 0 1.5em;
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-weight: lighter !important;
+}
+@media (min-width: 992px) {
+  aside {
+    width: 25%;
+    float: left;
+  }
 }
 </style>
