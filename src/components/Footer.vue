@@ -7,11 +7,11 @@
         <aside>Tvrtka ANDY-ISOLIERTECHNIK registrirana je pri trgovačkom sudu u Varaždinu pod MBS: 070113621</aside>
         <aside>Temeljni kapital društva u iznosu od 290.000,00 KN uplaćen je u cjelosti. Direktor: Andro Jagarinec</aside>
       </div>
-	  </div>
+    </div>
     <div id="colophon" role="contentinfo">
       <div class="conteiner">
-        <div class="site-info col-md-4">Designed by <a href="http://inkhive.com.com">InkHive.com</a>.</div><!-- .site-info -->
-        <div class="footer-menu col-md-8"></div>
+        <aside>Designed by <a href="http://inkhive.com.com">InkHive.com</a>.</aside>
+        <aside></aside>
       </div>
     </div>
   </footer>

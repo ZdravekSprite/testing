@@ -70,6 +70,9 @@ html {
     "main"
     "footer";
 }
+header, nav, main, .conteiner {
+  width: 100%;
+}
 header, nav, main {
   background: #fff;
   margin: 0px auto;
@@ -93,6 +96,9 @@ header, nav, main {
   header form input[type=text] {
     float: none !important;
   }
+  nav {
+    padding-top: 30px;
+  }
 }
 @media (min-width: 992px) {
   header, nav, main, .conteiner {
@@ -107,7 +113,7 @@ header, nav, main {
 header {
   grid-area: header;
   margin-top: 15px;
-  padding-top: 27px;
+  padding-top: 28px;
   display:grid  !important;
   grid-template-columns: auto auto;
   grid-template-areas:
@@ -116,7 +122,7 @@ header {
 }
 h1 {
   grid-area: title;
-  padding-top: 18px;
+  padding-top: 17px;
 }
 a, a:visited, a:hover {
   display: inline-block;
@@ -132,8 +138,8 @@ h1, h1 a, h1 a:visited, h1 a:hover {
 }
 h2 {
   grid-area: descript;
-  margin-top: 10px !important;
-  margin-bottom: 7px !important;
+  margin-top: 8px !important;
+  margin-bottom: 5px !important;
   font-size: 14px !important;
   font-weight: normal !important;
   color: #393939;
@@ -178,6 +184,9 @@ header form input[type=text] {
   clip: rect(1px, 1px, 1px, 1px);
   position: absolute !important;
 }
+nav {
+  grid-area: nav;
+}
 nav a {
   float: left;
   color: #393939;
@@ -189,8 +198,14 @@ nav a {
   line-height: 1.42857143;
 }
 main {
+  grid-area: main;
   padding-top: 40px;
   height: 940px;
+}
+footer {
+  grid-area: footer;
+  margin-top: 30px;
+  width: 100%;
 }
 .conteiner {
   margin: 0 auto;
@@ -210,14 +225,13 @@ main {
   padding-bottom: 4px;
   color: #777777;
 }
+footer > #colophon > .conteiner {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
 #colophon a {
   color: #999999;
   font-weight: lighter;
-}
-footer {
-  grid-area: footer;
-  margin-top: 30px;
-  width: 100%;
 }
 aside {
   margin: 0 0 1.5em;
@@ -225,12 +239,29 @@ aside {
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
-  font-weight: lighter !important;
+  float: left;
+}
+footer > #colophon > .conteiner > aside {
+  margin: 0;
+}
+@media screen and (max-width: 991px) {
+  footer > #colophon > .conteiner {
+    grid-template-columns: auto;
+    text-align: center;
+    margin: 20px auto;
+  }
+  footer > #colophon > .conteiner > aside {
+    width: 100%;
+  }
+}
+@media (min-width: 768px) {
+  footer > #footer-sidebar > .conteiner > aside {
+    width: 50%;
+  }
 }
 @media (min-width: 992px) {
-  aside {
+  footer > #footer-sidebar > .conteiner > aside {
     width: 25%;
-    float: left;
   }
 }
 </style>
