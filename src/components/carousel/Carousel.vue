@@ -2,7 +2,7 @@
   <div class="card-carousel">
     <Card
       class="current-element"
-      :cHeight="this.height"
+      :cSize="cSize"
       :headline="currentElement.headline"
       :text="currentElement.text"
       :imgName="currentElement.imgName"
@@ -31,7 +31,7 @@ export default {
   name: 'Carousel',
   props: {
     cards: Array,
-    height: String
+    cSize: Object
   },
   components: { Card, ArrowButton, Indicators },
 
@@ -73,6 +73,8 @@ export default {
 <style scoped>
 .card-carousel {
   position: relative;
-  margin: auto;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 </style>

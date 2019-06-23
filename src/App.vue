@@ -40,14 +40,6 @@ export default {
   vertical-align: baseline;
   font-family: 'Roboto', Arial, sans-serif;
 }
-/*
-*:before, *:after {
-  content: '';
-  display: table;
-}
-article, aside, details, figcaption, figure, footer, header, main, nav, section {
-  display: block;
-}*/
 html {
   font-size: 62.5%; /*bootstrap*/
   -webkit-tap-highlight-color: rgba(0,0,0,0); /*bootstrap*/
@@ -76,7 +68,7 @@ header, nav, main, .conteiner {
 header, nav, main {
   background: #fff;
   margin: 0px auto;
-  padding: 15px 30px;
+  padding: 0 30px;
 }
 @media (min-width: 768px) {
   header, nav, main, .conteiner {
@@ -96,9 +88,6 @@ header, nav, main {
   header form input[type=text] {
     float: none !important;
   }
-  nav {
-    padding-top: 30px;
-  }
 }
 @media (min-width: 992px) {
   header, nav, main, .conteiner {
@@ -114,6 +103,7 @@ header {
   grid-area: header;
   margin-top: 15px;
   padding-top: 28px;
+  padding-bottom: 30px;
   display:grid  !important;
   grid-template-columns: auto auto;
   grid-template-areas:
@@ -196,6 +186,23 @@ nav a {
   text-decoration: none;
   transition: 0.4s all ease;
   line-height: 1.42857143;
+}
+@media screen and (max-width: 600px) {
+  nav a {
+    display: none;
+  }
+  .menu-toggle {
+    font-family: 'Roboto', Arial, sans-serif;
+    color: #393939 !important;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.1;
+    text-transform: uppercase;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    display: block;
+    text-align: center;
+  }
 }
 main {
   grid-area: main;

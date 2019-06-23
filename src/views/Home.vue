@@ -1,6 +1,9 @@
 <template>
   <main class="home">
-    <Carousel :cards="cards" height="345px" />
+      <Carousel
+      :cards="cards"
+      :cSize="cSize"
+    />
   </main>
 </template>
 
@@ -16,6 +19,10 @@ export default {
   },
   data () {
     return {
+      cSize: {
+        width: 1100,
+        height: 360
+      },
       cards: [
         {
           headline: '',
@@ -37,3 +44,17 @@ export default {
   }
 }
 </script>
+
+<style>
+.example-1 {
+  width: 100px;
+}
+
+.example-2 {
+  width: 200px;
+}
+
+.example-3 {
+  width: 400px;
+}
+</style>
