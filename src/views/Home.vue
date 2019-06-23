@@ -13,6 +13,11 @@
     </aside>
     <aside id="map">
       <h3>Kako do nas?</h3>
+      <GoogleMap
+        name="andis.hr"
+        lat=46.2895307
+        lng=15.9822823
+      />
     </aside>
     <aside id="form">
       <h3>Kontakt</h3>
@@ -22,13 +27,15 @@
 
 <script>
 import Carousel from '@/components/carousel/Carousel'
+import GoogleMap from '@/components/GoogleMap'
 export default {
   title () {
     return `Andi-isoliertechnik toplinska,zvučna i protupožarna izolacija`
   },
   name: 'home',
   components: {
-    Carousel
+    Carousel,
+    GoogleMap
   },
   data () {
     return {
