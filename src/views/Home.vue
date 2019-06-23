@@ -20,23 +20,17 @@ export default {
   data () {
     return {
       cSize: {
-        width: 1100,
+        width: 1110,
         height: 360
       },
       cards: [
         {
-          headline: '',
-          text: '',
           imgName: 'iso1.jpg'
         },
         {
-          headline: '',
-          text: '',
           imgName: 'iso2.jpg'
         },
         {
-          headline: '',
-          text: '',
           imgName: 'iso3.jpg'
         }
       ]
@@ -44,17 +38,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.example-1 {
-  width: 100px;
-}
-
-.example-2 {
-  width: 200px;
-}
-
-.example-3 {
-  width: 400px;
-}
-</style>

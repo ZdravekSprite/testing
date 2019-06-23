@@ -32,7 +32,7 @@ export default {
   margin-right: -3px;
 }
 .prev:before, .next:before {
-  font-size: 30px;
+  font-size: 20px;
   color: rgb(255, 255, 255);
   display: block;
   line-height: 40px;
@@ -52,12 +52,12 @@ export default {
 }
 /* Position the "next button" to the right */
 .prev {
-  transform: matrix(.5, 0, 0, .5, 20, -20);
+  transform: matrix(1, 0, 0, 1, 20, -30);
 }
 /* Position the "next button" to the right */
 .next {
   right: 0;
-  transform: matrix(.5, 0, 0, .5, -20, -20);
+  transform: matrix(1, 0, 0, 1, -20, -30);
 }
 /* On hover, add a black background color with a little bit see-through */
 .prev:hover, .next:hover {

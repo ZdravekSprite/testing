@@ -199,7 +199,7 @@ nav a {
     line-height: 1.1;
     text-transform: uppercase;
     margin-top: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 15px !important;
     display: block;
     text-align: center;
   }
@@ -207,7 +207,6 @@ nav a {
 main {
   grid-area: main;
   padding-top: 40px;
-  height: 940px;
 }
 footer {
   grid-area: footer;
