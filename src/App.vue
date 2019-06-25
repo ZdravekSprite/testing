@@ -208,6 +208,19 @@ main {
   grid-area: main;
   padding-top: 40px;
 }
+h3, .h3 {
+  margin-top: 0;
+  font-size: 24px;
+  color: #676767;
+  margin-bottom: 10px;
+  font-weight: 500;
+  line-height: 1.1;
+  clear: both;
+}
+main p {
+  line-height: 1.7em;
+  font-size: 14px;
+}
 footer {
   grid-area: footer;
   margin-top: 30px;
