@@ -21,6 +21,7 @@
     </aside>
     <aside id="form">
       <h3>Kontakt</h3>
+      <ContactForm />
     </aside>
   </main>
 </template>
@@ -28,6 +29,7 @@
 <script>
 import Carousel from '@/components/carousel/Carousel'
 import GoogleMap from '@/components/GoogleMap'
+import ContactForm from '@/components/ContactForm'
 export default {
   title () {
     return `Andi-isoliertechnik toplinska,zvučna i protupožarna izolacija`
@@ -35,7 +37,8 @@ export default {
   name: 'home',
   components: {
     Carousel,
-    GoogleMap
+    GoogleMap,
+    ContactForm
   },
   data () {
     return {
