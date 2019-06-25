@@ -2,11 +2,13 @@ import Vue from 'vue'
 
 import App from './App'
 import router from './router'
-import titleMixin from './mixins/titleMixin'
+import titleMixin from './mixins/title'
+import headMixin from './mixins/head'
 
 Vue.config.productionTip = false
 
 Vue.mixin(titleMixin)
+Vue.mixin(headMixin)
 
 new Vue({
   router,

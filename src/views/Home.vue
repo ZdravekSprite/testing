@@ -31,6 +31,27 @@ import Carousel from '@/components/carousel/Carousel'
 import GoogleMap from '@/components/GoogleMap'
 import ContactForm from '@/components/ContactForm'
 export default {
+  head: {
+    // title() {return `Andi-isoliertechnik toplinska,zvučna i protupožarna izolacija`} ,
+    meta: [
+      { name: "description", content: "Andy-isoliertechnik izvodi izolaterske radove te proizvodi toplinsku, protupožarnu i zvučnu izolaciju u građevinarstvu revolucionarnim novim metodama" },
+      { name: "keywords", content: "toplinska, zvučna i protupožarna izolacija" },
+      { name: "twitter:card", content: "summary" },
+      { property: "twitter:title", content: "Andi-isoliertechnik toplinska,zvučna i protupožarna izolacija" },
+      { name: "twitter:description", content: "Andy-isoliertechnik izvodi izolaterske radove te proizvodi toplinsku, protupožarnu i zvučnu izolaciju u građevinarstvu revolucionarnim novim metodama" },
+      // { name: "twitter:site", content: "@jqEmprendedorVE" },
+      // { name: "twitter:creator", content: "@jqEmprendedorVE" },
+      // { name: "twitter:url", content: "https://vue-firebase-ssr.firebaseapp.com" },
+      // { name: "twitter:image", content: "https://www.filepicker.io/api/file/nS7a8itSTcaAsyct6rVp" },
+      { property: "og:locale", content: "hr_HR" },
+      { property: "og:title", content: "summary" },
+      { property: "og:type", content: "website" },
+      // { property: "og:url", content: "summary" },
+      // { property: "og:image", content: "summary" }
+      // { property: "og:image:width", content: "512" }
+      // { property: "og:image:height", content: "512" }
+    ]
+  },
   title () {
     return `Andi-isoliertechnik toplinska,zvučna i protupožarna izolacija`
   },
