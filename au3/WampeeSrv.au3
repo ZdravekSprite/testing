@@ -1,3 +1,8 @@
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_Icon=C:\Coders\Wampee-3.1.0-beta-3\resources\wampserver.ico
+#AutoIt3Wrapper_Outfile=C:\Coders\Wampee-3.1.0-beta-3\scripts\WampeeSrv.exe
+#AutoIt3Wrapper_AU3Check_Stop_OnWarning=y
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #RequireAdmin
 #NoTrayIcon
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
@@ -6,7 +11,7 @@
 #AutoIt3Wrapper_UseX64=n
 #AutoIt3Wrapper_AU3Check_Stop_OnWarning=y
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-#cs -----------------------------------------------------------------------------
+#cs ----------------------------------------------------------------------------
 
  AutoIt Version: 3.3.5.6 (beta)
  Author:         Herve Leclerc (herve.leclerc@alterway.fr)
@@ -14,24 +19,25 @@
  Script Function:
 	Wampee Start Stop
 
-#ce -----------------------------------------------------------------------------
+#ce ----------------------------------------------------------------------------
 #include <file.au3>
 #include <Constants.au3>
 
 Global $DriveLetter = StringLeft(@ScriptDir, 2)
 $Root  = _PathFull(@ScriptDir & "\..")
 $RootA =StringReplace($Root, "\", "/")
-$Inifile = _PathFull($Root&"\resources\wampee.ini")
+$Inifile = _PathFull($Root&"\resources\wampmanager.conf")
 
-Global $Apache_version = IniRead($Inifile, "wampserver", "apache_version", "")
-Global $Mysql_version  = IniRead($Inifile, "wampserver", "mysql_version", "")
+Global $Apache_version = IniRead($Inifile,"apache","apacheVersion","")
+Global $Mysql_version  = IniRead($Inifile,"mysql","mysqlVersion","")
+Global $MariaDB_version  = IniRead($Inifile,"mariadb","mariadbVersion","")
 
 If $CmdLine[0] <> 2 Then
-	ConsoleWrite("Usage : WampeeSrv [start|stop|restart] [all|apache|mysql]")
+	ConsoleWrite("Usage : WampeeSrv [start|stop|restart] [all|apache|mysql|mariadb]")
 	Exit
 EndIf
-If $CmdLine[2] <> "apache" And $CmdLine[2] <> "mysql" And $CmdLine[2] <> "all" Then
-	ConsoleWrite("Usage : WampeeSrv [start|stop|restart] [all|apache|mysql]")
+If $CmdLine[2] <> "apache" And $CmdLine[2] <> "mysql" And $CmdLine[2] <> "mariadb" And $CmdLine[2] <> "all" Then
+	ConsoleWrite("Usage : WampeeSrv [start|stop|restart] [all|apache|mysql|mariadb]")
 	Exit
 EndIf
 Select
@@ -43,7 +49,7 @@ Select
 		Wampee_stop_servers($CmdLine[2])
 		Wampee_start_servers($CmdLine[2])
     Case Else
-        ConsoleWrite("Usage : WampeeSrv [start|stop|restart] [all|apache|mysql]")
+        ConsoleWrite("Usage : WampeeSrv [start|stop|restart] [all|apache|mysql|mariadb]")
 		Exit
 EndSelect
 
@@ -70,6 +76,13 @@ Func Wampee_start_servers($param)
 		Run(@ComSpec & " /c " & $DriveLetter & " & " & $mysql_path & $mysql_conf ,"", @SW_HIDE )
 		ConsoleWrite("Wampee_start_servers: Mysql Started");
 	EndIf
+
+	If $param = "mariadb" Or $param = "all" Then
+		Local $mariadb_path = $Root  & "\bin\mariadb\mariadb"& $MariaDB_version &"\bin\wampeemariadbd.exe"              ; path to executable
+		Local $mariadb_conf =" --defaults-file=" & $RootA & "/bin/mariadb/mariadb"& $MariaDB_version & "/my.ini" ; MariaDB config file
+		Run(@ComSpec & " /c " & $DriveLetter & " & " & $mariadb_path & $mariadb_conf ,"", @SW_HIDE )
+		ConsoleWrite("Wampee_start_servers: MariaDB Started");
+	EndIf
 EndFunc
 
 Func Wampee_stop_servers($param)
@@ -85,5 +98,10 @@ Func Wampee_stop_servers($param)
     If $param = "mysql" Or $param = "all" Then
 		ProcessClose ("wampeemysqld.exe")
 		ConsoleWrite("Wampee_stop_servers: MySQL Stopped")
+	EndIf
+
+    If $param = "mariadb" Or $param = "all" Then
+		ProcessClose ("wampeemariadbd.exe")
+		ConsoleWrite("Wampee_stop_servers: MariaDB Stopped")
 	EndIf
 EndFunc ;

@@ -1,60 +1,60 @@
 <?php
 
-$suppress_localhost = true;
-// avec modification de la ligne
-//$projectContents .= '<li><a href="'.$file.'">'.$file.'</a></li>';
-//Par :
-//$projectContents .= '<li><a href="'.($suppress_localhost ? 'http://' : '').$file.'">'.$file.'</a></li>';
-//-----
-//Par défaut la valeur est "../"
-//$server_dir = "WAMPROOT/";
-$server_dir = "../";
-//Fonctionne à condition d'avoir ServerSignature On et ServerTokens Full dans httpd.conf
-$server_software = $_SERVER['SERVER_SOFTWARE'];
+// Page created by Shepard [Fabian Pijcke] <Shepard8@laposte.net>
+// Arno Esterhuizen <arno.esterhuizen@gmail.com>
+// and Romain Bourdon <rromain@romainbourdon.com>
+// and Herv� Leclerc <herve.leclerc@alterway.fr>
+// Icons by Mark James <http://www.famfamfam.com/lab/icons/silk/>
 
+
+
+//chemin jusqu'au fichier de conf de WampServer
 $wampConfFile = '../resources/wampmanager.conf';
+
 //chemin jusqu'aux fichiers alias
 $aliasDir = '../alias/';
+
+
 
 // on charge le fichier de conf locale
 if (!is_file($wampConfFile))
     die ('Unable to open WampServer\'s config file, please change path in index.php file');
+//require $wampConfFile;
 $fp = fopen($wampConfFile,'r');
 $wampConfFileContents = fread ($fp, filesize ($wampConfFile));
 fclose ($fp);
 
 
-// on récupère les versions des applis
+//on rs les versions des applis
 preg_match('|phpVersion = (.*)\n|',$wampConfFileContents,$result);
 $phpVersion = str_replace('"','',$result[1]);
 preg_match('|apacheVersion = (.*)\n|',$wampConfFileContents,$result);
 $apacheVersion = str_replace('"','',$result[1]);
-$doca_version = 'doca'.substr($apacheVersion,0,3);
 preg_match('|mysqlVersion = (.*)\n|',$wampConfFileContents,$result);
 $mysqlVersion = str_replace('"','',$result[1]);
+preg_match('|mariadbVersion = (.*)\n|',$wampConfFileContents,$result);
+$mariadbVersion = str_replace('"','',$result[1]);
 preg_match('|wampserverVersion = (.*)\n|',$wampConfFileContents,$result);
 $wampserverVersion = str_replace('"','',$result[1]);
 
-// répertoires à ignorer dans les projets
+
+
+// repertoires  gnorer dans les projets
 $projectsListIgnore = array ('.','..');
+
 
 // textes
 $langues = array(
 	'en' => array(
 		'langue' => 'English',
-		'locale' => 'english',
-		'autreLangue' => 'Version Française',
+		'autreLangue' => 'Version Fran&ccedil;aise',
 		'autreLangueLien' => 'fr',
 		'titreHtml' => 'WAMPSERVER Homepage',
 		'titreConf' => 'Server Configuration',
 		'versa' => 'Apache Version :',
-		'doca2.2' => 'httpd.apache.org/docs/2.2/en/',
-		'doca2.4' => 'httpd.apache.org/docs/2.4/en/',
 		'versp' => 'PHP Version :',
-		'server' => 'Server Software:',
-		'docp' => 'www.php.net/manual/en/',
 		'versm' => 'MySQL Version :',
-		'docm' => 'dev.mysql.com/doc/index.html',
+		'versma' => 'MariaDB Version :',
 		'phpExt' => 'Loaded Extensions : ',
 		'titrePage' => 'Tools',
 		'txtProjet' => 'Your Projects',
@@ -64,29 +64,26 @@ $langues = array(
 		'faq' => 'http://www.en.wampserver.com/faq.php'
 	),
 	'fr' => array(
-		'langue' => 'Français',
-		'locale' => 'french',
+		'langue' => 'Fran?s',
 		'autreLangue' => 'English Version',
 		'autreLangueLien' => 'en',
 		'titreHtml' => 'Accueil WAMPSERVER',
 		'titreConf' => 'Configuration Serveur',
-		'versa' => 'Version Apache:',
-		'doca2.2' => 'httpd.apache.org/docs/2.2/fr/',
-		'doca2.4' => 'httpd.apache.org/docs/2.4/fr/',
+		'versa' => 'Version de Apache:',
 		'versp' => 'Version de PHP:',
-		'server' => 'Server Software:',
-		'docp' => 'www.php.net/manual/fr/',
 		'versm' => 'Version de MySQL:',
-		'docm' => 'dev.mysql.com/doc/index.html',
-		'phpExt' => 'Extensions Chargées: ',
+		'versma' => 'Version de MariaDB:',
+		'phpExt' => 'Extensions Charg&eacute;es: ',
 		'titrePage' => 'Outils',
 		'txtProjet' => 'Vos Projets',
-		'txtNoProjet' => 'Aucun projet.<br /> Pour en ajouter un nouveau, créez simplement un répertoire dans \'www\'.',
+		'txtNoProjet' => 'Aucun projet.<br /> Pour en ajouter un nouveau, cr&eacute;ez simplement un r&eacute;pertoire dans \'www\'.',
 		'txtAlias' => 'Vos Alias',
 		'txtNoAlias' => 'Aucun alias.<br /> Pour en ajouter un nouveau, utilisez le menu de WAMPSERVER.',
 		'faq' => 'http://www.wampserver.com/faq.php'
 	)
 );
+
+
 
 // images
 $pngFolder = <<< EOFILE
@@ -260,15 +257,12 @@ if (isset($_GET['img']))
 
 
 
-// Définition de la langue et des textes 
+// D?nition de la langue et des textes 
 
 if (isset ($_GET['lang']))
 {
-  $langue = htmlspecialchars($_GET['lang'],ENT_QUOTES);
-  if ($langue != 'en' && $langue != 'fr' ) {
-		$langue = 'fr';
-  }
-  }
+	$langue = $_GET['lang'];
+}
 elseif (isset ($_SERVER['HTTP_ACCEPT_LANGUAGE']) AND preg_match("/^fr/", $_SERVER['HTTP_ACCEPT_LANGUAGE']))
 {
 	$langue = 'fr';
@@ -281,11 +275,11 @@ else
 //initialisation
 $aliasContents = '';
 
-// récupération des alias
+// recuperation des alias
 if (is_dir($aliasDir))
 {
     $handle=opendir($aliasDir);
-    while (($file = readdir($handle))!==false) 
+    while ($file = readdir($handle)) 
     {
 	    if (is_file($aliasDir.$file) && strstr($file, '.conf'))
 	    {		
@@ -295,43 +289,38 @@ if (is_dir($aliasDir))
     }
     closedir($handle);
 }
-if (empty($aliasContents))
-	$aliasContents = "<li>".$langues[$langue]['txtNoAlias']."</li>\n";
+if (!isset($aliasContents))
+	$aliasContents = $langues[$langue]['txtNoAlias'];
 
-// récupération des projets
+
+// recuperation des projets
 $handle=opendir(".");
 $projectContents = '';
-while (($file = readdir($handle))!==false) 
+while ($file = readdir($handle)) 
 {
 	if (is_dir($file) && !in_array($file,$projectsListIgnore)) 
 	{		
-		//[modif oto] Ajout éventuel de http:// pour éviter le niveau localhost dans les url
-		$projectContents .= '<li><a href="'.($suppress_localhost ? 'http://' : '').$file.'">'.$file.'</a></li>';
+		$projectContents .= '<li><a href="'.$file.'">'.$file.'</a></li>';
 	}
 }
 closedir($handle);
-if (empty($projectContents))
-	$projectContents = "<li>".$langues[$langue]['txtNoProjet']."</li>\n";;
+if (!isset($projectContents))
+	$projectContents = $langues[$langue]['txtNoProjet'];
 
 
 //initialisation
 $phpExtContents = '';
 
-// récupération des extensions PHP
+// recuperation des extensions PHP
 $loaded_extensions = get_loaded_extensions();
-// [modif oto] classement alphabétique des extensions
-setlocale(LC_ALL,"{$langues[$langue]['locale']}");
-sort($loaded_extensions,SORT_LOCALE_STRING);
 foreach ($loaded_extensions as $extension)
 	$phpExtContents .= "<li>${extension}</li>";
 
 
-//header('Status: 301 Moved Permanently', false, 301);      
-//header('Location: /aviatechno/index.php');      
-//exit();        
+
 
 $pageContents = <<< EOPAGE
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
@@ -390,7 +379,7 @@ ul {
 	list-style: none;
 	display: inline;
 	margin: 0;
-	padding: 0 0.4em;
+	padding: 0 0.2em;
 }
 ul.aliases, ul.projects, ul.tools {
 	list-style: none;
@@ -406,7 +395,6 @@ ul.tools a {
 ul.aliases a {
 	background: url(index.php?img=pngFolderGo) 0 100% no-repeat;
 }
-
 dl {
 	margin: 0;
 	padding: 0;
@@ -447,13 +435,8 @@ a:hover {
 	padding-top: 1em;
 	font-size: 0.85em;
 }
-.third {
-  width:32%;
-  float:left;
-}
-.left {float:left;}
-.right {float:right;}
 </style>
+    
 	<link rel="shortcut icon" href="index.php?img=favicon" type="image/ico" />
 </head>
 
@@ -476,11 +459,9 @@ a:hover {
 
 	<dl class="content">
 		<dt>{$langues[$langue]['versa']}</dt>
-		<dd>${apacheVersion}&nbsp;&nbsp;-&nbsp;<a href='http://{$langues[$langue][$doca_version]}'>Documentation</a></dd>
+		<dd>${apacheVersion} &nbsp;</dd>
 		<dt>{$langues[$langue]['versp']}</dt>
-		<dd>${phpVersion}&nbsp;&nbsp;-&nbsp;<a href='http://{$langues[$langue]['docp']}'>Documentation</a></dd>
-		<dt>{$langues[$langue]['server']}</dt>
-		<dd>${server_software}</dd>
+		<dd>${phpVersion} &nbsp;</dd>
 		<dt>{$langues[$langue]['phpExt']}</dt> 
 		<dd>
 			<ul>
@@ -488,32 +469,26 @@ a:hover {
 			</ul>
 		</dd>
 		<dt>{$langues[$langue]['versm']}</dt>
-		<dd>${mysqlVersion} &nbsp;-&nbsp; <a href='http://{$langues[$langue]['docm']}'>Documentation</a></dd>
+		<dd>${mysqlVersion} &nbsp;</dd>
+		<dt>{$langues[$langue]['versma']}</dt>
+		<dd>${mariadbVersion} &nbsp;</dd>
 	</dl>
-	<div style="margin-top:5px;border-top:1px solid #999;"></div>
-	<div class="third left">
 	<h2>{$langues[$langue]['titrePage']}</h2>
 	<ul class="tools">
 		<li><a href="?phpinfo=1">phpinfo()</a></li>
 		<li><a href="phpmyadmin/">phpmyadmin</a></li>
 	</ul>
-	</div>
-	<div class="third left">
 	<h2>{$langues[$langue]['txtProjet']}</h2>
 	<ul class="projects">
 	$projectContents
 	</ul>
-	</div>
-	<div class="third right">
 	<h2>{$langues[$langue]['txtAlias']}</h2>
 	<ul class="aliases">
 	${aliasContents}			
 	</ul>
-	</div>
-	<div style="clear:both;"></div>
 	<ul id="foot">
-		<li><a href="http://www.wampserver.com">WampServer</a></li>
-    <li><a href="http://www.wampserver.com/en/donations.php">Donate</a></li>
+		<li><a href="http://www.wampserver.com">WampServer</a></li> - 
+        <li><a href="http://www.wampserver.com/en/donations.php">Donate</a></li> -
 		<li><a href="http://www.alterway.fr">Alter Way</a></li>
 	</ul>
 </body>

@@ -1,0 +1,48 @@
+mariadb ----------------------------------------------------------------------------------------------------
+
+Install:
+ - copy the zip content of the new version to bin\mariadb 32 bits
+ - go to tpl\mariadb, create the directory matching the version name of new mariadb
+ - copy paste "my.ini" file from a old version or from one example of the directory of mariadb like "my-medium.ini" to create the new template "my.ini"
+ - Modify the content of the "my.ini" file by adding @MARIADB_PORT@ and @PATH_WAMP@ vars to enable to configure it.
+ - You need to add "wampserver.conf" inside the  bin\mariadb\mariadbx.x.x directory to enable to be recognize
+ - inside bin\mariadb\mariadbx.x.x\bin copy mysqld.exe and rename it wampeemariadbd.exe
+ 
+mysql ----------------------------------------------------------------------------------------------------
+
+Install:
+ - Download the zip of MySQL Community Server 32 bits
+ - Unzip it inside bin\mysql
+ - go to tpl\mysql, create the directory matching the version name of new mysql
+ - copy paste "my.ini" file from a old version to create the new template "my.ini"
+ - Modify the content of the "my.ini" file by adding @MYSQL_PORT@ and @PATH_WAMP@ vars to enable to configure it.
+ - You need to add "wampserver.conf" inside the  bin\mysql\mysqlx.x.x directory to enable to be recognize
+ - inside bin\mysql\mysqlx.x.x\bin copy mysqld.exe and rename it wampeemysqld.exe
+ - inside bin\mysql\mysqlx.x.x\, run a windows cmd and execute "bin\mysqld --initialize-insecure" to create data directory
+ 
+ 
+apache ----------------------------------------------------------------------------------------------------
+
+Install:
+ - Download the zip of Apache 32 bits
+ - Unzip it inside bin\apache
+ - go to tpl\apache, create the directory matching the version name of new apache
+ - copy content of the previous version for "wampdefineapache.conf" and "httpd.conf" and "php.ini" files from a old version to create the new template.
+ - Modify the content of each file to add the new version number.
+ - inside bin\apache\apachex.x.x\bin copy httpd.exe and rename it wampeehttpd.exe
+ 
+php ----------------------------------------------------------------------------------------------------
+
+Install:
+ - Download the zip of php 32 bits
+ - Unzip it inside bin\php
+ - copy content of the previous version for "wampserver.conf" and "phpForApache.ini" and "php.ini" into bin\php\phpx.x.x to enable detection.
+ - go to tpl\php, create the directory matching the version name of new apache
+ - copy content of the previous version for "phpForApache.ini" and "php.ini" files from a old version to create the new template.
+ - Modify the content of each file to add the new version number.
+ - modify scripts\config.inc.php to add "$icu" new number 
+ - go to https://xdebug.org/download.php, download xdebug extension 32 bits
+ - create dir bin\php\phpx.x.x\zend_ext, drop the dll inside
+ - change the template config file inside "tpl\apache\apachex.x.x\bin\php.ini" to set the new name for "zend_extension" the dll
+ - change the template config file inside "zend_extension" inside all "tpl\php\" phpForApache.ini files
+ 

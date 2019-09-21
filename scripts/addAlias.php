@@ -1,7 +1,5 @@
 <?php
-
-//v1.0.1 by Romain Bourdon
-
+//3.0.6
 require 'config.inc.php';
 
 echo '
@@ -44,18 +42,14 @@ $newAliasDir = trim(fgets(STDIN));
 $newAliasDir = trim($newAliasDir,'/\'');
 
 
-if (is_file($aliasDir.$newAliasDir.'.conf'))
-{
+if (is_file($aliasDir.$newAliasDir.'.conf')) {
     echo '
 
 Alias already exists. Press Enter to exit...';
     trim(fgets(STDIN));
     exit();
 }
-
-
-if ($newAliasDir == '')
-{
+if (empty($newAliasDir)) {
     echo '
 
 Alias not created. Press Enter to exit...';
@@ -82,7 +76,7 @@ echo '
 
 
 
-Enter the destination of your alias.
+Enter the destination path of your alias.
 For example, 
 
 \'c:/test/\'
@@ -95,16 +89,14 @@ c:/test/
 $newAliasDest = trim(fgets(STDIN));
 if ($newAliasDest[strlen($newAliasDest)-1] != '/')
     $newAliasDest .= '/';
-if (!is_dir($newAliasDest))
-{
+if (!is_dir($newAliasDest)) {
     echo '
 This directory doesn\'t exist.
 ';
     $newAliasDest = '';
 }
 
-if ($newAliasDest == '')
-{
+if (empty($newAliasDest)) {
     echo '
 
 Alias not created. Press Enter to exit...';
@@ -112,14 +104,24 @@ Alias not created. Press Enter to exit...';
     exit();
 }
 
-$newConfFileContents = 'Alias /'.$newAliasDir.'/ "'.$newAliasDest.'" 
+$newConfFileContents = <<< ALIASEOF
+Alias /${newAliasDir} "${newAliasDest}"
 
-<Directory "'.$newAliasDest.'">
+<Directory "${newAliasDest}">
     Options Indexes FollowSymLinks MultiViews
     AllowOverride all
-        Order allow,deny
-    Allow from all
-</Directory>';
+  <ifDefine APACHE24>
+		Require local
+	</ifDefine>
+	<ifDefine !APACHE24>
+		Order Deny,Allow
+    Deny from all
+    Allow from localhost ::1 127.0.0.1
+	</ifDefine>
+</Directory>
+
+ALIASEOF;
+
 file_put_contents($aliasDir.$newAliasDir.'.conf',$newConfFileContents) or die ("unable to create conf file");
 
 

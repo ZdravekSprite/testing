@@ -1,7 +1,7 @@
 <?php
-
-require 'wampserver.lib.php';
+//3.0.6
 require 'config.inc.php';
+require 'wampserver.lib.php';
 
 $newMysqlVersion = $_SERVER['argv'][1];
 

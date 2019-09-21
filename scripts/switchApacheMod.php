@@ -5,7 +5,7 @@ require 'config.inc.php';
 
 $httpdFileContents = @file_get_contents($c_apacheConfFile ) or die ("httpd.conf file not found");
 
-// on remplace la ligne
+//Uncomment or comment LoadModule line
 if ($_SERVER['argv'][2] == 'on')
 {
     $findTxt  = 'LoadModule '.$_SERVER['argv'][1];

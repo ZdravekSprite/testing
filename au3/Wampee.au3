@@ -1,16 +1,23 @@
 #NoTrayIcon
 #RequireAdmin
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_Icon=..\resources\wampserver.ico
+#AutoIt3Wrapper_Outfile=..\Wampee.exe
+#AutoIt3Wrapper_Res_Description=Wampee
+#AutoIt3Wrapper_Res_Fileversion=3.1.0.0
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 #include-once
 
-#cs -----------------------------------------------------------------------------
+#cs ----------------------------------------------------------------------------
 
  AutoIt Version: 3.3.5.6 (beta)
  Author:         Hervé Leclerc herve.leclerc@alterway.fr
+ Updated by:     Renan LAVAREC - Ti-R - renan.lavarec@ti-r.com - http://www.ti-r.com/
 
  Script Function:
 	Template AutoIt script.
 
-#ce -----------------------------------------------------------------------------
+#ce ----------------------------------------------------------------------------
 
 ; Script Start
 #include <file.au3>
@@ -25,26 +32,41 @@ Global Const $AC_SRC_ALPHA = 1
 Global $GUI
 Global $hImage
 Global $g_IP = "127.0.0.1"
+Global $WampeeInifile
 
 TCPStartup()
 
 $Logfile = @ScriptDir & "\tmp\wampserver.log"
-$Inifile = @ScriptDir & "\resources\wampee.ini"
+$Inifile = _PathFull(@ScriptDir & "\resources\wampmanager.conf")
 
-$Papache = IniRead($Inifile,"ports","apache","0")
+; Wampee.ini save the port used in wampee and can be updated by checkports.exe
+$WampeeInifile = _PathFull(@ScriptDir & "\resources\wampee.ini")
+$Papache = IniRead($WampeeInifile, "ports", "apache", "80")
+$Pmysql = IniRead($WampeeInifile, "ports", "mysql", "3307")
+$Pmariadb = IniRead($WampeeInifile, "ports", "mariadb", "3308")
+
 $apache_port_str="@APACHE_PORT@"
-$Pmysql  = IniRead($Inifile,"ports","mysql","0")
 $mysql_port_str="@MYSQL_PORT@"
+$mariadb_port_str="@MARIADB_PORT@"
 
 
 $ScriptPath = _PathFull(@ScriptDir & "\scripts")
 FileChangeDir($ScriptPath)
+
+; kill all previous process
+ProcessClose ("wampmanager.exe")
+RunWait("WampeeSrv.exe stop all",$ScriptPath,@SW_HIDE)
+
 
 if testPorts($g_IP,$Papache) = True Then
 	RunWait("checkports.exe",$ScriptPath)
 	Exit
 EndIf
 if testPorts($g_IP,$Pmysql) = True Then
+	RunWait("checkports.exe",$ScriptPath)
+	Exit
+EndIf
+if testPorts($g_IP,$Pmariadb) = True Then
 	RunWait("checkports.exe",$ScriptPath)
 	Exit
 EndIf
@@ -72,13 +94,41 @@ $sc=@ScriptDir
 $tpl_path = $sc & "\tpl"
 $bin_path = $sc & "\bin"
 
+; Wampee.ini can be updated by checkports.exe, we need to reload the data
+$Papache = IniRead($WampeeInifile, "ports", "apache", "80")
+$Pmysql = IniRead($WampeeInifile, "ports", "mysql", "3307")
+$Pmariadb = IniRead($WampeeInifile, "ports", "mariadb", "3308")
+
+
 ; Version des logiciels / Alias
-$php_version=IniRead($Inifile,"wampserver","php_version","")
-$apache_version=IniRead($Inifile,"wampserver","apache_version","")
-$mysql_version=IniRead($Inifile,"wampserver","mysql_version","")
-$phpmyadmin_version=IniRead($Inifile,"wampserver","phpmyadmin_version","")
-$sqlbuddy_version=IniRead($Inifile,"wampserver","sqlbuddy_version","")
-$webgrind_version=IniRead($Inifile,"wampserver","webgrind_version","")
+$php_version=IniRead($Inifile,"php","phpVersion","")
+$apache_version=IniRead($Inifile,"apache","apacheVersion","")
+$mysql_version=IniRead($Inifile,"mysql","mysqlVersion","")
+$mariadb_version=IniRead($Inifile,"mariadb","mariadbVersion","")
+
+$phpmyadmin_version	=IniRead($Inifile,"apps","phpmyadminVersion","")
+$phpsysinfo_version	=IniRead($Inifile,"apps","phpsysinfoVersion","")
+$adminer_version	=IniRead($Inifile,"apps","adminerVersion","")
+
+
+; Get mysql and mariadb support
+$support_mysql 		= IniRead($Inifile, "options", "SupportMySQL", "off")
+$support_mariadb 	= IniRead($Inifile, "options", "SupportMariaDB", "off")
+
+$support_mariadb_str 	= "@SUPPORT_MARIADB@"
+$support_mysql_str 		= "@SUPPORT_MYSQL@"
+
+$support_mariadb_text 	= ""
+$support_mysql_text 	= ""
+
+If $support_mysql == "off" Then
+	$support_mysql_text = ";"
+EndIf
+
+If $support_mariadb == "off" Then
+	$support_mariadb_text = ";"
+EndIf
+
 
 ; Alias
 $path_to_alias_w=@ScriptDir & "\alias"
@@ -89,11 +139,11 @@ $path_to_apps_a=StringReplace($path_to_apps_w, "\", "/")
 
 ; Path Apps
 $phpmyadmin_app_a=$path_to_apps_a & "/phpmyadmin" & $phpmyadmin_version
-$sqlbuddy_app_a=$path_to_apps_a & "/sqlbuddy" & $sqlbuddy_version
-$webgrind_app_a=$path_to_apps_a & "/webgrind" & $webgrind_version
+$phpsysinfo_app_a=$path_to_apps_a & "/phpsysinfo" & $phpsysinfo_version
+$adminer_app_a=$path_to_apps_a & "/adminer" & $adminer_version
 $phpmyadmin_str="@PATH_PHPMYADMIN@"
-$sqlbuddy_str="@PATH_SQLBUDDY@"
-$webgrind_str="@PATH_WEBGRIND@"
+$phpsysinfo_str="@PATH_PHPSYSINFO@"
+$adminer_str="@PATH_ADMINER@"
 
 ; phpMyAdmin
 $path_to_phpmyadmin_alias_s=$tpl_path & "\alias\phpmyadmin.conf"
@@ -101,23 +151,27 @@ $path_to_phpmyadmin_alias_c=@ScriptDir & "\alias\phpmyadmin.conf"
 FileDelete($path_to_phpmyadmin_alias_c)
 ScriptREPLACE($path_to_phpmyadmin_alias_s,$path_to_phpmyadmin_alias_c,$phpmyadmin_str,$phpmyadmin_app_a,0)
 
-; sqlBuddy
-$path_to_sqlbuddy_alias_s=$tpl_path & "\alias\sqlbuddy.conf"
-$path_to_sqlbuddy_alias_c=@ScriptDir & "\alias\sqlbuddy.conf"
-FileDelete($path_to_sqlbuddy_alias_c)
-ScriptREPLACE($path_to_sqlbuddy_alias_s,$path_to_sqlbuddy_alias_c,$sqlbuddy_str,$sqlbuddy_app_a,0)
 
-; webGrind
-$path_to_webgrind_alias_s=$tpl_path & "\alias\webgrind.conf"
-$path_to_webgrind_alias_c=@ScriptDir & "\alias\webgrind.conf"
-FileDelete($path_to_webgrind_alias_c)
-ScriptREPLACE($path_to_webgrind_alias_s,$path_to_webgrind_alias_c,$webgrind_str,$webgrind_app_a,0)
+; phpsysinfo
+$path_to_phpsysinfo_alias_s=$tpl_path & "\alias\phpsysinfo.conf"
+$path_to_phpsysinfo_alias_c=@ScriptDir & "\alias\phpsysinfo.conf"
+FileDelete($path_to_phpsysinfo_alias_c)
+ScriptREPLACE($path_to_phpsysinfo_alias_s,$path_to_phpsysinfo_alias_c,$phpsysinfo_str,$phpsysinfo_app_a,0)
+
+
+; adminer
+$path_to_adminer_alias_s=$tpl_path & "\alias\adminer.conf"
+$path_to_adminer_alias_c=@ScriptDir & "\alias\adminer.conf"
+FileDelete($path_to_adminer_alias_c)
+ScriptREPLACE($path_to_adminer_alias_s,$path_to_adminer_alias_c,$adminer_str,$adminer_app_a,0)
 
 ; WAMP
 $wamp_path_w = @ScriptDir
 $wamp_path_a=StringReplace($wamp_path_w, "\", "/")
 $wamp_path_e=StringReplace($wamp_path_w, "\", "\\")
 $wamp_str="@PATH_WAMP@"
+
+
 
 ; Scripts
 $path_to_scripts_w=@ScriptDir & "\scripts"
@@ -128,17 +182,26 @@ $scripts_str="@PATH_SCRIPTS@"
 $path_to_php_w=$bin_path & "\php\php" & $php_version
 $path_to_php_a=StringReplace($path_to_php_w, "\", "/")
 $php_str="@PATH_PHP@"
+$php_str_version="@PHP_VERSION@"
 
 
 ; Apache
 $path_to_apache_w=$bin_path & "\apache\apache" & $apache_version
 $path_to_apache_a=StringReplace($path_to_apache_w, "\", "/")
 $apache_str="@PATH_APACHE@"
+$apache_str_version="@APACHE_VERSION@"
 
 ; Mysql
 $path_to_mysql_w=$bin_path & "\mysql\mysql" & $mysql_version
 $path_to_mysql_a=StringReplace($path_to_mysql_w, "\", "/")
 $mysql_str="@PATH_MYSQL@"
+$mysql_str_version="@MYSQL_VERSION@"
+
+; MariaDB
+$path_to_mariadb_w=$bin_path & "\mariadb\mariadb" & $mariadb_version
+$path_to_mariadb_a=StringReplace($path_to_mariadb_w, "\", "/")
+$mariadb_str="@PATH_MARIADB@"
+$mariadb_str_version="@MARIADB_VERSION@"
 
 ; Windows Explorer
 $path_to_explorer_w=EnvGet("SystemRoot") & "\explorer.exe"
@@ -158,19 +221,33 @@ FileDelete($wampmanager_ini_c)
 ScriptREPLACE    ($wampmanager_ini_s, $wampmanager_ini_c, $php_str,         $path_to_php_a,     0)
 ScriptREPLACEOnce($wampmanager_ini_c,                     $apache_str,      $path_to_apache_a,  0)
 ScriptREPLACEOnce($wampmanager_ini_c,                     $mysql_str,       $path_to_mysql_a,   0)
+ScriptREPLACEOnce($wampmanager_ini_c,                     $mariadb_str,     $path_to_mariadb_a, 0)
 ScriptREPLACEOnce($wampmanager_ini_c,                     $scripts_str,     $path_to_scripts_a, 0)
-ScriptREPLACEOnce($wampmanager_ini_c,                     $mysql_str,       $path_to_mysql_a,   0)
 ScriptREPLACEOnce($wampmanager_ini_c,                     $explorer_str,    $path_to_explorer_e,0)
 ScriptREPLACEOnce($wampmanager_ini_c,                     $wamp_str,        $wamp_path_a,       0)
 ScriptREPLACEOnce($wampmanager_ini_c,                     $apache_port_str, $Papache,           0)
+ScriptREPLACEOnce($wampmanager_ini_c,             		  $mysql_port_str,  $Pmysql,            0)
+ScriptREPLACEOnce($wampmanager_ini_c,             		  $mariadb_port_str,  	$Pmariadb,        0)
+ScriptREPLACEOnce($wampmanager_ini_c,             		  $apache_str_version,  $apache_version,  0)
+ScriptREPLACEOnce($wampmanager_ini_c,             		  $php_str_version,  	$php_version,     0)
+ScriptREPLACEOnce($wampmanager_ini_c,             		  $support_mysql_str,  	$support_mysql_text,   0)
+ScriptREPLACEOnce($wampmanager_ini_c,             		  $support_mariadb_str, $support_mariadb_text, 0)
 
 ; wampmanager.conf
 $wampmanager_conf_s=$tpl_path &    "\wampmanager.conf"
 $wampmanager_conf_c=$wamp_path_w & "\resources\wampmanager.conf"
 FileDelete($wampmanager_conf_c)
 
-ScriptREPLACE    ($wampmanager_conf_s, $wampmanager_conf_c, $wamp_str,      $wamp_path_a,         0)
-ScriptREPLACEOnce($wampmanager_conf_c,                      $explorer_str,  $path_to_explorer_e,  0)
+ScriptREPLACE    ($wampmanager_conf_s, $wampmanager_conf_c, $wamp_str,      $wamp_path_a,         		0)
+ScriptREPLACEOnce($wampmanager_conf_c,                      $explorer_str,  $path_to_explorer_e,  		0)
+ScriptREPLACEOnce($wampmanager_conf_c,                 		$apache_port_str, $Papache,           		0)
+ScriptREPLACEOnce($wampmanager_conf_c,             			$mysql_port_str,  $Pmysql,            		0)
+ScriptREPLACEOnce($wampmanager_conf_c,             			$mariadb_port_str,  $Pmariadb,        		0)
+ScriptREPLACEOnce($wampmanager_conf_c,             			$mariadb_str_version,  $mariadb_version,    0)
+ScriptREPLACEOnce($wampmanager_conf_c,             			$mysql_str_version,  $mysql_version,        0)
+ScriptREPLACEOnce($wampmanager_conf_c,             			$apache_str_version,  $apache_version,      0)
+ScriptREPLACEOnce($wampmanager_conf_c,             			$php_str_version,  $php_version,        	0)
+
 
 ; @PATH_PHP@/bin/php.ini
 $php_ini_s=$tpl_path & "\php\php" & $php_version & "\php.ini"
@@ -180,15 +257,27 @@ FileDelete($php_ini_c)
 ScriptREPLACE    ($php_ini_s, $php_ini_c,  $php_str,         $path_to_php_a,    0)
 ScriptREPLACEOnce($php_ini_c,              $wamp_str,        $wamp_path_a,      0)
 ScriptREPLACEOnce($php_ini_c,              $mysql_port_str,  $Pmysql,           0)
+ScriptREPLACEOnce($php_ini_c,              $mariadb_port_str,$Pmariadb,         0)
+
+; @PATH_PHP@/bin/php.ini
+$php_ini_s=$tpl_path & "\php\php" & $php_version & "\phpForApache.ini"
+$php_ini_c=$path_to_php_w & "\phpForApache.ini"
+FileDelete($php_ini_c)
+
+ScriptREPLACE    ($php_ini_s, $php_ini_c,  $php_str,         $path_to_php_a,    0)
+ScriptREPLACEOnce($php_ini_c,              $wamp_str,        $wamp_path_a,      0)
+ScriptREPLACEOnce($php_ini_c,              $mysql_port_str,  $Pmysql,           0)
+ScriptREPLACEOnce($php_ini_c,              $mariadb_port_str,$Pmariadb,         0)
 
 ; @PATH_APACHE@/bin/php.ini
-$php_ini_s=$tpl_path & "\apache\apache" & $apache_version & "\bin\php.ini"
+$php_ini_s=$tpl_path & "\php\php" & $php_version & "\phpForApache.ini"
 $php_ini_c=$path_to_apache_w & "\bin\php.ini"
 FileDelete($php_ini_c)
 
 ScriptREPLACE    ($php_ini_s, $php_ini_c,  $php_str,         $path_to_php_a,    0)
 ScriptREPLACEOnce($php_ini_c,              $wamp_str,        $wamp_path_a,      0)
 ScriptREPLACEOnce($php_ini_c,              $mysql_port_str,  $Pmysql,      0)
+ScriptREPLACEOnce($php_ini_c,              $mariadb_port_str,$Pmariadb,      0)
 
 ; @PATH_APACHE@/conf/httpd.conf
 $httpd_conf_s=$tpl_path & "\apache\apache" & $apache_version & "\conf\httpd.conf"
@@ -200,6 +289,16 @@ ScriptREPLACEOnce($httpd_conf_c,                 $php_str,         $path_to_php_
 ScriptREPLACEOnce($httpd_conf_c,                 $wamp_str,        $wamp_path_a,         0)
 ScriptREPLACEOnce($httpd_conf_c,                 $apache_port_str, $Papache,             0)
 
+; @PATH_APACHE@/wampdefineapache.conf
+$wampdefineapache_conf_s=$tpl_path & "\apache\apache" & $apache_version & "\wampdefineapache.conf"
+$wampdefineapache_conf_c=$path_to_apache_w & "\wampdefineapache.conf"
+FileDelete($wampdefineapache_conf_c)
+
+ScriptREPLACE    ($wampdefineapache_conf_s, $wampdefineapache_conf_c,  $apache_str,      $path_to_apache_a,    0)
+ScriptREPLACEOnce($wampdefineapache_conf_c,                 $php_str,         $path_to_php_a,       0)
+ScriptREPLACEOnce($wampdefineapache_conf_c,                 $wamp_str,        $wamp_path_a,         0)
+ScriptREPLACEOnce($httpd_conf_c,                 $apache_port_str, $Papache,             0)
+
 
 ; @PATH_MYSQL@/my.ini
 $my_ini_s=$tpl_path & "\mysql\mysql" & $mysql_version & "\my.ini"
@@ -209,6 +308,17 @@ FileDelete($my_ini_c)
 ScriptREPLACE    ($my_ini_s, $my_ini_c,      $mysql_str,       $path_to_mysql_a,    0)
 ScriptREPLACEOnce($my_ini_c,                 $wamp_str,        $wamp_path_a,        0)
 ScriptREPLACEOnce($my_ini_c,                 $mysql_port_str,  $Pmysql,             0)
+
+
+; @PATH_MARIADB@/my.ini
+$my_ini_s=$tpl_path & "\mariadb\mariadb" & $mariadb_version & "\my.ini"
+$my_ini_c=$path_to_mariadb_w & "\my.ini"
+FileDelete($my_ini_c)
+
+ScriptREPLACE    ($my_ini_s, $my_ini_c,      $mariadb_str,      $path_to_mariadb_a, 0)
+ScriptREPLACEOnce($my_ini_c,                 $wamp_str,         $wamp_path_a,       0)
+ScriptREPLACEOnce($my_ini_c,                 $mariadb_port_str, $Pmariadb,          0)
+
 
 ; MyWebApps
 ; Lecture des conf applicatives

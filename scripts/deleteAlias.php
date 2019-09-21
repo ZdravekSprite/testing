@@ -8,34 +8,13 @@ require 'config.inc.php';
 echo '
 
 
+Alias : \''.$_SERVER['argv'][1].'.conf\'
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Do you really wanty to delete this alias?
+Do you really want to delete this alias?
 Type \'yes\' to confirm : ';
 $confirm =    trim(fgets(STDIN));
 $confirm =    trim($confirm ,'\'');

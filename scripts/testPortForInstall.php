@@ -12,7 +12,7 @@ if ($fp)
    while (!feof($fp)) 
    {
         $line = fgets($fp, 128);
-        if (ereg('Server: ',$line))
+        if (preg_match('/Server: /',$line))
         {
             echo $line;
             $gotInfo = 1;
@@ -38,4 +38,4 @@ Press Enter to continue...';
 }
 
 
-?> 
+?>

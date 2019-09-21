@@ -1,0 +1,15 @@
+phpsysinfo ----------------------------------------------------------------------------------------------------
+
+Install:
+ - copy the zip content to apps
+ - rename it phpsysinfox.x.x (no '-')
+ - copy phpsysinfo.ini.new into phpsysinfo.ini inside phpsysinfox.x.x directory
+ 
+
+phpMyAdmin ----------------------------------------------------------------------------------------------------
+
+Install:
+ - rename config.sample.inc.php into config.inc.php
+ - copy config.inc.php from old phpMyAdmin version to the new one to add support of mysql and mariadb
+ - new config.inc.php contain "$cfg['Servers'][$i]['AllowNoPassword']" to "true" to allow login on mysql and mariadb with default user with no password
+ 
