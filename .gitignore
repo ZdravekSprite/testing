@@ -5,5 +5,13 @@
 /logs/apache_error.log
 /logs/php_error.log
 /apps
-/bin
+/bin/*/*
+!/bin/*/*.?.*/
+/bin/*/*.?.*/*
+!/bin/*/*.?.*/*.ini
+!/bin/*/*.?.*/*.conf
+!/bin/*/*.?.*/*/
+/bin/*/*.?.*/*/*
+!/bin/*/*.?.*/*/php.ini
+!/bin/*/*.?.*/*/httpd.conf
 /dock.xml
