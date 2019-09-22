@@ -18,4 +18,6 @@
 /bin/*/*/*/*
 !/bin/*/*/*/php.ini
 !/bin/*/*/*/httpd.conf
+/tmp/*
+!/tmp/do not delete tmp, it enable php to work !.txt
 /dock.xml
