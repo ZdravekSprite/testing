@@ -1,4 +1,4 @@
-WAMPEE
+# WAMPEE
 
 Just Extract Archive on USB Key, or Hard Drive, or external Disk then simply launch Wampee.exe
 
@@ -12,52 +12,51 @@ Wampee is using  :
 Apache     : 2.4.33
 MySQL      : 5.7.22
 MariaDB		 : 10.2.14 
-PHP        : 5.6.35 && 7.2.4
-PHPMyAdmin : 4.8.0.1
+PHP        : 7.2.4
+PHPMyAdmin : 4.9.1
 XDebug     : 1.0 beta6
-phpsysinfo : 3.2.10
-adminer    : 4.6.2
+phpsysinfo : 3.3.1
+adminer    : 4.7.3
 
 Have fun !!
 
--------------------------------- infos + passwords --------------------------------  
+## infos + passwords
 
--- Local Host -----------
+### Local Host
 ServerWeb: http://localhost:81/
 
--- Mysql -----------
+### Mysql
 Server: localhost:3307
 User: root 
 Pass:
-	-- MariaDB
+### MariaDB
 Server: localhost:3308
 User: root 
 Pass:
 
 // there is no pass by default on MySQL DB and Maria DB!!
 
-
--- phpmyadmin -----------
-	-- Mysql
+### phpmyadmin
+#### Mysql
 ServerChoice: MySQL 
 User: root 
 Pass:
-	-- MariaDB
+#### MariaDB
 ServerChoice: MariaDB
 User: root 
 Pass:
 
--- adminer -----------
-	-- Mysql
+### adminer
+#### Mysql
 Server: localhost:3307
 User: root 
 Pass:
-	-- Mysql -> MariaDB
+#### Mysql -> MariaDB
 Server: localhost:3308
 User: root 
 Pass:
 
--------------------------------- Visual C++ Packages --------------------------------  
+## Visual C++ Packages
 
 Make sure you are "up to date" in the redistributable packages VC9, VC10, VC11, VC13 ,  VC14 and VC15
 See --- Visual C++ Packages below.
@@ -99,7 +98,7 @@ Warning: Sometimes Microsoft may update the VC ++ package by breaking the downlo
 This is item number 20 of TROUBLESHOOTING TIPS of Wampserver:
  http://forum.wampserver.com/read.php?2,134915
  
---------------------------------     phpMyAdmin    --------------------------------  
+## phpMyAdmin
 
 When starting phpMyAdmin, you will be asked for a user name and password.
 After installing Wampserver 3, the default username is "root" (without quotes) and there is no password, which means that you must leave the form Password box empty.
@@ -108,12 +107,11 @@ You are connected as 'root' with no password, which corresponds to the default M
 This is not a problem as long as access to Phpmyadmin remain locally.
 However, some web applications or CMS asking that the MySQL user has a password. In which case, you will create a user with password via the PhpMyAdmin Accounts Users tab.
   
-  
--------------------------  Using the menus and submenus of  -----------------------  
+## Using the menus and submenus of
+
 Do not use the keyboard to navigate through the menus and submenus of Wampmanager icon.
 
-
------------------------ For questions regarding Wampserver 3 ----------------------  
+## For questions regarding Wampserver 3
 Please use the specific forum: http://forum.wampserver.com/list.php?2
 Do not use an existing discussion, but create your own thread:
 New Topic
