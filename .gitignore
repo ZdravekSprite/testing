@@ -11,6 +11,7 @@
 !/apps/php*/CHANGELOG.md
 !/apps/php*/package.json
 !/apps/php*/composer.json
+!/apps/php*/phpsysinfo.ini
 /bin/*/*
 !/bin/*/*/
 /bin/*/*/*
