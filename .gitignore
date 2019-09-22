@@ -9,6 +9,8 @@
 /apps/php*/*
 !/apps/php*/config.inc.php
 !/apps/php*/CHANGELOG.md
+!/apps/php*/package.json
+!/apps/php*/composer.json
 /bin/*/*
 !/bin/*/*/
 /bin/*/*/*
