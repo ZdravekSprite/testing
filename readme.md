@@ -1,72 +1,197 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+    $ composer create-project --prefer-dist laravel/laravel laravel_test_api
+> - dodat u hosts (api.laravel.test)
+> - dodat u httpd-vhosts.conf (api.laravel.test)
+> - napravit bazu (laravel_api)
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+	$ cd laravel_test_api
+	$ code .
+> .editorconfig
 
-## About Laravel
+	¸¸
+	indent_size = 2
+	¸¸
+> .env
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+	¸¸
+	DB_PORT=3307
+	DB_DATABASE=laravel_api
+	DB_USERNAME=root
+	DB_PASSWORD=
+	¸¸
+> - git
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+	$ git init
+	$ git add .
+	$ git commit -m "Initial Commit - Laravel Framework Installed"
+	$ git remote add origin https://github.com/ZdravekSprite/api.laravel.test.git
+	$ git push -u origin master
+	$ git branch test2
+	$ git checkout test2
+	$ git push --set-upstream origin test2
+	$ php artisan make:model -a Article
+> - git
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+	$ git add .
+	$ git commit -m "Generate a migration, factory, and resource controller for the Article"
+	$ git push
+> database\migrations\2019_10_05_110425_create_articles_table.php
 
-## Learning Laravel
+	¸¸
+	  public function up()
+	  {
+	    Schema::create('articles', function (Blueprint $table) {
+	      $table->bigIncrements('id');
+	      $table->string('title');
+	      $table->text('body');
+	      $table->timestamps();
+	    });
+	  }
+	¸¸
+> - to avoid errors with migration we need to change engine in database congi file from null to InnoDB
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+> config\database.php
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+	¸¸
+	'mysql' => [
+	¸¸
+	'engine' => 'InnoDB',
+	¸¸
+>
 
-## Laravel Sponsors
+	$ php artisan migrate:fresh
+> - git
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+	$ git add .
+	$ git commit -m "edit migration"
+	$ git push
+> database\factories\ArticleFactory.php
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
+	¸¸
+	$factory->define(Article::class, function (Faker $faker) {
+	  return [
+	    'title' => $faker->text(50),
+	    'body'  => $faker->text(200)
+	  ];
+	});
+	¸¸
+> - git
 
-## Contributing
+	$ git add .
+	$ git commit -m "edit factory"
+	$ git push
+	$ php artisan make:seeder ArticlesTableSeeder
+> database\seeds\ArticlesTableSeeder.php
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+	¸¸
+	  public function run()
+	  {
+	    factory(App\Article::class, 30)->create();
+	  }
+	¸¸
+#
+	$ composer dump-autoload
+	$ php artisan db:seed --class=ArticlesTableSeeder
+> - git
 
-## Security Vulnerabilities
+	$ git add .
+	$ git commit -m "Create a ArticlesTableSeeder seeder class"
+	$ git push
+	$ php artisan make:resource Article
+> app\Http\Resources\Article.php
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+	¸¸
+	  public function toArray($request)
+	  {
+	    // return parent::toArray($request);
+	    return [
+	      'id' => $this->id,
+	      'title' => $this->title,
+	      'body' => $this->body
+	    ];
+	  }
+	  public function with($request)
+	  {
+	    return [
+	      'app_name' => env('APP_NAME'),
+	      'app_url' => url('http://api.laravel.test')
+	    ];
+	  }
+	¸¸
+> - git
 
-## License
+	$ git add .
+	$ git commit -m "Create a Article resoutce class"
+	$ git push
+> routes\api.php
 
-The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+	¸¸
+	Route::get('articles', 'ArticleController@index'); //index
+	Route::get('article/{id}', 'ArticleController@show'); //show
+	Route::post('article', 'ArticleController@store'); //create
+	Route::put('article', 'ArticleController@store'); //update
+	Route::delete('article/{id}', 'ArticleController@destroy'); //delete
+	¸¸
+> - git
+
+	$ git add .
+	$ git commit -m "Adding routs"
+	$ git push
+> app\Http\Controllers\ArticleController.php
+
+	¸¸
+	use App\Http\Resources\Article as ArticleResource;
+	¸¸
+	  public function index()
+	  {
+	    $articles = Article::paginate(15);
+	    return ArticleResource::collection($articles);
+	  }
+	¸¸
+	  public function store(Request $request)
+	  {
+	    $article = $request->isMethod('put') ? Article::findOrFail($request->article_id) : new Article;
+	
+	    $article->id = $request->input('article_id');
+	    $article->title = $request->input('title');
+	    $article->body = $request->input('body');
+	
+	    if($article->save()) {
+	      return new ArticleResource($article);
+	    }
+	  }
+	¸¸
+	  public function show(Article $article)
+	  {
+	    return new ArticleResource($article);
+	  }
+	¸¸
+	  public function destroy(Article $article)
+	  {
+	    if($article->delete()) {
+	      return new ArticleResource($article);
+	    }
+	  }
+	¸¸
+> - git
+
+	$ git add .
+	$ git commit -m "edit ArticleController"
+	$ git push
+> app\Providers\AppServiceProvider.php
+
+	¸¸
+	use Illuminate\Http\Resources\Json\Resource;
+	¸¸
+	  public function boot()
+	  {
+	    Resource::withoutWrapping();
+	  }
+	¸¸
+> - git
+
+	$ git add .
+	$ git commit -m "avoid data object wrapper"
+	$ git push
+	$ git add .
+	$ git commit -m "edit readme"
+	$ git push
