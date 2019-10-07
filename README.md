@@ -1,97 +1,196 @@
 # laravel.test
 Laravel test blog
-
-    $ composer create-project --prefer-dist laravel/laravel blog
-> - add laravel.test to hosts
-> - add laravel.test to httpd-vhosts.conf
-> - create laravel db
-
-	$ cd blog
+## branch test0 - auth
+## branch test1 - role
 > - git
 
-	$ git init
-	$ git add .
-	$ git commit -m "Initial Commit - Laravel Framework Installed"
-	$ git remote add origin https://github.com/ZdravekSprite/laravel.test.git
-	$ git push -u origin master
-	$ git branch test0
-	$ git checkout test0
-	$ git push --set-upstream origin test0
-	$ code .
-> .editorconfig
-
-	¸¸
-	indent_size = 2
-	¸¸
-> .env
-
-	¸¸
-	APP_NAME="Laravel test"
-	¸¸
-	APP_URL=http://laravel.test
-	¸¸
-	DB_PORT=3307
-	DB_DATABASE=laravel
-	DB_USERNAME=root
-	DB_PASSWORD=
-	¸¸
-#
+	$ git clone https://github.com/ZdravekSprite/laravel.test.git
+	$ git branch test1
+	$ git checkout test1
+	$ git push --set-upstream origin test1
 	$ composer update
 	$ npm install && npm run dev
-> - to avoid errors with migration we need to change engine in database congi file from null to InnoDB
-
-> config\database.php
+	$ php artisan make:model Role -m
+> app\User.php
 
 	¸¸
-	'mysql' => [
-	¸¸
-	'engine' => 'InnoDB',
-	¸¸
->
+	  public function roles() {
+	    return $this->belongsToMany('App\Role');
+	  }
 
+	  public function hasAnyRoles($roles) {
+	    return null !== $this->roles()->whereIn('name', $roles)->first();
+	  }
+
+	  public function hasAnyRole($role) {
+	    return null !== $this->roles()->where('name', $role)->first();
+	  }
+	¸¸
+> app\Role.php
+
+	¸¸
+	  public function users(){
+	    return $this->belongsToMany('App\User');
+	  }
+	¸¸
+> database\migrations\2019_10_06_223231_create_roles_table.php
+
+	¸¸
+	    Schema::create('roles', function (Blueprint $table) {
+	      $table->bigIncrements('id');
+	      $table->string('name')->unique();
+	      $table->timestamps();
+	    });
+	¸¸
+#
+		$ php artisan make:migration create_role_user_table
+> database\migrations\2019_10_06_223629_create_role_user_table.php
+
+	¸¸
+	    Schema::create('role_user', function (Blueprint $table) {
+	      $table->bigIncrements('id');
+	      $table->bigInteger('role_id')->unsigned();
+	      $table->bigInteger('user_id')->unsigned();
+	      $table->timestamps();
+	    });
+	  }
+	¸¸
+#
 	$ php artisan migrate:fresh
 > - git
 
 	$ git add .
-	$ git commit -m "start"
-	$ composer require laravel/ui --dev
-	$ php artisan ui vue --auth
-	$ npm install && npm run dev
-> - [Less secure app access](https://myaccount.google.com/lesssecureapps?utm_source=google-account&utm_medium=web)
-> 
-> .env
+	$ git commit -m "role model and migrations"
+	$ git push
+	$ php artisan make:seed RolesTableSeeder
+> database\seeds\RolesTableSeeder.php
 
 	¸¸
-	MAIL_DRIVER=smtp
-	MAIL_HOST=smtp.gmail.com
-	MAIL_PORT=465
-	MAIL_USERNAME=YOUR_GMAIL@gmail.com
-	MAIL_PASSWORD=YOUR_GMAIL_PASSWORD
-	MAIL_ENCRYPTION=ssl
+	use App\Role;
 	¸¸
-> - or [Sign in using App Passwords](https://support.google.com/mail/answer/185833)
-> 
-> .env
+	  public function run()
+	  {
+	    Role::truncate();
+	
+	    Role::create(['name' => 'superadmin']);
+	    Role::create(['name' => 'user']);
+	  }
+	¸¸
+#
+	$ php artisan make:seed UsersTableSeeder
+> database\seeds\UsersTableSeeder.php
 
 	¸¸
-	MAIL_DRIVER=sendmail
-	MAIL_FROM_ADDRESS=noreply@domain.com
-	MAIL_FROM_NAME=DomainName
-	MAIL_HOST=smtp.gmail.com
-	MAIL_PORT=587
-	MAIL_USERNAME=YOUR_GMAIL@gmail.com
-	MAIL_PASSWORD=YOUR_GMAIL_CREATED_APP_PASSWORD
-	MAIL_ENCRYPTION=tls
+	use Illuminate\Support\Facades\Hash;
+	use App\User;
+	use App\Role;
 	¸¸
-> Clear cache with:
+	  public function run()
+	  {
+	    User::truncate();
+	    DB::table('role_user')->truncate();
+	
+	    $superadminRole = Role::where('name', 'superadmin')->first();
+	
+	    $admin = User::create([
+	      'name' => 'Super Admin',
+	      'email' => 'admin@admin.com',
+	      'password' => Hash::make('password')
+	    ]);
+	
+	    $admin->roles()->attach($superadminRole);
+	  }
+	¸¸
+> database\seeds\DatabaseSeeder.php
 
-	$ php artisan config:cache
-	$ php artisan migrate:fresh
+	¸¸
+	  public function run()
+	  {
+	    $this->call(RolesTableSeeder::class);
+	    $this->call(UsersTableSeeder::class);
+	  }
+	¸¸
+#
+	$ php artisan db:seed
 > - git
 
 	$ git add .
-	$ git commit -m "auth"
+	$ git commit -m "roles and users seeder"
+	$ git push
+	$ php artisan make:provider BladeServiceProvider
+
+> app\Providers\BladeServiceProvider.php
+
+	¸¸
+	use Blade;
+	use Auth;
+	¸¸
+	  public function boot()
+	  {
+	    Blade::if('hasrole', function($expression){
+	
+	      if(Auth::user()){
+	        if(Auth::user()->hasAnyRole($expression)){
+	          return true;
+	        }
+	      }
+	
+	      return false;
+	    });
+	  }
+	¸¸
+
+- config\app.php
+#
+	¸¸
+	  'providers' => [
+	¸¸
+	    App\Providers\BladeServiceProvider::class,
+	  ],
+	¸¸
+
+- resources\views\_inc\navbar.blade.php
+#
+	¸¸
+	        @hasrole('superadmin')
+	        <li class="nav-item">
+	          <a class="nav-link" href=#>{{ __('Menage Users') }}</a>
+	        </li>
+	        @endhasrole
+	¸¸
+> - git
+
+	$ git add .
+	$ git commit -m "BladeServiceProvider"
+	$ git push
+> app\Http\Controllers\Auth\RegisterController.php
+
+	¸¸
+	use App\Role;
+	¸¸
+	  protected function create(array $data)
+	  {
+	    $user = User::create([
+	      'name' => $data['name'],
+	      'email' => $data['email'],
+	      'password' => Hash::make($data['password']),
+	    ]);
+	
+	    $role = Role::select('id')->where('name', 'user')->first();
+	
+	    $user->roles()->attach($role);
+	    
+	    return $user;
+	  }
+	¸¸
+> - git
+
+	$ git add .
+	$ git commit -m "user role for new users from registration"
 	$ git push
 	$ git add .
 	$ git commit -m "README.md"
 	$ git push
+	$ git checkout master
+	$ git merge test1
+	$ git push --set-upstream origin master
