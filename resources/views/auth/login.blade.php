@@ -76,6 +76,9 @@
                                 <a href="login/linkedin" class="btn btn-primary">
                                     {{ __('Login In') }}
                                 </a>
+                                <a href="login/google" class="btn btn-primary">
+                                    {{ __('Login GM') }}
+                                </a>
                             </div>
                         </div>
                     </form>
