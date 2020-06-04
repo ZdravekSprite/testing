@@ -70,6 +70,9 @@
                                 <a href="login/facebook" class="btn btn-primary">
                                     {{ __('Login Fb') }}
                                 </a>
+                                <a href="login/twitter" class="btn btn-primary">
+                                    {{ __('Login Tw') }}
+                                </a>
                             </div>
                         </div>
                     </form>
