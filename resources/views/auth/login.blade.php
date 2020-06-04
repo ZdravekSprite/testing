@@ -79,6 +79,9 @@
                                 <a href="login/google" class="btn btn-primary">
                                     {{ __('Login GM') }}
                                 </a>
+                                <a href="login/github" class="btn btn-primary">
+                                    {{ __('Login GH') }}
+                                </a>
                             </div>
                         </div>
                     </form>
