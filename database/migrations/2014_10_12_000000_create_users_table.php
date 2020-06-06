@@ -24,6 +24,12 @@ class CreateUsersTable extends Migration
             $table->string('linkedin_id')->nullable();
             $table->string('google_id')->nullable();
             $table->string('github_id')->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('facebook_avatar')->nullable();
+            $table->string('twitter_avatar')->nullable();
+            $table->string('linkedin_avatar')->nullable();
+            $table->string('google_avatar')->nullable();
+            $table->string('github_avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
