@@ -65,6 +65,9 @@ class LoginController extends Controller
         if (!$user->name) {
             $user->name = $social_user->getName();
         }
+        if (!$user[$provider."_id"]) {
+            $user[$provider."_id"] = $social_user->getId();
+        }
         $user->save();
 
         Auth::Login($user,true);
