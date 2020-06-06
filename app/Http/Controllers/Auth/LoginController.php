@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Socialite;
 use App\User;
+use App\Role;
 use Auth;
 
 class LoginController extends Controller
@@ -77,6 +78,9 @@ class LoginController extends Controller
             }
         }
         $user->save();
+
+        $socialUserRole = Role::where('name', 'socialuser')->first();
+        $user->roles()->attach($socialUserRole);
 
         Auth::Login($user,true);
         return redirect('/home');
