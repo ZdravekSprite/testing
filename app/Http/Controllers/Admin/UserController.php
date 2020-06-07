@@ -81,7 +81,13 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        if(Auth::user() == $user){
+            return redirect()->route('admin.users.index')->with('warning', 'You are not allowed to update yourself.');
+        }
+
+        $user->roles()->sync($request->roles);
+
+        return redirect()->route('admin.users.index')->with('success', 'User has been updated.');
     }
 
     /**
