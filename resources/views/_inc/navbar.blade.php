@@ -10,7 +10,11 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
-
+            @hasrole('superadmin')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.users.index') }}">{{ __('Menage Users') }}</a>
+                </li>
+            @endhasrole
             </ul>
 
             <!-- Right Side Of Navbar -->
