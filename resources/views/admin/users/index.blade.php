@@ -25,6 +25,9 @@
                                 <a href="{{ route('admin.users.edit', $user->id) }}">
                                     <button type="button" class="btn btn-primary btn-sm">{{ __('Edit') }}</button>
                                 </a>
+                                <a href="{{ route('admin.impersonate.start', $user->id) }}" class="float-left">
+                                    <button type="button" class="btn btn-success btn-sm">{{ __('Impersonate') }}</button>
+                                </a>
                             </td>
                         </tr>
                     @endforeach

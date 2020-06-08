@@ -10,6 +10,11 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Left Side Of Navbar -->
             <ul class="navbar-nav mr-auto">
+            @impersonate
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('admin.impersonate.stop') }}">{{ __('Stop Impersonating') }}</a>
+                </li>
+            @endimpersonate
             @hasrole('superadmin')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('admin.users.index') }}">{{ __('Menage Users') }}</a>
