@@ -1,92 +1,67 @@
 <resources>
     <string name="app_name">Peljesac Travel</string>
     <string name="large_text">
-        "Material is the metaphor.\n\n"
+"DOBRODOŠLI NA POLUOTOK PELJEŠAC!\n\n"
 
-        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
-        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
-        "technologically advanced and open to imagination and magic.\n"
-        "Surfaces and edges of the material provide visual cues that are grounded in reality. The "
-        "use of familiar tactile attributes helps users quickly understand affordances. Yet the "
-        "flexibility of the material creates new affordances that supercede those in the physical "
-        "world, without breaking the rules of physics.\n"
-        "The fundamentals of light, surface, and movement are key to conveying how objects move, "
-        "interact, and exist in space and in relation to each other. Realistic lighting shows "
-        "seams, divides space, and indicates moving parts.\n\n"
+"Pelješac je drugi po veličini hrvatski poluotok koji se smjestio na jugu Hrvatske u Dubrovačkoj županiji. Stanovnici Pelješca uglavnom se bave vinogradarstvom, maslinarstvom, ribarstvom i turizmom. Poluotok Pelješac je izvrsno područje za uzgoj školjaka i ribe, proizvodnju vina i maslinovog ulja. Veća mjesta poput Stona, Brijesta, Trpnja, Vignja i Orebića imaju bogatu turističku ponudu a ona manja pružaju odmor u tišini, daleko od vrevi i gužvi tako da je Pelješac idealan izbor i za zabavu i za odmor.\n"
+"Naše web stranice poslužit će vam kako bi ste uspjeli otkriti najskrivenije kutke Pelješca na kojima možete obići pravo carstvo okusa. Odvest ćemo vas do vinarija i kušaonica vina, do oaza agroturizma, restorana i školjkara, do vrijednih primjeraka kulturne baštine, upoznati vas sa zanimljivim manifestacijama, običajima i domaćim suvenirima.\n\n"
 
-        "Bold, graphic, intentional.\n\n"
+"KAKO NA PELJEŠAC?\n\n"
 
-        "The foundational elements of print based design typography, grids, space, scale, color, "
-        "and use of imagery guide visual treatments. These elements do far more than please the "
-        "eye. They create hierarchy, meaning, and focus. Deliberate color choices, edge to edge "
-        "imagery, large scale typography, and intentional white space create a bold and graphic "
-        "interface that immerse the user in the experience.\n"
-        "An emphasis on user actions makes core functionality immediately apparent and provides "
-        "waypoints for the user.\n\n"
+"Iako je poluotok, Pelješac ima odličnu prometnu povezanost. Ukoliko se odlučite za uobičajenu automobilsku rutu, iz smjera sjevera doći ćete autocestom A1 ili starom Jadranskom magistralom do Ploča pa nakon toga imate na izbor. Možete skratiti put na način da se ukrcate na trajekt za Trpanj i za pedesetak minuta plovidbe eto Vas na Pelješcu ili ćete uživati u panoramskoj vožnji preko Neuma i mjesta Ston smještenog na „vratima Pelješca“. Ukoliko odaberete put cestom prema Stonu, važno je napomenuti da kod Neuma prelazite granicu RH-BIH.\n"
+"Putujete li brodom, obalna pruga Jadrolinije povezuje Rijeku, Split, Hvar, Korčulu i Dubrovnik. Korčula je povezana s Pelješcem trajektom i brodicama pa preko njih i tako možete na Pelješac! Ako Vam putovanje automobilom ili brodom nije dovoljno brzo i odgovarajuće, postoji i opcija prijevoza kombinacijom avionskog leta leta do najbliže zračne luke Split ili Dubrovnik pa cestovnim prijevozom do Pelješca. Za organizaciju prijevoza i transfera tu smo za Vas! Sada, kad ste konačno stigli na poluotok Pelješac, vrijeme da Vas smjestimo.\n\n"
 
-        "Motion provides meaning.\n\n"
+"SMJEŠTAJ NA PELJEŠCU\n\n"
 
-        "Motion respects and reinforces the user as the prime mover. Primary user actions are "
-        "inflection points that initiate motion, transforming the whole design.\n"
-        "All action takes place in a single environment. Objects are presented to the user without "
-        "breaking the continuity of experience even as they transform and reorganize.\n"
-        "Motion is meaningful and appropriate, serving to focus attention and maintain continuity. "
-        "Feedback is subtle yet clear. Transitions are efﬁcient yet coherent.\n\n"
+"Turistička agencija Pelješac Travel u mogućnosti Vam je osigurati najbolji smještaj. Hoteli, apartmani, vile, sobe i kampovi čekaju na Vas! Organiziramo izlete, transfere, zabave, vinske ture, planinarske ture, biciklističke ture, sportsko-rekreativna događanja, kulturno- povijesne obilaske i lokalitete. Sve Vaše ideje pretvaramo u stvarnost . Vi ste na odmoru, a nama prepustite sigurnu i odličnu organizaciju. Rezervirajte smještaj putem turističke agencije Pelješac Travel i krenite na vrhunski odmor i predivne izlete!\n\n"
 
-        "3D world.\n\n"
+"IZLETI NA PELJEŠCU\n\n"
 
-        "The material environment is a 3D space, which means all objects have x, y, and z "
-        "dimensions. The z-axis is perpendicularly aligned to the plane of the display, with the "
-        "positive z-axis extending towards the viewer. Every sheet of material occupies a single "
-        "position along the z-axis and has a standard 1dp thickness.\n"
-        "On the web, the z-axis is used for layering and not for perspective. The 3D world is "
-        "emulated by manipulating the y-axis.\n\n"
+"Ukažite nam povjerenje a mi ćemo za Vas organizirati najbolje izlete na Pelješcu i okolici. Pobornici smo aktivnog odmora koji je svakako najbolji za dušu i tijelo. Kako biste se odmaknuli od svakodnevice i zaboravili stres globalnog svijeta koji nas okružuje, pokrenite se i pridružite nam se! Upotpunite Vaš odmor ili posjet našim sadržajima.\n"
+"Preporučujemo Vam prvenstveno izlete na predivne plaže Pelješca. Organiziramo ih kombijem, pješke, biciklima ili brodicama. Kako bi odmor bio potpun, nekada nisu dovoljni samo plaža i more, a ponekad je tražite samo to. Naša Vam je preporuka spoj uživanja u miru netaknute prirode i avanturističkog pohoda. Krenite s nama u avanturu razgledavanja povijesnih i prirodnih lokaliteta, koje smo prethodno naveli, i potragu za novim doživljajima. Osim spomenutog, nudimo Vam i sportske izlete za sve željne aktivnog odmora. Želite li planinariti, biciklirati, trčati, roniti, surfati, veslati, ili samo istraživati, javite nam se, mi Vas očekujemo!\n\n"
 
-        "Light and shadow.\n\n"
+"IZLETI U OKOLICI PELJEŠCA\n\n"
 
-        "Within the material environment, virtual lights illuminate the scene. Key lights create "
-        "directional shadows, while ambient light creates soft shadows from all angles.\n"
-        "Shadows in the material environment are cast by these two light sources. In Android "
-        "development, shadows occur when light sources are blocked by sheets of material at "
-        "various positions along the z-axis. On the web, shadows are depicted by manipulating the "
-        "y-axis only. The following example shows the card with a height of 6dp.\n\n"
+"Svakako ne propustite posjetiti staru gradsku jezgru Dubrovnika. Opasana je kamenim zidinama, unutar kojih su uske kamene ulice, ugodne tople kavane, odlično očuvane crkve, mistične utvrde grada I trgovi. Ako dolazite u posjet gradskoj jezgri grada Dubrovnika vlastitim automobilom, preporučujemo da se parkirate u svega pet minuta pješice udaljenoj Javnoj garaži na Ilijinoj glavici ili nekom od uličnih parkirališta.Pelješac izlet Dubrovnik\n"
+"Otok Korčula rodni je otok velikog moreplovca Marka Pola. Propješačite otok Korčulu brojnim organiziranim rutama za šetnju. Upoznajte morešku, jedan od tri viteška plesa koje možete vidjeti samo na ulicama ovog prelijepog otoka.\n"
+"Nedaleko je i Nacionalni park na otoku Mljetu. Tamo ćete uživati u opuštenoj šetnji uz Veliko i Malo jezero. Na otoku Sv. Marija u središtu jezera, smješten je samostan iz 12. st. Vrlo zanimljiva je Delta rijeke Neretve, protkana mrežom vijugavih kanala koju okružuju plantaže mandarina i prostrane močvare bogate raznolikim pticama (više od 250 vrsta).\n\n"
 
-        "Resting elevation.\n\n"
+"VINARIJE NA PELJEŠCU\n\n"
 
-        "All material objects, regardless of size, have a resting elevation, or default elevation "
-        "that does not change. If an object changes elevation, it should return to its resting "
-        "elevation as soon as possible.\n\n"
+"Pelješac ima višestoljetna tradiciju proizvodnje vrhunskih crvenih od kojih su najpoznatiji vina Dingač i Postup.\n"
+"Vinarije na Pelješcu najbolji su proizvođači crnih vina u Hrvatskoj. Pelješac je domovina sorte Plavac mali te vina Dingač i Postup s istoimenih pozicija. Grožđe zasađeno na tim lokalitetima dobiva velik postotak šećera zahvaljujući trostrukoj insolaciji, direktno od Sunca refleksijom od mora te odsjajem od stjenovitih brda.\n"
+"Poluotok Pelješac na svojih 70-tak kilometara dužine ima oko 250 registriranih proizvođača vina te je pravi vinarski raj! Kada biste svoj odmor bazirali samo na obilasku vinarija Pelješca, trebalo bi Vam jako puno vremena, te iz toga razloga izdvajamo naše omiljene. Zadnnjih par godina, koliko traje naša velika ljubav prema očaravajućem poluotoku, obišli smo jako puno vrhunskih malih i velikih vinara i vinarija. Donosimo naše preporuke i pregled.\n"
+"Vinarija ima puno i isplati se obići ih što više. Nabvest ćemo nekoliko nama omiljenih: vinarija Miloš, vinarija Matuško, vinarija St. Hills, vinarija Korta Katarina i vinarija Vicelić.\n\n"
 
-        "Component elevations.\n\n"
+"MUZEJI I ZNAMENITOSTI POLUOTOKA PELJEŠCA\n\n"
 
-        "The resting elevation for a component type is consistent across apps (e.g., FAB elevation "
-        "does not vary from 6dp in one app to 16dp in another app).\n"
-        "Components may have different resting elevations across platforms, depending on the depth "
-        "of the environment (e.g., TV has a greater depth than mobile or desktop).\n\n"
+"Kultura i civilizacija odavno stanuju na Pelješcu. Život ovdje seže još u vrijeme kamenog doba i antike. Ovaj važni kutak Mediterana živio je kroz stoljeća pod utjecajem brojnih kultura koje su ostavile svoj trag. Tu je solana iz 2. stoljeća prije Krista, stonske zidine iz 16. stoljeća – najduže u Europi, skladni gradići i naselja s mnoštvom prekrasnih srednjovjekovnih crkava i samostana. Pomorski muzej svjedoči o slavnoj pomorskoj tradiciji Pelješca.\n"
+"Obiđite muzeje i znamenitosti Pelješca u sklopu naših izleta koje organiziramo za Vas! Nekoliko nama najdražih i neizostavnih znamenitosti su: Pomorski muzej, Franjevački samostan i crkva Gospe od Anđela, Crkva Gospe Delorite, grad Ston, Stonske zidine i utvrde, Špilja Gudnja, Crkva sv. Mihajla, Trpanj, Gradina, Crkva sv. Petra i Pavla, Crkva sv. Roka, itd..\n\n"
 
-        "Responsive elevation and dynamic elevation offsets.\n\n"
+"GASTRONOMIJA NA PELJEŠCU\n\n"
 
-        "Some component types have responsive elevation, meaning they change elevation in response "
-        "to user input (e.g., normal, focused, and pressed) or system events. These elevation "
-        "changes are consistently implemented using dynamic elevation offsets.\n"
-        "Dynamic elevation offsets are the goal elevation that a component moves towards, relative "
-        "to the component’s resting state. They ensure that elevation changes are consistent "
-        "across actions and component types. For example, all components that lift on press have "
-        "the same elevation change relative to their resting elevation.\n"
-        "Once the input event is completed or cancelled, the component will return to its resting "
-        "elevation.\n\n"
+"Uvjerit ćemo Vas da Vas kuhinja ovog dijela Dalmacije neće razočarati. Želimo Vam približiti lokalnu tradicionalnu kuhinju, gastroscenu Pelješca. Znamo da ima i pobornika „fast fooda“.. Svakako tu i tamo svi volimo pojesti dobru pizzu, hamburger, burek… I to sve možete naći na Pelješcu, naravno. Ali mi Vam želimo približiti naš istraživački rad vrhunske kuhinje i specijaliteta prema svačijim mogućnostima i dubini džepa. Mi smo probali gotovo sve i veliki smo gurmani, stoga vjerujte nam. Ne propustite kušati poznate delicije od školjki, osoboto kamenice – morske školjke koje se jedu gotovo sirove, a poznate su po svojem afrodizijačkom djelovanju. Kamenice, mušule, kunjke, brbavice samo su neke od školjaka koje pružaju neponovljiv gastronomski doživljaj, a njima se naravno priključuju i oborite ribe kao orade, lubini, zubaci, ovčice, potom mekušci kao hobotnice, muzgavci, lignji i sipe od kojih se rade vrhunski specijaliteti.\n"
+"Probajte tradicionalne dalmatinske slastice kao što su rozata, hruštule i fritule. Najbolje ponude bruncha, ručka i večere svakako preporučamo u sklopu naših izleta i vinskih tura. Važno je naglasiti da smo jedne od najboljih obroka jeli u sklopu vinskih tura u vinarijama. Pregršt domaćih specijaliteta riba, sira, maslina, školjki, suhomesnatih prozvoda i grilla. Uz vrhunsku hranu i vino garantiramo Vam odličan provod. Još sve to u hladu i sjeni, s pogledom na more, uz zvuke valova… Samo dok pišemo o tome već smo na jednoj od vrhunskih terasa poluotoka Pelješca. Vinske ceste, obilasci vinarija, degustacija vina, posjet vrhunskim ribljim restoranima i konobama, degustacije kamenica i dagnji, vrhunski su doživljaj koji se mogu pronaći samo na Pelješcu, prirodnom fenomenu, jedinstvenom u svijetu.\n"
+"Naša preporuka je svakako Tuna bar Trpanj - jedan unikatnih restorana poluotoka Pelješca. Tuna bar naime nudi vrhunsku Jadransku Tunu. Vlasnik Tuna bara jedan je od rijetkih u Hrvatskoj koji posjeduje licencu za lov na tune. Svakodnevna ponuda menia bazirana je na svježim morskih blagodatima, koje će Vam servirati. Terasa na plaži je tik uz more, s prekrasnim pogledom na zalazak sunca. Naša najtoplija preporuka vrhunske hrane i vina je upravo ovaj restoran. Pravo je blago umjetničkog rada i skulptura koje je vlasnik izradio ili sakupljao. Očarat će Vas interijer i eksterijer restorana. Poseban je i jedan od unikatnijih u cijeloj Hrvatskoj.\n"
+"Kad je o gastronomiji riječ, svakako ne bismo preskočili i zaobišli Ston, tamošnje kamenice i Kapetanovu kuću. Većina naših dolazaka na Pelješac počinje od Stona. Nekako nam je uvijek drago sjesti i objedovati u Kapetanovoj kući. Tu je vrhunska ponuda hrane i vina. Uz ljubazne domaćine, oraspoložit ćete se i uživati.\n"
+"Pelješac ima mnoštvo seoskih domaćinstava i obiteljska poljoprivredna gospodarstvava koji ekološki proizvode vrlo ukusnu domaću hranu. Jedno od njih je i obiteljsko gospodarstvo Antunović u Kuni. Gotovo čitav poluotok Pelješac ima odličnu gastronomsku ponudu. Preporučujemo Vam u mjestu Borak još i konobu Matuško u vlasništvu ponajboljeg vinara Pelješca. Jedan nezaboravan izlet u konobu Matuško, započeo je sunčanjem i kupanjem podno konobe, a poslije toga s pogledom na more uživali smo u vrhunskim specijalitetima. Svakako ćete i VI!\n\n"
 
-        "Avoiding elevation interference.\n\n"
+"NAJLJEPŠE PLAŽE PELJEŠCA\n\n"
 
-        "Components with responsive elevations may encounter other components as they move between "
-        "their resting elevations and dynamic elevation offsets. Because material cannot pass "
-        "through other material, components avoid interfering with one another any number of ways, "
-        "whether on a per component basis or using the entire app layout.\n"
-        "On a component level, components can move or be removed before they cause interference. "
-        "For example, a floating action button (FAB) can disappear or move off screen before a "
-        "user picks up a card, or it can move if a snackbar appears.\n"
-        "On the layout level, design your app layout to minimize opportunities for interference. "
-        "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
-        "when a user tries to pick up one of cards.\n\n"
+"Najljepše plaže jedan su od mnogih razloga dolaska na poluotok Pelješac. Udaljene su od naselja i prometnica, na njima nisu uobičajene gužve, a većina ih je lako dostupna jer se u blizini može naći parking. Ipak do nekih ćete morati doći barkom ili malom pješačkom rutom. Nemojte se obeshrabriti jer ljepota i mir koji ćete tamo naći zavređuju malo napora i šetnje. Većina plaža je od šljunčanih oblutaka, iako se zna naći i poneka pješčana plaža. Besprijekorno su čiste i imaju pristupačan ulaz u more. Jedinstvena po svojoj ljepoti je pješčana plaža Divna. More se prelijeva u svim bojama i dobiva zelenkasti odsjaj. Na maloj udaljenosti od obale, na morskom dnu je čisti pijesak. Neopisiv je osjećaj dok plivate i gledate morsko dno.\n"
+"Ako ste ljubitelj samoće ili malog broja ljudi, preporučujem vam teže pristupčne plaže, poput plaže Jezero. Tamo ćete pronaći svoj mir i uživati u pogledu na Biokovo koji ostavlja osjećaj kao da vrijeme ne postoji, a vi ste u nekom bezvremenskom prostoru. Plaže Pelješca posebna su turistička atrakcija i svaka je vrijedna obilaska, zato nabrajamo odabrane, a ostale istražite sami. Plaža Viganj, Plaža Mokalo, Plaža Žuljana, Plaža Trstenica, Plaža Podobno, Plaža Prapratno, Plaža Borak, Plaža Jezero, Plaža Duba, Plaža Divna, Plaža Dingač.\n\n"
+
+"SPORT I REKREACIJA NA PELJEŠCU\n\n"
+
+"Sport i rekreacija na Pelješcu su dio nezaobilazne turističke ponude. Kad Vam dosadi izležavanje na plaži vrijeme je za akciju. Pelješac je poznat kao vrhunska kite i windsurfing destinacija. Viganj i kanal između Pelješca i Korčule je nekoliko puta bio domaćin svjetskih i europsih prvenstava i tamo se možete pridružiti nekoj od mnogihkite i windsurfing. Volite li planinarenje uspon na Sv.Iliju je fantastična avantura. Kajacima možete istraživati predivne pelješke plaže a što se tiče biciklizma Pelješac je sa svojim usponima i Napoleonovom cestom neotkriveni raj i za mount bike i za cestovne bicikle. Pelješčani su poznati kao stručnjaci u boćanju a igra se i odličan nogomet u Orebiću, Trpnju i Stonu. U Trpnju je ljeti na raspolaganju i bavljenje vaterpolom za djecu a postoji čak i škola plivanja za početnike. Volite li pak jogging, Pelješac Vam nudi staze uz more ali i prave uspone za profesionalce željne odličnih priprema.\n\n"
+
+"ZABAVA NA PELJEŠCU\n\n"
+
+"Nezaboravne i ugodne večeri uz pjesmu, vino i domaće specijalitete provedite u starim, izvornim, dalmatinskim konobama ili prisustvujte organiziranim pučkim feštama uz pečenu ribu i domaće vino. S ugodnom šetnjom gradom doživite i večeri dalmatinske pjesme u starim gradskim jezgrama. Za one koji žele noćni provod do jutra Pelješac nudi noćne klubove u Trpnju i Orebiću te partyje na plažama. Možete se zabaviti i u povijesnom mjestu Ston u kojem često organiziraju koncerte i izložbe.\n\n"
+
+"Nakon što smo Vam približili što sve možete vidjeti kušati i doživjeti, vrijeme je za uživanje.\n\n"
+
+"Srdačno Vas pozdravlja:\n"
+"PELJEŠAC TRAVEL\n\n"
     </string>
 </resources>
