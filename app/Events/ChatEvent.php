@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Chat;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -19,9 +20,9 @@ class ChatEvent
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Chat $chat)
     {
-        //
+        $this->chat = $chat;
     }
 
     /**
@@ -31,6 +32,6 @@ class ChatEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('channel-name');
+        return new PresenceChannel('chat');
     }
 }
