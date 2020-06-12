@@ -30,3 +30,7 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth', 'auth.admin'])->
     Route::resource('/users', 'UserController', ['except' => ['show', 'create', 'store']]);
     Route::get('/impersonate/{id}', 'ImpersonateController@start')->name('impersonate.start');
 });
+
+Route::get('/chats', 'ChatController@index');
+Route::get('/messages', 'ChatController@fetchAllMessages');
+Route::post('/messages', 'ChatController@sendMessage');
