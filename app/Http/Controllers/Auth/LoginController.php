@@ -79,8 +79,10 @@ class LoginController extends Controller
         }
         $user->save();
 
-        $socialUserRole = Role::where('name', 'socialuser')->first();
-        $user->roles()->attach($socialUserRole);
+        if (!$user->roles->pluck( 'name' )->contains( 'socialuser' )) {
+            $socialUserRole = Role::where('name', 'socialuser')->first();
+            $user->roles()->attach($socialUserRole);
+        }
 
         Auth::Login($user,true);
         return redirect('/home');
