@@ -74,7 +74,8 @@
                         clearTimeout(this.typingTimer);
                     }
                    this.typingTimer = setTimeout(() => {
-                       this.activeUser = false;
+                        this.activeUser = false;
+                        this.fetchMessages();
                    }, 1000);
                 })
         },
