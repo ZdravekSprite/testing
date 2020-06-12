@@ -1951,6 +1951,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['user'],
   data: function data() {
@@ -43726,6 +43731,10 @@ var render = function() {
             },
             _vm._l(_vm.messages, function(message, index) {
               return _c("li", { key: index, staticClass: "p-2" }, [
+                _c("img", {
+                  attrs: { width: "20", height: "20", src: message.user.avatar }
+                }),
+                _vm._v(" "),
                 _c("strong", [_vm._v(_vm._s(message.user.name))]),
                 _vm._v(
                   "\n                        " +
