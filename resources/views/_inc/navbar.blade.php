@@ -20,6 +20,9 @@
                     <a class="nav-link" href="{{ route('admin.users.index') }}">{{ __('Menage Users') }}</a>
                 </li>
             @endhasrole
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('chat') }}">{{ __('Chat') }}</a>
+                </li>
             </ul>
 
             <!-- Right Side Of Navbar -->
