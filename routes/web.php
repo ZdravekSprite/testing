@@ -19,6 +19,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::get('/chats', 'ChatController@index')->name('chat');
+Route::get('/messages', 'ChatController@fetchAllMessages');
+Route::post('/messages', 'ChatController@sendMessage');
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider')->name('{provider}Login');
@@ -30,7 +34,3 @@ Route::namespace('Admin')->prefix('admin')->middleware(['auth', 'auth.admin'])->
     Route::resource('/users', 'UserController', ['except' => ['show', 'create', 'store']]);
     Route::get('/impersonate/{id}', 'ImpersonateController@start')->name('impersonate.start');
 });
-
-Route::get('/chats', 'ChatController@index')->name('chat');
-Route::get('/messages', 'ChatController@fetchAllMessages');
-Route::post('/messages', 'ChatController@sendMessage');

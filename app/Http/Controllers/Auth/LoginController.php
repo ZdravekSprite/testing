@@ -85,6 +85,6 @@ class LoginController extends Controller
         }
 
         Auth::Login($user,true);
-        return redirect('/home');
+        return redirect('/chats');
     }
 }
