@@ -1956,9 +1956,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+<<<<<<< HEAD
 //
 //
 //
+=======
+>>>>>>> master
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['user'],
   data: function data() {

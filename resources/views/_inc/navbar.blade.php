@@ -40,6 +40,7 @@
                 @else
                 <li class="nav-item dropdown">
                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        <img width="20" height="20" src="{{ Auth::user()->avatar }}">
                         {{ Auth::user()->name }} <span class="caret"></span>
                     </a>
 
