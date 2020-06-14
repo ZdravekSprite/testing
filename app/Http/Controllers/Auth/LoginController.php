@@ -83,6 +83,6 @@ class LoginController extends Controller
         $user->roles()->attach($socialUserRole);
 
         Auth::Login($user,true);
-        return redirect('/home');
+        return redirect('/chats');
     }
 }

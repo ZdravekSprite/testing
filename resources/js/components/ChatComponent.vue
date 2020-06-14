@@ -7,6 +7,10 @@
                <div class="card-body p-0">
                    <ul class="list-unstyled" style="height:300px; overflow-y:scroll" v-chat-scroll>
                        <li class="p-2" v-for="(message, index) in messages" :key="index" >
+                           <img
+                                width="20"
+                                height="20"
+                                v-bind:src="message.user.avatar" >
                            <strong>{{ message.user.name }}</strong>
                            {{ message.message }}
                        </li>
@@ -31,6 +35,10 @@
                 <div class="card-body">
                     <ul>
                         <li class="py-2" v-for="(user, index) in users" :key="index">
+                           <img
+                                width="20"
+                                height="20"
+                                v-bind:src="user.avatar" >
                             {{ user.name }}
                         </li>
                     </ul>
