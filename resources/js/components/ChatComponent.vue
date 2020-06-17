@@ -39,7 +39,7 @@
                                 width="20"
                                 height="20"
                                 v-bind:src="user.avatar" >
-                            {{ user.name }}
+                            <span class="active-user">{{ user.name }}</span>
                         </li>
                     </ul>
                 </div>
@@ -108,4 +108,12 @@
             }
         }
     }
-</script> 
+</script>
+
+<style>
+@media (max-width: 768px) {
+    .active-user {
+        display: none;
+    }
+}
+</style>
