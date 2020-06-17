@@ -110,7 +110,7 @@
     }
 </script>
 
-<style>
+<style scoped>
 @media (max-width: 768px) {
     .active-user {
         display: none;
