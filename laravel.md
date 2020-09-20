@@ -10,4 +10,5 @@ git push origin HEAD --force
 git push -u origin master
 
 git checkout -b laravel
+git push origin HEAD --force
 ```
