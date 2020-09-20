@@ -40,4 +40,5 @@ git push -u origin jetstream
 composer require laravel/jetstream
 php artisan jetstream:install livewire --teams
 git add .
+npm install && npm run dev
 ```
