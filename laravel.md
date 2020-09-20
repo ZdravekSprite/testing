@@ -46,4 +46,5 @@ php artisan migrate:fresh
 
 git checkout -b socialite
 git push origin HEAD --force
+git push -u origin socialite
 ```
