@@ -34,6 +34,7 @@ git add .
 
 ```bash
 php artisan migrate:fresh
+
 git checkout -b jetstream
 git push origin HEAD --force
 git push -u origin jetstream
@@ -42,4 +43,6 @@ php artisan jetstream:install livewire --teams
 git add .
 npm install && npm run dev
 php artisan migrate:fresh
+
+git checkout -b socialite
 ```
