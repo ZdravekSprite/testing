@@ -24,4 +24,7 @@ git remote add origin https://github.com/ZdravekSprite/Laravel8Test.git
 git pull origin laravel
 git checkout laravel
 git add .
+
+npm install && npm run dev
+git add .
 ```
