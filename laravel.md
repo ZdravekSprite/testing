@@ -35,4 +35,5 @@ git add .
 ```bash
 php artisan migrate:fresh
 git checkout -b jetstream
+git push origin HEAD --force
 ```
