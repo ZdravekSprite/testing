@@ -45,4 +45,5 @@ npm install && npm run dev
 php artisan migrate:fresh
 
 git checkout -b socialite
+git push origin HEAD --force
 ```
