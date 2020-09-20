@@ -11,4 +11,17 @@ git push -u origin master
 
 git checkout -b laravel
 git push origin HEAD --force
+git push -u origin laravel
+
+composer global require laravel/installer
+
+cd ..
+rm -r Laravel8Test
+laravel new Laravel8Test
+cd Laravel8Test
+git init
+git remote add origin https://github.com/ZdravekSprite/Laravel8Test.git
+git pull origin laravel
+git checkout laravel
+git add .
 ```
