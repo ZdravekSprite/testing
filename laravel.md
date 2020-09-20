@@ -28,3 +28,10 @@ git add .
 npm install && npm run dev
 git add .
 ```
+
+## MySql
+> - create laravel8test db
+
+```bash
+php artisan migrate:fresh
+```
