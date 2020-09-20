@@ -48,4 +48,5 @@ git checkout -b socialite
 git push origin HEAD --force
 git push -u origin socialite
 composer require laravel/socialite
+npm install && npm run dev
 ```
