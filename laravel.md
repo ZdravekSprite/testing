@@ -37,4 +37,5 @@ php artisan migrate:fresh
 git checkout -b jetstream
 git push origin HEAD --force
 git push -u origin jetstream
+composer require laravel/jetstream 
 ```
