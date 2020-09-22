@@ -16,11 +16,27 @@ public class Lottery {
         this.draws.add(draw);
     }
     
+    public int size() {
+        return draws.size();
+    }
+    
     public int containsA(int value) {
         int count = 0;
         for (Draw draw : draws) {
             if (draw.containsA(value)) {
                 count++;
+            }
+        }
+        return count;
+    }
+    
+    public int containsLastA(int value, int last) {
+        int count = 0;
+        if (draws.size() > last) {
+            for (int i = draws.size() - last; i < draws.size(); i++) {
+                if (draws.get(i).containsA(value)) {
+                    count++;
+                }
             }
         }
         return count;
