@@ -66,6 +66,23 @@ public class RecordsFromAFile {
                 }
             }
             */
+            // test
+            Draw draw = new Draw("x", 11, 20, 27, 32, 46, 3, 5);
+
+            int avrg = 0;
+            for (int i = 1; i <= Integer.valueOf(lotteryData[2]); i++) {
+                int last = lottery.containsLastA(i, 50);
+                if (draw.containsA(i)) {
+                    avrg = avrg + last;
+                    System.out.print("+");
+                } else {
+                    System.out.print(" ");
+                }
+                System.out.printf("%2d|", last);
+            }
+            System.out.printf("%6d=", avrg);
+            System.out.println();
+
         } catch (Exception e) {
             System.out.println("Reading the file failed.");
         }
