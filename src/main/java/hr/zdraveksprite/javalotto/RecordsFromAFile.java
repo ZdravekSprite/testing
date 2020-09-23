@@ -1,6 +1,7 @@
 package hr.zdraveksprite.javalotto;
 
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Scanner;
  
 public class RecordsFromAFile {
@@ -17,6 +18,8 @@ public class RecordsFromAFile {
             String[] lotteryData = frstLine.split(",");
             Lottery lottery = new Lottery(lotteryData[0]);
 
+            int[] avrgStat = new int[35];
+            
             while (fileReader.hasNextLine()) {
                 String line = fileReader.nextLine();
                 String[] parts = line.split(";");
@@ -29,59 +32,16 @@ public class RecordsFromAFile {
                 int no5 = Integer.valueOf(parts[5]);
                 int noa = Integer.valueOf(parts[6]);
                 int nob = Integer.valueOf(parts[7]);
-                Draw draw = new Draw(day, no1, no2, no3, no4, no5, noa, nob);
+                Draw tempLotto = new Draw(Integer.valueOf(lotteryData[1]), Integer.valueOf(lotteryData[2]), new int[] {no1, no2, no3, no4, no5});
+                Draw tempBonus = new Draw(Integer.valueOf(lotteryData[3]), Integer.valueOf(lotteryData[4]), new int[] {noa, nob});
 
-                lottery.add(draw);
-                
-                if (lottery.size() > 50) {
-                    int avrg = 0;
-                    for (int i = 1; i <= Integer.valueOf(lotteryData[2]); i++) {
-                        int last = lottery.containsLastA(i, 50);
-                        if (draw.containsA(i)) {
-                            avrg = avrg + last;
-                            System.out.print("+");
-                        } else {
-                            System.out.print(" ");
-                        }
-                        System.out.printf("%2d|", last);
-                    }
-                    System.out.printf("%6d=", avrg);
-                    System.out.println();
-                }
+                lottery.add(day, tempLotto, tempBonus);
             }
-            for (int i = 1; i <= Integer.valueOf(lotteryData[2]); i++) {
-                System.out.printf("%3d|", i);
-            }
-            System.out.println();
+
+            System.out.println(lottery);
             
-            // System.out.println(lottery);
-            
-            /*
-            for (int i = 1; i <= Integer.valueOf(lotteryData[2]); i++) {
-                System.out.print(i + " je izvučen " + lottery.containsA(i) + " puta.");
-                if (i <= Integer.valueOf(lotteryData[4])) {
-                    System.out.println(i + " je izvučen " + lottery.containsB(i) + " puta iz malog bubnja.");
-                } else {
-                    System.out.println();
-                }
-            }
-            */
             // test
-            Draw draw = new Draw("x", 11, 20, 27, 32, 46, 3, 5);
-
-            int avrg = 0;
-            for (int i = 1; i <= Integer.valueOf(lotteryData[2]); i++) {
-                int last = lottery.containsLastA(i, 50);
-                if (draw.containsA(i)) {
-                    avrg = avrg + last;
-                    System.out.print("+");
-                } else {
-                    System.out.print(" ");
-                }
-                System.out.printf("%2d|", last);
-            }
-            System.out.printf("%6d=", avrg);
-            System.out.println();
+//            Draw draw = new Draw("x", 11, 20, 27, 32, 46, 3, 5);
 
         } catch (Exception e) {
             System.out.println("Reading the file failed.");

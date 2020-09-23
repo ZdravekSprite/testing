@@ -1,59 +1,23 @@
 package hr.zdraveksprite.javalotto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Lottery {
     private String name;
-    private List<Draw> draws;
+    private Map<String, Draw[]> draws;
     
     public Lottery (String name) {
         this.name = name;
-        this.draws = new ArrayList<>();
+        this.draws = new HashMap<>();
     }
     
-    public void add (Draw draw) {
-        this.draws.add(draw);
+    public void add (String date, Draw lotto, Draw bonus) {
+        this.draws.put(date, new Draw[] {lotto, bonus});
     }
-    
-    public int size() {
-        return draws.size();
-    }
-    
-    public int containsA(int value) {
-        int count = 0;
-        for (Draw draw : draws) {
-            if (draw.containsA(value)) {
-                count++;
-            }
-        }
-        return count;
-    }
-    
-    public int containsLastA(int value, int last) {
-        int count = 0;
-        if (draws.size() > last) {
-            for (int i = draws.size() - last; i < draws.size(); i++) {
-                if (draws.get(i).containsA(value)) {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
-    
-    public int containsB(int value) {
-        int count = 0;
-        for (Draw draw : draws) {
-            if (draw.containsB(value)) {
-                count++;
-            }
-        }
-        return count;
-    }
-    
+
     @Override
     public String toString() {
-        return "U bazi " + name+ " lutrije je " + draws.size() + " izvlačenja.";
+        return "U bazi " + name + " lutrije je " + draws.size() + " izvlačenja.";
     }
 }
