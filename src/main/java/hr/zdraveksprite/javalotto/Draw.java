@@ -3,14 +3,14 @@ package hr.zdraveksprite.javalotto;
 import java.util.Arrays;
 
 public class Draw {
-    private int drawX;
-    private int drawY;
+    private DrawType drawType;
     private int[] numbers;
     
-    public Draw(int drawX, int drawY, int[] numbers) {
-        this.drawX = drawX;
-        this.drawY = drawY;
-        this.numbers = numbers;
+    public Draw(DrawType drawType, int[] numbers) {
+        this.drawType = drawType;
+        if (numbers.length == drawType.getX()) {
+            this.numbers = numbers;
+        }
     }
     
     public boolean contains(int value) {
