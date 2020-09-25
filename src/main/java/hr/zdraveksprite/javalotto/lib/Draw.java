@@ -1,4 +1,4 @@
-package hr.zdraveksprite.javalotto;
+package hr.zdraveksprite.javalotto.lib;
 
 import java.util.Arrays;
 
@@ -18,6 +18,14 @@ public class Draw {
             if (value == number) return true;
         }
         return false;
+    }
+    
+    public int[] getNumbers() {
+        return numbers;
+    }
+    
+    public int size() {
+        return drawType.getX();
     }
     
     @Override

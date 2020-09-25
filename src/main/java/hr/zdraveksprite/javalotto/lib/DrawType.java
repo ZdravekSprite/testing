@@ -1,4 +1,4 @@
-package hr.zdraveksprite.javalotto;
+package hr.zdraveksprite.javalotto.lib;
 
 public class DrawType {
     private int x;
