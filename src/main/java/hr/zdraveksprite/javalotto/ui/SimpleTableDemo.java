@@ -12,10 +12,10 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
+import javax.swing.table.TableColumn;
 
 public class SimpleTableDemo extends JPanel {
     private boolean DEBUG = false;
@@ -75,7 +75,8 @@ public class SimpleTableDemo extends JPanel {
                                 "No4",
                                 "No5",
                                 "NoA",
-                                "NoB"};
+                                "NoB",
+                                "test"};
  
         Object[][] tableData = new Object[lottery.size()][columnNames.length];
         
@@ -83,7 +84,6 @@ public class SimpleTableDemo extends JPanel {
             
         }
         int index = 0;
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
         for (Date date : lottery.getDates())
         {
             tableData[index] = lottery.getArr(date);
@@ -91,7 +91,7 @@ public class SimpleTableDemo extends JPanel {
         }
         
         final JTable table = new JTable(tableData, columnNames);
-        table.setPreferredScrollableViewportSize(new Dimension(500, 70));
+        table.setPreferredScrollableViewportSize(new Dimension(600, 170));
         table.setFillsViewportHeight(true);
  
         if (DEBUG) {
@@ -105,10 +105,30 @@ public class SimpleTableDemo extends JPanel {
         //Create the scroll pane and add the table to it.
         JScrollPane scrollPane = new JScrollPane(table);
  
+        //Set up column sizes.
+        initColumnSizes(table);
+        
         //Add the scroll pane to this panel.
         add(scrollPane);
     }
  
+    /*
+     * This method picks good column sizes.
+     * If all column heads are wider than the column's cells'
+     * contents, then you can just use column.sizeWidthToFit().
+     */
+    private void initColumnSizes(JTable table) {
+        TableColumn column = null;
+        for (int i = 0; i < 9; i++) {
+            column = table.getColumnModel().getColumn(i);
+            if (i == 0 || i == 8) {
+                column.setPreferredWidth(100);
+            } else {
+                column.setPreferredWidth(50);
+            }
+        }
+    }
+    
     private void printDebugData(JTable table) {
         int numRows = table.getRowCount();
         int numCols = table.getColumnCount();

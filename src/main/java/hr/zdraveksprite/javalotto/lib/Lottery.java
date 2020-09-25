@@ -48,7 +48,7 @@ public class Lottery {
     public Object[] getArr(Date date) {
         Draw lotto = draws.get(date)[0];
         Draw bonus = draws.get(date)[1];
-        Object[] test = new Object[1 + lotto.size() + bonus.size()];
+        Object[] test = new Object[2 + lotto.size() + bonus.size()];
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
         test[0] = dateFormat.format(date);
         for (int i = 0; i < lotto.size(); i++) {
