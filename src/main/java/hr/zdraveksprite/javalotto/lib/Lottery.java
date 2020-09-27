@@ -7,31 +7,67 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Lottery {
     private String name;
     private DrawType lottoType;
     private DrawType bonusType;
     private Map<Date, Draw[]> draws;
+    private Map<Date, int[][]> analizes;
+    private int[][] lastAnalize;
     
     public Lottery (String name, DrawType lotto, DrawType bonus) {
         this.name = name;
         this.lottoType = lotto;
         this.bonusType = bonus;
         this.draws = new HashMap<>();
+        this.analizes = new HashMap<>();
+        this.lastAnalize = new int[2][];
+        this.lastAnalize[0] = new int[lotto.getY()];
+        for (int i = 0; i < lotto.getY(); i++)
+            this.lastAnalize[0][i] = -1;
+        this.lastAnalize[1] = new int[bonus.getY()];
+        for (int i = 0; i < bonus.getY(); i++)
+            this.lastAnalize[1][i] = -1;
     }
     
     public void add (Date date, Draw lotto, Draw bonus) {
-        if (lotto.isValid(lottoType) && bonus.isValid(bonusType)) {
-            this.draws.put(date, new Draw[] {lotto, bonus});        
-        } else {
-            System.out.println("Error" + date + " " + lotto + " " + bonus);
+        boolean isOK = true;
+        if (!lotto.isValid(lottoType)) {
+            System.out.print("Lotto-");
+            isOK = false;
         }
-        //System.out.println("Test");
+        if (!bonus.isValid(bonusType)) {
+            System.out.print("Bonus-");
+            isOK = false;
+        }
+        if (isOK) {
+            this.draws.put(date, new Draw[] {lotto, bonus});
+            int[] lottoA = new int[lastAnalize[0].length];
+            for (int i = 0; i < lottoA.length; i++) {
+                if (lotto.contains(i+1)) {
+                    lottoA[i] = 0;
+                } else {
+                    lottoA[i] = lastAnalize[0][i] + 1;
+                }
+            }
+
+            int[] bonusA = lastAnalize[1];/*
+            for (int i = 0; i < bonusA.length; i++) {
+                if (bonus.contains(i+1)) {
+                    bonusA[i] = 0;
+                } else {
+                    bonusA[i]++;
+                }
+            }*/
+
+            this.analizes.put(date, new int[][] {lottoA, bonusA});
+            this.lastAnalize = new int[][] {lottoA, bonusA};
+        } else {
+            System.out.println("Error " + date + " " + lotto + " " + bonus);
+        }
     }
     
     public Map<Date, Draw> getLottos () {
@@ -63,12 +99,10 @@ public class Lottery {
         Object[] test = new Object[2 + lotto.size() + bonus.size()];
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
         test[0] = dateFormat.format(date);
-        for (int i = 0; i < lotto.size(); i++) {
-            test[1 + i] = lotto.getNumbers()[i];
-        }
-        for (int i = 0; i < bonus.size(); i++) {
-            test[1 + lotto.size() + i] = bonus.getNumbers()[i];
-        }
+        System.arraycopy(lotto.getNumbers(), 0, test, 1, lotto.size());
+        System.arraycopy(bonus.getNumbers(), 0, test, 1 + lotto.size(), bonus.size());
+        int[][] temp = analizes.get(date);
+        test[1 + lotto.size() + bonus.size()] = Arrays.toString(temp[0]);
         return test;
     }
 

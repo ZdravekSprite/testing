@@ -93,7 +93,7 @@ public class SimpleTableDemo extends JPanel {
         }
         
         final JTable table = new JTable(tableData, columnNames);
-        table.setPreferredScrollableViewportSize(new Dimension(600, 400));
+        table.setPreferredScrollableViewportSize(new Dimension(1200, 400));
         table.setFillsViewportHeight(true);
  
         if (DEBUG) {
@@ -123,10 +123,12 @@ public class SimpleTableDemo extends JPanel {
         TableColumn column = null;
         for (int i = 0; i < 9; i++) {
             column = table.getColumnModel().getColumn(i);
-            if (i == 0 || i == 8) {
-                column.setPreferredWidth(100);
+            if (i == 0) {
+                column.setPreferredWidth(80);
+            } else if (i == 8) {
+                column.setPreferredWidth(800);
             } else {
-                column.setPreferredWidth(50);
+                column.setPreferredWidth(20);
             }
         }
     }
