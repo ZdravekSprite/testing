@@ -3,23 +3,35 @@ package hr.zdraveksprite.javalotto.lib;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Lottery {
     private String name;
+    private DrawType lottoType;
+    private DrawType bonusType;
     private Map<Date, Draw[]> draws;
     
-    public Lottery (String name) {
+    public Lottery (String name, DrawType lotto, DrawType bonus) {
         this.name = name;
+        this.lottoType = lotto;
+        this.bonusType = bonus;
         this.draws = new HashMap<>();
     }
     
     public void add (Date date, Draw lotto, Draw bonus) {
-        this.draws.put(date, new Draw[] {lotto, bonus});
+        if (lotto.isValid(lottoType) && bonus.isValid(bonusType)) {
+            this.draws.put(date, new Draw[] {lotto, bonus});        
+        } else {
+            System.out.println("Error" + date + " " + lotto + " " + bonus);
+        }
+        //System.out.println("Test");
     }
     
     public Map<Date, Draw> getLottos () {
@@ -60,6 +72,15 @@ public class Lottery {
         return test;
     }
 
+    public Object[] getAnalize() {
+        Object[] test = new Object[1];
+        List<Date> dates = this.getDates();
+        
+
+
+        return test;
+    }
+    
     @Override
     public String toString() {
         return "U bazi " + name + " lutrije je " + draws.size() + " izvlačenja.";

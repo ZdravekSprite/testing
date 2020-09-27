@@ -29,11 +29,13 @@ public class SimpleTableDemo extends JPanel {
             
             String frstLine = fileReader.nextLine();
             String[] lotteryData = frstLine.split(";");
-            lottery = new Lottery(lotteryData[0]);
+            String lotteryName = lotteryData[0];
             String[] lottoType = lotteryData[1].split(",");
             DrawType lottoDrawType = new DrawType(Integer.valueOf(lottoType[0]),Integer.valueOf(lottoType[1]));
             String[] bonusType = lotteryData[2].split(",");
             DrawType bonusDrawType = new DrawType(Integer.valueOf(bonusType[0]),Integer.valueOf(bonusType[1]));
+
+            lottery = new Lottery(lotteryName, lottoDrawType, bonusDrawType);
 
             while (fileReader.hasNextLine()) {
                 String line = fileReader.nextLine();
@@ -42,19 +44,19 @@ public class SimpleTableDemo extends JPanel {
                 Date day = new SimpleDateFormat("dd.MM.yyyy").parse(parts[0]);
 
                 String[] lottoStringArr = parts[1].split(",");
-                int[] lottoIntArr = new int[lottoDrawType.getX()];
-                for (int i = 0; i < lottoDrawType.getX(); i++) {
+                Integer[] lottoIntArr = new Integer[lottoStringArr.length];
+                for (int i = 0; i < lottoStringArr.length; i++) {
                     lottoIntArr[i] = Integer.valueOf(lottoStringArr[i]);
                 }
 
                 String[] bonusStringArr = parts[2].split(",");
-                int[] bonusIntArr = new int[bonusDrawType.getX()];
-                for (int i = 0; i < bonusDrawType.getX(); i++) {
+                Integer[] bonusIntArr = new Integer[bonusStringArr.length];
+                for (int i = 0; i < bonusStringArr.length; i++) {
                     bonusIntArr[i] = Integer.valueOf(bonusStringArr[i]);
                 }
 
-                Draw tempLotto = new Draw(lottoDrawType, lottoIntArr);
-                Draw tempBonus = new Draw(bonusDrawType, bonusIntArr);
+                Draw tempLotto = new Draw(lottoIntArr);
+                Draw tempBonus = new Draw(bonusIntArr);
 
                 lottery.add(day, tempLotto, tempBonus);
             }
@@ -91,7 +93,7 @@ public class SimpleTableDemo extends JPanel {
         }
         
         final JTable table = new JTable(tableData, columnNames);
-        table.setPreferredScrollableViewportSize(new Dimension(600, 170));
+        table.setPreferredScrollableViewportSize(new Dimension(600, 400));
         table.setFillsViewportHeight(true);
  
         if (DEBUG) {
