@@ -1,0 +1,56 @@
+Wampee 3.1 ----------------------------------------------------------------------------------------------------
+
+Add:
+ - MariaDB 			10.2.14
+ - Scripts:
+ 		- Add openCmd -> enable to get cmd result
+	  - Add openFiles -> enable to open files (like php.ini) with current local editor
+ 
+Update:
+ - apache 			2.2.17 -> 2.4.33
+ - mysql 				5.5.8  -> 5.7.22
+ - php 					5.3.5  -> 5.6.35 && 7.2.4
+ - phpmyadmin 	3.3.9  -> 4.8.0.1
+ - adminer 			4.2.5  -> 4.6.2
+ - phpsysinfo 	3.2.5  -> 3.2.10
+
+ - XDebugClient	1.0 beta5 -> 1.0 beta6
+
+ - au3\CheckPorts.au3
+ - scripts\CheckPorts.exe
+ - au3\Wampee.au3
+ - Wampee.exe
+
+ - Icons
+ 
+Changes:
+
+ - Add MariaDB support
+ - Add MariaDB to CheckPorts
+ - Add PID button inside CheckPorts, to check PID process launch on specific port
+ - Add function to kill all services at Wampee.exe launch, to clean a previous session of Wampee.exe.
+ - Fix bug of wampee 2.1 crashing when exiting the application.
+
+
+Wampee 2.1 ----------------------------------------------------------------------------------------------------
+
+Fixed between beta1 and beta2
+
+Change:
+- scripts\refresh.php
+- scripts\config.inc.php
+- au3\CheckPorts.au3
+- scripts\CheckPorts.exe
+- tpl\wampmanager.tpl
+
+Fixes : 
+- Gestion de wampee avec les ports 80 et 3306 d‚j… ouverts
+- Proposition d'autres ports
+- manage wampee with already open ports 80 and 3306
+- Provide a gui to change ports
+
+Change: 
+copy of mysqld.exe to wampeemysqld.exe programm to avoid the kill of an already running mysqld
+copy of httpd.exe to  wampeehttpd.exe programm to avoid the kill of an already running httpd
+
+Copie des executables mysqld en wampeemysqld et httpd.exe en wampeehttpd.exe to avoid kill of a running process 

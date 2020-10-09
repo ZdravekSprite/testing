@@ -1,0 +1,26 @@
+/tools/xdc/dock.xml
+/tools/xdc/xdebugclient-1.0-beta6/.vs/xdc/v14/.suo
+/tools/xdc/xdebugclient-1.0-beta6/xdc/xdc.csproj.user
+/logs/access.log
+/logs/apache_error.log
+/logs/php_error.log
+/apps/php*
+!/apps/php*/
+/apps/php*/*
+!/apps/php*/config.inc.php
+!/apps/php*/CHANGELOG.md
+!/apps/php*/package.json
+!/apps/php*/composer.json
+!/apps/php*/phpsysinfo.ini
+/bin/*/*
+!/bin/*/*/
+/bin/*/*/*
+!/bin/*/*/*.ini
+!/bin/*/*/*.conf
+!/bin/*/*/*/
+/bin/*/*/*/*
+!/bin/*/*/*/php.ini
+!/bin/*/*/*/httpd.conf
+/tmp/*
+!/tmp/do not delete tmp, it enable php to work !.txt
+/dock.xml
