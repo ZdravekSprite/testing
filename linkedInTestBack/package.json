@@ -1,10 +1,11 @@
 {
   "name": "linked-in-test-back",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "linkedIn Test Backend app",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,5 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }
