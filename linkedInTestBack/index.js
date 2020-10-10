@@ -1,10 +1,14 @@
 const http = require('http')
 const config = require('./utils/config') 
+const logger = require('./utils/logger')
 
-const app = http.createServer((req, res) => {
+const app = (req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' })
   res.end('Hello World')
-})
+}
 
-app.listen(config.PORT)
-console.log(`Server running on port ${config.PORT}`)
+const server = http.createServer(app)
+
+server.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`)
+})
