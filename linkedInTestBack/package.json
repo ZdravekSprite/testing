@@ -1,13 +1,16 @@
 {
-  "name": "linkedInTestBack",
-  "version": "1.0.0",
-  "description": "",
+  "name": "linked-in-test-back",
+  "version": "0.0.1",
+  "description": "linkedIn Test Backend app",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Zdravko Šplajt",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
 }
