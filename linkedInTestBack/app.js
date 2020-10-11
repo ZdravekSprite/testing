@@ -1,3 +1,6 @@
+const express = require('express')
+const app = express()
+
 let tests = [
   {
     content: "OOP",
@@ -39,13 +42,23 @@ let tests = [
   }
 ]
 
+/*
 const app = (req, res) => {
-  /*
   res.writeHead(200, { 'Content-Type': 'text/plain' })
   res.end('Hello World')
-  */
   res.writeHead(200, { 'Content-Type': 'application/json' })
   res.end(JSON.stringify(tests))
 }
+*/
+
+app.get('/', (req, res) => {
+  let root = '<h1>Hello World!</h1>'
+  root += '<p><a href="/api/tests">Tests</a></p>'
+  res.send(root)
+})
+
+app.get('/api/tests', (req, res) => {
+  res.json(tests)
+})
 
 module.exports = app

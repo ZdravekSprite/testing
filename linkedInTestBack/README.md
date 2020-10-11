@@ -5,6 +5,7 @@ npm init --yes
 npm install --save-dev nodemon
 npm install dotenv
 npm install json-server --save-dev
+npm install express
 ```
 
 > .gitignore
