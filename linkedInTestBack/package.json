@@ -1,11 +1,12 @@
 {
   "name": "linked-in-test-back",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "linkedIn Test Backend app",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "server": "json-server -p3002 --watch db.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
     "dotenv": "^8.2.0"
   },
   "devDependencies": {
+    "json-server": "^0.16.2",
     "nodemon": "^2.0.4"
   }
 }
