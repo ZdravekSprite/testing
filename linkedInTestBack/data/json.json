@@ -1,0 +1,238 @@
+[
+  {
+    "q": [
+      "What is the official MIME type for JSON?",
+      1
+    ],
+    "a": [
+      [
+        "application/json",
+        0
+      ],
+      [
+        "text/javascript",
+        0
+      ],
+      [
+        "text/json",
+        0
+      ],
+      [
+        "data/json",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "Which character CANNOT be part of string data within JSON without additional formatting?",
+      1
+    ],
+    "a": [
+      [
+        "\"",
+        0
+      ],
+      [
+        "/",
+        0
+      ],
+      [
+        ":",
+        0
+      ],
+      [
+        "-",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "By convention, what name is used for the first key in a JSON schema?",
+      1
+    ],
+    "a": [
+      [
+        "$schema",
+        0
+      ],
+      [
+        "schema",
+        0
+      ],
+      [
+        "JsonSchema",
+        0
+      ],
+      [
+        "JSONschema",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "Which code is the closest JSON equivalent of the data shown?",
+      1
+    ],
+    "a": [
+      [
+        "{ \"color\": \"red\", \"color\": \"blue\", \"color\": \"green\" }",
+        0
+      ],
+      [
+        "{ \"red\", \"blue\", \"green\" }",
+        0
+      ],
+      [
+        "{ 'red': 'red', 'blue': 'blue', }",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "Which JavaScript method converts a JavaScript value to Json?",
+      1
+    ],
+    "a": [
+      [
+        "JSON.stringify()",
+        0
+      ],
+      [
+        "JSON.parse()",
+        0
+      ],
+      [
+        "JSON.toString()",
+        0
+      ],
+      [
+        "JSON.objectify()",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "Wich data type is NOT part of JSON standard?",
+      1
+    ],
+    "a": [
+      [
+        "date",
+        0
+      ],
+      [
+        "string",
+        0
+      ],
+      [
+        "number",
+        0
+      ],
+      [
+        "array",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "Which term is commonly used to refer to converting data to JSON?",
+      1
+    ],
+    "a": [
+      [
+        "parsing",
+        0
+      ],
+      [
+        "unpacking",
+        0
+      ],
+      [
+        "serialization",
+        0
+      ],
+      [
+        "deserialization",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "Which code uses the correct JSON syntax to encode the key/value pari shown?\n`accountNum: '000605802'`",
+      1
+    ],
+    "a": [
+      [
+        "\"accountNum\": \"00060504\"",
+        0
+      ],
+      [
+        "accountNum: \"00060504\"",
+        0
+      ],
+      [
+        "\"accountNum\": 00060504",
+        0
+      ],
+      [
+        "accountNum: 00060504",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "What character do you specify before a JSON control character when you want to use that control characters as a literal part of a string?",
+      1
+    ],
+    "a": [
+      [
+        "\\",
+        0
+      ],
+      [
+        "/",
+        0
+      ],
+      [
+        ":",
+        0
+      ],
+      [
+        "{",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "Which date type is part of the JSON standard?",
+      1
+    ],
+    "a": [
+      [
+        "Boolean",
+        0
+      ],
+      [
+        "map",
+        0
+      ],
+      [
+        "promise",
+        0
+      ],
+      [
+        "function",
+        0
+      ]
+    ]
+  }
+]

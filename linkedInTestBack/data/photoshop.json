@@ -1,0 +1,74 @@
+[
+  {
+    "q": [
+      "How can you undo one or more changes just made to an image?",
+      1
+    ],
+    "a": [
+      [
+        "Click a state in the history panel",
+        0
+      ],
+      [
+        "Use the keyboard shortcut Cmd/Ctrl+Z",
+        0
+      ],
+      [
+        "Choose File > Undo",
+        0
+      ],
+      [
+        "Press Cmd/Ctrl+U",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "How can you open a file selected in Lightroom CC for retouching in Photoshop CC?",
+      1
+    ],
+    "a": [
+      [
+        "Choose File > Edit in Photoshop",
+        0
+      ],
+      [
+        "Double-click the file",
+        0
+      ],
+      [
+        "Choose File > Save to Photoshop",
+        0
+      ],
+      [
+        "Press Cmd/Ctrl+E",
+        0
+      ]
+    ]
+  },
+  {
+    "q": [
+      "How can you select a specific layer?",
+      1
+    ],
+    "a": [
+      [
+        "Use the Move tool with auto-select enabled",
+        0
+      ],
+      [
+        "Click the eye icon in the layers panel",
+        0
+      ],
+      [
+        "Right-click the image and select layer",
+        0
+      ],
+      [
+        "Press Cmd/Ctrl and click the layer",
+        0
+      ]
+    ]
+  }
+]
