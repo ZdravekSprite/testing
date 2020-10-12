@@ -1,46 +1,21 @@
 const express = require('express')
+const logger = require('./utils/logger')
+const dbData = require('./utils/dbData')
 const app = express()
 
-let tests = [
-  {
-    content: "OOP",
-    qa: [
-      {
-        q: ["What is an example of dynamic binding?", 0],
-        a1: ["method overriding", 0],
-        a2: ["any method", 0],
-        a3: ["method overloading", 0],
-        a4: ["compiling", 0]
-      },
-      {
-        q: ["For which case would the use of a static attribute be appropriate?", 0],
-        a1: ["the weather conditions for each house in a small neighborhood", 0],
-        a2: ["the number of people in each house in a small neighborhood", 0],
-        a3: ["the lot size for each house in a small neighborhood", 0],
-        a4: ["the color of each house in a small neighborhood", 0]
-      }
-    ]
-  },
-  {
-    content: "Java",
-    qa: [
-      {
-        q: ["Given the string \"strawberries\" saved in a variable called fruit, what would \"fruit.substring(2, 5)\" return?", 0],
-        a1: ["raw", 0],
-        a2: ["rawb", 0],
-        a3: ["awb", 0],
-        a4: ["traw", 0]
-      },
-      {
-        q: ["How can you achieve runtime polymorphism in Java?", 0],
-        a1: ["method overriding", 0],
-        a2: ["method overloading", 0],
-        a3: ["method overrunning", 0],
-        a4: ["method calling", 0]
-      }
-    ]
-  }
-]
+//this line is required to parse the request body
+app.use(express.json())
+
+const requestLogger = (req, res, next) => {
+  logger.request(req)
+  next()
+}
+
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(requestLogger)
 
 /*
 const app = (req, res) => {
@@ -54,11 +29,58 @@ const app = (req, res) => {
 app.get('/', (req, res) => {
   let root = '<h1>Hello World!</h1>'
   root += '<p><a href="/api/tests">Tests</a></p>'
+  root = dbData
+    .get('tests')
+    .reduce((list, t) => list + `<p><a href="/api/${t.slug}">${t.content}</a></p>`, root)
   res.send(root)
 })
 
+/* Read - GET method */
 app.get('/api/tests', (req, res) => {
-  res.json(tests)
+  res.send(dbData.get('tests'))
 })
+app.get('/api', (req, res) => {
+  res.send(dbData.get('tests'))
+})
+
+/* Read test - GET method */
+app.get('/api/:test', (req, res) => {
+  const test = req.params.test
+
+  if (!testExist(test)) {
+      return res.status(409).send({error: true, msg: 'test not exist'})
+  }
+  const db = dbData.get(test)
+  res.send(db)
+})
+
+
+/* Read test q - GET method */
+app.get('/api/:test/:q', (req, res) => {
+  const test = req.params.test
+  const q = req.params.q
+
+  //return res.status(409).send({error: true, msg: `test: ${test} q: ${q}`})
+
+  if (!testExist(test)) {
+    return res.status(409).send({error: true, msg: 'test not exist'})
+  }
+  const db = dbData.get(test)
+  //filter the userdata to remove it
+  //const qdata = db.filter( data => data.q.toString().replace("?", "") == q )
+  const qdata = db.filter( data => data.q.toString().includes(q))
+  res.send(qdata)
+})
+
+/* util functions */
+const testExist = (test) => {
+  //get the list of existing tests
+  const existTest = dbData.get('tests')
+  //check if the test exist or not       
+  return existTest.find( dbTest => dbTest.slug === test )
+}
+/* util functions ends */
+
+app.use(unknownEndpoint)
 
 module.exports = app
