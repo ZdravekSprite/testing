@@ -8,8 +8,8 @@ const App = () => {
   useEffect(() => {
     lotteryService
       .getAll()
-      .then(initialLotteries => {
-        setLotteries(initialLotteries)
+      .then(lotteries => {
+        setLotteries(lotteries)
       })
   }, [])
 
@@ -21,16 +21,7 @@ const App = () => {
   return (
     <div>
       <h1>Lotto</h1>
-      <h2>{lotteries.name}</h2>
-      <h3>{lotteries.draws_info[0]}/{lotteries.draws_info[1]}:{lotteries.bonus_info[0]}/{lotteries.bonus_info[1]}</h3>
-      <ul>
-        {lotteries.draws.map((lottery, i) =>
-          <Lottery
-            key={i}
-            lottery={lottery}
-          />
-        )}
-      </ul>
+      <Lottery lottery={lotteries} />
     </div>
   )
 }
