@@ -4,7 +4,7 @@ const Draw = ({ draw }) => {
 
   return (
     <li className='draw' >
-      {draw.date}
+      {draw.date} / {draw.draw.toString()} / {draw.bonus.toString()}
     </li>
   )
 }

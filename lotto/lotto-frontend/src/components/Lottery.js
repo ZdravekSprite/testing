@@ -2,27 +2,37 @@ import React, { useState } from 'react'
 import Draw from './Draw'
 import NewDraw from './NewDraw'
 import Togglable from './Togglable'
+import Filter from './Filter'
 import lotteryService from '../services/lotteries'
 
 const Lottery = ({ lottery }) => {
   const [draws, setDraws] = useState(lottery.draws)
+  const [filterString, setStringFilter] = useState('')
 
   const drawFormRef = React.createRef()
 
+  const handleFilterStringChange = (event) => {
+    setStringFilter(event.target.value)
+  }
+
   const createDraw = async (draw) => {
-    //console.log(draw)
+    console.log(draw)
+    const newDraws = draws.concat({
+      id: draws.length + 1,
+      ...draw
+    })
+    setDraws(newDraws)
+    lottery.draws = newDraws
     try {
-      const newDraws = draws.concat({
-        id: draws.length + 1,
-        ...draw
-      })
-      setDraws(newDraws)
-      lottery.draws = newDraws
-      lotteryService.create(lottery)
+      await lotteryService.create(lottery)
     } catch (exception) {
       console.log(exception)
     }
   }
+
+  const drawsToShow = filterString.length === 0 ?
+    draws :
+    draws.filter(d => filterString.split(',').map(e => Number(e)).filter(e => e !== 0).every(r => d.draw.includes(r)))
 
   return (
     <div className='lottery' >
@@ -31,8 +41,12 @@ const Lottery = ({ lottery }) => {
       <Togglable buttonLabel='add new draw' ref={drawFormRef}>
         <NewDraw createDraw={createDraw} />
       </Togglable>
+      <Filter
+        value={filterString}
+        onChange={handleFilterStringChange}
+      />
       <ul>
-        {draws.map((draw, i) =>
+        {drawsToShow.map((draw, i) =>
           <Draw
             key={i}
             draw={draw}
