@@ -5,6 +5,7 @@ const NewDraw = ({ createDraw }) => {
   const [draw, setDraw] = useState('')
   const [bonus, setBonus] = useState('')
   const [oneLine, setOneLine] = useState('')
+  const [multiLine, setMultiLine] = useState('')
 
   const handleNewDraw = (event) => {
     event.preventDefault()
@@ -29,10 +30,18 @@ const NewDraw = ({ createDraw }) => {
     }
   }
 
+  const splitMultiLine = str => str.split(/\r?\n/).map(e => splitOneLine(e))
+
   const handleNewDrawOne = (event) => {
     event.preventDefault()
     createDraw(splitOneLine(oneLine))
     setOneLine('')
+  }
+
+  const handleNewDrawMulti = (event) => {
+    event.preventDefault()
+    createDraw(splitMultiLine(multiLine))
+    //setMultiLine('')
   }
 
   return (
@@ -76,6 +85,18 @@ const NewDraw = ({ createDraw }) => {
           />
         </div>
         <button id="createLine">create</button>
+      </form>
+      <br />
+      <form onSubmit={handleNewDrawMulti}>
+        <div>
+          multiLine
+          <textarea
+            id='multiLine'
+            value={multiLine}
+            onChange={({ target }) => setMultiLine(target.value)}
+          />
+        </div>
+        <button id="createMultiLine">create</button>
       </form>
     </div>
   )

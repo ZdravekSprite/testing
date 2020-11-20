@@ -16,11 +16,19 @@ const Lottery = ({ lottery }) => {
   }
 
   const createDraw = async (draw) => {
-    console.log(draw)
-    const newDraws = draws.concat({
-      id: draws.length + 1,
-      ...draw
+    if (!draw.length) {
+      draw = [draw]
+    }
+    //console.log('-draw->', draw.length)
+    let newDraws = draws
+    draw.forEach(d => {
+      //console.log('-d->', d)
+      newDraws = newDraws.concat({
+        id: newDraws.length + 1,
+        ...d
+      })
     })
+    console.log('-newDraws->', newDraws)
     setDraws(newDraws)
     lottery.draws = newDraws
     try {
