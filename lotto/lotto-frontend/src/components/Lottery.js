@@ -54,7 +54,7 @@ const Lottery = ({ lottery }) => {
         onChange={handleFilterStringChange}
       />
       <ul>
-        {drawsToShow.map((draw, i) =>
+        {drawsToShow.reverse().slice(0, 15).map((draw, i) =>
           <Draw
             key={i}
             draw={draw}
