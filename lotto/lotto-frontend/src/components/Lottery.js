@@ -26,7 +26,7 @@ const Lottery = ({ lottery }) => {
       newDraws = newDraws.concat({
         id: newDraws.length + 1,
         ...d
-      })
+      }).sort((a, b) => a.id - b.id)
     })
     console.log('-newDraws->', newDraws)
     setDraws(newDraws)
