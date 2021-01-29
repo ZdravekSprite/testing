@@ -1,37 +1,8 @@
 import { useState, useEffect } from 'react'
 import TableRow from './components/TableRow'
+import Button from './components/Button'
 
 function App() {
-  const holidays = [
-    { date: '1.1.2020', text: 'Nova godina' },
-    { date: '6.1.2020', text: 'Sveta tri kralja (Bogojavljenje)' },
-    { date: '12.4.2020', text: 'Uskrs' },
-    { date: '13.4.2020', text: 'Uskrsni ponedjeljak' },
-    { date: '1.5.2020', text: 'Praznik rada' },
-    { date: '30.5.2020', text: 'Dan državnosti' },
-    { date: '11.6.2020', text: 'Tijelovo' },
-    { date: '22.6.2020', text: 'Dan antifašističke borbe' },
-    { date: '5.8.2020', text: 'Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja' },
-    { date: '15.8.2020', text: 'Velika Gospa' },
-    { date: '1.11.2020', text: 'Dan svih svetih' },
-    { date: '18.11.2020', text: 'Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje' },
-    { date: '25.12.2020', text: 'Božić' },
-    { date: '26.12.2020', text: 'Sveti Stjepan' },
-    { date: '1.1.2021', text: 'Nova godina' },
-    { date: '6.1.2021', text: 'Sveta tri kralja (Bogojavljenje)' },
-    { date: '4.4.2021', text: 'Uskrs' },
-    { date: '5.4.2021', text: 'Uskrsni ponedjeljak' },
-    { date: '1.5.2021', text: 'Praznik rada' },
-    { date: '30.5.2021', text: 'Dan državnosti' },
-    { date: '3.6.2021', text: 'Tijelovo' },
-    { date: '22.6.2021', text: 'Dan antifašističke borbe' },
-    { date: '5.8.2021', text: 'Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja' },
-    { date: '15.8.2021', text: 'Velika Gospa' },
-    { date: '1.11.2021', text: 'Dan svih svetih' },
-    { date: '18.11.2021', text: 'Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje' },
-    { date: '25.12.2021', text: 'Božić' },
-    { date: '26.12.2021', text: 'Sveti Stjepan' },
-  ]
   const optionsYears = [
     { value: 2020, label: 2020 },
     { value: 2021, label: 2021 },
@@ -66,6 +37,36 @@ function App() {
   const [prirez, setPrirez] = useState(12)
   const [days, setDays] = useState([])
   useEffect(() => {
+    const holidays = [
+      { date: '1.1.2020', text: 'Nova godina' },
+      { date: '6.1.2020', text: 'Sveta tri kralja (Bogojavljenje)' },
+      { date: '12.4.2020', text: 'Uskrs' },
+      { date: '13.4.2020', text: 'Uskrsni ponedjeljak' },
+      { date: '1.5.2020', text: 'Praznik rada' },
+      { date: '30.5.2020', text: 'Dan državnosti' },
+      { date: '11.6.2020', text: 'Tijelovo' },
+      { date: '22.6.2020', text: 'Dan antifašističke borbe' },
+      { date: '5.8.2020', text: 'Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja' },
+      { date: '15.8.2020', text: 'Velika Gospa' },
+      { date: '1.11.2020', text: 'Dan svih svetih' },
+      { date: '18.11.2020', text: 'Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje' },
+      { date: '25.12.2020', text: 'Božić' },
+      { date: '26.12.2020', text: 'Sveti Stjepan' },
+      { date: '1.1.2021', text: 'Nova godina' },
+      { date: '6.1.2021', text: 'Sveta tri kralja (Bogojavljenje)' },
+      { date: '4.4.2021', text: 'Uskrs' },
+      { date: '5.4.2021', text: 'Uskrsni ponedjeljak' },
+      { date: '1.5.2021', text: 'Praznik rada' },
+      { date: '30.5.2021', text: 'Dan državnosti' },
+      { date: '3.6.2021', text: 'Tijelovo' },
+      { date: '22.6.2021', text: 'Dan antifašističke borbe' },
+      { date: '5.8.2021', text: 'Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja' },
+      { date: '15.8.2021', text: 'Velika Gospa' },
+      { date: '1.11.2021', text: 'Dan svih svetih' },
+      { date: '18.11.2021', text: 'Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje' },
+      { date: '25.12.2021', text: 'Božić' },
+      { date: '26.12.2021', text: 'Sveti Stjepan' },
+    ]
     const getDays = () => {
       const makeDays = makeAllDaysInMonth(month, year)
       setDays(d => d.concat(makeDays.filter(x => !d.some(y => y.day === x.day))))
@@ -78,7 +79,7 @@ function App() {
       return daysInMonth;
     }
     function makeDay(d, m, y) {
-      const holy = holidays.some(d => d.date === d + '.' + m + '.' + y) ? true : false
+      const holy = holidays.some(day => day.date === d + '.' + m + '.' + y) ? true : false
       const dayIndex = new Date(m + '/' + d + '/' + y).getDay()
       const day = {
         day: d + '.' + m + '.' + y,
@@ -89,7 +90,8 @@ function App() {
       }
       return day
     }
-        getDays()
+    getDays()
+
   }, [month, year])
 
   function getAllDaysInMonth(m, y) {
@@ -100,10 +102,27 @@ function App() {
         daysInMonth.push(findDay)
       }
     }
+    //console.log('daysInMonth', daysInMonth)
     return daysInMonth;
+  }
+  function onPlus(day) {
+    const newHours = day.hours + 1
+    //console.log('click', day)
+    setDays(days.map(d => d.day === day.day ? { ...d, hours: newHours } : d))
+  }
+  function onPlus8(day) {
+    const newHours = day.hours + 8
+    //console.log('click', day)
+    setDays(days.map(d => d.day === day.day ? { ...d, hours: newHours } : d))
+  }
+  function onMinus(day) {
+    const newHours = day.hours - 1
+    //console.log('click', day)
+    setDays(days.map(d => d.day === day.day ? { ...d, hours: newHours } : d))
   }
   const allDaysInMonth = getAllDaysInMonth(month, year)
   const hoursNorm = allDaysInMonth.reduce((sum, d) => sum + d.def, 0)
+  const hoursWork = allDaysInMonth.reduce((sum, d) => sum + d.hours, 0)
   const perHour = (bruto / hoursNorm / 100).toFixed(2)
   // 1.7a Praznici. Blagdani, izbori
   const h17a = allDaysInMonth.filter(d => d.holy).reduce((sum, d) => sum + d.def, 0)
@@ -112,7 +131,7 @@ function App() {
   const h17d = allDaysInMonth.filter(d => d.sick).reduce((sum, d) => sum + d.def, 0)
   const kn17d = h17d * perHour * 0.7588
   // 1.1 Za redoviti rad
-  const h11 = hoursNorm - h17a - h17d
+  const h11 = hoursWork > hoursNorm - h17a - h17d ? hoursNorm - h17a - h17d : hoursWork
   const kn11 = h11 * perHour
   // 1.7e Dodatak za rad nedjeljom
   const h17e = allDaysInMonth.filter(d => d.def === 0).reduce((sum, d) => sum + d.hours, 0)
@@ -132,7 +151,7 @@ function App() {
   const kn62 = kn5 * 0.05
   // 7. DOHODAK
   const kn7 = kn5 - kn61 - kn62
-  if (allDaysInMonth.length === 0) return('')
+  if (allDaysInMonth.length === 0) return ('')
   return (
     <div className="App">
       <div className="header">
@@ -320,7 +339,23 @@ function App() {
                     backgroundColor: d.def > 5 ? 'white' : d.def < 5 ? 'lightblue' : 'cyan'
                   }}
                 >
-                  {d.day} - {d.hours} - {d.def}
+                  {d.day} - {d.hours} -
+                  <Button
+                    color={'blue'}
+                    text={'+8'}
+                    onClick={() => onPlus8(d)}
+                  />
+                  <Button
+                    color={'green'}
+                    text={'+'}
+                    onClick={() => onPlus(d)}
+                  />
+                  <Button
+                    color={'red'}
+                    text={'-'}
+                    onClick={() => onMinus(d)}
+                  />
+                   - ({d.def})
                 </li>
               ))}
             </ul>
@@ -328,7 +363,7 @@ function App() {
         </div>
       </div>
       <div className="footer">
-        <p>Sprite 2021.</p>
+        <p>Sprite &copy; 2021.</p>
       </div>
     </div>
   );
