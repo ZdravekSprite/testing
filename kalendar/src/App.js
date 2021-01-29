@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import TableRow from './components/TableRow'
 
 function App() {
@@ -64,21 +64,43 @@ function App() {
   const [bruto, setBruto] = useState(530000)
   const [prijevoz, setPrijevoz] = useState(400)
   const [prirez, setPrirez] = useState(12)
-  function getAllDaysInMonth(m, y) {
-    var days = [];
-    for (var i = 1; i <= new Date(y, m, 0).getDate(); i++) {
-      var holy = holidays.some(d => d.date === i + '.' + m + '.' + y) ? true : false
-      var dayIndex = new Date(m + '/' + i + '/' + y).getDay()
-      var day = {
-        day: i,
+  const [days, setDays] = useState([])
+  useEffect(() => {
+    const getDays = () => {
+      const makeDays = makeAllDaysInMonth(month, year)
+      setDays(d => d.concat(makeDays.filter(x => !d.some(y => y.day === x.day))))
+    }
+    function makeAllDaysInMonth(m, y) {
+      var daysInMonth = [];
+      for (var i = 1; i <= new Date(y, m, 0).getDate(); i++) {
+        daysInMonth.push(makeDay(i, m, y));
+      }
+      return daysInMonth;
+    }
+    function makeDay(d, m, y) {
+      const holy = holidays.some(d => d.date === d + '.' + m + '.' + y) ? true : false
+      const dayIndex = new Date(m + '/' + d + '/' + y).getDay()
+      const day = {
+        day: d + '.' + m + '.' + y,
         holy: holy,
         sick: false,
         def: dayIndex === 0 ? 0 : dayIndex < 6 ? 7 : 5,
         hours: 0
       }
-      days.push(day);
+      return day
     }
-    return days;
+        getDays()
+  }, [month, year])
+
+  function getAllDaysInMonth(m, y) {
+    var daysInMonth = [];
+    for (var i = 1; i <= new Date(y, m, 0).getDate(); i++) {
+      const findDay = days.find(d => d.day === i + '.' + m + '.' + y)
+      if (findDay) {
+        daysInMonth.push(findDay)
+      }
+    }
+    return daysInMonth;
   }
   const allDaysInMonth = getAllDaysInMonth(month, year)
   const hoursNorm = allDaysInMonth.reduce((sum, d) => sum + d.def, 0)
@@ -110,6 +132,7 @@ function App() {
   const kn62 = kn5 * 0.05
   // 7. DOHODAK
   const kn7 = kn5 - kn61 - kn62
+  if (allDaysInMonth.length === 0) return('')
   return (
     <div className="App">
       <div className="header">
