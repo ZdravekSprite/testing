@@ -65,6 +65,11 @@ li:hover {
   padding: 15px;
 }
 
+.float {
+  float: left;
+  min-width: 100px;
+}
+
 /* For mobile phones: */
 [class*="col-"] {
   width: 100%;
