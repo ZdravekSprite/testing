@@ -32,6 +32,8 @@ html {
   background-color: #9933cc;
   color: #ffffff;
   padding: 15px;
+  position: sticky;
+  top: 0;
 }
 
 ul {
@@ -62,12 +64,18 @@ li:hover {
   color: #ffffff;
   text-align: center;
   font-size: 12px;
-  padding: 15px;
+  padding: 10px;
+  position: sticky;
+  bottom: 0;
 }
 
 .float {
   float: left;
   min-width: 100px;
+}
+
+.hidden {
+  display: none;
 }
 
 /* For mobile phones: */

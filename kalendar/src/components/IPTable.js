@@ -1,6 +1,13 @@
 import TableRow from './TableRow'
 
-const IPTable = ({ allDaysInMonth, bruto, prijevoz, year, month, prirez }) => {
+const IPTable = ({
+  allDaysInMonth,
+  bruto,
+  prijevoz,
+  year,
+  month,
+  odbitak,
+  prirez }) => {
   const hoursNorm = allDaysInMonth.reduce((sum, d) => sum + d.def, 0)
   const hoursWork = allDaysInMonth.reduce((sum, d) => sum + d.hours, 0)
   const perHour = (bruto / hoursNorm / 100).toFixed(2)
@@ -20,8 +27,10 @@ const IPTable = ({ allDaysInMonth, bruto, prijevoz, year, month, prirez }) => {
   // 1.7f Dodadatak za rad na praznik
   const h17f = allDaysInMonth.filter(d => d.holy).reduce((sum, d) => sum + d.hours, 0)
   const kn17f = h17f * perHour * 0.5
+  // 3.1. Prijevoz
+  const kn3_1 = prijevoz
   // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
-  const kn3 = prijevoz
+  const kn3 = kn3_1
   // 5. OSNOVICA ZA OBRAČUN DOPRINOSA
   const kn5 = kn1_1 + kn17a + kn17d + kn17e + kn17f
   // 4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA PO STAVKAMA 1. DO 3.
@@ -33,7 +42,7 @@ const IPTable = ({ allDaysInMonth, bruto, prijevoz, year, month, prirez }) => {
   // 7. DOHODAK
   const kn7 = kn5 - kn61 - kn62
   // 8. OSOBNI ODBITAK 1.00 / 4000.00
-  const kn8 = kn7 > 4000 ? 4000 : kn7
+  const kn8 = kn7 > odbitak ? odbitak : kn7
   // 9. POREZNA OSNOVICA
   const kn9 = kn7 - kn8
   // Porez 20%
@@ -47,7 +56,7 @@ const IPTable = ({ allDaysInMonth, bruto, prijevoz, year, month, prirez }) => {
   // 12. NAKNADE UKUPNO
   const kn12 = kn3
   // 13. NETO + NAKNADE
-  const kn13 = kn11 + kn12
+  const kn13 = kn11 + kn3*1
   return (
     <>
       <div className="row">
@@ -95,21 +104,25 @@ const IPTable = ({ allDaysInMonth, bruto, prijevoz, year, month, prirez }) => {
       />
       <TableRow
         opis='1.7a Praznici. Blagdani, izbori:'
+        notShow={h17a === 0}
         sati={h17a}
         iznos={kn17a}
       />
       <TableRow
         opis='1.7d Bolovanje do 42 dana:'
+        notShow={h17d === 0}
         sati={h17d}
         iznos={kn17d}
       />
       <TableRow
         opis='1.7e Dodatak za rad nedjeljom'
+        notShow={h17e === 0}
         sati={h17e}
         iznos={kn17e}
       />
       <TableRow
         opis='1.7f Dodadatak za rad na praznik'
+        notShow={h17f === 0}
         sati={h17f}
         iznos={kn17f}
       />
@@ -124,7 +137,7 @@ const IPTable = ({ allDaysInMonth, bruto, prijevoz, year, month, prirez }) => {
       />
       <TableRow
         opis='3.1. Prijevoz'
-        iznos={prijevoz}
+        iznos={kn3_1}
       />
       <TableRow
         opis='4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA PO STAVKAMA 1. DO 3.'
@@ -152,7 +165,7 @@ const IPTable = ({ allDaysInMonth, bruto, prijevoz, year, month, prirez }) => {
         bold='true'
       />
       <TableRow
-        opis='8. OSOBNI ODBITAK 1.00 / 4000.00'
+        opis={'8. OSOBNI ODBITAK ' + (odbitak*1).toFixed(2)}
         iznos={kn8}
       />
       <TableRow

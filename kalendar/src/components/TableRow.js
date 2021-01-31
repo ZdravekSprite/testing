@@ -1,7 +1,7 @@
-const TableRow = ({ opis, sati, iznos, bold }) => {
+const TableRow = ({notShow, opis, sati, iznos, bold }) => {
   const toKn = (kn) => isNaN(kn)||kn==='' ? kn : (kn*1).toFixed(2)
   return (
-    <div className={bold ? 'row bold' : 'row'}>
+    <div className={'row' + (bold ? ' bold' : '') + (notShow ? ' hidden' : '')}>
       <div className="col-10 col-s-10">
         {opis}
       </div>

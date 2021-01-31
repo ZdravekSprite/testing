@@ -30,11 +30,18 @@ function App() {
     { value: 12, label: 'Zaprešić' },
     { value: 15, label: 'Zagreb' },
   ]
+  const optionsOdbitak = [
+    { value: 4000, label: 'Osnovni osobni odbitak' },
+    { value: 5750, label: 'Jedno dijete' },
+    { value: 8250, label: 'Dva dijeteta' },
+    { value: 11750, label: 'Tri dijeteta' },
+  ]
   const [year, setYear] = useState(new Date().getFullYear())
   const [month, setMonth] = useState(new Date().getMonth() + 1)
   const [bruto, setBruto] = useState(530000)
   const [prijevoz, setPrijevoz] = useState(400)
   const [prirez, setPrirez] = useState(12)
+  const [odbitak, setOdbitak] = useState(4000)
   const [days, setDays] = useState([])
   useEffect(() => {
     const holidays = [
@@ -94,12 +101,22 @@ function App() {
 
   }, [month, year])
 
+  const handleBrutoChange = (event) => {
+    if (isNaN(event.target.value)) {
+      console.log(event.target.value)
+    } else {
+      setBruto(event.target.value * 100)
+    }
+  }
+
+  function findDay(day, m, y) {
+    return days.find(d => d.day === day + '.' + m + '.' + y)
+  }
   function getAllDaysInMonth(m, y) {
     var daysInMonth = [];
     for (var i = 1; i <= new Date(y, m, 0).getDate(); i++) {
-      const findDay = days.find(d => d.day === i + '.' + m + '.' + y)
-      if (findDay) {
-        daysInMonth.push(findDay)
+      if (findDay(i, m, y)) {
+        daysInMonth.push(findDay(i, m, y))
       }
     }
     //console.log('daysInMonth', daysInMonth)
@@ -149,7 +166,9 @@ function App() {
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
-        <span>{(bruto / 100).toFixed(2)}kn</span>
+        <span>
+          Bruto <input value={bruto / 100} onChange={handleBrutoChange} /> kn
+        </span>
         <select
           value={prijevoz}
           onChange={(e) => setPrijevoz(e.target.value)}
@@ -166,6 +185,14 @@ function App() {
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
+        <select
+          value={odbitak}
+          onChange={(e) => setOdbitak(e.target.value)}
+        >
+          {optionsOdbitak.map(o => (
+            <option key={o.value} value={o.value}>{o.label}</option>
+          ))}
+        </select>
       </div>
       <div className="row">
         <div className="col-9 col-s-12">
@@ -175,6 +202,7 @@ function App() {
             prijevoz={prijevoz}
             year={year}
             month={month}
+            odbitak={odbitak}
             prirez={prirez}
           />
         </div>
