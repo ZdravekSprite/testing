@@ -17,3 +17,13 @@ php artisan migrate
 git add .
 git commit -am "php artisan jetstream:install inertia 202102 [laravel]"
 ```
+
+```
+git pull
+npm install && npm run dev
+composer update
+php artisan key:generate
+php artisan migrate
+php artisan serve
+npm run watch
+```

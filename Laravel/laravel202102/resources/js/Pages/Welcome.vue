@@ -7,51 +7,35 @@
         v-if="$page.props.user"
         href="/dashboard"
         class="text-sm text-gray-700 underline"
-      >Dashboard</inertia-link>
+        >Dashboard</inertia-link
+      >
 
       <template v-else>
-        <inertia-link :href="route('login')" class="text-sm text-gray-700 underline">Login</inertia-link>
+        <inertia-link
+          :href="route('login')"
+          class="text-sm text-gray-700 underline"
+          >Login</inertia-link
+        >
 
         <inertia-link
           v-if="canRegister"
           :href="route('register')"
           class="ml-4 text-sm text-gray-700 underline"
-        >Register</inertia-link>
+          >Register</inertia-link
+        >
       </template>
     </div>
 
     <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
       <div class="flex justify-center pt-8 sm:justify-start sm:pt-0">
-        <svg
-          x="0px"
-          y="0px"
-          width="1852.5265"
-          height="1431.5159"
-          viewBox="0 0 1852.5265 1431.5159"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-16 w-auto text-gray-700 sm:h-20"
-        >
-          <g clip-path="url(#clip0)" fill="#EF3B2D">
-            <polygon
-              style="clip-rule:evenodd;fill:#ed1c24;fill-rule:evenodd;stroke-width:0.09486936"
-              id="polygon7"
-              points="393.252,364.146 361.118,330.593 251.231,330.416 217.504,364.146 302.271,466.223 "
-              transform="matrix(10.540811,0,0,10.540811,-2292.6686,-3482.8526)"
-            />
-            <path
-              style="clip-rule:evenodd;fill:#fff200;fill-rule:evenodd;stroke-width:1"
-              inkscape:connector-curvature="0"
-              id="path9"
-              d="m 155.40325,361.91884 236.55688,-244.46251 148.61491,1.8341 c -229.484,110.9526 -285.0868,261.5808 -247.17149,398.82216 z m 523.25643,629.2443 c 183.73689,50.34296 297.1244,58.63856 460.52812,8.4959 L 903.91683,1246.2297 Z M 366.98895,637.87729 558.76849,853.24716 C 587.90328,740.42885 890.88838,809.38685 917.47231,901.77705 1044.468,943.56083 1260.8814,872.46306 1263.9066,806.24568 1263.3163,646.52076 525.76521,779.03983 366.98895,637.87729 Z M 1499.7889,157.00546 1494.645,384.84511 h -298.7477 c 4.0477,-150.63874 -110.4255,-224.61416 -330.81282,-218.54265 -155.18184,3.03576 -304.29216,63.68758 -306.31599,163.77259 0,237.57936 835.54901,-19.20537 902.27241,312.3875 l 242.3122,-280.21694 z m -355.3518,-36.87176 158.4811,0.18973 -34.732,117.95169 c -29.2086,-71.414 -78.3815,-97.48142 -123.7491,-118.14142 z"
-            />
-          </g>
-        </svg>
+        <sprite-application-logo class="block h-12 w-auto" />
       </div>
 
-      <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
+      <div
+        class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg"
+      >
         <div class="grid grid-cols-1 md:grid-cols-2">
-          <div class="p-6">
+          <!-- <div class="p-6">
             <div class="flex items-center">
               <svg
                 fill="none"
@@ -67,21 +51,22 @@
                 />
               </svg>
               <div class="ml-4 text-lg leading-7 font-semibold">
-                <a
-                  href="https://laravel.com/docs"
-                  class="underline text-gray-900 dark:text-white"
-                >Platna lista</a>
+                <a href="#" class="underline text-gray-900 dark:text-white"
+                  >Platna lista</a
+                >
               </div>
             </div>
 
             <div class="ml-12">
-              <div
-                class="mt-2 text-gray-600 dark:text-gray-400 text-sm"
-              >App za generiranje platne liste</div>
+              <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                App za generiranje platne liste
+              </div>
             </div>
           </div>
 
-          <div class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-t-0 md:border-l">
+          <div
+            class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-t-0 md:border-l"
+          >
             <div class="flex items-center">
               <svg
                 fill="none"
@@ -98,17 +83,16 @@
                 <path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               <div class="ml-4 text-lg leading-7 font-semibold">
-                <a
-                  href="https://laracasts.com"
-                  class="underline text-gray-900 dark:text-white"
-                >React Platna lista</a>
+                <a href="#" class="underline text-gray-900 dark:text-white"
+                  >React Platna lista</a
+                >
               </div>
             </div>
 
             <div class="ml-12">
-              <div
-                class="mt-2 text-gray-600 dark:text-gray-400 text-sm"
-              >React verzija Platne liste.</div>
+              <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                React verzija Platne liste.
+              </div>
             </div>
           </div>
 
@@ -128,21 +112,22 @@
                 />
               </svg>
               <div class="ml-4 text-lg leading-7 font-semibold">
-                <a
-                  href="https://laravel-news.com/"
-                  class="underline text-gray-900 dark:text-white"
-                >Chat</a>
+                <a href="#" class="underline text-gray-900 dark:text-white"
+                  >Chat</a
+                >
               </div>
             </div>
 
             <div class="ml-12">
-              <div
-                class="mt-2 text-gray-600 dark:text-gray-400 text-sm"
-              >Chat app.</div>
+              <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                Chat app.
+              </div>
             </div>
-          </div>
+          </div> -->
 
-          <div class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-l">
+          <div
+            class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-l"
+          >
             <div class="flex items-center">
               <svg
                 fill="none"
@@ -159,28 +144,42 @@
               </svg>
               <div
                 class="ml-4 text-lg leading-7 font-semibold text-gray-900 dark:text-white"
-              >Vibrant Ecosystem</div>
+              >
+                Vibrant Ecosystem
+              </div>
             </div>
 
             <div class="ml-12">
               <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                Laravel's robust library of first-party tools and libraries, such as
-                <a
-                  href="https://forge.laravel.com"
-                  class="underline"
-                >Forge</a>,
+                Laravel's robust library of first-party tools and libraries,
+                such as
+                <a href="https://forge.laravel.com" class="underline">Forge</a>,
                 <a href="https://vapor.laravel.com" class="underline">Vapor</a>,
-                <a href="https://nova.laravel.com" class="underline">Nova</a>, and
-                <a href="https://envoyer.io" class="underline">Envoyer</a> help you take your projects to the next level. Pair them with powerful open source libraries like
+                <a href="https://nova.laravel.com" class="underline">Nova</a>,
+                and
+                <a href="https://envoyer.io" class="underline">Envoyer</a> help
+                you take your projects to the next level. Pair them with
+                powerful open source libraries like
+                <a href="https://laravel.com/docs/billing" class="underline"
+                  >Cashier</a
+                >,
+                <a href="https://laravel.com/docs/dusk" class="underline"
+                  >Dusk</a
+                >,
                 <a
-                  href="https://laravel.com/docs/billing"
+                  href="https://laravel.com/docs/broadcasting"
                   class="underline"
-                >Cashier</a>,
-                <a href="https://laravel.com/docs/dusk" class="underline">Dusk</a>,
-                <a href="https://laravel.com/docs/broadcasting" class="underline">Echo</a>,
-                <a href="https://laravel.com/docs/horizon" class="underline">Horizon</a>,
-                <a href="https://laravel.com/docs/sanctum" class="underline">Sanctum</a>,
-                <a href="https://laravel.com/docs/telescope" class="underline">Telescope</a>, and more.
+                  >Echo</a
+                >,
+                <a href="https://laravel.com/docs/horizon" class="underline"
+                  >Horizon</a
+                >,
+                <a href="https://laravel.com/docs/sanctum" class="underline"
+                  >Sanctum</a
+                >,
+                <a href="https://laravel.com/docs/telescope" class="underline"
+                  >Telescope</a
+                >, and more.
               </div>
             </div>
           </div>
@@ -210,7 +209,9 @@
 
         <div
           class="ml-4 text-center text-sm text-gray-500 sm:text-right sm:ml-0"
-        >Laravel v{{ laravelVersion }} (PHP v{{ phpVersion }})</div>
+        >
+          Laravel v{{ laravelVersion }} (PHP v{{ phpVersion }})
+        </div>
       </div>
     </div>
   </div>
@@ -281,12 +282,17 @@
 </style>
 
 <script>
+import SpriteApplicationLogo from "@/Sprite/ApplicationLogo";
+
 export default {
+  components: {
+    SpriteApplicationLogo,
+  },
   props: {
     canLogin: Boolean,
     canRegister: Boolean,
     laravelVersion: String,
-    phpVersion: String
-  }
+    phpVersion: String,
+  },
 };
 </script>
