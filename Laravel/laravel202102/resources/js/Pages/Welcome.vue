@@ -62,7 +62,7 @@
                 App za generiranje platne liste
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div
             class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-t-0 md:border-l"
@@ -83,7 +83,7 @@
                 <path d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               <div class="ml-4 text-lg leading-7 font-semibold">
-                <a href="#" class="underline text-gray-900 dark:text-white"
+                <a href="http://localhost:3000/" class="underline text-gray-900 dark:text-white"
                   >React Platna lista</a
                 >
               </div>
@@ -96,7 +96,7 @@
             </div>
           </div>
 
-          <div class="p-6 border-t border-gray-200 dark:border-gray-700">
+          <!-- <div class="p-6 border-t border-gray-200 dark:border-gray-700">
             <div class="flex items-center">
               <svg
                 fill="none"
