@@ -16,6 +16,8 @@ npm install && npm run dev
 php artisan migrate
 git add .
 git commit -am "php artisan jetstream:install inertia 202102 [laravel]"
+php artisan make:migration add_work_days_to_users_table --table=users
+php artisan migrate
 ```
 
 ```

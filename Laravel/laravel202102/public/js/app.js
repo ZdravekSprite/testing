@@ -6553,6 +6553,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _Sprite_TableRow__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/Sprite/TableRow */ "./resources/js/Sprite/TableRow.vue");
 //
 //
 //
@@ -6591,19 +6592,266 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    TableRow: _Sprite_TableRow__WEBPACK_IMPORTED_MODULE_0__.default
+  },
+  mounted: function mounted() {
+    console.log("obrazac mounted");
+  },
   props: {
     year: {
-      "default": 2021
+      "default": new Date().getFullYear()
     },
     month: {
-      "default": 2
+      "default": new Date().getMonth() + 1
     },
-    allDaysInMonth: {
-      type: Array,
-      "default": function _default() {
-        return [];
+    bruto: {
+      "default": 530000
+    }
+  },
+  data: function data() {
+    return {
+      holidays: [{
+        date: "1.1.2020",
+        text: "Nova godina"
+      }, {
+        date: "6.1.2020",
+        text: "Sveta tri kralja (Bogojavljenje)"
+      }, {
+        date: "12.4.2020",
+        text: "Uskrs"
+      }, {
+        date: "13.4.2020",
+        text: "Uskrsni ponedjeljak"
+      }, {
+        date: "1.5.2020",
+        text: "Praznik rada"
+      }, {
+        date: "30.5.2020",
+        text: "Dan državnosti"
+      }, {
+        date: "11.6.2020",
+        text: "Tijelovo"
+      }, {
+        date: "22.6.2020",
+        text: "Dan antifašističke borbe"
+      }, {
+        date: "5.8.2020",
+        text: "Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja"
+      }, {
+        date: "15.8.2020",
+        text: "Velika Gospa"
+      }, {
+        date: "1.11.2020",
+        text: "Dan svih svetih"
+      }, {
+        date: "18.11.2020",
+        text: "Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje"
+      }, {
+        date: "25.12.2020",
+        text: "Božić"
+      }, {
+        date: "26.12.2020",
+        text: "Sveti Stjepan"
+      }, {
+        date: "1.1.2021",
+        text: "Nova godina"
+      }, {
+        date: "6.1.2021",
+        text: "Sveta tri kralja (Bogojavljenje)"
+      }, {
+        date: "4.4.2021",
+        text: "Uskrs"
+      }, {
+        date: "5.4.2021",
+        text: "Uskrsni ponedjeljak"
+      }, {
+        date: "1.5.2021",
+        text: "Praznik rada"
+      }, {
+        date: "30.5.2021",
+        text: "Dan državnosti"
+      }, {
+        date: "3.6.2021",
+        text: "Tijelovo"
+      }, {
+        date: "22.6.2021",
+        text: "Dan antifašističke borbe"
+      }, {
+        date: "5.8.2021",
+        text: "Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja"
+      }, {
+        date: "15.8.2021",
+        text: "Velika Gospa"
+      }, {
+        date: "1.11.2021",
+        text: "Dan svih svetih"
+      }, {
+        date: "18.11.2021",
+        text: "Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje"
+      }, {
+        date: "25.12.2021",
+        text: "Božić"
+      }, {
+        date: "26.12.2021",
+        text: "Sveti Stjepan"
+      }]
+    };
+  },
+  methods: {
+    makeDay: function makeDay(d, m, y) {
+      var sick = false;
+      var hours = 0;
+      var holy = this.holidays.some(function (day) {
+        return day.date === d + "." + m + "." + y;
+      }) ? true : false;
+      var work = JSON.parse(this.$page.props.user.work_days); //console.log(work);
+
+      if (work.some(function (day) {
+        return day.d === d + "." + m + "." + y;
+      })) {
+        var work_day = work.find(function (day) {
+          return day.d === d + "." + m + "." + y;
+        });
+
+        if (work_day.s) {
+          sick = work_day.s;
+        } else {
+          hours = work_day.h.reduce(function (sum, h) {
+            return sum + h.d.split(":")[0] * 1;
+          }, 0);
+        }
       }
+
+      var dayIndex = new Date(m + "/" + d + "/" + y).getDay();
+      var day = {
+        day: d + "." + m + "." + y,
+        holy: holy,
+        sick: sick,
+        def: dayIndex === 0 ? 0 : dayIndex < 6 ? 7 : 5,
+        hours: hours
+      };
+      return day;
+    },
+    makeAllDaysInMonth: function makeAllDaysInMonth(m, y) {
+      var daysInMonth = [];
+
+      for (var i = 1; i <= new Date(y, m, 0).getDate(); i++) {
+        daysInMonth.push(this.makeDay(i, m, y));
+      }
+
+      return daysInMonth;
+    }
+  },
+  computed: {
+    allDaysInMonth: function allDaysInMonth() {
+      //console.log(this.makeAllDaysInMonth(this.month, this.year));
+      return this.makeAllDaysInMonth(this.month, this.year);
+    },
+    hoursNorm: function hoursNorm() {
+      return this.allDaysInMonth.reduce(function (sum, d) {
+        return sum + d.def;
+      }, 0);
+    },
+    hoursWork: function hoursWork() {
+      return this.allDaysInMonth.reduce(function (sum, d) {
+        return sum + d.hours;
+      }, 0);
+    },
+    perHour: function perHour() {
+      return (this.bruto / this.hoursNorm / 100).toFixed(2);
+    },
+    // 1.7a Praznici. Blagdani, izbori
+    h17a: function h17a() {
+      return this.allDaysInMonth.filter(function (d) {
+        return d.holy;
+      }).reduce(function (sum, d) {
+        return sum + d.def;
+      }, 0);
+    },
+    kn17a: function kn17a() {
+      return this.h17a * this.perHour;
+    },
+    overWork: function overWork() {
+      return this.hoursWork - this.hoursNorm + h17a;
+    },
+    // 1.7d Bolovanje do 42 dana
+    h17d: function h17d() {
+      return this.allDaysInMonth.filter(function (d) {
+        return d.sick;
+      }).reduce(function (sum, d) {
+        return sum + d.def;
+      }, 0);
+    },
+    kn17d: function kn17d() {
+      return this.h17d * this.perHour * 0.7588;
+    },
+    // 1.1 Za redoviti rad
+    h1_1: function h1_1() {
+      return this.hoursWork > this.hoursNorm - this.h17a - this.h17d ? this.hoursNorm - this.h17a - this.h17d : this.hoursWork;
+    },
+    kn1_1: function kn1_1() {
+      return this.h1_1 * this.perHour;
+    },
+    // 1.7e Dodatak za rad nedjeljom
+    h17e: function h17e() {
+      return this.allDaysInMonth.filter(function (d) {
+        return d.def === 0;
+      }).reduce(function (sum, d) {
+        return sum + d.hours;
+      }, 0);
+    },
+    kn17e: function kn17e() {
+      return this.h17e * this.perHour * 0.35;
+    },
+    // 1.7f Dodadatak za rad na praznik
+    h17f: function h17f() {
+      return this.allDaysInMonth.filter(function (d) {
+        return d.holy;
+      }).reduce(function (sum, d) {
+        return sum + d.hours;
+      }, 0);
+    },
+    kn17f: function kn17f() {
+      return this.h17f * this.perHour * 0.5;
     }
   }
 });
@@ -6634,6 +6882,36 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
     obrazacIP1: _Sprite_ObrazacIP1__WEBPACK_IMPORTED_MODULE_0__.default
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/TableRow.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/TableRow.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ["notShow", "opis", "sati", "iznos", "bold"],
+  methods: {
+    toKn: function toKn(kn) {
+      return isNaN(kn) || kn === '' ? kn : (kn * 1).toFixed(2);
+    }
   }
 });
 
@@ -27150,6 +27428,45 @@ component.options.__file = "resources/js/Sprite/PlatnaLista.vue"
 
 /***/ }),
 
+/***/ "./resources/js/Sprite/TableRow.vue":
+/*!******************************************!*\
+  !*** ./resources/js/Sprite/TableRow.vue ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TableRow_vue_vue_type_template_id_6afd2428___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TableRow.vue?vue&type=template&id=6afd2428& */ "./resources/js/Sprite/TableRow.vue?vue&type=template&id=6afd2428&");
+/* harmony import */ var _TableRow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TableRow.vue?vue&type=script&lang=js& */ "./resources/js/Sprite/TableRow.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _TableRow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _TableRow_vue_vue_type_template_id_6afd2428___WEBPACK_IMPORTED_MODULE_0__.render,
+  _TableRow_vue_vue_type_template_id_6afd2428___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/Sprite/TableRow.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/Jetstream/ActionMessage.vue?vue&type=script&lang=js&":
 /*!***************************************************************************!*\
   !*** ./resources/js/Jetstream/ActionMessage.vue?vue&type=script&lang=js& ***!
@@ -27851,6 +28168,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlatnaLista_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./PlatnaLista.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/PlatnaLista.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PlatnaLista_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/Sprite/TableRow.vue?vue&type=script&lang=js&":
+/*!*******************************************************************!*\
+  !*** ./resources/js/Sprite/TableRow.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TableRow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TableRow.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/TableRow.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TableRow_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
 
 /***/ }),
 
@@ -28743,6 +29076,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlatnaLista_vue_vue_type_template_id_4ad39a96___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PlatnaLista_vue_vue_type_template_id_4ad39a96___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./PlatnaLista.vue?vue&type=template&id=4ad39a96& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/PlatnaLista.vue?vue&type=template&id=4ad39a96&");
+
+
+/***/ }),
+
+/***/ "./resources/js/Sprite/TableRow.vue?vue&type=template&id=6afd2428&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/Sprite/TableRow.vue?vue&type=template&id=6afd2428& ***!
+  \*************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TableRow_vue_vue_type_template_id_6afd2428___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TableRow_vue_vue_type_template_id_6afd2428___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_TableRow_vue_vue_type_template_id_6afd2428___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TableRow.vue?vue&type=template&id=6afd2428& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/TableRow.vue?vue&type=template&id=6afd2428&");
 
 
 /***/ }),
@@ -35285,49 +35635,113 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _vm._m(1),
+  return _c(
+    "div",
+    [
+      _vm._m(0),
       _vm._v(" "),
-      _c("div", { attrs: { className: "col-6 col-s-6" } }, [
-        _c("ul", [
-          _vm._m(2),
-          _vm._v(" "),
-          _c("li", [
-            _vm._v("1. Ime i prezime: "),
-            _c("b", [_vm._v(_vm._s(_vm.$page.props.user.name))])
-          ]),
-          _vm._v(" "),
-          _c("li", [_vm._v("2. Adresa: ____")]),
-          _vm._v(" "),
-          _c("li", [_vm._v("3. Osobni identifikacijski broj: ____")]),
-          _vm._v(" "),
-          _c("li", [_vm._v("4. IBAN broj računa ____ kod ____")]),
-          _vm._v(" "),
-          _c("li", [
-            _vm._v(
-              "5. IBAN broj računa iz čl. 212. Ovršnog zakona ____ kod ____"
-            )
+      _c("div", { staticClass: "row" }, [
+        _vm._m(1),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-6 col-s-6" }, [
+          _c("ul", [
+            _vm._m(2),
+            _vm._v(" "),
+            _c("li", [
+              _vm._v("\n          1. Ime i prezime: "),
+              _c("b", [_vm._v(_vm._s(_vm.$page.props.user.name))])
+            ]),
+            _vm._v(" "),
+            _c("li", [_vm._v("2. Adresa: ____")]),
+            _vm._v(" "),
+            _c("li", [_vm._v("3. Osobni identifikacijski broj: ____")]),
+            _vm._v(" "),
+            _c("li", [_vm._v("4. IBAN broj računa ____ kod ____")]),
+            _vm._v(" "),
+            _c("li", [
+              _vm._v(
+                "5. IBAN broj računa iz čl. 212. Ovršnog zakona ____ kod ____"
+              )
+            ])
           ])
         ])
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { attrs: { className: "row" } }, [
-      _c("b", [_vm._v("III. RAZDOBLJE NA KOJE SE PLAĆA ODNOSI:")]),
-      _vm._v(
-        " GODINA " +
-          _vm._s(_vm.year) +
-          ", MJESEC\n    " +
-          _vm._s(_vm.month) +
-          " DANI U MJESECU OD 1 DO " +
-          _vm._s(_vm.allDaysInMonth.length) +
-          "\n  "
-      )
-    ])
-  ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("b", [_vm._v("III. RAZDOBLJE NA KOJE SE PLAĆA ODNOSI:")]),
+        _vm._v(
+          " GODINA " +
+            _vm._s(_vm.year) +
+            ", MJESEC\n    " +
+            _vm._s(_vm.month) +
+            " DANI U MJESECU OD 1 DO " +
+            _vm._s(_vm.allDaysInMonth.length) +
+            "\n  "
+        )
+      ]),
+      _vm._v(" "),
+      _c("table-row", {
+        attrs: {
+          opis: "1. OPIS PLAĆE",
+          sati: "SATI",
+          iznos: "IZNOS",
+          bold: true
+        }
+      }),
+      _vm._v(" "),
+      _c("table-row", {
+        attrs: {
+          opis: "1.1. Za redoviti rad:",
+          sati: _vm.h1_1,
+          iznos: _vm.kn1_1
+        }
+      }),
+      _vm._v(" "),
+      _c("table-row", {
+        attrs: {
+          opis: "1.7a Praznici. Blagdani, izbori:",
+          notShow: _vm.h17a === 0,
+          sati: _vm.h17a,
+          iznos: _vm.kn17a
+        }
+      }),
+      _vm._v(" "),
+      _c("table-row", {
+        attrs: {
+          opis: "1.7d Bolovanje do 42 dana:",
+          notShow: _vm.h17d === 0,
+          sati: _vm.h17d,
+          iznos: _vm.kn17d
+        }
+      }),
+      _vm._v(" "),
+      _c("table-row", {
+        attrs: {
+          opis: "1.7e Dodatak za rad nedjeljom",
+          notShow: _vm.h17e === 0,
+          sati: _vm.h17e,
+          iznos: _vm.kn17e
+        }
+      }),
+      _vm._v(" "),
+      _c("table-row", {
+        attrs: {
+          opis: "1.7f Dodadatak za rad na praznik",
+          notShow: _vm.h17f === 0,
+          sati: _vm.h17f,
+          iznos: _vm.kn17f
+        }
+      }),
+      _vm._v(" "),
+      _c("table-row", {
+        attrs: {
+          opis:
+            "2. OSTALI OBLICI RADA TEMELJEM KOJIH OSTVARUJE PRAVO NA UVEĆANJE PLAĆE PREMA KOLEKTIVNOM UGOVORU, PRAVILNIKU O RADU ILI UGOVORU O RADU I NOVČANI IZNOS PO TOJ OSNOVI (SATI PRIPRAVNOSTI)"
+        }
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -35399,6 +35813,45 @@ var render = function() {
       1
     )
   ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/TableRow.vue?vue&type=template&id=6afd2428&":
+/*!****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/TableRow.vue?vue&type=template&id=6afd2428& ***!
+  \****************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "row", class: { bold: _vm.bold, hidden: _vm.notShow } },
+    [
+      _c("div", { staticClass: "col-10 col-s-10" }, [_vm._v(_vm._s(_vm.opis))]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-1 col-s-1 center" }, [
+        _vm._v(_vm._s(_vm.toKn(_vm.sati)))
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-1 col-s-1 right" }, [
+        _vm._v(_vm._s(_vm.toKn(_vm.iznos)))
+      ])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
