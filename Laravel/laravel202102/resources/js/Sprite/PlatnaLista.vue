@@ -1,7 +1,12 @@
 <template>
   <div>
     <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-      <obrazac-i-p1 />
+      <obrazac-i-p1
+        :year="year"
+        :month="month"
+        :bruto="bruto"
+        :holidays="holidays"
+      />
     </div>
   </div>
 </template>
@@ -12,6 +17,57 @@ import obrazacIP1 from "@/Sprite/ObrazacIP1";
 export default {
   components: {
     obrazacIP1,
+  },
+  props: ["year", "month", "bruto"],
+  data: () => {
+    return {
+      holidays: [
+        { date: "1.1.2020", text: "Nova godina" },
+        { date: "6.1.2020", text: "Sveta tri kralja (Bogojavljenje)" },
+        { date: "12.4.2020", text: "Uskrs" },
+        { date: "13.4.2020", text: "Uskrsni ponedjeljak" },
+        { date: "1.5.2020", text: "Praznik rada" },
+        { date: "30.5.2020", text: "Dan državnosti" },
+        { date: "11.6.2020", text: "Tijelovo" },
+        { date: "22.6.2020", text: "Dan antifašističke borbe" },
+        {
+          date: "5.8.2020",
+          text:
+            "Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja",
+        },
+        { date: "15.8.2020", text: "Velika Gospa" },
+        { date: "1.11.2020", text: "Dan svih svetih" },
+        {
+          date: "18.11.2020",
+          text:
+            "Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje",
+        },
+        { date: "25.12.2020", text: "Božić" },
+        { date: "26.12.2020", text: "Sveti Stjepan" },
+        { date: "1.1.2021", text: "Nova godina" },
+        { date: "6.1.2021", text: "Sveta tri kralja (Bogojavljenje)" },
+        { date: "4.4.2021", text: "Uskrs" },
+        { date: "5.4.2021", text: "Uskrsni ponedjeljak" },
+        { date: "1.5.2021", text: "Praznik rada" },
+        { date: "30.5.2021", text: "Dan državnosti" },
+        { date: "3.6.2021", text: "Tijelovo" },
+        { date: "22.6.2021", text: "Dan antifašističke borbe" },
+        {
+          date: "5.8.2021",
+          text:
+            "Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja",
+        },
+        { date: "15.8.2021", text: "Velika Gospa" },
+        { date: "1.11.2021", text: "Dan svih svetih" },
+        {
+          date: "18.11.2021",
+          text:
+            "Dan sjećanja na žrtve Domovinskog rata i Dan sjećanja na žrtvu Vukovara i Škabrnje",
+        },
+        { date: "25.12.2021", text: "Božić" },
+        { date: "26.12.2021", text: "Sveti Stjepan" },
+      ],
+    };
   },
 };
 </script>

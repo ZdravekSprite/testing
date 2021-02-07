@@ -5321,12 +5321,81 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
     AppLayout: _Layouts_AppLayout__WEBPACK_IMPORTED_MODULE_0__.default,
     PlatnaLista: _Sprite_PlatnaLista__WEBPACK_IMPORTED_MODULE_1__.default
+  },
+  data: function data() {
+    return {
+      optionsYears: [{
+        value: 2020,
+        label: 2020
+      }, {
+        value: 2021,
+        label: 2021
+      }],
+      year: new Date().getFullYear(),
+      optionsMonths: [{
+        value: 1,
+        label: "siječanj"
+      }, {
+        value: 2,
+        label: "veljača"
+      }, {
+        value: 3,
+        label: "ožujak"
+      }, {
+        value: 4,
+        label: "travanj"
+      }, {
+        value: 5,
+        label: "svibanj"
+      }, {
+        value: 6,
+        label: "lipanj"
+      }, {
+        value: 7,
+        label: "srpanj"
+      }, {
+        value: 8,
+        label: "kolovoz"
+      }, {
+        value: 9,
+        label: "rujan"
+      }, {
+        value: 10,
+        label: "listopad"
+      }, {
+        value: 11,
+        label: "studeni"
+      }, {
+        value: 12,
+        label: "prosinac"
+      }],
+      month: new Date().getMonth() + 1,
+      bruto: 530000
+    };
   }
 });
 
@@ -6636,17 +6705,160 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     console.log("obrazac mounted");
   },
-  props: {
-    year: {
-      "default": new Date().getFullYear()
+  props: ["year", "month", "bruto", "holidays"],
+  methods: {
+    makeDay: function makeDay(d, m, y) {
+      var sick = false;
+      var hours = 0;
+      var holy = this.holidays.some(function (day) {
+        return day.date === d + "." + m + "." + y;
+      }) ? true : false;
+      var work = JSON.parse(this.$page.props.user.work_days); //console.log(work);
+
+      if (work.some(function (day) {
+        return day.d === d + "." + m + "." + y;
+      })) {
+        var work_day = work.find(function (day) {
+          return day.d === d + "." + m + "." + y;
+        });
+
+        if (work_day.s) {
+          sick = work_day.s;
+        } else {
+          hours = work_day.h.reduce(function (sum, h) {
+            return sum + h.d.split(":")[0] * 1;
+          }, 0);
+        }
+      }
+
+      var dayIndex = new Date(m + "/" + d + "/" + y).getDay();
+      var day = {
+        day: d + "." + m + "." + y,
+        holy: holy,
+        sick: sick,
+        def: dayIndex === 0 ? 0 : dayIndex < 6 ? 7 : 5,
+        hours: hours
+      };
+      return day;
     },
-    month: {
-      "default": new Date().getMonth() + 1
-    },
-    bruto: {
-      "default": 530000
+    makeAllDaysInMonth: function makeAllDaysInMonth(m, y) {
+      var daysInMonth = [];
+
+      for (var i = 1; i <= new Date(y, m, 0).getDate(); i++) {
+        daysInMonth.push(this.makeDay(i, m, y));
+      }
+
+      return daysInMonth;
     }
   },
+  computed: {
+    allDaysInMonth: function allDaysInMonth() {
+      //console.log(this.makeAllDaysInMonth(this.month, this.year));
+      return this.makeAllDaysInMonth(this.month, this.year);
+    },
+    hoursNorm: function hoursNorm() {
+      return this.allDaysInMonth.reduce(function (sum, d) {
+        return sum + d.def;
+      }, 0);
+    },
+    hoursWork: function hoursWork() {
+      return this.allDaysInMonth.reduce(function (sum, d) {
+        return sum + d.hours;
+      }, 0);
+    },
+    perHour: function perHour() {
+      return (this.bruto / this.hoursNorm / 100).toFixed(2);
+    },
+    // 1.7a Praznici. Blagdani, izbori
+    h17a: function h17a() {
+      return this.allDaysInMonth.filter(function (d) {
+        return d.holy;
+      }).reduce(function (sum, d) {
+        return sum + d.def;
+      }, 0);
+    },
+    kn17a: function kn17a() {
+      return this.h17a * this.perHour;
+    },
+    overWork: function overWork() {
+      return this.hoursWork - this.hoursNorm + this.h17a;
+    },
+    // 1.7d Bolovanje do 42 dana
+    h17d: function h17d() {
+      return this.allDaysInMonth.filter(function (d) {
+        return d.sick;
+      }).reduce(function (sum, d) {
+        return sum + d.def;
+      }, 0);
+    },
+    kn17d: function kn17d() {
+      return this.h17d * this.perHour * 0.7588;
+    },
+    // 1.1 Za redoviti rad
+    h1_1: function h1_1() {
+      return this.hoursWork > this.hoursNorm - this.h17a - this.h17d ? this.hoursNorm - this.h17a - this.h17d : this.hoursWork;
+    },
+    kn1_1: function kn1_1() {
+      return this.h1_1 * this.perHour;
+    },
+    // 1.7e Dodatak za rad nedjeljom
+    h17e: function h17e() {
+      return this.allDaysInMonth.filter(function (d) {
+        return d.def === 0;
+      }).reduce(function (sum, d) {
+        return sum + d.hours;
+      }, 0);
+    },
+    kn17e: function kn17e() {
+      return this.h17e * this.perHour * 0.35;
+    },
+    // 1.7f Dodadatak za rad na praznik
+    h17f: function h17f() {
+      return this.allDaysInMonth.filter(function (d) {
+        return d.holy;
+      }).reduce(function (sum, d) {
+        return sum + d.hours;
+      }, 0);
+    },
+    kn17f: function kn17f() {
+      return this.h17f * this.perHour * 0.5;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/PlatnaLista.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/PlatnaLista.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Sprite_ObrazacIP1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/Sprite/ObrazacIP1 */ "./resources/js/Sprite/ObrazacIP1.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    obrazacIP1: _Sprite_ObrazacIP1__WEBPACK_IMPORTED_MODULE_0__.default
+  },
+  props: ["year", "month", "bruto"],
   data: function data() {
     return {
       holidays: [{
@@ -6735,153 +6947,6 @@ __webpack_require__.r(__webpack_exports__);
         text: "Sveti Stjepan"
       }]
     };
-  },
-  methods: {
-    makeDay: function makeDay(d, m, y) {
-      var sick = false;
-      var hours = 0;
-      var holy = this.holidays.some(function (day) {
-        return day.date === d + "." + m + "." + y;
-      }) ? true : false;
-      var work = JSON.parse(this.$page.props.user.work_days); //console.log(work);
-
-      if (work.some(function (day) {
-        return day.d === d + "." + m + "." + y;
-      })) {
-        var work_day = work.find(function (day) {
-          return day.d === d + "." + m + "." + y;
-        });
-
-        if (work_day.s) {
-          sick = work_day.s;
-        } else {
-          hours = work_day.h.reduce(function (sum, h) {
-            return sum + h.d.split(":")[0] * 1;
-          }, 0);
-        }
-      }
-
-      var dayIndex = new Date(m + "/" + d + "/" + y).getDay();
-      var day = {
-        day: d + "." + m + "." + y,
-        holy: holy,
-        sick: sick,
-        def: dayIndex === 0 ? 0 : dayIndex < 6 ? 7 : 5,
-        hours: hours
-      };
-      return day;
-    },
-    makeAllDaysInMonth: function makeAllDaysInMonth(m, y) {
-      var daysInMonth = [];
-
-      for (var i = 1; i <= new Date(y, m, 0).getDate(); i++) {
-        daysInMonth.push(this.makeDay(i, m, y));
-      }
-
-      return daysInMonth;
-    }
-  },
-  computed: {
-    allDaysInMonth: function allDaysInMonth() {
-      //console.log(this.makeAllDaysInMonth(this.month, this.year));
-      return this.makeAllDaysInMonth(this.month, this.year);
-    },
-    hoursNorm: function hoursNorm() {
-      return this.allDaysInMonth.reduce(function (sum, d) {
-        return sum + d.def;
-      }, 0);
-    },
-    hoursWork: function hoursWork() {
-      return this.allDaysInMonth.reduce(function (sum, d) {
-        return sum + d.hours;
-      }, 0);
-    },
-    perHour: function perHour() {
-      return (this.bruto / this.hoursNorm / 100).toFixed(2);
-    },
-    // 1.7a Praznici. Blagdani, izbori
-    h17a: function h17a() {
-      return this.allDaysInMonth.filter(function (d) {
-        return d.holy;
-      }).reduce(function (sum, d) {
-        return sum + d.def;
-      }, 0);
-    },
-    kn17a: function kn17a() {
-      return this.h17a * this.perHour;
-    },
-    overWork: function overWork() {
-      return this.hoursWork - this.hoursNorm + h17a;
-    },
-    // 1.7d Bolovanje do 42 dana
-    h17d: function h17d() {
-      return this.allDaysInMonth.filter(function (d) {
-        return d.sick;
-      }).reduce(function (sum, d) {
-        return sum + d.def;
-      }, 0);
-    },
-    kn17d: function kn17d() {
-      return this.h17d * this.perHour * 0.7588;
-    },
-    // 1.1 Za redoviti rad
-    h1_1: function h1_1() {
-      return this.hoursWork > this.hoursNorm - this.h17a - this.h17d ? this.hoursNorm - this.h17a - this.h17d : this.hoursWork;
-    },
-    kn1_1: function kn1_1() {
-      return this.h1_1 * this.perHour;
-    },
-    // 1.7e Dodatak za rad nedjeljom
-    h17e: function h17e() {
-      return this.allDaysInMonth.filter(function (d) {
-        return d.def === 0;
-      }).reduce(function (sum, d) {
-        return sum + d.hours;
-      }, 0);
-    },
-    kn17e: function kn17e() {
-      return this.h17e * this.perHour * 0.35;
-    },
-    // 1.7f Dodadatak za rad na praznik
-    h17f: function h17f() {
-      return this.allDaysInMonth.filter(function (d) {
-        return d.holy;
-      }).reduce(function (sum, d) {
-        return sum + d.hours;
-      }, 0);
-    },
-    kn17f: function kn17f() {
-      return this.h17f * this.perHour * 0.5;
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/PlatnaLista.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/Sprite/PlatnaLista.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _Sprite_ObrazacIP1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/Sprite/ObrazacIP1 */ "./resources/js/Sprite/ObrazacIP1.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  components: {
-    obrazacIP1: _Sprite_ObrazacIP1__WEBPACK_IMPORTED_MODULE_0__.default
   }
 });
 
@@ -33710,7 +33775,98 @@ var render = function() {
                   staticClass:
                     "font-semibold text-xl text-gray-800 leading-tight"
                 },
-                [_vm._v("\n            Platna lista\n        ")]
+                [
+                  _vm._v("\n      Platna lista\n      "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.year,
+                          expression: "year"
+                        }
+                      ],
+                      domProps: { value: _vm.year },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.year = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    _vm._l(_vm.optionsYears, function(option) {
+                      return _c(
+                        "option",
+                        {
+                          key: option.value,
+                          domProps: { value: option.value }
+                        },
+                        [
+                          _vm._v(
+                            "\n          " + _vm._s(option.label) + "\n        "
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.month,
+                          expression: "month"
+                        }
+                      ],
+                      domProps: { value: _vm.month },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.month = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    _vm._l(_vm.optionsMonths, function(option) {
+                      return _c(
+                        "option",
+                        {
+                          key: option.value,
+                          domProps: { value: option.value }
+                        },
+                        [
+                          _vm._v(
+                            "\n          " + _vm._s(option.label) + "\n        "
+                          )
+                        ]
+                      )
+                    }),
+                    0
+                  )
+                ]
               )
             ]
           },
@@ -33725,7 +33881,11 @@ var render = function() {
           _c(
             "div",
             { staticClass: "bg-white overflow-hidden shadow-xl sm:rounded-lg" },
-            [_c("platna-lista")],
+            [
+              _c("platna-lista", {
+                attrs: { year: _vm.year, month: _vm.month, bruto: _vm.bruto }
+              })
+            ],
             1
           )
         ])
@@ -35682,7 +35842,10 @@ var render = function() {
       _vm._v(" "),
       _c("table-row", {
         attrs: {
-          opis: "1. OPIS PLAĆE",
+          opis:
+            "1. OPIS PLAĆE (prekovremeni:" +
+            (_vm.overWork > 0 ? _vm.overWork : 0) +
+            ")",
           sati: "SATI",
           iznos: "IZNOS",
           bold: true
@@ -35809,7 +35972,16 @@ var render = function() {
     _c(
       "div",
       { staticClass: "p-6 sm:px-20 bg-white border-b border-gray-200" },
-      [_c("obrazac-i-p1")],
+      [
+        _c("obrazac-i-p1", {
+          attrs: {
+            year: _vm.year,
+            month: _vm.month,
+            bruto: _vm.bruto,
+            holidays: _vm.holidays
+          }
+        })
+      ],
       1
     )
   ])
