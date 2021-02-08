@@ -31,3 +31,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 Route::middleware(['auth:sanctum', 'verified'])->get('/platnalista', function () {
     return Inertia::render('PlatnaLista');
 })->name('platnalista');
+
+Route::middleware(['auth:sanctum', 'verified'])->get('/radnisati', function () {
+    return Inertia::render('RadniSati');
+})->name('radnisati');
