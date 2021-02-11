@@ -6919,21 +6919,22 @@ __webpack_require__.r(__webpack_exports__);
       var holy = this.holidays.some(function (day) {
         return day.date === d + "." + m + "." + y;
       }) ? true : false;
-      var work = JSON.parse(this.$page.props.user.work_days); //console.log(work);
+      var work = JSON.parse(this.$page.props.user.work_days); //console.log('work', work);
 
       if (work.some(function (day) {
         return day.d === d + "." + m + "." + y;
       })) {
+        //console.log('work', work);
         var work_day = work.find(function (day) {
           return day.d === d + "." + m + "." + y;
         });
 
         if (work_day.s) {
-          sick = work_day.s;
+          sick = work_day.s; //console.log('sick', sick);
         } else {
           hours = work_day.h.reduce(function (sum, h) {
             return sum + h.d.split(":")[0] * 1;
-          }, 0);
+          }, 0); //console.log('hours', hours);
         }
       }
 

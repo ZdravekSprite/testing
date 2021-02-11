@@ -93,13 +93,16 @@ export default {
         ? true
         : false;
       const work = JSON.parse(this.$page.props.user.work_days);
-      //console.log(work);
+      //console.log('work', work);
       if (work.some((day) => day.d === d + "." + m + "." + y)) {
+        //console.log('work', work);
         const work_day = work.find((day) => day.d === d + "." + m + "." + y);
         if (work_day.s) {
           sick = work_day.s;
+          //console.log('sick', sick);
         } else {
           hours = work_day.h.reduce((sum, h) => sum + h.d.split(":")[0] * 1, 0);
+          //console.log('hours', hours);
         }
       }
       const dayIndex = new Date(m + "/" + d + "/" + y).getDay();
