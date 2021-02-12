@@ -36,12 +36,31 @@
       {{ month }} DANI U MJESECU OD 1 DO {{ allDaysInMonth.length }}
     </div>
     <table-row
-      :opis="'1. OPIS PLAĆE (prekovremeni:' + (overWork > 0 ? overWork : 0) + ')'"
+      :opis="'1. OPIS PLAĆE'"
       :sati="'SATI'"
       :iznos="'IZNOS'"
       :bold="true"
     />
     <table-row :opis="'1.1. Za redoviti rad:'" :sati="h1_1" :iznos="kn1_1" />
+    <table-row
+      :opis="
+        '1.4 Za prekovremeni rad (prekovremeni:' +
+        (overWork > 0 ? overWork : 0) +
+        '):'
+      "
+      :notShow="overWork < 0"
+      :sati="h1_4"
+      :iznos="kn1_4"
+    />
+    <select :value="h1_4" v-model="h1_4">
+      <option
+        v-for="option in optionsH1_4"
+        :value="option.value"
+        :key="option.value"
+      >
+        {{ option.label }}
+      </option>
+    </select>
     <table-row
       :opis="'1.7a Praznici. Blagdani, izbori:'"
       :notShow="h17a === 0"
@@ -82,7 +101,46 @@ export default {
     console.log("obrazac mounted");
   },
   props: ["year", "month", "bruto", "holidays"],
-  
+  data: () => {
+    return {
+      optionsH1_4: [
+        { value: 0, label: 0 },
+        { value: 1, label: 1 },
+        { value: 2, label: 2 },
+        { value: 3, label: 3 },
+        { value: 4, label: 4 },
+        { value: 5, label: 5 },
+        { value: 6, label: 6 },
+        { value: 7, label: 7 },
+        { value: 8, label: 8 },
+        { value: 9, label: 9 },
+        { value: 10, label: 10 },
+        { value: 11, label: 11 },
+        { value: 12, label: 12 },
+        { value: 13, label: 13 },
+        { value: 14, label: 14 },
+        { value: 15, label: 15 },
+        { value: 16, label: 16 },
+        { value: 17, label: 17 },
+        { value: 18, label: 18 },
+        { value: 19, label: 19 },
+        { value: 20, label: 20 },
+        { value: 21, label: 21 },
+        { value: 22, label: 22 },
+        { value: 23, label: 23 },
+        { value: 24, label: 24 },
+        { value: 25, label: 25 },
+        { value: 26, label: 26 },
+        { value: 27, label: 27 },
+        { value: 28, label: 28 },
+        { value: 29, label: 29 },
+        { value: 30, label: 30 },
+        { value: 31, label: 31 },
+        { value: 32, label: 32 },
+      ],
+      h1_4: 0,
+    };
+  },
   methods: {
     makeDay: function (d, m, y) {
       var sick = false;
@@ -166,6 +224,10 @@ export default {
     },
     kn1_1() {
       return this.h1_1 * this.perHour;
+    },
+    // 1.4 Za prekovremeni rad
+    kn1_4() {
+      return this.h1_4 * this.perHour * 1.5;
     },
     // 1.7e Dodatak za rad nedjeljom
     h17e() {
