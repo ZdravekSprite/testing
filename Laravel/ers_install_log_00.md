@@ -44,3 +44,21 @@ php artisan migrate
 git add .
 git commit -am "migrate ERS [laravel]"
 ```
+
+### routes\api.php
+```
+use App\Http\Controllers\DayController;
+Route::get('/days', [DayController::class, 'index']);
+Route::prefix('/day')->group(function () {
+  Route::post('/store', [DayController::class, 'store']);
+  Route::post('/{id}', [DayController::class, 'update']);
+  Route::delete('/{id}', [DayController::class, 'destroy']);
+});
+```
+
+```
+git commit -am "route ERS [laravel]"
+```
+
+
+--- npm install && npm run dev && npm run watch
