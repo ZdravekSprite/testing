@@ -60,5 +60,53 @@ Route::prefix('/day')->group(function () {
 git commit -am "route ERS [laravel]"
 ```
 
+### app\Http\Controllers\DayController.php
+```
+use App\Models\Day;
+
+public function index()
+  {
+    return Day::orderBy('created_at', 'DESC')->get();
+  }
+  
+ public function store(Request $request)
+  {
+    $newDay = new Day;
+    $newDay->day = $request->day["day"];
+    $newDay->sick = isset($request->day["sick"]) ? $request->day["sick"] : false;
+    $newDay->start = isset($request->day["start"]) ? $request->day["start"] : '6:00';
+    $newDay->duration = isset($request->day["duration"]) ? $request->day["duration"] : '8:00';
+    $newDay->night_duration = isset($request->day["night_duration"]) ? $request->day["night_duration"] : 0;
+    $newDay->save();
+
+    return $newDay;
+  }
+
+  public function update(Request $request, $day)
+  {
+    $existingDay = Day::where('day', '=', $day)->first(); //firstOrNew firstOrCreate
+    if ($existingDay) {
+      if (isset($request->day["sick"])) $existingDay->sick = $request->day["sick"];
+      if (isset($request->day["start"])) $existingDay->start = $request->day["start"];
+      if (isset($request->day["duration"])) $existingDay->duration = $request->day["duration"];
+      if (isset($request->day["night_duration"])) $existingDay->night_duration = $request->day["night_duration"];
+      $existingDay->save();
+      return $existingDay;
+    }
+
+    return "Day not found.";
+  }
+
+  public function destroy($day)
+  {
+    $existingDay = Day::where('day', '=', $day)->first();
+    if ($existingDay) {
+      $existingDay->delete();
+      return "Day successfully deleted.";
+    }
+
+    return "Day not found.";
+  }
+```
 
 --- npm install && npm run dev && npm run watch
