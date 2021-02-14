@@ -178,3 +178,8 @@ npm run hot
 git add .
 git commit -am "Hello Vue ERS [laravel]"
 ```
+```
+npm i --save @fortawesome/fontawesome-svg-core
+npm i --save @fortawesome/free-solid-svg-icons
+npm i --save @fortawesome/vue-fontawesome@latest
+```
