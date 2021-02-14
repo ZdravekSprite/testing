@@ -109,4 +109,72 @@ public function index()
   }
 ```
 
---- npm install && npm run dev && npm run watch
+```
+npm install
+npm install vue
+```
+
+### resources\js\vue\app.vue
+```
+<template>
+  <div>
+    Hello
+  </div>
+</template>
+
+<script>
+export default {
+  
+}
+</script>
+```
+### resources\js\app.js
+```
+require('./bootstrap');
+
+import Vue from 'vue'
+
+import App from './vue/app'
+
+const app = new Vue({
+  el: '#app',
+  components: { App }
+});
+```
+### webpack.mix.js
+```
+mix.js('resources/js/app.js', 'public/js')
+    .postCss('resources/css/app.css', 'public/css', [
+        //
+    ]).vue();
+```
+### resources\views\welcome.blade.php
+```
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Laravel Vue</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <div id="app">
+    <app></app>
+  </div>
+</body>
+<script src="{{ mix('js/app.js')}}"></script>
+
+</html>
+```
+```
+npm run hot
+git add .
+git commit -am "Hello Vue ERS [laravel]"
+```
