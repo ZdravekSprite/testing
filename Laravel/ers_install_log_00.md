@@ -183,3 +183,8 @@ npm i --save @fortawesome/fontawesome-svg-core
 npm i --save @fortawesome/free-solid-svg-icons
 npm i --save @fortawesome/vue-fontawesome@latest
 ```
+
+```
+php artisan serve
+npm run hot
+```

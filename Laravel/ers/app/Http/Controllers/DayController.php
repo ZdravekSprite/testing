@@ -14,7 +14,7 @@ class DayController extends Controller
    */
   public function index()
   {
-    return Day::orderBy('created_at', 'DESC')->get();
+    return Day::orderBy('day', 'DESC')->get();
   }
 
   /**
@@ -80,6 +80,7 @@ class DayController extends Controller
   public function update(Request $request, $day)
   {
     //return $day;
+    //return $request;
     $existingDay = Day::where('day', '=', $day)->first(); //firstOrNew firstOrCreate
     //return $existingDay;
     if ($existingDay) {

@@ -41,7 +41,7 @@ export default {
 
 <style scoped>
 .daysListContainer {
-  width: 350px;
+  width: 600px;
   margin: auto;
 }
 .heading {
