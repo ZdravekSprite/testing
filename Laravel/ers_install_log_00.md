@@ -196,6 +196,30 @@ npm install && npm run dev
 git add .
 git commit -am "Laravel Breeze [ers_auth]"
 ```
+### database\migrations\2021_02_12_094805_create_days_table.php
+```
+  public function up()
+  {
+    Schema::create('days', function (Blueprint $table) {
+      $table->id();
+      $table->date('day');
+      $table->unsignedBigInteger('user_id')->default(1);
+      $table->boolean('sick')->default(false);
+      $table->time('start')->default('06:00:00');
+      $table->time('duration')->default('08:00:00');
+      $table->time('night_duration')->default(0);
+      $table->timestamps();
+      $table->foreign('user_id')->references('id')->on('users');
+    });
+  }
+```
+
+```
+php artisan migrate:fresh
+git add .
+git commit -am "migrate ERS [laravel]"
+```
+
 
 ```
 php artisan serve

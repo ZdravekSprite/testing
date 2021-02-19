@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DayController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,12 +15,5 @@ use App\Http\Controllers\DayController;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-  return $request->user();
-});
-
-Route::get('/days', [DayController::class, 'index']);
-Route::prefix('/day')->group(function () {
-  Route::post('/store', [DayController::class, 'store']);
-  Route::put('/{day}', [DayController::class, 'update']);
-  Route::delete('/{day}', [DayController::class, 'destroy']);
+    return $request->user();
 });
