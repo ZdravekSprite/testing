@@ -184,6 +184,19 @@ npm i --save @fortawesome/free-solid-svg-icons
 npm i --save @fortawesome/vue-fontawesome@latest
 ```
 
+--- git reset --hard be7a70bfc7f70d2f009c8a3841d005a11e2514c7
+
+## Laravel Breeze
+
+```
+git checkout -b ers_auth
+composer require laravel/breeze --dev
+php artisan breeze:install
+npm install && npm run dev
+git add .
+git commit -am "Laravel Breeze [ers_auth]"
+```
+
 ```
 php artisan serve
 npm run hot
