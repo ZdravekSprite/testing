@@ -18,11 +18,20 @@ indent_size = 2
 APP_NAME="Vanilla Laravel"
 DB_DATABASE=laravel_vanilla
 ```
-
 ```
 npm install && npm run dev
 php artisan migrate:fresh
 php artisan serve
 git add .
 git commit -am "Initial Commit - Laravel Framework Installed [laravel]"
+```
+## Laravel Breeze
+```
+composer require laravel/breeze --dev
+php artisan breeze:install
+npm install && npm run dev
+php artisan migrate:fresh
+git add .
+git commit -am "Laravel Breeze Installed [laravel]"
+php artisan serve
 ```
