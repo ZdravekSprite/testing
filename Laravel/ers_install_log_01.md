@@ -151,6 +151,10 @@ use App\Http\Controllers\DayController;
 Route::resource('days', DayController::class);
 ```
 
+```
+php artisan route:list
+```
+
 ### resources\views\days\index.blade.php
 ```
 <x-app-layout>

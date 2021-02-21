@@ -3,6 +3,9 @@
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
       {{ __('Days') }}
     </h2>
+    <x-responsive-nav-link :href="route('days.create')">
+      {{ __('Create day') }}
+    </x-responsive-nav-link>
   </x-slot>
 
   <div class="py-12">
@@ -12,9 +15,17 @@
           Days index!
           @if(count($days) > 0)
           @foreach($days as $day)
-          <div class="well">
-          <span class="badge badge-light">{{$day->id}}.</span><h3><a href="/days/{{$day->id}}">{{$day->day}}</a></h3><span class="badge badge-info">{{$day->user->name}}</span>
-          </div>
+          <div class="p-6">
+            <div class="flex items-center">
+                <div class="ml-4 text-lg leading-7 font-semibold" title="{{$day->user->name}}"><a href="/days/{{$day->id}}" class="underline text-gray-900 dark:text-white">{{$day->day}}</a></div>
+            </div>
+
+            <div class="ml-12">
+                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                  {{$day->day}}
+                </div>
+            </div>
+        </div>
           @endforeach
           @else
           <p> No days found</p>

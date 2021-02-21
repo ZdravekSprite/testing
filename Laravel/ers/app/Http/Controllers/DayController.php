@@ -21,13 +21,7 @@ class DayController extends Controller
     //$days = [];
     //$days = Day::orderBy('date','desc')->where('user_id', auth()->user()->id);
     $days = Day::orderBy('day','desc')->get();
-    //dd($days);
     return view('days.index')->with('days', $days);
-    /*
-Route::get('/days', function () {
-    return view('days.index');
-})->middleware(['auth'])->name('days');
-*/
   }
 
   /**
@@ -37,7 +31,7 @@ Route::get('/days', function () {
    */
   public function create()
   {
-    //
+    return view('days.create');
   }
 
   /**
@@ -59,7 +53,7 @@ Route::get('/days', function () {
    */
   public function show(Day $day)
   {
-    //
+    return view('days.show');
   }
 
   /**
@@ -70,7 +64,7 @@ Route::get('/days', function () {
    */
   public function edit(Day $day)
   {
-    //
+    return view('days.edit');
   }
 
   /**
