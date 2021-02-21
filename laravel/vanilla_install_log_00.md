@@ -138,3 +138,121 @@ Route::get('/', function () {
 git add .
 git commit -am "Costum fix [laravel]"
 ```
+### day model (+ factory + migration + seeder + controller)
+```
+php artisan make:model Day -a
+```
+### database\migrations\2021_02_21_143135_create_days_table.php
+```
+  public function up()
+  {
+    Schema::create('days', function (Blueprint $table) {
+      $table->id();
+      $table->date('date');
+      $table->unsignedBigInteger('user_id');
+      $table->boolean('sick')->default(false);
+      $table->time('start')->default('06:00:00');
+      $table->time('duration')->default('08:00:00');
+      $table->time('night_duration')->default(0);
+      $table->timestamps();
+      $table->unique(['user_id', 'date']);
+      $table->foreign('user_id')->references('id')->on('users');
+    });
+  }
+```
+## Eloquent: Relationships
+### app\Models\User.php
+```
+  /**
+   * Get the users days.
+   */
+  public function days()
+  {
+    return $this->hasMany(Day::class);
+  }
+```
+### app\Models\Day.php
+```
+  /**
+   * The attributes that should be hidden for arrays.
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'id',
+    'created_at',
+    'updated_at',
+  ];
+
+  /**
+   * The attributes that should be cast to native types.
+   *
+   * @var array
+   */
+  protected $casts = [
+    'date' => 'datetime:d.m.Y',
+    'sick' => 'boolean',
+    'start' => 'datetime:H:i',
+    'duration' => 'datetime:H:i',
+    'night_duration' => 'datetime:H:i',
+  ];
+
+  /**
+   * Get the user that owns the day.
+   */
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
+```
+## Factory
+### database\factories\DayFactory.php
+```
+use App\Models\User;
+  public function definition()
+  {
+    return [
+      'user_id' => User::factory(),
+      'date' => $this->faker->dateTimeThisYear(),
+    ];
+  }
+```
+## Database: Seeding
+### .env
+```
+ADMIN_NAME=admin
+ADMIN_EMAIL=admin@admin.com
+ADMIN_PASS=password1234
+```
+### database\seeders\DatabaseSeeder.php
+```
+use Illuminate\Support\Facades\Hash;
+use App\Models\Day;
+use App\Models\User;
+
+public function run()
+  {
+    User::factory()
+      ->create([
+        'name' => env('ADMIN_NAME', 'admin'),
+        'email' => env('ADMIN_EMAIL', 'admin@admin.com'),
+        'password' => Hash::make(env('ADMIN_PASS', 'password')),
+      ])->each(function ($user) {
+        $days = Day::factory()->count(5)->make(['user_id' => $user->id]);
+        foreach ($days as $day) {
+          repeat:
+          try {
+            $day->save();
+          } catch (\Illuminate\Database\QueryException $e) {
+            $subject = Day::factory()->make(['user_id' => $user->id]);
+            goto repeat;
+          }
+        }
+      });
+  }
+```
+```
+php artisan migrate:fresh --seed
+git add .
+git commit -am "seeding [laravel]"
+```
