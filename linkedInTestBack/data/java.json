@@ -1,0 +1,16 @@
+[
+  {
+    "q": ["Given the string \"strawberries\" saved in a variable called fruit, what would \"fruit.substring(2, 5)\" return?"],
+    "a1": ["raw"],
+    "a2": ["rawb"],
+    "a3": ["awb"],
+    "a4": ["traw"]
+  },
+  {
+    "q": ["How can you achieve runtime polymorphism in Java?"],
+    "a1": ["method overriding"],
+    "a2": ["method overloading"],
+    "a3": ["method overrunning"],
+    "a4": ["method calling"]
+  }
+]

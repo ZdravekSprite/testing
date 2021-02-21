@@ -1,0 +1,16 @@
+[
+  {
+    "q": ["What is an example of dynamic binding?"],
+    "a1": ["method overriding"],
+    "a2": ["any method"],
+    "a3": ["method overloading"],
+    "a4": ["compiling"]
+  },
+  {
+    "q": ["For which case would the use of a static attribute be appropriate?"],
+    "a1": ["the weather conditions for each house in a small neighborhood"],
+    "a2": ["the number of people in each house in a small neighborhood"],
+    "a3": ["the lot size for each house in a small neighborhood"],
+    "a4": ["the color of each house in a small neighborhood"]
+  }
+]
