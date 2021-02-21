@@ -15,12 +15,15 @@ class CreateDaysTable extends Migration
   {
     Schema::create('days', function (Blueprint $table) {
       $table->id();
-      $table->date('day')->unique();
+      $table->date('day');
+      $table->unsignedBigInteger('user_id');
       $table->boolean('sick')->default(false);
       $table->time('start')->default('06:00:00');
       $table->time('duration')->default('08:00:00');
       $table->time('night_duration')->default(0);
       $table->timestamps();
+      $table->unique(['user_id', 'day']);
+      $table->foreign('user_id')->references('id')->on('users');
     });
   }
 

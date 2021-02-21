@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class DayController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware('auth');
+  }
   /**
    * Display a listing of the resource.
    *
@@ -14,7 +18,10 @@ class DayController extends Controller
    */
   public function index()
   {
-    return Day::orderBy('day', 'DESC')->get();
+    //$days = [];
+    //$days = Day::orderBy('date','desc')->where('user_id', auth()->user()->id);
+    $days = Day::orderBy('day','desc')->get();
+    return view('days.index')->with('days', $days);
   }
 
   /**
@@ -24,7 +31,7 @@ class DayController extends Controller
    */
   public function create()
   {
-    //
+    return view('days.create');
   }
 
   /**
@@ -35,15 +42,7 @@ class DayController extends Controller
    */
   public function store(Request $request)
   {
-    $newDay = new Day;
-    $newDay->day = $request->day["day"];
-    $newDay->sick = isset($request->day["sick"]) ? $request->day["sick"] : false;
-    $newDay->start = isset($request->day["start"]) ? $request->day["start"] : '6:00';
-    $newDay->duration = isset($request->day["duration"]) ? $request->day["duration"] : '8:00';
-    $newDay->night_duration = isset($request->day["night_duration"]) ? $request->day["night_duration"] : 0;
-    $newDay->save();
-
-    return $newDay;
+    //
   }
 
   /**
@@ -54,7 +53,7 @@ class DayController extends Controller
    */
   public function show(Day $day)
   {
-    //
+    return view('days.show');
   }
 
   /**
@@ -65,7 +64,7 @@ class DayController extends Controller
    */
   public function edit(Day $day)
   {
-    //
+    return view('days.edit');
   }
 
   /**
@@ -73,43 +72,21 @@ class DayController extends Controller
    *
    * @param  \Illuminate\Http\Request  $request
    * @param  \App\Models\Day  $day
-   * @param  str  $day
    * @return \Illuminate\Http\Response
    */
-  //  public function update(Request $request, Day $day)
-  public function update(Request $request, $day)
+  public function update(Request $request, Day $day)
   {
-    //return $day;
-    //return $request;
-    $existingDay = Day::where('day', '=', $day)->first(); //firstOrNew firstOrCreate
-    //return $existingDay;
-    if ($existingDay) {
-      if (isset($request->day["sick"])) $existingDay->sick = $request->day["sick"];
-      if (isset($request->day["start"])) $existingDay->start = $request->day["start"];
-      if (isset($request->day["duration"])) $existingDay->duration = $request->day["duration"];
-      if (isset($request->day["night_duration"])) $existingDay->night_duration = $request->day["night_duration"];
-      $existingDay->save();
-      return $existingDay;
-    }
-
-    return "Day not found.";
+    //
   }
 
   /**
    * Remove the specified resource from storage.
    *
    * @param  \App\Models\Day  $day
-   * @param  str  $day
    * @return \Illuminate\Http\Response
    */
-  public function destroy($day)
+  public function destroy(Day $day)
   {
-    $existingDay = Day::where('day', '=', $day)->first();
-    if ($existingDay) {
-      $existingDay->delete();
-      return "Day successfully deleted.";
-    }
-
-    return "Day not found.";
+    //
   }
 }
