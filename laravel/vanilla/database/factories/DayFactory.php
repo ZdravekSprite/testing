@@ -24,7 +24,7 @@ class DayFactory extends Factory
   {
     return [
       'user_id' => User::factory(),
-      'date' => $this->faker->dateTimeThisYear(),
+      'date' => $this->faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = null),
     ];
   }
 }

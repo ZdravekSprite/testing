@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Day;
 use App\Models\User;
+use DateTime;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,7 +23,14 @@ class DatabaseSeeder extends Seeder
         'email' => env('ADMIN_EMAIL', 'admin@admin.com'),
         'password' => Hash::make(env('ADMIN_PASS', 'password')),
       ])->each(function ($user) {
-        $days = Day::factory()->count(5)->make(['user_id' => $user->id]);
+        $date = new DateTime();
+        for ($i = 0; $i < 110; $i++) {
+          $day = Day::factory()->make(['date' => $date, 'user_id' => $user->id, 'start' => '14:00']);
+          $day->save();
+          date_add($date, date_interval_create_from_date_string('-1 day'));
+        }
+        /*
+        $days = Day::factory()->count(10)->make(['user_id' => $user->id, 'start' => '14:00']);
         foreach ($days as $day) {
           repeat:
           try {
@@ -31,7 +39,7 @@ class DatabaseSeeder extends Seeder
             $subject = Day::factory()->make(['user_id' => $user->id]);
             goto repeat;
           }
-        }
+        }*/
       });
   }
 }
