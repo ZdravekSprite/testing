@@ -2,18 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Day;
-use App\Models\User;
+use App\Models\Holiday;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class DayFactory extends Factory
+class HolidayFactory extends Factory
 {
   /**
    * The name of the factory's corresponding model.
    *
    * @var string
    */
-  protected $model = Day::class;
+  protected $model = Holiday::class;
 
   /**
    * Define the model's default state.
@@ -23,8 +22,8 @@ class DayFactory extends Factory
   public function definition()
   {
     return [
-      'user_id' => User::factory(),
       'date' => $this->faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now', $timezone = null),
+      'name' => $this->faker->text($maxNbChars = 200),
     ];
   }
 }
