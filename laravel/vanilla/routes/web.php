@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DayController;
+use App\Http\Controllers\HolidayController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,4 @@ Route::get('/dashboard', function () {
 require __DIR__ . '/auth.php';
 
 Route::resource('days', DayController::class);
+Route::resource('holidays', HolidayController::class);

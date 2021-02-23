@@ -41,7 +41,18 @@ class DayController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    $this->validate($request, [
+      'date' => 'required'
+  ]);
+  $day = new Day;
+  $day->date = $request->input('date');
+  $day->user_id = Auth::user()->id;
+  if (null != $request->input('sick')) $day->sick = $request->input('sick') == 'on' ? true : false;
+  if (null != $request->input('night_duration')) $day->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day->night_duration;
+  $day->start = $request->input('start');
+  $day->duration = $request->input('duration');
+  $day->save();
+  return redirect(route('days.show' , ['day' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated'); 
   }
 
   /**
@@ -84,7 +95,7 @@ class DayController extends Controller
   {
   //dd($request);
   $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d',strtotime($date)))->get();
-  if (null != $request->input('sick')) $day[0]->sick = $day[0]->sick;
+  if (null != $request->input('sick')) $day[0]->sick = $request->input('sick') == 'on' ? true : false;
   $day[0]->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day[0]->night_duration;
   $day[0]->start = $request->input('start');
   $day[0]->duration = $request->input('duration');

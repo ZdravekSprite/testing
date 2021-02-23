@@ -13,14 +13,13 @@
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-          <form method="POST" action="{{ route('days.update' , ['day' => $day[0]->date->format('d.m.Y')]) }}">
+          <form method="POST" action="{{ route('days.store') }}">
             @csrf
-            @method('PUT')
 
             <!-- date -->
             <div class="mt-4">
               <x-label for="date" :value="__('Dan')" />
-            <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value={{$day[0]->date->format('Y-m-d')}} required autofocus />
+              <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value="old('date')" required autofocus />
             </div>
 
             <!-- bolovanje -->
@@ -32,19 +31,19 @@
             <!-- nocna -->
             <div class="mt-4">
               <x-label for="night_duration" :value="__('Rad od ponoći')" />
-              <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value={{$day[0]->night_duration->format('H:i')}} required />
+              <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value="old('night_duration')" />
             </div>
 
             <!-- pocetak -->
             <div class="mt-4">
               <x-label for="start" :value="__('Početak smjene')" />
-              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value={{$day[0]->start->format('H:i')}} required />
+              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value="old('start')" required />
             </div>
 
             <!-- duzina -->
             <div class="mt-4">
               <x-label for="duration" :value="__('Dužina rada')" />
-              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value={{$day[0]->duration->format('H:i')}} required />
+              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value="old('duration')" required />
             </div>
 
             <div class="flex items-center justify-end mt-4">

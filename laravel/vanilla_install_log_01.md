@@ -52,7 +52,18 @@ class DayController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    $this->validate($request, [
+      'date' => 'required'
+  ]);
+  $day = new Day;
+  $day->date = $request->input('date');
+  $day->user_id = Auth::user()->id;
+  if (null != $request->input('sick')) $day->sick = $request->input('sick') == 'on' ? true : false;
+  if (null != $request->input('night_duration')) $day->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day->night_duration;
+  $day->start = $request->input('start');
+  $day->duration = $request->input('duration');
+  $day->save();
+  return redirect(route('days.show' , ['day' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated'); 
   }
 
   /**
@@ -95,7 +106,7 @@ class DayController extends Controller
   {
   //dd($request);
   $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d',strtotime($date)))->get();
-  if (null != $request->input('sick')) $day[0]->sick = $day[0]->sick;
+  if (null != $request->input('sick')) $day[0]->sick = $request->input('sick') == 'on' ? true : false;
   $day[0]->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day[0]->night_duration;
   $day[0]->start = $request->input('start');
   $day[0]->duration = $request->input('duration');
@@ -115,7 +126,6 @@ class DayController extends Controller
     return redirect(route('days.index'))->with('success', 'Day removed');
   }
 }
-
 ```
 ### resources\views\days\index.blade.php
 ```
@@ -262,14 +272,13 @@ class DayController extends Controller
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-          <form method="POST" action="{{ route('days.update' , ['day' => $day[0]->date->format('d.m.Y')]) }}">
+          <form method="POST" action="{{ route('days.store') }}">
             @csrf
-            @method('PUT')
 
             <!-- date -->
             <div class="mt-4">
               <x-label for="date" :value="__('Dan')" />
-            <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value={{$day[0]->date->format('Y-m-d')}} required autofocus />
+              <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value="old('date')" required autofocus />
             </div>
 
             <!-- bolovanje -->
@@ -281,19 +290,19 @@ class DayController extends Controller
             <!-- nocna -->
             <div class="mt-4">
               <x-label for="night_duration" :value="__('Rad od ponoći')" />
-              <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value={{$day[0]->night_duration->format('H:i')}} required />
+              <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value="old('night_duration')" />
             </div>
 
             <!-- pocetak -->
             <div class="mt-4">
               <x-label for="start" :value="__('Početak smjene')" />
-              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value={{$day[0]->start->format('H:i')}} required />
+              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value="old('start')" required />
             </div>
 
             <!-- duzina -->
             <div class="mt-4">
               <x-label for="duration" :value="__('Dužina rada')" />
-              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value={{$day[0]->duration->format('H:i')}} required />
+              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value="old('duration')" required />
             </div>
 
             <div class="flex items-center justify-end mt-4">
@@ -448,3 +457,9 @@ class DayController extends Controller
 git add .
 git commit -am "route controller views [laravel]"
 ```
+
+## To Do
+
+sick checkbox ne ucitava stanje
+index podjeliti na mjesece
+kad se dodaje dan da redirecta na edit ako dan vec postoji
