@@ -19,7 +19,7 @@
             <!-- date -->
             <div class="mt-4">
               <x-label for="date" :value="__('Dan')" />
-              <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value="old('date')" required autofocus />
+              <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value="{{$day->date ? $day->date->format('Y-m-d') : "old('date')"}}" required autofocus />
             </div>
 
             <!-- bolovanje -->
@@ -37,7 +37,7 @@
             <!-- pocetak -->
             <div class="mt-4">
               <x-label for="start" :value="__('Početak smjene')" />
-              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value="old('start')" required />
+              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value="{{$day->start ? $day->start->format('H:i') : "old('start')"}}" required />
             </div>
 
             <!-- duzina -->
