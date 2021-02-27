@@ -4,8 +4,11 @@ npm run hot
 ```
 ### routes\web.php
 ```
-use App\Http\Controllers\DayController;
 Route::resource('days', DayController::class);
+Route::resource('holidays', HolidayController::class);
+Route::get('/month', [DayController::class, 'month'])->name('month');
+Route::get('/month/{month}', [DayController::class, 'month']);
+Route::get('/days/create/{date}', [DayController::class, 'create']);
 ```
 ### app\Http\Controllers\DayController.php
 ```
@@ -14,8 +17,11 @@ Route::resource('days', DayController::class);
 namespace App\Http\Controllers;
 
 use App\Models\Day;
+use App\Models\Holiday;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 
 class DayController extends Controller
 {
@@ -30,8 +36,56 @@ class DayController extends Controller
    */
   public function index()
   {
-    $days = Day::orderBy('date','desc')->where('user_id', '=', Auth::user()->id)->get();
-    return view('days.index')->with('days', $days);
+    $_month['x'] = Carbon::now();
+    $_month['-'] = Carbon::parse($_month['x'])->subMonthsNoOverflow();
+    $_month['+'] = Carbon::parse($_month['x'])->addMonthsNoOverflow();
+    $days = Day::orderBy('date', 'desc')->where('user_id', '=', Auth::user()->id)->get();
+    return view('days.index')->with(compact('_month', 'days'));
+  }
+  /**
+   * Display a listing of the resource.
+   *
+   * @param  $month
+   * @return \Illuminate\Http\Response
+   */
+  public function month($month = null)
+  {
+    //dd($month);
+    if ($month == null) {
+      $_month['x'] = Carbon::now();
+    } else {
+      $_month['x'] = Carbon::parse('01.' . $month);
+      //dd($month);
+    }
+    $_month['-'] = Carbon::parse($_month['x'])->subMonthsNoOverflow();
+    $_month['+'] = Carbon::parse($_month['x'])->addMonthsNoOverflow();
+    $from = CarbonImmutable::parse($_month['x'])->firstOfMonth();
+    $to = Carbon::parse($_month['x'])->endOfMonth();
+
+    $daysColection = Day::whereBetween('date', [$from, $to])->where('user_id', '=', Auth::user()->id)->get();
+    $holidaysColection = Holiday::whereBetween('date', [$from, $to])->get();
+
+    $datesArray = array();
+    for ($i = 0; $i < $from->daysInMonth; $i++) {
+      if ($daysColection->where('date', '=', $from->addDays($i))->first() != null) {
+        $temp_date = $daysColection->where('date', '=', $from->addDays($i))->first();
+      } else {
+        $temp_date = new Day;
+        $temp_date->date = $from->addDays($i);
+        //dd($temp_date);
+      }
+      //$temp_date = $from->addDays($i);
+      if ($holidaysColection->where('date', '=', $from->addDays($i))->first() != null) {
+        //dd($holidaysColection->where('date', '=', $from->addDays($i))->first());
+        $temp_date->holiday = $holidaysColection->where('date', '=', $from->addDays($i))->first()->name;
+      }
+      $datesArray[] = $temp_date;
+    }
+    $days = $datesArray;
+    //dd($datesArray, $days);
+    //dd($month, $from, $to);
+
+    return view('days.index')->with(compact('_month', 'days'));
   }
 
   /**
@@ -39,9 +93,21 @@ class DayController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function create()
+  //public function create()
+  public function create(Request $request)
   {
-    return view('days.create'); 
+    $day = new Day;
+    //dd($request->input('date'));
+    if (null != $request->input('date')) {
+      $day->date = $request->input('date');
+      if ($request->input('sick') == true) {
+        $day->sick = true;
+      } else {
+        if ($request->input('start') != null) $day->start = $request->input('start');
+      }
+    }
+    //dd($day);
+    return view('days.create')->with(compact('day'));
   }
 
   /**
@@ -54,16 +120,21 @@ class DayController extends Controller
   {
     $this->validate($request, [
       'date' => 'required'
-  ]);
-  $day = new Day;
-  $day->date = $request->input('date');
-  $day->user_id = Auth::user()->id;
-  if (null != $request->input('sick')) $day->sick = $request->input('sick') == 'on' ? true : false;
-  if (null != $request->input('night_duration')) $day->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day->night_duration;
-  $day->start = $request->input('start');
-  $day->duration = $request->input('duration');
-  $day->save();
-  return redirect(route('days.show' , ['day' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated'); 
+    ]);
+    //dd($request);
+    $old_day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($request->input('date'))))->get();
+    $day = new Day;
+    $day->date = $request->input('date');
+    $day->user_id = Auth::user()->id;
+    if (null != $request->input('sick')) $day->sick = $request->input('sick') == 'on' ? true : false;
+    if (null != $request->input('night_duration')) $day->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day->night_duration;
+    $day->start = $request->input('start');
+    $day->duration = $request->input('duration');
+    //dd($old_day);
+    //dd($day);
+    if (count($old_day) > 0) return view('days.edit')->with(compact('old_day', 'day'));
+    $day->save();
+    return redirect(route('days.show', ['date' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated');
   }
 
   /**
@@ -75,9 +146,10 @@ class DayController extends Controller
   //public function show(Day $day)
   public function show($date)
   {
-    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d',strtotime($date)))->get();
+    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
+    if (count($day) == 0) return redirect(route('month'));
     //dd($day);
-    return view('days.show')->with('day', $day); 
+    return view('days.show')->with('day', $day);
   }
 
   /**
@@ -89,9 +161,9 @@ class DayController extends Controller
   //public function edit(Day $day)
   public function edit($date)
   {
-    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d',strtotime($date)))->get();
+    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
     //dd($day);
-    return view('days.edit')->with('day', $day); 
+    return view('days.edit')->with('day', $day);
   }
 
   /**
@@ -104,14 +176,14 @@ class DayController extends Controller
   //public function update(Request $request, Day $day)
   public function update(Request $request, $date)
   {
-  //dd($request);
-  $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d',strtotime($date)))->get();
-  if (null != $request->input('sick')) $day[0]->sick = $request->input('sick') == 'on' ? true : false;
-  $day[0]->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day[0]->night_duration;
-  $day[0]->start = $request->input('start');
-  $day[0]->duration = $request->input('duration');
-  $day[0]->save();
-  return redirect(route('days.show' , ['day' => $day[0]->date->format('d.m.Y')]))->with('success', 'Day Updated'); 
+    //dd($request);
+    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
+    if (null != $request->input('sick')) $day[0]->sick = $request->input('sick') == 'on' ? true : false;
+    $day[0]->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day[0]->night_duration;
+    $day[0]->start = $request->input('start');
+    $day[0]->duration = $request->input('duration');
+    $day[0]->save();
+    return redirect(route('days.show', ['day' => $day[0]->date->format('d.m.Y')]))->with('success', 'Day Updated');
   }
 
   /**
@@ -140,26 +212,67 @@ class DayController extends Controller
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
-          Evidencija radnih sati!
+          <div class="flex justify-center">
+            <a href="{{route('month').'/'.$_month['-']->format('m.Y')}}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+              </svg>
+            </a>
+            <a class="mx-auto" href="{{ route('month').'/'.$_month['x']->format('m.Y') }}">
+              {{$_month['x']->format('m.Y')}}
+            </a>
+            <a href="{{route('month').'/'.$_month['+']->format('m.Y')}}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+              </svg>
+            </a>
+          </div>
           @if(count($days) > 0)
           @foreach($days as $day)
           <div class="container">
-            <a class="float-left" href="/days/{{$day->date->format('d.m.Y')}}">{{$day->date->format('d.m.Y')}}</a>
-            <div class="float-left relative bg-indigo-100" style="width: 75%; min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
+            <a class="float-left clear-left{{isset($day->holiday) ? ' text-red-400' : ''}}" href="/days/{{$day->date->format('d.m.Y')}}" title="{{$day->date->format('d.m.Y')}}{{isset($day->holiday) ? ' '.$day->holiday : ''}}">{{$day->date->format('d.m.Y')}}</a>
+            @if(isset($day->sick))
+            <div class="float-left rounded-md relative {{$day->sick ? 'bg-red-100' : 'bg-indigo-100'}}" style="width: 80%; min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
               <div class="absolute bg-indigo-700 min-h-full" style="width: {{($day->night_duration->hour*60 + $day->night_duration->minute)/1440*100}}%;"></div>
               <div class="absolute bg-indigo-500 min-h-full" style="margin-left: {{($day->start->hour*60 + $day->start->minute)/1440*100}}%; width: {{($day->duration->hour*60 + $day->duration->minute)/1440*100}}%;"></div>
             </div>
-            <a href="/days/{{$day->date->format('d.m.Y')}}/edit">edit</a>
-            <i class="icon-trash"></i>
-            <a style="color:black" href="{{ route('days.destroy', ['day' => $day]) }}" onclick="event.preventDefault();
-    document.getElementById('delete-form-{{ $day->date->format('d.m.Y') }}').submit();">
-              delete
+            <a class="float-left" href="/days/{{$day->date->format('d.m.Y')}}/edit" title="Izmjeni">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                <path d="M13.498.795l.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
+              </svg>
+            </a>
+            <a class="float-right" style="color:black" href="{{ route('days.destroy', ['day' => $day]) }}" onclick="event.preventDefault();
+    document.getElementById('delete-form-{{ $day->date->format('d.m.Y') }}').submit();" title="Izbriši">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+              </svg>
             </a>
 
             <form id="delete-form-{{ $day->date->format('d.m.Y') }}" action="{{ route('days.destroy', ['day' => $day]) }}" method="POST" style="display: none;">
               @csrf
-            @method('DELETE')
+              @method('DELETE')
             </form>
+            @else
+            <div class="float-left relative bg-yellow-100" style="width: 80%; min-height: 18px;">
+            </div>
+            <a class="float-left" href="{{ route('days.create', ['date' => $day->date->format('d.m.Y')]) }}" title="Dodaj">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-calendar-plus" viewBox="0 0 16 16">
+                <path d="M8 7a.5.5 0 0 1 .5.5V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5A.5.5 0 0 1 8 7z" />
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+              </svg>
+            </a>
+            <a class="float-left mx-1" href="{{ route('days.create', ['date' => $day->date->format('d.m.Y'), 'start' => '06:00']) }}" title="1.smjena">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-sunrise" viewBox="0 0 16 16">
+                <path d="M7.646 1.146a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1-.708.708L8.5 2.707V4.5a.5.5 0 0 1-1 0V2.707l-.646.647a.5.5 0 1 1-.708-.708l1.5-1.5zM2.343 4.343a.5.5 0 0 1 .707 0l1.414 1.414a.5.5 0 0 1-.707.707L2.343 5.05a.5.5 0 0 1 0-.707zm11.314 0a.5.5 0 0 1 0 .707l-1.414 1.414a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zM8 7a3 3 0 0 1 2.599 4.5H5.4A3 3 0 0 1 8 7zm3.71 4.5a4 4 0 1 0-7.418 0H.499a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1h-3.79zM0 10a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2A.5.5 0 0 1 0 10zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+              </svg>
+            </a>
+            <a class="float-left" href="{{ route('days.create', ['date' => $day->date->format('d.m.Y'), 'start' => '14:00']) }}" title="2.smjena">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-sun" viewBox="0 0 16 16">
+                <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
+              </svg>
+            </a>
+            @endif
           </div>
           @endforeach
           @else
@@ -208,16 +321,16 @@ class DayController extends Controller
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
-          Edit {{$day[0]->date->format('d.m.Y')}} day!
+          Edit {{$day->date->format('d.m.Y')}} day!
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-          <form method="POST" action="{{ route('days.update' , ['day' => $day[0]->date->format('d.m.Y')]) }}">
+          <form method="POST" action="{{ route('days.update' , ['day' => $day->date->format('d.m.Y')]) }}">
             @csrf
             @method('PUT')
 
             <!-- date -->
-            <input id="date" class="hidden" type="date" name="date" value={{$day[0]->date->format('Y-m-d')}} required autofocus />
+            <input id="date" class="hidden" type="date" name="date" value={{$day->date->format('Y-m-d')}} required autofocus />
 
             <!-- bolovanje -->
             <div class="mt-4">
@@ -228,19 +341,19 @@ class DayController extends Controller
             <!-- nocna -->
             <div class="mt-4">
               <x-label for="night_duration" :value="__('Rad od ponoći')" />
-              <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value={{$day[0]->night_duration->format('H:i')}} required />
+              <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value={{$day->night_duration ? $day->night_duration->format('H:i') : '00:00'}} required />
             </div>
 
             <!-- pocetak -->
             <div class="mt-4">
               <x-label for="start" :value="__('Početak smjene')" />
-              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value={{$day[0]->start->format('H:i')}} required />
+              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value={{$day->start->format('H:i')}} required />
             </div>
 
             <!-- duzina -->
             <div class="mt-4">
               <x-label for="duration" :value="__('Dužina rada')" />
-              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value={{$day[0]->duration->format('H:i')}} required />
+              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value={{$day->duration->format('H:i')}} required />
             </div>
 
             <div class="flex items-center justify-end mt-4">
@@ -278,7 +391,7 @@ class DayController extends Controller
             <!-- date -->
             <div class="mt-4">
               <x-label for="date" :value="__('Dan')" />
-              <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value="old('date')" required autofocus />
+              <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value="{{$day->date ? $day->date->format('Y-m-d') : "old('date')"}}" required autofocus />
             </div>
 
             <!-- bolovanje -->
@@ -296,7 +409,7 @@ class DayController extends Controller
             <!-- pocetak -->
             <div class="mt-4">
               <x-label for="start" :value="__('Početak smjene')" />
-              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value="old('start')" required />
+              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value="{{$day->start ? $day->start->format('H:i') : "old('start')"}}" required />
             </div>
 
             <!-- duzina -->
@@ -338,7 +451,12 @@ class DayController extends Controller
           </x-nav-link>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-          <x-nav-link :href="route('days.index')" :active="request()->routeIs('days.index', 'days.create', 'days.show', 'days.edit')">
+          <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
+            {{ __('Praznici') }}
+          </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('month')" :active="request()->routeIs('month', 'days.index', 'days.create', 'days.show', 'days.edit')">
             {{ __('ERS') }}
           </x-nav-link>
         </div>
@@ -366,6 +484,11 @@ class DayController extends Controller
               </div>
             </x-slot>
           </x-dropdown>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('lista')" :active="request()->routeIs('lista')">
+            {{ __('Platna lista') }}
+          </x-nav-link>
         </div>
       </div>
 
@@ -418,8 +541,18 @@ class DayController extends Controller
       </x-responsive-nav-link>
     </div>
     <div class="pt-4 pb-1 border-t border-gray-200">
+      <x-responsive-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
+        {{ __('Praznici') }}
+      </x-responsive-nav-link>
+    </div>
+    <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('days.index')" :active="request()->routeIs('days.index')">
         {{ __('ERS') }}
+      </x-responsive-nav-link>
+    </div>
+    <div class="pt-4 pb-1 border-t border-gray-200">
+      <x-responsive-nav-link :href="route('lista')" :active="request()->routeIs('lista')">
+        {{ __('Platna lista') }}
       </x-responsive-nav-link>
     </div>
 
@@ -455,9 +588,5 @@ class DayController extends Controller
 ```
 ```
 git add .
-git commit -am "route controller views [laravel]"
+git commit -am "months holidays [laravel]"
 ```
-
-## To Do
-
-sick checkbox ne ucitava stanje

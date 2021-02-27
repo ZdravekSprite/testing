@@ -22,7 +22,7 @@
           </x-nav-link>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-          <x-nav-link :href="route('days.index')" :active="request()->routeIs('days.index', 'days.create', 'days.show', 'days.edit')">
+          <x-nav-link :href="route('month')" :active="request()->routeIs('month', 'days.index', 'days.create', 'days.show', 'days.edit')">
             {{ __('ERS') }}
           </x-nav-link>
         </div>
@@ -50,6 +50,11 @@
               </div>
             </x-slot>
           </x-dropdown>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('lista')" :active="request()->routeIs('lista')">
+            {{ __('Platna lista') }}
+          </x-nav-link>
         </div>
       </div>
 
@@ -109,6 +114,11 @@
     <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('days.index')" :active="request()->routeIs('days.index')">
         {{ __('ERS') }}
+      </x-responsive-nav-link>
+    </div>
+    <div class="pt-4 pb-1 border-t border-gray-200">
+      <x-responsive-nav-link :href="route('lista')" :active="request()->routeIs('lista')">
+        {{ __('Platna lista') }}
       </x-responsive-nav-link>
     </div>
 

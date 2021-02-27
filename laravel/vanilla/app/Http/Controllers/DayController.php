@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Day;
+use App\Models\Holiday;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 
 class DayController extends Controller
 {
@@ -19,8 +22,56 @@ class DayController extends Controller
    */
   public function index()
   {
-    $days = Day::orderBy('date','desc')->where('user_id', '=', Auth::user()->id)->get();
-    return view('days.index')->with('days', $days);
+    $_month['x'] = Carbon::now();
+    $_month['-'] = Carbon::parse($_month['x'])->subMonthsNoOverflow();
+    $_month['+'] = Carbon::parse($_month['x'])->addMonthsNoOverflow();
+    $days = Day::orderBy('date', 'desc')->where('user_id', '=', Auth::user()->id)->get();
+    return view('days.index')->with(compact('_month', 'days'));
+  }
+  /**
+   * Display a listing of the resource.
+   *
+   * @param  $month
+   * @return \Illuminate\Http\Response
+   */
+  public function month($month = null)
+  {
+    //dd($month);
+    if ($month == null) {
+      $_month['x'] = Carbon::now();
+    } else {
+      $_month['x'] = Carbon::parse('01.' . $month);
+      //dd($month);
+    }
+    $_month['-'] = Carbon::parse($_month['x'])->subMonthsNoOverflow();
+    $_month['+'] = Carbon::parse($_month['x'])->addMonthsNoOverflow();
+    $from = CarbonImmutable::parse($_month['x'])->firstOfMonth();
+    $to = Carbon::parse($_month['x'])->endOfMonth();
+
+    $daysColection = Day::whereBetween('date', [$from, $to])->where('user_id', '=', Auth::user()->id)->get();
+    $holidaysColection = Holiday::whereBetween('date', [$from, $to])->get();
+
+    $datesArray = array();
+    for ($i = 0; $i < $from->daysInMonth; $i++) {
+      if ($daysColection->where('date', '=', $from->addDays($i))->first() != null) {
+        $temp_date = $daysColection->where('date', '=', $from->addDays($i))->first();
+      } else {
+        $temp_date = new Day;
+        $temp_date->date = $from->addDays($i);
+        //dd($temp_date);
+      }
+      //$temp_date = $from->addDays($i);
+      if ($holidaysColection->where('date', '=', $from->addDays($i))->first() != null) {
+        //dd($holidaysColection->where('date', '=', $from->addDays($i))->first());
+        $temp_date->holiday = $holidaysColection->where('date', '=', $from->addDays($i))->first()->name;
+      }
+      $datesArray[] = $temp_date;
+    }
+    $days = $datesArray;
+    //dd($datesArray, $days);
+    //dd($month, $from, $to);
+
+    return view('days.index')->with(compact('_month', 'days'));
   }
 
   /**
@@ -28,9 +79,21 @@ class DayController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function create()
+  //public function create()
+  public function create(Request $request)
   {
-    return view('days.create'); 
+    $day = new Day;
+    //dd($request->input('date'));
+    if (null != $request->input('date')) {
+      $day->date = $request->input('date');
+      if ($request->input('sick') == true) {
+        $day->sick = true;
+      } else {
+        if ($request->input('start') != null) $day->start = $request->input('start');
+      }
+    }
+    //dd($day);
+    return view('days.create')->with(compact('day'));
   }
 
   /**
@@ -43,16 +106,21 @@ class DayController extends Controller
   {
     $this->validate($request, [
       'date' => 'required'
-  ]);
-  $day = new Day;
-  $day->date = $request->input('date');
-  $day->user_id = Auth::user()->id;
-  if (null != $request->input('sick')) $day->sick = $request->input('sick') == 'on' ? true : false;
-  if (null != $request->input('night_duration')) $day->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day->night_duration;
-  $day->start = $request->input('start');
-  $day->duration = $request->input('duration');
-  $day->save();
-  return redirect(route('days.show' , ['day' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated'); 
+    ]);
+    //dd($request);
+    $old_day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($request->input('date'))))->get();
+    $day = new Day;
+    $day->date = $request->input('date');
+    $day->user_id = Auth::user()->id;
+    if (null != $request->input('sick')) $day->sick = $request->input('sick') == 'on' ? true : false;
+    if (null != $request->input('night_duration')) $day->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day->night_duration;
+    $day->start = $request->input('start');
+    $day->duration = $request->input('duration');
+    //dd($old_day);
+    //dd($day);
+    if (count($old_day) > 0) return view('days.edit')->with(compact('old_day', 'day'));
+    $day->save();
+    return redirect(route('days.show', ['date' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated');
   }
 
   /**
@@ -64,9 +132,10 @@ class DayController extends Controller
   //public function show(Day $day)
   public function show($date)
   {
-    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d',strtotime($date)))->get();
+    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
+    if (count($day) == 0) return redirect(route('month'));
     //dd($day);
-    return view('days.show')->with('day', $day); 
+    return view('days.show')->with('day', $day);
   }
 
   /**
@@ -78,9 +147,9 @@ class DayController extends Controller
   //public function edit(Day $day)
   public function edit($date)
   {
-    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d',strtotime($date)))->get();
+    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
     //dd($day);
-    return view('days.edit')->with('day', $day); 
+    return view('days.edit')->with('day', $day);
   }
 
   /**
@@ -93,14 +162,14 @@ class DayController extends Controller
   //public function update(Request $request, Day $day)
   public function update(Request $request, $date)
   {
-  //dd($request);
-  $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d',strtotime($date)))->get();
-  if (null != $request->input('sick')) $day[0]->sick = $request->input('sick') == 'on' ? true : false;
-  $day[0]->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day[0]->night_duration;
-  $day[0]->start = $request->input('start');
-  $day[0]->duration = $request->input('duration');
-  $day[0]->save();
-  return redirect(route('days.show' , ['day' => $day[0]->date->format('d.m.Y')]))->with('success', 'Day Updated'); 
+    //dd($request);
+    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
+    if (null != $request->input('sick')) $day[0]->sick = $request->input('sick') == 'on' ? true : false;
+    $day[0]->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day[0]->night_duration;
+    $day[0]->start = $request->input('start');
+    $day[0]->duration = $request->input('duration');
+    $day[0]->save();
+    return redirect(route('days.show', ['day' => $day[0]->date->format('d.m.Y')]))->with('success', 'Day Updated');
   }
 
   /**
