@@ -10,16 +10,42 @@
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
           <div class="flex justify-center">
-            Bruto: {{$data['bruto']}},
-            Prijevoz: {{$data['prijevoz']}},
-            Odbitak: {{$data['odbitak']}},
-            Prirez: {{$data['prirez']}},
-            Prekovremeni:
-            <a href="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prekovremeni' => 0]) }}">0</a>
-            <a href="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prekovremeni' => 8]) }}">8</a>
-            <a href="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prekovremeni' => 16]) }}">16</a>
-            <a href="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prekovremeni' => 24]) }}">24</a>
-            <a href="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prekovremeni' => 32]) }}">32</a>
+            <label class="block">
+              <span class="text-gray-700">Bruto:</span>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['bruto']}}"  disabled>
+            </label>
+            <label class="block">
+              <span class="text-gray-700">Prijevoz:</span>
+              <select class="form-select py-1 block w-full mt-1" name="myprijevoz" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+                @foreach ($data['prijevozOptions'] as $key => $value)
+                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $value, 'odbitak' => $data['odbitak'], 'prirez' => $data['prirez'], 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myprijevoz', $data['prijevoz'])) selected="selected" @endif>{{ $value }}</option>
+                @endforeach
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-gray-700">Odbitak:</span>
+              <select class="form-select py-1 block w-full mt-1" name="myodbitak" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+                @foreach ($data['odbitakOptions'] as $key => $value)
+                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $data['prijevoz'], 'odbitak' => $value, 'prirez' => $data['prirez'], 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myodbitak', $data['odbitak'])) selected="selected" @endif>{{ $value }}</option>
+                @endforeach
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-gray-700">Prirez:</span>
+              <select class="form-select py-1 block w-full mt-1" name="myprirez" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+                @foreach ($data['prirezOptions'] as $key => $value)
+                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $data['prijevoz'], 'odbitak' => $data['odbitak'], 'prirez' => $value, 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myprirez', $data['prirez'])) selected="selected" @endif>{{ $value }}</option>
+                @endforeach
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-gray-700">Prekovremeni:</span>
+              <select class="form-select py-1 block w-full mt-1" name="myprekovremeni" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+                @foreach ($data['prekovremeniOptions'] as $key => $value)
+                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $data['prijevoz'], 'odbitak' => $data['odbitak'], 'prirez' => $data['prirez'], 'prekovremeni' => $value]) }}" @if ($value==old('myprekovremeni', $data['prekovremeni'])) selected="selected" @endif>{{ $value }}</option>
+                @endforeach
+              </select>
+            </label>
           </div>
           <div class="flex justify-center">
             <a href="{{ route('lista', ['month' => $month['-']->format('m.Y')]) }}">
@@ -152,7 +178,7 @@
                 <td class="w-1/8 border p-2 text-right"><b>{{ $data['7.kn'] }}</b></td>
               </tr>
               <tr>
-                <td class="w-3/4 border p-2" colspan="2">8. OSOBNI ODBITAK 1.00 / 4000.00</td>
+                <td class="w-3/4 border p-2" colspan="2">8. OSOBNI ODBITAK 1.00 / {{ number_format($data['odbitak'], 2, '.', '') }}</td>
                 <td class="w-1/8 border p-2 text-center"></td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['8.kn'] }}</td>
               </tr>
@@ -167,12 +193,12 @@
                 <td class="w-1/8 border p-2 text-right">{{ $data['10.kn'] }}</td>
               </tr>
               <tr>
-                <td class="w-3/4 border p-2 pl-6" colspan="2">20.00% 1363.41</td>
+                <td class="w-3/4 border p-2 pl-6" colspan="2">20.00% {{ $data['9.kn'] }}</td>
                 <td class="w-1/8 border p-2 text-center"></td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['10.20.kn'] }}</td>
               </tr>
               <tr>
-                <td class="w-3/4 border p-2 pl-12" colspan="2">Prirez 12.00 %</td>
+                <td class="w-3/4 border p-2 pl-12" colspan="2">Prirez {{ number_format($data['prirez'], 2, '.', ',') }} %</td>
                 <td class="w-1/8 border p-2 text-center"></td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['10.prirez.kn'] }}</td>
               </tr>

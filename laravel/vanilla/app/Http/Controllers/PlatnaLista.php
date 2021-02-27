@@ -27,12 +27,16 @@ class PlatnaLista extends Controller
     $data['bruto'] = $bruto;
     $prijevoz = $request->input('prijevoz') != null ? $request->input('prijevoz') : 400;
     $data['prijevoz'] = $prijevoz;
+    $data['prijevozOptions'] = [360,400,600];
     $odbitak = $request->input('odbitak') != null ? $request->input('odbitak') : 4000;
     $data['odbitak'] = $odbitak;
+    $data['odbitakOptions'] = [4000,5750,8250,11750];
     $prirez = $request->input('prirez') != null ? $request->input('prirez') : 12;
     $data['prirez'] = $prirez;
+    $data['prirezOptions'] = [0,1,2,3,4,5,6,7,7.5,8,9,10,12,18];
     $prekovremeni = $request->input('prekovremeni') != null ? $request->input('prekovremeni') : 0;
     $data['prekovremeni'] = $prekovremeni;
+    $data['prekovremeniOptions'] = [0,8,16,24,32];
 
     if ($request->input('month') == null) {
       $month['x'] = Carbon::now();

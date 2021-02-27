@@ -22,7 +22,7 @@
           </x-nav-link>
         </div>
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-          <x-nav-link :href="route('days.index')" :active="request()->routeIs('days.index', 'days.create', 'days.show', 'days.edit')">
+          <x-nav-link :href="route('month')" :active="request()->routeIs('month', 'days.index', 'days.create', 'days.show', 'days.edit')">
             {{ __('ERS') }}
           </x-nav-link>
         </div>
