@@ -108,19 +108,19 @@ class DayController extends Controller
       'date' => 'required'
     ]);
     //dd($request);
-    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($request->input('date'))))->get();
-    $newDay = new Day;
-    $newDay->date = $request->input('date');
-    $newDay->user_id = Auth::user()->id;
-    if (null != $request->input('sick')) $newDay->sick = $request->input('sick') == 'on' ? true : false;
-    if (null != $request->input('night_duration')) $newDay->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day->night_duration;
-    $newDay->start = $request->input('start');
-    $newDay->duration = $request->input('duration');
-
-    if ($day != null) return view('days.edit')->with(compact('day', 'newDay'));
-    dd($day);
-    $newDay->save();
-    return redirect(route('days.show', ['date' => $newDay->date->format('d.m.Y')]))->with('success', 'Day Updated');
+    $old_day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($request->input('date'))))->get();
+    $day = new Day;
+    $day->date = $request->input('date');
+    $day->user_id = Auth::user()->id;
+    if (null != $request->input('sick')) $day->sick = $request->input('sick') == 'on' ? true : false;
+    if (null != $request->input('night_duration')) $day->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day->night_duration;
+    $day->start = $request->input('start');
+    $day->duration = $request->input('duration');
+    //dd($old_day);
+    //dd($day);
+    if (count($old_day) > 0) return view('days.edit')->with(compact('old_day', 'day'));
+    $day->save();
+    return redirect(route('days.show', ['date' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated');
   }
 
   /**

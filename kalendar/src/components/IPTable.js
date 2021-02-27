@@ -121,7 +121,7 @@ const IPTable = ({
         iznos={kn17e}
       />
       <TableRow
-        opis='1.7f Dodadatak za rad na praznik'
+        opis='1.7f Dodatak za rad na praznik'
         notShow={h17f === 0}
         sati={h17f}
         iznos={kn17f}

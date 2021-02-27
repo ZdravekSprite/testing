@@ -51,6 +51,11 @@
             </x-slot>
           </x-dropdown>
         </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('lista')" :active="request()->routeIs('lista')">
+            {{ __('Platna lista') }}
+          </x-nav-link>
+        </div>
       </div>
 
       <!-- Settings Dropdown -->
@@ -109,6 +114,11 @@
     <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('days.index')" :active="request()->routeIs('days.index')">
         {{ __('ERS') }}
+      </x-responsive-nav-link>
+    </div>
+    <div class="pt-4 pb-1 border-t border-gray-200">
+      <x-responsive-nav-link :href="route('lista')" :active="request()->routeIs('lista')">
+        {{ __('Platna lista') }}
       </x-responsive-nav-link>
     </div>
 

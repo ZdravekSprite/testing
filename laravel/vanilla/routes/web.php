@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\PlatnaLista;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,3 +31,4 @@ Route::resource('holidays', HolidayController::class);
 Route::get('/month', [DayController::class, 'month'])->name('month');
 Route::get('/month/{month}', [DayController::class, 'month']);
 Route::get('/days/create/{date}', [DayController::class, 'create']);
+Route::get('/lista', PlatnaLista::class)->name('lista');
