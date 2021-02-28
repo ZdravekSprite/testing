@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Day;
 use App\Models\Holiday;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -15,6 +16,28 @@ class PlatnaLista extends Controller
   {
     $this->middleware('auth');
   }
+
+  /**
+   * Store bruto resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function bruto(Request $request)
+  {
+    $this->validate($request, [
+      'bruto' => 'required'
+    ]);
+    $bruto = $request->input('bruto');
+    $user = User::find(Auth::id());
+    //$user = Auth::user();
+    //dd($user);
+    $user->bruto = $bruto;
+    $user->save();
+    //dd($request);
+    return redirect(route('dashboard'))->with('success', 'Bruto Updated');
+  }
+
   /**
    * Handle the incoming request.
    *
@@ -23,7 +46,7 @@ class PlatnaLista extends Controller
    */
   public function __invoke(Request $request)
   {
-    $bruto = $request->input('bruto') != null ? $request->input('bruto') : 5300;
+    $bruto = $request->input('bruto') != null ? $request->input('bruto') : Auth::user()->bruto?? 5300;
     $data['bruto'] = $bruto;
     $prijevoz = $request->input('prijevoz') != null ? $request->input('prijevoz') : 400;
     $data['prijevoz'] = $prijevoz;

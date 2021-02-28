@@ -2,10 +2,55 @@
 
 da bi izracunao placu, osim sata rada, trebam definirati:
 [] koliki je bruto
+```
+php artisan make:migration add_bruto_to_users_table --table=users
+php artisan migrate
+```
+### database\migrations\2021_02_28_091056_add_bruto_to_users_table.php
+```
+  public function up()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->mediumInteger('bruto')
+        ->after('password')
+        ->nullable(5300);
+    });
+  }
+  public function down()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->dropColumn('bruto');
+    });
+  }
+```
+```
+git add .
+git commit -am "add bruto [laravel]"
+```
 [x] koliki je prijevoz
 [x] koliki je prirez
 [x] koliki je osnovni odbitak
 
+### resources\views\dashboard.blade.php
+```
+          <!-- Validation Errors -->
+          <x-auth-validation-errors class="mb-4" :errors="$errors" />
+
+          <form method="POST" action="{{ route('bruto') }}">
+            @csrf
+            @method('PUT')
+            <!-- bruto -->
+            <div class="mt-4">
+              <x-label for="bruto" :value="__('Bruto')" />
+              <input id="bruto" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="bruto" value="{{Auth::user()->bruto ? Auth::user()->bruto : old('bruto')?? 5300}}" min="4250" step="50" />
+            </div>
+            <div class="flex items-center justify-end mt-4">
+              <x-button class="ml-4">
+                {{ __('Spremi') }}
+              </x-button>
+            </div>
+          </form>
+```
 ```
 php artisan make:controller PlatnaLista --invokable
 ```
@@ -13,6 +58,7 @@ php artisan make:controller PlatnaLista --invokable
 ```
 use App\Http\Controllers\PlatnaLista;
 Route::get('/lista', PlatnaLista::class)->name('lista');
+Route::put('/lista', [PlatnaLista::class, 'bruto'])->name('bruto');
 ```
 ### resources\views\layouts\navigation.blade.php
 ```
@@ -38,6 +84,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Day;
 use App\Models\Holiday;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -49,6 +96,28 @@ class PlatnaLista extends Controller
   {
     $this->middleware('auth');
   }
+
+  /**
+   * Store bruto resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function bruto(Request $request)
+  {
+    $this->validate($request, [
+      'bruto' => 'required'
+    ]);
+    $bruto = $request->input('bruto');
+    $user = User::find(Auth::id());
+    //$user = Auth::user();
+    //dd($user);
+    $user->bruto = $bruto;
+    $user->save();
+    //dd($request);
+    return redirect(route('dashboard'))->with('success', 'Bruto Updated');
+  }
+
   /**
    * Handle the incoming request.
    *
@@ -57,7 +126,7 @@ class PlatnaLista extends Controller
    */
   public function __invoke(Request $request)
   {
-    $bruto = $request->input('bruto') != null ? $request->input('bruto') : 5300;
+    $bruto = $request->input('bruto') != null ? $request->input('bruto') : Auth::user()->bruto?? 5300;
     $data['bruto'] = $bruto;
     $prijevoz = $request->input('prijevoz') != null ? $request->input('prijevoz') : 400;
     $data['prijevoz'] = $prijevoz;
