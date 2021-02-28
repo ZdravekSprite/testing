@@ -449,9 +449,5 @@ class PlatnaLista extends Controller
 ```
 ```
 git add .
-git commit -am "platna lista [laravel]"
+git commit -am "platna lista v0.2 [laravel]"
 ```
-## To Do
-
-sick checkbox ne ucitava stanje
-u viewsima sloziti da nema [0], tj ako se posalje vise resursa da se ponudi biranje koji je pravi

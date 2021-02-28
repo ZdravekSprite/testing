@@ -134,7 +134,8 @@ class DayController extends Controller
     //dd($day);
     if (count($old_day) > 0) return view('days.edit')->with(compact('old_day', 'day'));
     $day->save();
-    return redirect(route('days.show', ['date' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated');
+    //return redirect(route('days.show', ['date' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated');
+    return redirect(route('days.show', ['day' => $day]))->with('success', 'Day Updated');
   }
 
   /**
@@ -161,7 +162,7 @@ class DayController extends Controller
   //public function edit(Day $day)
   public function edit($date)
   {
-    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
+    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->first();
     //dd($day);
     return view('days.edit')->with('day', $day);
   }
@@ -335,7 +336,7 @@ class DayController extends Controller
             <!-- bolovanje -->
             <div class="mt-4">
               <x-label for="sick" :value="__('Bolovanje')" />
-              <x-input id="sick" class="block mt-1 w-full" type="checkbox" name="sick" :value="old('sick')" />
+              <input id="sick" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="sick" {{$day->sick ? 'checked' : ''}}/>
             </div>
 
             <!-- nocna -->
@@ -392,30 +393,39 @@ class DayController extends Controller
             <div class="mt-4">
               <x-label for="date" :value="__('Dan')" />
               <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value="{{$day->date ? $day->date->format('Y-m-d') : "old('date')"}}" required autofocus />
+              <p>Dan za koji se određuju sati rada</p>
             </div>
 
             <!-- bolovanje -->
             <div class="mt-4">
               <x-label for="sick" :value="__('Bolovanje')" />
-              <x-input id="sick" class="block mt-1 w-full" type="checkbox" name="sick" :value="old('sick')" />
+              <input id="sick" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="sick" />
+              <p>Da li ste taj dan bili na bolovanju? Ako je bolovanje onda bi ostale vrijednosti trebale biti 00:00</p>
+              <p>Slična stvar bi trebala biti i sa GO ali kako nisam još bio na GO neznam kak se raćuna pa nisam taj dodatak ni pokušao za sad dodati, ali ako netko zna slobodno javi na <a href="mailto:zdravek.sprite@gmail.com">mail zdravek.sprite@gmail.com</a></p>
             </div>
 
             <!-- nocna -->
             <div class="mt-4">
               <x-label for="night_duration" :value="__('Rad od ponoći')" />
-              <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value="old('night_duration')" />
+              <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value="{{old('night_duration')?? '00:00'}}" />
+              <p>Još nisam radio noćnu pa neznam kak se raćuna, ali pošto se započinje smjena u jednom danu a završava u drugom dodao sam da se može odrediti koliko se radilo od ponoći</p>
+              <p>Znaći ako se radilo od 22 sata i smjena je trajala 8 sati, onda bi trebalo biti početak 22:00 i dužina 02:00 u prethodnom danu i rad od ponoći 06:00 u ovom danu</p>
+              <p>Još nisam dodao da se automatski ako kraj smjene prelazi na drugi dan podjele sati na 2 dana, ali ako nekome treba slobodno neka javi na <a href="mailto:zdravek.sprite@gmail.com">mail zdravek.sprite@gmail.com</a></p>
             </div>
 
             <!-- pocetak -->
             <div class="mt-4">
               <x-label for="start" :value="__('Početak smjene')" />
-              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value="{{$day->start ? $day->start->format('H:i') : "old('start')"}}" required />
+              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value="{{$day->start ? $day->start->format('H:i') : old('start')?? '06:00'}}" required />
+              <p>Vrijeme kada započinje smjena. Za default vrijednost sam uzeo 06:00, mada uglavnom radim popodne ali kak bi se reklo prva smjena je prva :)</p>
             </div>
 
             <!-- duzina -->
             <div class="mt-4">
               <x-label for="duration" :value="__('Dužina rada')" />
-              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value="old('duration')" required />
+              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value="{{old('duration')?? '08:00'}}" required />
+              <p>Za izračun koliko se sati radilo u danu, mogao sam birati ili da se odabere dužina rada ili da se odabere kraj smjene. Ja sam odabrao dužinu rada, mada je možda odabir kraja smjene jednostavniji i možda to promjenim</p>
+              <p>Sve u svemu i jedna i druga metoda se komplicira kod noćnog rada jer smjena započinje jedan dan, a završava drugi dan. Kako nisam još radio noćne i nije da planiram, mada ćujem da je dosta veća lova, s tim djelom problema se nisam dodatno pozabavio pa preostaje ručno narihtavanje.</p>
             </div>
 
             <div class="flex items-center justify-end mt-4">
@@ -546,8 +556,13 @@ class DayController extends Controller
       </x-responsive-nav-link>
     </div>
     <div class="pt-4 pb-1 border-t border-gray-200">
-      <x-responsive-nav-link :href="route('days.index')" :active="request()->routeIs('days.index')">
+      <x-responsive-nav-link :href="route('month')" :active="request()->routeIs('month')">
         {{ __('ERS') }}
+      </x-responsive-nav-link>
+    </div>
+    <div class="pb-1 border-gray-200">
+      <x-responsive-nav-link :href="route('days.create')" :active="request()->routeIs('days.create')">
+        {{ __('Novi dan') }}
       </x-responsive-nav-link>
     </div>
     <div class="pt-4 pb-1 border-t border-gray-200">

@@ -120,7 +120,8 @@ class DayController extends Controller
     //dd($day);
     if (count($old_day) > 0) return view('days.edit')->with(compact('old_day', 'day'));
     $day->save();
-    return redirect(route('days.show', ['date' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated');
+    //return redirect(route('days.show', ['date' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated');
+    return redirect(route('days.show', ['day' => $day]))->with('success', 'Day Updated');
   }
 
   /**
@@ -147,7 +148,7 @@ class DayController extends Controller
   //public function edit(Day $day)
   public function edit($date)
   {
-    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
+    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->first();
     //dd($day);
     return view('days.edit')->with('day', $day);
   }
