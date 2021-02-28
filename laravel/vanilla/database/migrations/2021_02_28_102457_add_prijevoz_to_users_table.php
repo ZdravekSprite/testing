@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBrutoToUsersTable extends Migration
+class AddPrijevozToUsersTable extends Migration
 {
   /**
    * Run the migrations.
@@ -14,8 +14,8 @@ class AddBrutoToUsersTable extends Migration
   public function up()
   {
     Schema::table('users', function (Blueprint $table) {
-      $table->mediumInteger('bruto')
-        ->after('password')
+      $table->smallInteger('prijevoz')
+        ->after('bruto')
         ->nullable();
     });
   }
@@ -28,7 +28,7 @@ class AddBrutoToUsersTable extends Migration
   public function down()
   {
     Schema::table('users', function (Blueprint $table) {
-      $table->dropColumn('bruto');
+      $table->dropColumn('prijevoz');
     });
   }
 }

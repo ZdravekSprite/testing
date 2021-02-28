@@ -32,4 +32,4 @@ Route::get('/month', [DayController::class, 'month'])->name('month');
 Route::get('/month/{month}', [DayController::class, 'month']);
 Route::get('/days/create/{date}', [DayController::class, 'create']);
 Route::get('/lista', PlatnaLista::class)->name('lista');
-Route::put('/lista', [PlatnaLista::class, 'bruto'])->name('bruto');
+Route::put('/lista', [PlatnaLista::class, 'data']);

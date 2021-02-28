@@ -1,10 +1,9 @@
 ## Platna lista
 
 da bi izracunao placu, osim sata rada, trebam definirati:
-[] koliki je bruto
+[x] koliki je bruto
 ```
 php artisan make:migration add_bruto_to_users_table --table=users
-php artisan migrate
 ```
 ### database\migrations\2021_02_28_091056_add_bruto_to_users_table.php
 ```
@@ -24,10 +23,37 @@ php artisan migrate
   }
 ```
 ```
+php artisan migrate
 git add .
 git commit -am "add bruto [laravel]"
 ```
 [x] koliki je prijevoz
+```
+php artisan make:migration add_prijevoz_to_users_table --table=users
+php artisan migrate
+```
+### database\migrations\2021_02_28_102457_add_prijevoz_to_users_table.php
+```
+  public function up()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->smallInteger('prijevoz')
+        ->after('bruto')
+        ->nullable();
+    });
+  }
+  public function down()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->dropColumn('prijevoz');
+    });
+  }
+```
+```
+php artisan migrate
+git add .
+git commit -am "add prijevoz [laravel]"
+```
 [x] koliki je prirez
 [x] koliki je osnovni odbitak
 
@@ -36,13 +62,18 @@ git commit -am "add bruto [laravel]"
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-          <form method="POST" action="{{ route('bruto') }}">
+          <form method="POST" action="{{ route('lista') }}">
             @csrf
             @method('PUT')
             <!-- bruto -->
             <div class="mt-4">
               <x-label for="bruto" :value="__('Bruto')" />
               <input id="bruto" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="bruto" value="{{Auth::user()->bruto ? Auth::user()->bruto : old('bruto')?? 5300}}" min="4250" step="50" />
+            </div>
+            <!-- prijevoz -->
+            <div class="mt-4">
+              <x-label for="prijevoz" :value="__('Prijevoz')" />
+              <input id="prijevoz" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prijevoz" value="{{Auth::user()->prijevoz ? Auth::user()->prijevoz : old('prijevoz')?? 360}}" min="0" step="10" />
             </div>
             <div class="flex items-center justify-end mt-4">
               <x-button class="ml-4">
@@ -58,7 +89,7 @@ php artisan make:controller PlatnaLista --invokable
 ```
 use App\Http\Controllers\PlatnaLista;
 Route::get('/lista', PlatnaLista::class)->name('lista');
-Route::put('/lista', [PlatnaLista::class, 'bruto'])->name('bruto');
+Route::put('/lista', [PlatnaLista::class, 'data']);
 ```
 ### resources\views\layouts\navigation.blade.php
 ```
@@ -98,24 +129,27 @@ class PlatnaLista extends Controller
   }
 
   /**
-   * Store bruto resource in storage.
+   * Store user resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function bruto(Request $request)
+  public function data(Request $request)
   {
     $this->validate($request, [
-      'bruto' => 'required'
+      'bruto' => 'required',
+      'prijevoz' => 'required'
     ]);
     $bruto = $request->input('bruto');
+    $prijevoz = $request->input('prijevoz');
     $user = User::find(Auth::id());
     //$user = Auth::user();
     //dd($user);
     $user->bruto = $bruto;
+    $user->prijevoz = $prijevoz;
     $user->save();
     //dd($request);
-    return redirect(route('dashboard'))->with('success', 'Bruto Updated');
+    return redirect(route('dashboard'))->with('success', 'User Updated');
   }
 
   /**
@@ -307,11 +341,7 @@ class PlatnaLista extends Controller
             </label>
             <label class="block">
               <span class="text-gray-700">Prijevoz:</span>
-              <select class="form-select py-1 block w-full mt-1" name="myprijevoz" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                @foreach ($data['prijevozOptions'] as $key => $value)
-                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $value, 'odbitak' => $data['odbitak'], 'prirez' => $data['prirez'], 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myprijevoz', $data['prijevoz'])) selected="selected" @endif>{{ $value }}</option>
-                @endforeach
-              </select>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['prijevoz']}}"  disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Odbitak:</span>

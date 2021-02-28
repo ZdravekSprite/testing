@@ -18,24 +18,27 @@ class PlatnaLista extends Controller
   }
 
   /**
-   * Store bruto resource in storage.
+   * Store user resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function bruto(Request $request)
+  public function data(Request $request)
   {
     $this->validate($request, [
-      'bruto' => 'required'
+      'bruto' => 'required',
+      'prijevoz' => 'required'
     ]);
     $bruto = $request->input('bruto');
+    $prijevoz = $request->input('prijevoz');
     $user = User::find(Auth::id());
     //$user = Auth::user();
     //dd($user);
     $user->bruto = $bruto;
+    $user->prijevoz = $prijevoz;
     $user->save();
     //dd($request);
-    return redirect(route('dashboard'))->with('success', 'Bruto Updated');
+    return redirect(route('dashboard'))->with('success', 'User Updated');
   }
 
   /**
@@ -46,11 +49,10 @@ class PlatnaLista extends Controller
    */
   public function __invoke(Request $request)
   {
-    $bruto = $request->input('bruto') != null ? $request->input('bruto') : Auth::user()->bruto?? 5300;
+    $bruto = Auth::user()->bruto?? 5300;
     $data['bruto'] = $bruto;
-    $prijevoz = $request->input('prijevoz') != null ? $request->input('prijevoz') : 400;
+    $prijevoz = Auth::user()->prijevoz?? 400;
     $data['prijevoz'] = $prijevoz;
-    $data['prijevozOptions'] = [360,400,600];
     $odbitak = $request->input('odbitak') != null ? $request->input('odbitak') : 4000;
     $data['odbitak'] = $odbitak;
     $data['odbitakOptions'] = [4000,5750,8250,11750];
