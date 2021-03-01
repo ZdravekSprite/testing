@@ -51,12 +51,12 @@ class PlatnaLista extends Controller
   {
     $bruto = Auth::user()->bruto?? 5300;
     $data['bruto'] = $bruto;
-    $prijevoz = Auth::user()->prijevoz?? 400;
+    $prijevoz = Auth::user()->prijevoz?? 360;
     $data['prijevoz'] = $prijevoz;
     $odbitak = $request->input('odbitak') != null ? $request->input('odbitak') : 4000;
     $data['odbitak'] = $odbitak;
     $data['odbitakOptions'] = [4000,5750,8250,11750];
-    $prirez = $request->input('prirez') != null ? $request->input('prirez') : 12;
+    $prirez = $request->input('prirez') != null ? $request->input('prirez') : 18;
     $data['prirez'] = $prirez;
     $data['prirezOptions'] = [0,1,2,3,4,5,6,7,7.5,8,9,10,12,18];
     $prekovremeni = $request->input('prekovremeni') != null ? $request->input('prekovremeni') : 0;
@@ -91,10 +91,10 @@ class PlatnaLista extends Controller
           $def_h = 0;
           break;
         case 6:
-          $def_h = 5;
+          $def_h = Auth::id() == 2 ? 0 : 5;
           break;
         default:
-          $def_h = 7;
+          $def_h = Auth::id() == 2 ? 8 : 7;
           break;
       }
       //dd($hoursWork);

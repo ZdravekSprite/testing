@@ -121,7 +121,8 @@ class DayController extends Controller
     if (count($old_day) > 0) return view('days.edit')->with(compact('old_day', 'day'));
     $day->save();
     //return redirect(route('days.show', ['date' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated');
-    return redirect(route('days.show', ['day' => $day]))->with('success', 'Day Updated');
+    //return redirect(route('days.show', ['day' => $day]))->with('success', 'Day Updated');
+    return redirect(route('month').'/'.$day->date->format('m.Y'))->with('success', 'Day Updated');
   }
 
   /**
