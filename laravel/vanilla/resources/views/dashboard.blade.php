@@ -26,6 +26,11 @@
               <x-label for="prijevoz" :value="__('Prijevoz')" />
               <input id="prijevoz" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prijevoz" value="{{Auth::user()->prijevoz ? Auth::user()->prijevoz : old('prijevoz')?? 360}}" min="0" step="10" />
             </div>
+            <!-- prirez -->
+            <div class="mt-4">
+              <x-label for="prirez" :value="__('Prirez')" />
+              <input id="prirez" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prirez" value="{{Auth::user()->prirez ? Auth::user()->prirez/10 : old('prirez')?? 18}}" min="0" step="0.5" />
+            </div>
             <div class="flex items-center justify-end mt-4">
               <x-button class="ml-4">
                 {{ __('Spremi') }}

@@ -30,7 +30,6 @@ git commit -am "add bruto [laravel]"
 [x] koliki je prijevoz
 ```
 php artisan make:migration add_prijevoz_to_users_table --table=users
-php artisan migrate
 ```
 ### database\migrations\2021_02_28_102457_add_prijevoz_to_users_table.php
 ```
@@ -55,6 +54,31 @@ git add .
 git commit -am "add prijevoz [laravel]"
 ```
 [x] koliki je prirez
+```
+php artisan make:migration add_prirez_to_users_table --table=users
+```
+### database\migrations\2021_03_02_101302_add_prirez_to_users_table.php
+```
+  public function up()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->smallInteger('prirez')
+        ->after('prijevoz')
+        ->nullable();
+    });
+  }
+  public function down()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->dropColumn('prirez');
+    });
+  }
+```
+```
+php artisan migrate
+git add .
+git commit -am "add prirez [laravel]"
+```
 [x] koliki je osnovni odbitak
 
 ### resources\views\dashboard.blade.php
@@ -74,6 +98,11 @@ git commit -am "add prijevoz [laravel]"
             <div class="mt-4">
               <x-label for="prijevoz" :value="__('Prijevoz')" />
               <input id="prijevoz" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prijevoz" value="{{Auth::user()->prijevoz ? Auth::user()->prijevoz : old('prijevoz')?? 360}}" min="0" step="10" />
+            </div>
+            <!-- prirez -->
+            <div class="mt-4">
+              <x-label for="prirez" :value="__('Prirez')" />
+              <input id="prirez" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prirez" value="{{Auth::user()->prirez ? Auth::user()->prirez/10 : old('prirez')?? 18}}" min="0" step="0.5" />
             </div>
             <div class="flex items-center justify-end mt-4">
               <x-button class="ml-4">
@@ -138,15 +167,18 @@ class PlatnaLista extends Controller
   {
     $this->validate($request, [
       'bruto' => 'required',
-      'prijevoz' => 'required'
+      'prijevoz' => 'required',
+      'prirez' => 'required'
     ]);
     $bruto = $request->input('bruto');
     $prijevoz = $request->input('prijevoz');
+    $prirez = $request->input('prirez')*10;
     $user = User::find(Auth::id());
     //$user = Auth::user();
     //dd($user);
     $user->bruto = $bruto;
     $user->prijevoz = $prijevoz;
+    $user->prirez = $prirez;
     $user->save();
     //dd($request);
     return redirect(route('dashboard'))->with('success', 'User Updated');
@@ -160,17 +192,15 @@ class PlatnaLista extends Controller
    */
   public function __invoke(Request $request)
   {
-    $bruto = $request->input('bruto') != null ? $request->input('bruto') : Auth::user()->bruto?? 5300;
+    $bruto = Auth::user()->bruto?? 5300;
     $data['bruto'] = $bruto;
-    $prijevoz = $request->input('prijevoz') != null ? $request->input('prijevoz') : 400;
+    $prijevoz = Auth::user()->prijevoz?? 360;
     $data['prijevoz'] = $prijevoz;
-    $data['prijevozOptions'] = [360,400,600];
     $odbitak = $request->input('odbitak') != null ? $request->input('odbitak') : 4000;
     $data['odbitak'] = $odbitak;
     $data['odbitakOptions'] = [4000,5750,8250,11750];
-    $prirez = $request->input('prirez') != null ? $request->input('prirez') : 12;
-    $data['prirez'] = $prirez;
-    $data['prirezOptions'] = [0,1,2,3,4,5,6,7,7.5,8,9,10,12,18];
+    $prirez = Auth::user()->prirez?? 180;
+    $data['prirez'] = $prirez/10;
     $prekovremeni = $request->input('prekovremeni') != null ? $request->input('prekovremeni') : 0;
     $data['prekovremeni'] = $prekovremeni;
     $data['prekovremeniOptions'] = [0,8,16,24,32];
@@ -203,10 +233,10 @@ class PlatnaLista extends Controller
           $def_h = 0;
           break;
         case 6:
-          $def_h = 5;
+          $def_h = Auth::id() == 2 ? 0 : 5;
           break;
         default:
-          $def_h = 7;
+          $def_h = Auth::id() == 2 ? 8 : 7;
           break;
       }
       //dd($hoursWork);
@@ -337,11 +367,11 @@ class PlatnaLista extends Controller
           <div class="flex justify-center">
             <label class="block">
               <span class="text-gray-700">Bruto:</span>
-              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['bruto']}}"  disabled>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['bruto']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Prijevoz:</span>
-              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['prijevoz']}}"  disabled>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['prijevoz']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Odbitak:</span>
@@ -353,11 +383,7 @@ class PlatnaLista extends Controller
             </label>
             <label class="block">
               <span class="text-gray-700">Prirez:</span>
-              <select class="form-select py-1 block w-full mt-1" name="myprirez" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                @foreach ($data['prirezOptions'] as $key => $value)
-                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $data['prijevoz'], 'odbitak' => $data['odbitak'], 'prirez' => $value, 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myprirez', $data['prirez'])) selected="selected" @endif>{{ $value }}</option>
-                @endforeach
-              </select>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['prirez']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Prekovremeni:</span>
@@ -433,26 +459,34 @@ class PlatnaLista extends Controller
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.4.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.4.kn'] }}</td>
               </tr>
+              @if($data['1.7a.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7a Praznici. Blagdani, izbori</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7a.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7a.kn'] }}</td>
               </tr>
+              @endif
+              @if($data['1.7d.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7d Bolovanje do 42 dana</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7d.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7d.kn'] }}</td>
               </tr>
+              @endif
+              @if($data['1.7e.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7e Dodatak za rad nedjeljom</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7e.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7e.kn'] }}</td>
               </tr>
+              @endif
+              @if($data['1.7f.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7f Dodatak za rad na praznik</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7f.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7f.kn'] }}</td>
               </tr>
+              @endif
               <tr>
                 <td class="w-3/4 border p-2" colspan="2">2. OSTALI OBLICI RADA TEMELJEM KOJIH OSTVARUJE PRAVO NA UVEĆANJE PLAĆE PREMA KOLEKTIVNOM UGOVORU, PRAVILNIKU O RADU ILI UGOVORU O RADU I NOVČANI IZNOS PO TOJ OSNOVI (SATI PRIPRAVNOSTI)</td>
                 <td class="w-1/8 border p-2 text-center"></td>
@@ -548,5 +582,5 @@ class PlatnaLista extends Controller
 ```
 ```
 git add .
-git commit -am "platna lista v0.2 [laravel]"
+git commit -am "platna lista v0.3 [laravel]"
 ```

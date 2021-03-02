@@ -27,15 +27,18 @@ class PlatnaLista extends Controller
   {
     $this->validate($request, [
       'bruto' => 'required',
-      'prijevoz' => 'required'
+      'prijevoz' => 'required',
+      'prirez' => 'required'
     ]);
     $bruto = $request->input('bruto');
     $prijevoz = $request->input('prijevoz');
+    $prirez = $request->input('prirez')*10;
     $user = User::find(Auth::id());
     //$user = Auth::user();
     //dd($user);
     $user->bruto = $bruto;
     $user->prijevoz = $prijevoz;
+    $user->prirez = $prirez;
     $user->save();
     //dd($request);
     return redirect(route('dashboard'))->with('success', 'User Updated');
@@ -56,9 +59,8 @@ class PlatnaLista extends Controller
     $odbitak = $request->input('odbitak') != null ? $request->input('odbitak') : 4000;
     $data['odbitak'] = $odbitak;
     $data['odbitakOptions'] = [4000,5750,8250,11750];
-    $prirez = $request->input('prirez') != null ? $request->input('prirez') : 18;
-    $data['prirez'] = $prirez;
-    $data['prirezOptions'] = [0,1,2,3,4,5,6,7,7.5,8,9,10,12,18];
+    $prirez = Auth::user()->prirez?? 180;
+    $data['prirez'] = $prirez/10;
     $prekovremeni = $request->input('prekovremeni') != null ? $request->input('prekovremeni') : 0;
     $data['prekovremeni'] = $prekovremeni;
     $data['prekovremeniOptions'] = [0,8,16,24,32];
