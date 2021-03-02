@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddPrirezToUsersTable extends Migration
+class AddDataToUsersTable extends Migration
 {
   /**
    * Run the migrations.
@@ -14,8 +14,17 @@ class AddPrirezToUsersTable extends Migration
   public function up()
   {
     Schema::table('users', function (Blueprint $table) {
-      $table->smallInteger('prirez')
+      $table->mediumInteger('bruto')
+        ->after('password')
+        ->nullable();
+      $table->smallInteger('prijevoz')
+        ->after('bruto')
+        ->nullable();
+      $table->mediumInteger('odbitak')
         ->after('prijevoz')
+        ->nullable();
+      $table->smallInteger('prirez')
+        ->after('odbitak')
         ->nullable();
     });
   }
@@ -28,7 +37,7 @@ class AddPrirezToUsersTable extends Migration
   public function down()
   {
     Schema::table('users', function (Blueprint $table) {
-      $table->dropColumn('prirez');
+      $table->dropColumn('bruto', 'prijevoz', 'odbitak', 'prirez');
     });
   }
 }

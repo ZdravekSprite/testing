@@ -34,8 +34,11 @@ Route::get('/month/{month}', [DayController::class, 'month']);
 Route::get('/days/create/{date}', [DayController::class, 'create']);
 Route::get('/lista', PlatnaLista::class)->name('lista');
 Route::put('/lista', [PlatnaLista::class, 'data']);
-
 Route::get('migrate', function () {
   Artisan::call('migrate');
   return 'Database migration success.';
 })->middleware(['auth'])->name('migrate');
+Route::get('rollback', function () {
+  Artisan::call('migrate:rollback');
+  return 'Database migrate:rollback success.';
+})->middleware(['auth'])->name('rollback');

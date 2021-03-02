@@ -2,112 +2,62 @@
 
 da bi izracunao placu, osim sata rada, trebam definirati:
 [x] koliki je bruto
+[x] koliki je prijevoz
+[x] koliki je osnovni odbitak
+[x] koliki je prirez
 ```
-php artisan make:migration add_bruto_to_users_table --table=users
+php artisan make:migration add_data_to_users_table --table=users
 ```
-### database\migrations\2021_02_28_091056_add_bruto_to_users_table.php
+### database\migrations\2021_03_02_111443_add_data_to_users_table.php
 ```
   public function up()
   {
     Schema::table('users', function (Blueprint $table) {
       $table->mediumInteger('bruto')
         ->after('password')
-        ->nullable(5300);
-    });
-  }
-  public function down()
-  {
-    Schema::table('users', function (Blueprint $table) {
-      $table->dropColumn('bruto');
-    });
-  }
-```
-```
-php artisan migrate
-git add .
-git commit -am "add bruto [laravel]"
-```
-[x] koliki je prijevoz
-```
-php artisan make:migration add_prijevoz_to_users_table --table=users
-```
-### database\migrations\2021_02_28_102457_add_prijevoz_to_users_table.php
-```
-  public function up()
-  {
-    Schema::table('users', function (Blueprint $table) {
+        ->nullable();
       $table->smallInteger('prijevoz')
         ->after('bruto')
         ->nullable();
-    });
-  }
-  public function down()
-  {
-    Schema::table('users', function (Blueprint $table) {
-      $table->dropColumn('prijevoz');
-    });
-  }
-```
-```
-php artisan migrate
-git add .
-git commit -am "add prijevoz [laravel]"
-```
-[x] koliki je prirez
-```
-php artisan make:migration add_prirez_to_users_table --table=users
-```
-### database\migrations\2021_03_02_101302_add_prirez_to_users_table.php
-```
-  public function up()
-  {
-    Schema::table('users', function (Blueprint $table) {
-      $table->smallInteger('prirez')
+      $table->mediumInteger('odbitak')
         ->after('prijevoz')
         ->nullable();
-    });
-  }
-  public function down()
-  {
-    Schema::table('users', function (Blueprint $table) {
-      $table->dropColumn('prirez');
-    });
-  }
-```
-```
-php artisan migrate
-git add .
-git commit -am "add prirez [laravel]"
-```
-[x] koliki je osnovni odbitak
-```
-php artisan make:migration add_odbitak_to_users_table --table=users
-```
-### database\migrations\2021_03_02_103517_add_odbitak_to_users_table.php
-```
-  public function up()
-  {
-    Schema::table('users', function (Blueprint $table) {
-      $table->smallInteger('odbitak')
-        ->after('prirez')
+      $table->smallInteger('prirez')
+        ->after('odbitak')
         ->nullable();
     });
   }
   public function down()
   {
     Schema::table('users', function (Blueprint $table) {
-      $table->dropColumn('odbitak');
+      $table->dropColumn('bruto', 'prijevoz', 'odbitak', 'prirez');
     });
   }
 ```
 ```
 php artisan migrate
-git add .
-git commit -am "add odbitak [laravel]"
 ```
 
 ### resources\views\dashboard.blade.php
 ```
+          @if (Auth::id() == 1)
+          <p>
+            <a href="{{ route('migrate') }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+              </svg>
+              migrate
+            </a>
+          </p>
+          <p>
+            <a href="{{ route('rollback') }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+              </svg>
+              rollback
+            </a>
+          </p>
+          @endif
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
@@ -123,6 +73,16 @@ git commit -am "add odbitak [laravel]"
             <div class="mt-4">
               <x-label for="prijevoz" :value="__('Prijevoz')" />
               <input id="prijevoz" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prijevoz" value="{{Auth::user()->prijevoz ? Auth::user()->prijevoz : old('prijevoz')?? 360}}" min="0" step="10" />
+            </div>
+            <!-- odbitak -->
+            <div class="mt-4">
+              <x-label for="odbitak" :value="__('Odbitak')" />
+              <input id="odbitak" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="odbitak" value="{{Auth::user()->odbitak ? Auth::user()->odbitak : old('odbitak')?? 4000}}" min="4000" step="50" />
+              <div class="ml-12">
+              <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                <a href="https://www.porezna-uprava.hr/baza_znanja/Stranice/OsobniOdbitak.aspx" class="underline text-gray-900 dark:text-white">OSOBNI ODBITAK</a>
+              </div>
+            </div>
             </div>
             <!-- prirez -->
             <div class="mt-4">
@@ -144,6 +104,14 @@ php artisan make:controller PlatnaLista --invokable
 use App\Http\Controllers\PlatnaLista;
 Route::get('/lista', PlatnaLista::class)->name('lista');
 Route::put('/lista', [PlatnaLista::class, 'data']);
+Route::get('migrate', function () {
+  Artisan::call('migrate');
+  return 'Database migration success.';
+})->middleware(['auth'])->name('migrate');
+Route::get('rollback', function () {
+  Artisan::call('migrate:rollback');
+  return 'Database migrate:rollback success.';
+})->middleware(['auth'])->name('rollback');
 ```
 ### resources\views\layouts\navigation.blade.php
 ```
@@ -607,5 +575,5 @@ class PlatnaLista extends Controller
 ```
 ```
 git add .
-git commit -am "platna lista v0.3 [laravel]"
+git commit -am "platna lista v0.4 [laravel]"
 ```
