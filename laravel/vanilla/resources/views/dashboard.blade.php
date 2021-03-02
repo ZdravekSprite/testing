@@ -10,6 +10,9 @@
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
           You're logged in!
+          @if (Auth::id() == 1)
+          <p><a href="{{ route('migrate') }}">->migrate<-</a></p>
+          @endif
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
@@ -25,6 +28,11 @@
             <div class="mt-4">
               <x-label for="prijevoz" :value="__('Prijevoz')" />
               <input id="prijevoz" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prijevoz" value="{{Auth::user()->prijevoz ? Auth::user()->prijevoz : old('prijevoz')?? 360}}" min="0" step="10" />
+            </div>
+            <!-- odbitak -->
+            <div class="mt-4">
+              <x-label for="odbitak" :value="__('Odbitak')" />
+              <input id="odbitak" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="odbitak" value="{{Auth::user()->odbitak ? Auth::user()->odbitak : old('odbitak')?? 4000}}" min="4000" step="50" />
             </div>
             <!-- prirez -->
             <div class="mt-4">

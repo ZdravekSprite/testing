@@ -20,11 +20,7 @@
             </label>
             <label class="block">
               <span class="text-gray-700">Odbitak:</span>
-              <select class="form-select py-1 block w-full mt-1" name="myodbitak" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                @foreach ($data['odbitakOptions'] as $key => $value)
-                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $data['prijevoz'], 'odbitak' => $value, 'prirez' => $data['prirez'], 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myodbitak', $data['odbitak'])) selected="selected" @endif>{{ $value }}</option>
-                @endforeach
-              </select>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['odbitak']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Prirez:</span>

@@ -80,6 +80,31 @@ git add .
 git commit -am "add prirez [laravel]"
 ```
 [x] koliki je osnovni odbitak
+```
+php artisan make:migration add_odbitak_to_users_table --table=users
+```
+### database\migrations\2021_03_02_103517_add_odbitak_to_users_table.php
+```
+  public function up()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->smallInteger('odbitak')
+        ->after('prirez')
+        ->nullable();
+    });
+  }
+  public function down()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->dropColumn('odbitak');
+    });
+  }
+```
+```
+php artisan migrate
+git add .
+git commit -am "add odbitak [laravel]"
+```
 
 ### resources\views\dashboard.blade.php
 ```

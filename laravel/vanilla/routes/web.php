@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PlatnaLista;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +34,8 @@ Route::get('/month/{month}', [DayController::class, 'month']);
 Route::get('/days/create/{date}', [DayController::class, 'create']);
 Route::get('/lista', PlatnaLista::class)->name('lista');
 Route::put('/lista', [PlatnaLista::class, 'data']);
+
+Route::get('migrate', function () {
+  Artisan::call('migrate');
+  return 'Database migration success.';
+})->middleware(['auth'])->name('migrate');
