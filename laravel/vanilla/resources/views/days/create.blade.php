@@ -28,7 +28,14 @@
               <x-label for="sick" :value="__('Bolovanje')" />
               <input id="sick" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="sick" />
               <p>Da li ste taj dan bili na bolovanju? Ako je bolovanje onda bi ostale vrijednosti trebale biti 00:00</p>
-              <p>Slična stvar bi trebala biti i sa GO ali kako nisam još bio na GO neznam kak se raćuna pa nisam taj dodatak ni pokušao za sad dodati, ali ako netko zna slobodno javi na <a href="mailto:zdravek.sprite@gmail.com">mail zdravek.sprite@gmail.com</a></p>
+            </div>
+
+            <!-- GO -->
+            <div class="mt-4">
+              <x-label for="go" :value="__('Godišnji')" />
+              <input id="go" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="go" />
+              <p>Da li ste taj dan bili na godišnjem? Ako je godišnji onda bi ostale vrijednosti trebale biti 00:00</p>
+              <p>Kako nisam još bio na GO ne znam kak se računa ali pretpostavljam da kao i za bolovanje, ali ako netko zna točno slobodno javi na <a href="mailto:zdravek.sprite@gmail.com">mail zdravek.sprite@gmail.com</a></p>
             </div>
 
             <!-- nocna -->

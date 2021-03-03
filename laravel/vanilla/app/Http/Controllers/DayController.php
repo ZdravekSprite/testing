@@ -86,11 +86,9 @@ class DayController extends Controller
     //dd($request->input('date'));
     if (null != $request->input('date')) {
       $day->date = $request->input('date');
-      if ($request->input('sick') == true) {
-        $day->sick = true;
-      } else {
-        if ($request->input('start') != null) $day->start = $request->input('start');
-      }
+      if ($request->input('sick') == true) $day->sick = true;
+      if ($request->input('go') == true) $day->go = true;
+      if ($request->input('start') != null) $day->start = $request->input('start');
     }
     //dd($day);
     return view('days.create')->with(compact('day'));
@@ -113,6 +111,7 @@ class DayController extends Controller
     $day->date = $request->input('date');
     $day->user_id = Auth::user()->id;
     if (null != $request->input('sick')) $day->sick = $request->input('sick') == 'on' ? true : false;
+    if (null != $request->input('go')) $day->go = $request->input('go') == 'on' ? true : false;
     if (null != $request->input('night_duration')) $day->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day->night_duration;
     $day->start = $request->input('start');
     $day->duration = $request->input('duration');
@@ -167,6 +166,7 @@ class DayController extends Controller
     //dd($request);
     $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
     if (null != $request->input('sick')) $day[0]->sick = $request->input('sick') == 'on' ? true : false;
+    if (null != $request->input('go')) $day[0]->go = $request->input('go') == 'on' ? true : false;
     $day[0]->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day[0]->night_duration;
     $day[0]->start = $request->input('start');
     $day[0]->duration = $request->input('duration');

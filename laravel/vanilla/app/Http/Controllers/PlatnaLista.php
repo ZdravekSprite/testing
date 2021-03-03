@@ -35,7 +35,7 @@ class PlatnaLista extends Controller
     $bruto = $request->input('bruto');
     $prijevoz = $request->input('prijevoz');
     $odbitak = $request->input('odbitak');
-    $prirez = $request->input('prirez')*10;
+    $prirez = $request->input('prirez') * 10;
     $user = User::find(Auth::id());
     //$user = Auth::user();
     //dd($user);
@@ -55,17 +55,17 @@ class PlatnaLista extends Controller
    */
   public function __invoke(Request $request)
   {
-    $bruto = Auth::user()->bruto?? 5300;
+    $bruto = Auth::user()->bruto ?? 5300;
     $data['bruto'] = $bruto;
-    $prijevoz = Auth::user()->prijevoz?? 360;
+    $prijevoz = Auth::user()->prijevoz ?? 360;
     $data['prijevoz'] = $prijevoz;
-    $odbitak = Auth::user()->odbitak?? 4000;
+    $odbitak = Auth::user()->odbitak ?? 4000;
     $data['odbitak'] = $odbitak;
-    $prirez = Auth::user()->prirez?? 180;
-    $data['prirez'] = $prirez/10;
+    $prirez = Auth::user()->prirez ?? 180;
+    $data['prirez'] = $prirez / 10;
     $prekovremeni = $request->input('prekovremeni') != null ? $request->input('prekovremeni') : 0;
     $data['prekovremeni'] = $prekovremeni;
-    $data['prekovremeniOptions'] = [0,8,16,24,32];
+    $data['prekovremeniOptions'] = [0, 8, 16, 24, 32];
 
     if ($request->input('month') == null) {
       $month['x'] = Carbon::now();
@@ -84,6 +84,8 @@ class PlatnaLista extends Controller
     $hoursNorm = 0;
     $hoursNormHoli = 0;
     $hoursNormSick = 0;
+    $hoursNormGO = 0;
+    $daysGO = 0;
     $hoursWork = Carbon::create(0);
     $hoursWorkHoli = Carbon::create(0);
     $hoursWorkSunday = Carbon::create(0);
@@ -109,6 +111,10 @@ class PlatnaLista extends Controller
       //dd($hoursNorm,$hoursNormHoli);
       if ($daysColection->where('date', '=', $from->addDays($i))->where('sick', '=', true)->first() != null) {
         $hoursNormSick += $def_h;
+      }
+      if ($daysColection->where('date', '=', $from->addDays($i))->where('go', '=', true)->first() != null) {
+        $hoursNormGO += $def_h;
+        if ($def_h > 0 ) $daysGO++;
       }
       if ($daysColection->where('date', '=', $from->addDays($i))->first() != null) {
         $temp_day = $daysColection->where('date', '=', $from->addDays($i))->first();
@@ -146,15 +152,21 @@ class PlatnaLista extends Controller
     // treba dodat provjeru da li zaposlen do kraja mjeseca
     $data['III.do'] = $to->format('d');
     // 1.1. Za redoviti rad
-    $h1_1 = $minWork / 60 > $hoursNorm - $hoursNormHoli - $hoursNormSick ? $hoursNorm - $hoursNormHoli - $hoursNormSick : $minWork / 60;
+    $hoursWorkNorm = $hoursNorm - $hoursNormHoli - $hoursNormSick - $hoursNormGO;
+    $h1_1 = $minWork / 60 > $hoursWorkNorm ? $hoursWorkNorm : $minWork / 60;
     $data['1.1.h'] = number_format($h1_1, 2, ',', '.'); //'158,00';
     $data['1.1.kn'] = number_format($h1_1 * $perHour, 2, ',', '.'); //'4.867,98';
     // 1.4 Za prekovremeni rad
     $h1_4 = $prekovremeni;
-    $overWork = $minWork/60 - $hoursNorm + $hoursNormHoli;
+    $overWork = $minWork / 60 - $hoursWorkNorm;
 
-    $data['1.4.h'] = number_format($h1_4, 2, ',', '.').' ('.$overWork.')'; //'24,00';
+    $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . $overWork . ')'; //'24,00';
     $data['1.4.kn'] = number_format($h1_4 * $perHour * 1.5, 2, ',', '.'); //'1.109,16';
+    // 1.x Za godišnji
+    $h1_go = $hoursNormGO;
+
+    $data['1.go.h'] = number_format($h1_go, 2, ',', '.') . ' (' . $daysGO . ')';
+    $data['1.go.kn'] = number_format($h1_go * $perHour, 2, ',', '.');
     // 1.7a Praznici. Blagdani, izbori
     $data['1.7a.h'] = number_format($hoursNormHoli, 2, ',', '.'); //'14,00';
     $data['1.7a.kn'] = number_format($hoursNormHoli * $perHour, 2, ',', '.'); //'431,34';
@@ -173,7 +185,7 @@ class PlatnaLista extends Controller
     // 3.1. Prijevoz
     $data['3.1.kn'] = number_format($prijevoz, 2, ',', '.'); //'400,00';
     // 4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA PO STAVKAMA 1. DO 3.
-    $kn5 = ($h1_1 + $h1_4 * 1.5 + $hoursNormHoli + $hoursNormSick * 0.7588 + $minWorkSunday / 60 * 0.35 + $minWorkHoli / 60 * 0.5) * $perHour;
+    $kn5 = ($h1_1 + $h1_4 * 1.5 + $hoursNormHoli + $hoursNormSick * 0.7588 + $hoursNormGO + $minWorkSunday / 60 * 0.35 + $minWorkHoli / 60 * 0.5) * $perHour;
     $data['4.kn'] = number_format($kn5 + $kn3, 2, ',', '.'); //'7.104,26';
     // 5. OSNOVICA ZA OBRAČUN DOPRINOSA
     $kn5 = round($kn5, 2);

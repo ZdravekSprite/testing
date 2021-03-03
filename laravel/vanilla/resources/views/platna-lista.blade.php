@@ -100,6 +100,13 @@
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.4.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.4.kn'] }}</td>
               </tr>
+              @if($data['1.go.h'] > 0)
+              <tr>
+                <td class="w-3/4 border p-2 pl-6" colspan="2">GO (pretpostavljam da se ovak računa)</td>
+                <td class="w-1/8 border p-2 text-center">{{ $data['1.go.h'] }}</td>
+                <td class="w-1/8 border p-2 text-right">{{ $data['1.go.kn'] }}</td>
+              </tr>
+              @endif
               @if($data['1.7a.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7a Praznici. Blagdani, izbori</td>
