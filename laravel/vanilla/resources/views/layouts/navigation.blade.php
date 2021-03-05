@@ -112,8 +112,13 @@
       </x-responsive-nav-link>
     </div>
     <div class="pt-4 pb-1 border-t border-gray-200">
-      <x-responsive-nav-link :href="route('days.index')" :active="request()->routeIs('days.index')">
+      <x-responsive-nav-link :href="route('month')" :active="request()->routeIs('month')">
         {{ __('ERS') }}
+      </x-responsive-nav-link>
+    </div>
+    <div class="pb-1 border-gray-200">
+      <x-responsive-nav-link :href="route('days.create')" :active="request()->routeIs('days.create')">
+        {{ __('Novi dan') }}
       </x-responsive-nav-link>
     </div>
     <div class="pt-4 pb-1 border-t border-gray-200">

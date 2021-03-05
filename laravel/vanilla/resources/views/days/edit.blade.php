@@ -23,7 +23,13 @@
             <!-- bolovanje -->
             <div class="mt-4">
               <x-label for="sick" :value="__('Bolovanje')" />
-              <x-input id="sick" class="block mt-1 w-full" type="checkbox" name="sick" :value="old('sick')" />
+              <input id="sick" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="sick" {{$day->sick ? 'checked' : ''}} />
+            </div>
+
+            <!-- GO -->
+            <div class="mt-4">
+              <x-label for="go" :value="__('Godišnji')" />
+              <input id="go" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="go" {{$day->go ? 'checked' : ''}} />
             </div>
 
             <!-- nocna -->

@@ -1,11 +1,102 @@
 ## Platna lista
 
 da bi izracunao placu, osim sata rada, trebam definirati:
-[] koliki je bruto
+[x] koliki je bruto
 [x] koliki je prijevoz
-[x] koliki je prirez
 [x] koliki je osnovni odbitak
+[x] koliki je prirez
+```
+php artisan make:migration add_data_to_users_table --table=users
+```
+### database\migrations\2021_03_02_111443_add_data_to_users_table.php
+```
+  public function up()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->mediumInteger('bruto')
+        ->after('password')
+        ->nullable();
+      $table->smallInteger('prijevoz')
+        ->after('bruto')
+        ->nullable();
+      $table->mediumInteger('odbitak')
+        ->after('prijevoz')
+        ->nullable();
+      $table->smallInteger('prirez')
+        ->after('odbitak')
+        ->nullable();
+    });
+  }
+  public function down()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->dropColumn('bruto', 'prijevoz', 'odbitak', 'prirez');
+    });
+  }
+```
+```
+php artisan migrate
+```
 
+### resources\views\dashboard.blade.php
+```
+          @if (Auth::id() == 1)
+          <p>
+            <a href="{{ route('migrate') }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+              </svg>
+              migrate
+            </a>
+          </p>
+          <p>
+            <a href="{{ route('rollback') }}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-left-square" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+              </svg>
+              rollback
+            </a>
+          </p>
+          @endif
+          <!-- Validation Errors -->
+          <x-auth-validation-errors class="mb-4" :errors="$errors" />
+
+          <form method="POST" action="{{ route('lista') }}">
+            @csrf
+            @method('PUT')
+            <!-- bruto -->
+            <div class="mt-4">
+              <x-label for="bruto" :value="__('Bruto')" />
+              <input id="bruto" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="bruto" value="{{Auth::user()->bruto ? Auth::user()->bruto : old('bruto')?? 5300}}" min="4250" step="50" />
+            </div>
+            <!-- prijevoz -->
+            <div class="mt-4">
+              <x-label for="prijevoz" :value="__('Prijevoz')" />
+              <input id="prijevoz" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prijevoz" value="{{Auth::user()->prijevoz ? Auth::user()->prijevoz : old('prijevoz')?? 360}}" min="0" step="10" />
+            </div>
+            <!-- odbitak -->
+            <div class="mt-4">
+              <x-label for="odbitak" :value="__('Odbitak')" />
+              <input id="odbitak" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="odbitak" value="{{Auth::user()->odbitak ? Auth::user()->odbitak : old('odbitak')?? 4000}}" min="4000" step="50" />
+              <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                <a href="https://www.porezna-uprava.hr/baza_znanja/Stranice/OsobniOdbitak.aspx" class="underline text-gray-900 dark:text-white">OSOBNI ODBITAK</a>
+              </div>
+            </div>
+            <!-- prirez -->
+            <div class="mt-4">
+              <x-label for="prirez" :value="__('Prirez')" />
+              <input id="prirez" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prirez" value="{{Auth::user()->prirez ? Auth::user()->prirez/10 : old('prirez')?? 18}}" min="0" step="0.5" />
+              <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                <a href="https://www.porezna-uprava.hr/HR_porezni_sustav/Stranice/Popisi/Stope.aspx" class="underline text-gray-900 dark:text-white">PRIREZ</a>
+              </div>
+            </div>
+            <div class="flex items-center justify-end mt-4">
+              <x-button class="ml-4">
+                {{ __('Spremi') }}
+              </x-button>
+            </div>
+          </form>
+```
 ```
 php artisan make:controller PlatnaLista --invokable
 ```
@@ -13,6 +104,15 @@ php artisan make:controller PlatnaLista --invokable
 ```
 use App\Http\Controllers\PlatnaLista;
 Route::get('/lista', PlatnaLista::class)->name('lista');
+Route::put('/lista', [PlatnaLista::class, 'data']);
+Route::get('migrate', function () {
+  Artisan::call('migrate');
+  return 'Database migration success.';
+})->middleware(['auth'])->name('migrate');
+Route::get('rollback', function () {
+  Artisan::call('migrate:rollback');
+  return 'Database migrate:rollback success.';
+})->middleware(['auth'])->name('rollback');
 ```
 ### resources\views\layouts\navigation.blade.php
 ```
@@ -38,6 +138,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Day;
 use App\Models\Holiday;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -49,6 +150,34 @@ class PlatnaLista extends Controller
   {
     $this->middleware('auth');
   }
+
+  /**
+   * Store user resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function data(Request $request)
+  {
+    $this->validate($request, [
+      'bruto' => 'required',
+      'prijevoz' => 'required',
+      'prirez' => 'required'
+    ]);
+    $bruto = $request->input('bruto');
+    $prijevoz = $request->input('prijevoz');
+    $prirez = $request->input('prirez')*10;
+    $user = User::find(Auth::id());
+    //$user = Auth::user();
+    //dd($user);
+    $user->bruto = $bruto;
+    $user->prijevoz = $prijevoz;
+    $user->prirez = $prirez;
+    $user->save();
+    //dd($request);
+    return redirect(route('dashboard'))->with('success', 'User Updated');
+  }
+
   /**
    * Handle the incoming request.
    *
@@ -57,17 +186,15 @@ class PlatnaLista extends Controller
    */
   public function __invoke(Request $request)
   {
-    $bruto = $request->input('bruto') != null ? $request->input('bruto') : 5300;
+    $bruto = Auth::user()->bruto?? 5300;
     $data['bruto'] = $bruto;
-    $prijevoz = $request->input('prijevoz') != null ? $request->input('prijevoz') : 400;
+    $prijevoz = Auth::user()->prijevoz?? 360;
     $data['prijevoz'] = $prijevoz;
-    $data['prijevozOptions'] = [360,400,600];
     $odbitak = $request->input('odbitak') != null ? $request->input('odbitak') : 4000;
     $data['odbitak'] = $odbitak;
     $data['odbitakOptions'] = [4000,5750,8250,11750];
-    $prirez = $request->input('prirez') != null ? $request->input('prirez') : 12;
-    $data['prirez'] = $prirez;
-    $data['prirezOptions'] = [0,1,2,3,4,5,6,7,7.5,8,9,10,12,18];
+    $prirez = Auth::user()->prirez?? 180;
+    $data['prirez'] = $prirez/10;
     $prekovremeni = $request->input('prekovremeni') != null ? $request->input('prekovremeni') : 0;
     $data['prekovremeni'] = $prekovremeni;
     $data['prekovremeniOptions'] = [0,8,16,24,32];
@@ -100,10 +227,10 @@ class PlatnaLista extends Controller
           $def_h = 0;
           break;
         case 6:
-          $def_h = 5;
+          $def_h = Auth::id() == 2 ? 0 : 5;
           break;
         default:
-          $def_h = 7;
+          $def_h = Auth::id() == 2 ? 8 : 7;
           break;
       }
       //dd($hoursWork);
@@ -200,7 +327,7 @@ class PlatnaLista extends Controller
     $data['9.kn'] = number_format($kn9, 2, ',', '.'); //'1.363,41';
     // 10. IZNOS PREDUJMA POREZA I PRIREZA POREZU NA DOHODAK
     $kn10_20 = round($kn9 * 0.2, 2);
-    $kn10_prirez = round($kn10_20 * $prirez / 100, 2);
+    $kn10_prirez = round($kn10_20 * $prirez / 1000, 2);
     $kn10 = $kn10_20 + $kn10_prirez;
     $data['10.kn'] = number_format($kn10, 2, ',', '.'); //'305,40';
     // 20.00% 1363.41
@@ -234,31 +361,19 @@ class PlatnaLista extends Controller
           <div class="flex justify-center">
             <label class="block">
               <span class="text-gray-700">Bruto:</span>
-              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['bruto']}}"  disabled>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['bruto']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Prijevoz:</span>
-              <select class="form-select py-1 block w-full mt-1" name="myprijevoz" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                @foreach ($data['prijevozOptions'] as $key => $value)
-                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $value, 'odbitak' => $data['odbitak'], 'prirez' => $data['prirez'], 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myprijevoz', $data['prijevoz'])) selected="selected" @endif>{{ $value }}</option>
-                @endforeach
-              </select>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['prijevoz']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Odbitak:</span>
-              <select class="form-select py-1 block w-full mt-1" name="myodbitak" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                @foreach ($data['odbitakOptions'] as $key => $value)
-                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $data['prijevoz'], 'odbitak' => $value, 'prirez' => $data['prirez'], 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myodbitak', $data['odbitak'])) selected="selected" @endif>{{ $value }}</option>
-                @endforeach
-              </select>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['odbitak']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Prirez:</span>
-              <select class="form-select py-1 block w-full mt-1" name="myprirez" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                @foreach ($data['prirezOptions'] as $key => $value)
-                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $data['prijevoz'], 'odbitak' => $data['odbitak'], 'prirez' => $value, 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myprirez', $data['prirez'])) selected="selected" @endif>{{ $value }}</option>
-                @endforeach
-              </select>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['prirez']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Prekovremeni:</span>
@@ -275,10 +390,10 @@ class PlatnaLista extends Controller
                 <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
               </svg>
             </a>
-            <a class="mx-auto" href="{{ route('lista', [$month['x']->format('m.Y')]) }}">
+            <a class="mx-auto" href="{{ route('lista', ['month' => $month['x']->format('m.Y')]) }}">
               Platna lista za {{$month['x']->format('m.Y')}}!
             </a>
-            <a href="{{ route('lista', [$month['+']->format('m.Y')]) }}">
+            <a href="{{ route('lista', ['month' => $month['+']->format('m.Y')]) }}">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
               </svg>
@@ -334,26 +449,41 @@ class PlatnaLista extends Controller
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.4.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.4.kn'] }}</td>
               </tr>
+              @if($data['1.go.h'] > 0)
+              <tr>
+                <td class="w-3/4 border p-2 pl-6" colspan="2">GO (pretpostavljam da se ovak računa)</td>
+                <td class="w-1/8 border p-2 text-center">{{ $data['1.go.h'] }}</td>
+                <td class="w-1/8 border p-2 text-right">{{ $data['1.go.kn'] }}</td>
+              </tr>
+              @endif
+              @if($data['1.7a.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7a Praznici. Blagdani, izbori</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7a.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7a.kn'] }}</td>
               </tr>
+              @endif
+              @if($data['1.7d.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7d Bolovanje do 42 dana</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7d.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7d.kn'] }}</td>
               </tr>
+              @endif
+              @if($data['1.7e.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7e Dodatak za rad nedjeljom</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7e.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7e.kn'] }}</td>
               </tr>
+              @endif
+              @if($data['1.7f.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7f Dodatak za rad na praznik</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7f.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7f.kn'] }}</td>
               </tr>
+              @endif
               <tr>
                 <td class="w-3/4 border p-2" colspan="2">2. OSTALI OBLICI RADA TEMELJEM KOJIH OSTVARUJE PRAVO NA UVEĆANJE PLAĆE PREMA KOLEKTIVNOM UGOVORU, PRAVILNIKU O RADU ILI UGOVORU O RADU I NOVČANI IZNOS PO TOJ OSNOVI (SATI PRIPRAVNOSTI)</td>
                 <td class="w-1/8 border p-2 text-center"></td>
@@ -449,9 +579,5 @@ class PlatnaLista extends Controller
 ```
 ```
 git add .
-git commit -am "platna lista [laravel]"
+git commit -am "platna lista v0.4 [laravel]"
 ```
-## To Do
-
-sick checkbox ne ucitava stanje
-u viewsima sloziti da nema [0], tj ako se posalje vise resursa da se ponudi biranje koji je pravi

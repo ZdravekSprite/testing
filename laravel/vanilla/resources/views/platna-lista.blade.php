@@ -12,31 +12,19 @@
           <div class="flex justify-center">
             <label class="block">
               <span class="text-gray-700">Bruto:</span>
-              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['bruto']}}"  disabled>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['bruto']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Prijevoz:</span>
-              <select class="form-select py-1 block w-full mt-1" name="myprijevoz" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                @foreach ($data['prijevozOptions'] as $key => $value)
-                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $value, 'odbitak' => $data['odbitak'], 'prirez' => $data['prirez'], 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myprijevoz', $data['prijevoz'])) selected="selected" @endif>{{ $value }}</option>
-                @endforeach
-              </select>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['prijevoz']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Odbitak:</span>
-              <select class="form-select py-1 block w-full mt-1" name="myodbitak" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                @foreach ($data['odbitakOptions'] as $key => $value)
-                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $data['prijevoz'], 'odbitak' => $value, 'prirez' => $data['prirez'], 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myodbitak', $data['odbitak'])) selected="selected" @endif>{{ $value }}</option>
-                @endforeach
-              </select>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['odbitak']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Prirez:</span>
-              <select class="form-select py-1 block w-full mt-1" name="myprirez" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-                @foreach ($data['prirezOptions'] as $key => $value)
-                <option value="{{ route('lista', ['month' => $month['x']->format('m.Y'), 'prijevoz' => $data['prijevoz'], 'odbitak' => $data['odbitak'], 'prirez' => $value, 'prekovremeni' => $data['prekovremeni']]) }}" @if ($value==old('myprirez', $data['prirez'])) selected="selected" @endif>{{ $value }}</option>
-                @endforeach
-              </select>
+              <input type="text" class="form-input py-1 mt-1 block w-full" placeholder="{{$data['prirez']}}" disabled>
             </label>
             <label class="block">
               <span class="text-gray-700">Prekovremeni:</span>
@@ -53,10 +41,10 @@
                 <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm11.5 5.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
               </svg>
             </a>
-            <a class="mx-auto" href="{{ route('lista', [$month['x']->format('m.Y')]) }}">
+            <a class="mx-auto" href="{{ route('lista', ['month' => $month['x']->format('m.Y')]) }}">
               Platna lista za {{$month['x']->format('m.Y')}}!
             </a>
-            <a href="{{ route('lista', [$month['+']->format('m.Y')]) }}">
+            <a href="{{ route('lista', ['month' => $month['+']->format('m.Y')]) }}">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
               </svg>
@@ -112,26 +100,41 @@
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.4.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.4.kn'] }}</td>
               </tr>
+              @if($data['1.go.h'] > 0)
+              <tr>
+                <td class="w-3/4 border p-2 pl-6" colspan="2">GO (pretpostavljam da se ovak računa)</td>
+                <td class="w-1/8 border p-2 text-center">{{ $data['1.go.h'] }}</td>
+                <td class="w-1/8 border p-2 text-right">{{ $data['1.go.kn'] }}</td>
+              </tr>
+              @endif
+              @if($data['1.7a.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7a Praznici. Blagdani, izbori</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7a.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7a.kn'] }}</td>
               </tr>
+              @endif
+              @if($data['1.7d.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7d Bolovanje do 42 dana</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7d.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7d.kn'] }}</td>
               </tr>
+              @endif
+              @if($data['1.7e.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7e Dodatak za rad nedjeljom</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7e.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7e.kn'] }}</td>
               </tr>
+              @endif
+              @if($data['1.7f.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7f Dodatak za rad na praznik</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7f.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7f.kn'] }}</td>
               </tr>
+              @endif
               <tr>
                 <td class="w-3/4 border p-2" colspan="2">2. OSTALI OBLICI RADA TEMELJEM KOJIH OSTVARUJE PRAVO NA UVEĆANJE PLAĆE PREMA KOLEKTIVNOM UGOVORU, PRAVILNIKU O RADU ILI UGOVORU O RADU I NOVČANI IZNOS PO TOJ OSNOVI (SATI PRIPRAVNOSTI)</td>
                 <td class="w-1/8 border p-2 text-center"></td>
