@@ -40,7 +40,7 @@
                 <td><a class="{{isset($day->holiday) ? ' text-red-400' : ''}}" href="/days/{{$day->date->format('d.m.Y')}}" title="{{$day->date->format('d.m.Y')}}{{isset($day->holiday) ? ' '.$day->holiday : ''}}">{{$day->date->format('d.m.Y')}}</a></td>
                 @if(isset($day->sick))
                 <td>
-                  <div class="w-full rounded-md relative {{$day->sick ? 'bg-red' : ($day->go ? 'bg-green' : 'bg-indigo')}}-100" style="min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
+                  <div class="w-full rounded-md relative {{$day->sick ? 'bg-red' : ($day->go ? 'bg-green' : 'bg-indigo')}}-{{$day->date->format('D') == 'Sun' ? '300' : '100'}}" style="min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
                     <div class="absolute rounded-l-md bg-indigo-700 min-h-full" style="width: {{($day->night_duration->hour*60 + $day->night_duration->minute)/1440*100}}%;"></div>
                     <div class="absolute bg-indigo-500 min-h-full" style="margin-left: {{($day->start->hour*60 + $day->start->minute)/1440*100}}%; width: {{($day->duration->hour*60 + $day->duration->minute)/1440*100}}%;"></div>
                   </div>
@@ -67,7 +67,7 @@
 
                 @else
                 <td>
-                  <div class="w-full rounded-md relative bg-yellow-100" style="min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
+                  <div class="w-full rounded-md relative bg-yellow-{{$day->date->format('D') == 'Sun' ? '300' : '100'}}" style="min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
                   </div>
                 </td>
                 <td>

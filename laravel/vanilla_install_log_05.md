@@ -27,7 +27,9 @@ php artisan migrate
 ```
 ### resources\views\days\index.blade.php
 ```
-                  <div class="w-full rounded-md relative {{$day->sick ? 'bg-red' : ($day->go ? 'bg-green' : 'bg-indigo')}}-100" style="min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
+                  <div class="w-full rounded-md relative {{$day->sick ? 'bg-red' : ($day->go ? 'bg-green' : 'bg-indigo')}}-{{$day->date->format('D') == 'Sun' ? '300' : '100'}}" style="min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
+
+                  <div class="w-full rounded-md relative bg-yellow-{{$day->date->format('D') == 'Sun' ? '300' : '100'}}" style="min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
 ```
 ### resources\views\days\show.blade.php
 ```
@@ -139,4 +141,64 @@ php artisan migrate
 ```
 git add .
 git commit -am "add GO [laravel]"
+php artisan make:migration add_zaposlen_to_users_table --table=users
+```
+### database\migrations\2021_03_05_065636_add_zaposlen_to_users_table.php
+```
+  public function up()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->date('zaposlen')
+        ->after('password')
+        ->nullable();
+    });
+  }
+  public function down()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->dropColumn('zaposlen');
+    });
+  }
+```
+```
+php artisan migrate
+```
+### resources\views\dashboard.blade.php
+```
+            <!-- zaposlen -->
+            <div class="mt-4">
+              <x-label for="zaposlen" :value="__('Zaposlen od')" />
+              <input id="zaposlen" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="zaposlen" value="{{Auth::user()->zaposlen ? Auth::user()->zaposlen : old('zaposlen')}}" />
+              <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                Da bi se mogao točno izračunati prvi mjesec rada ako se nije zaposlilo prvog u mjesecu.
+              </div>
+            </div>
+```
+### app\Http\Controllers\PlatnaLista.php
+```
+    if (null != $request->input('zaposlen')) $user->zaposlen = $request->input('zaposlen');
+
+    $from = CarbonImmutable::parse($month['x'])->firstOfMonth();
+    $firstFrom = Auth::user()->zaposlen > $from ? Carbon::parse(Auth::user()->zaposlen) : $from;
+
+    $hoursNorm = 0;
+    $firstHoursNorm = 0;
+    $hoursNormHoli = 0;
+    $firstHoursNormHoli = 0;
+
+      $hoursNorm += $def_h;
+      $firstHoursNorm += $firstFrom > $from->addDays($i) ? 0 : $def_h;
+      if ($holidaysColection->where('date', '=', $from->addDays($i))->first() != null) {
+        $hoursNormHoli += $def_h;
+        $firstHoursNormHoli += $firstFrom > $from->addDays($i) ? 0 : $def_h;
+      }
+
+    $data['III.od'] = $from > $firstFrom ? $from->format('d') : $firstFrom->format('d');
+
+    // 1.1. Za redoviti rad
+    $hoursWorkNorm = ($from > $firstFrom ? $hoursNorm - $hoursNormHoli : $firstHoursNorm - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO;
+
+    // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
+    $prijevoz = $from > $firstFrom ? $prijevoz : $prijevoz * $firstHoursNorm / $hoursNorm;
+
 ```

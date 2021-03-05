@@ -39,6 +39,7 @@ class PlatnaLista extends Controller
     $user = User::find(Auth::id());
     //$user = Auth::user();
     //dd($user);
+    if (null != $request->input('zaposlen')) $user->zaposlen = $request->input('zaposlen');
     $user->bruto = $bruto;
     $user->prijevoz = $prijevoz;
     $user->odbitak = $odbitak;
@@ -76,13 +77,18 @@ class PlatnaLista extends Controller
     $month['-'] = Carbon::parse($month['x'])->subMonthsNoOverflow();
     $month['+'] = Carbon::parse($month['x'])->addMonthsNoOverflow();
     $from = CarbonImmutable::parse($month['x'])->firstOfMonth();
+    $firstFrom = Auth::user()->zaposlen > $from ? Carbon::parse(Auth::user()->zaposlen) : $from;
+    //dd($firstFrom);
     $to = Carbon::parse($month['x'])->endOfMonth();
 
     $daysColection = Day::whereBetween('date', [$from, $to])->where('user_id', '=', Auth::user()->id)->get();
     $holidaysColection = Holiday::whereBetween('date', [$from, $to])->get();
 
     $hoursNorm = 0;
+    $firstHoursNorm = 0;
     $hoursNormHoli = 0;
+    $firstHoursNormHoli = 0;
+
     $hoursNormSick = 0;
     $hoursNormGO = 0;
     $daysGO = 0;
@@ -105,16 +111,18 @@ class PlatnaLista extends Controller
       }
       //dd($hoursWork);
       $hoursNorm += $def_h;
+      $firstHoursNorm += $firstFrom > $from->addDays($i) ? 0 : $def_h;
       if ($holidaysColection->where('date', '=', $from->addDays($i))->first() != null) {
         $hoursNormHoli += $def_h;
+        $firstHoursNormHoli += $firstFrom > $from->addDays($i) ? 0 : $def_h;
       }
-      //dd($hoursNorm,$hoursNormHoli);
+      //if ($firstHoursNorm > 0) dd($hoursNorm,$hoursNormHoli,$firstHoursNorm,$firstHoursNormHoli);
       if ($daysColection->where('date', '=', $from->addDays($i))->where('sick', '=', true)->first() != null) {
         $hoursNormSick += $def_h;
       }
       if ($daysColection->where('date', '=', $from->addDays($i))->where('go', '=', true)->first() != null) {
         $hoursNormGO += $def_h;
-        if ($def_h > 0 ) $daysGO++;
+        if ($def_h > 0) $daysGO++;
       }
       if ($daysColection->where('date', '=', $from->addDays($i))->first() != null) {
         $temp_day = $daysColection->where('date', '=', $from->addDays($i))->first();
@@ -147,12 +155,12 @@ class PlatnaLista extends Controller
 
     $data['III.godina'] = $month['x']->format('Y');
     $data['III.mjesec'] = $month['x']->format('m');
-    // treba dodat provjeru da li zaposlen od pocetka mjeseca
-    $data['III.od'] = $from->format('d');
+    $data['III.od'] = $from > $firstFrom ? $from->format('d') : $firstFrom->format('d');
     // treba dodat provjeru da li zaposlen do kraja mjeseca
     $data['III.do'] = $to->format('d');
     // 1.1. Za redoviti rad
-    $hoursWorkNorm = $hoursNorm - $hoursNormHoli - $hoursNormSick - $hoursNormGO;
+    //dd($from, $firstFrom, $hoursNorm, $hoursNormHoli, $firstHoursNorm, $firstHoursNormHoli);
+    $hoursWorkNorm = ($from > $firstFrom ? $hoursNorm - $hoursNormHoli : $firstHoursNorm - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO;
     $h1_1 = $minWork / 60 > $hoursWorkNorm ? $hoursWorkNorm : $minWork / 60;
     $data['1.1.h'] = number_format($h1_1, 2, ',', '.'); //'158,00';
     $data['1.1.kn'] = number_format($h1_1 * $perHour, 2, ',', '.'); //'4.867,98';
@@ -180,6 +188,7 @@ class PlatnaLista extends Controller
     $data['1.7f.h'] = number_format($minWorkHoli / 60, 2, ',', '.'); //'8,00';
     $data['1.7f.kn'] = number_format($minWorkHoli / 60 * $perHour * 0.5, 2, ',', '.'); //'123,24';
     // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
+    $prijevoz = $from > $firstFrom ? $prijevoz : $prijevoz * $firstHoursNorm / $hoursNorm;
     $kn3 = $prijevoz;
     $data['3.kn'] = number_format($kn3, 2, ',', '.'); //'400,00';
     // 3.1. Prijevoz
@@ -207,7 +216,7 @@ class PlatnaLista extends Controller
     $data['9.kn'] = number_format($kn9, 2, ',', '.'); //'1.363,41';
     // 10. IZNOS PREDUJMA POREZA I PRIREZA POREZU NA DOHODAK
     $kn10_20 = round($kn9 * 0.2, 2);
-    $kn10_prirez = round($kn10_20 * $prirez / 100, 2);
+    $kn10_prirez = round($kn10_20 * $prirez / 1000, 2);
     $kn10 = $kn10_20 + $kn10_prirez;
     $data['10.kn'] = number_format($kn10, 2, ',', '.'); //'305,40';
     // 20.00% 1363.41

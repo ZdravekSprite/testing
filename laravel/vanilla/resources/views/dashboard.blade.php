@@ -48,16 +48,25 @@
             <div class="mt-4">
               <x-label for="odbitak" :value="__('Odbitak')" />
               <input id="odbitak" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="odbitak" value="{{Auth::user()->odbitak ? Auth::user()->odbitak : old('odbitak')?? 4000}}" min="4000" step="50" />
-              <div class="ml-12">
-              <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+              <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
                 <a href="https://www.porezna-uprava.hr/baza_znanja/Stranice/OsobniOdbitak.aspx" class="underline text-gray-900 dark:text-white">OSOBNI ODBITAK</a>
               </div>
-            </div>
             </div>
             <!-- prirez -->
             <div class="mt-4">
               <x-label for="prirez" :value="__('Prirez')" />
               <input id="prirez" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prirez" value="{{Auth::user()->prirez ? Auth::user()->prirez/10 : old('prirez')?? 18}}" min="0" step="0.5" />
+              <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                <a href="https://www.porezna-uprava.hr/HR_porezni_sustav/Stranice/Popisi/Stope.aspx" class="underline text-gray-900 dark:text-white">PRIREZ</a>
+              </div>
+            </div>
+            <!-- zaposlen -->
+            <div class="mt-4">
+              <x-label for="zaposlen" :value="__('Zaposlen od')" />
+              <input id="zaposlen" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="zaposlen" value="{{Auth::user()->zaposlen ? Auth::user()->zaposlen : old('zaposlen')}}" />
+              <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                Da bi se mogao točno izračunati prvi mjesec rada ako se nije zaposlilo prvog u mjesecu.
+              </div>
             </div>
             <div class="flex items-center justify-end mt-4">
               <x-button class="ml-4">
