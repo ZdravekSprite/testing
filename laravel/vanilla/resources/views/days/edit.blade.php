@@ -34,7 +34,7 @@
 
             <!-- nocna -->
             <div class="mt-4">
-              <x-label for="night_duration" :value="__('Rad od ponoći')" />
+              <x-label for="night_duration" :value="__('Kraj noćne prijašnji dan')" />
               <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value={{$day->night_duration ? $day->night_duration->format('H:i') : '00:00'}} required />
             </div>
 
@@ -46,7 +46,7 @@
 
             <!-- duzina -->
             <div class="mt-4">
-              <x-label for="duration" :value="__('Dužina rada')" />
+              <x-label for="duration" :value="__('Kraj smjene')" />
               <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value={{$day->duration->format('H:i')}} required />
             </div>
 

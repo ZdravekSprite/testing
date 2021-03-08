@@ -40,10 +40,9 @@
 
             <!-- nocna -->
             <div class="mt-4">
-              <x-label for="night_duration" :value="__('Rad od ponoći')" />
+              <x-label for="night_duration" :value="__('Kraj noćne prijašnji dan')" />
               <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value="{{old('night_duration')?? '00:00'}}" />
               <p>Još nisam radio noćnu pa neznam kak se raćuna, ali pošto se započinje smjena u jednom danu a završava u drugom dodao sam da se može odrediti koliko se radilo od ponoći</p>
-              <p>Znaći ako se radilo od 22 sata i smjena je trajala 8 sati, onda bi trebalo biti početak 22:00 i dužina 02:00 u prethodnom danu i rad od ponoći 06:00 u ovom danu</p>
               <p>Još nisam dodao da se automatski ako kraj smjene prelazi na drugi dan podjele sati na 2 dana, ali ako nekome treba slobodno neka javi na <a href="mailto:zdravek.sprite@gmail.com">mail zdravek.sprite@gmail.com</a></p>
             </div>
 
@@ -56,10 +55,9 @@
 
             <!-- duzina -->
             <div class="mt-4">
-              <x-label for="duration" :value="__('Dužina rada')" />
+              <x-label for="duration" :value="__('Kraj smjene')" />
               <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value="{{old('duration')?? '08:00'}}" required />
-              <p>Za izračun koliko se sati radilo u danu, mogao sam birati ili da se odabere dužina rada ili da se odabere kraj smjene. Ja sam odabrao dužinu rada, mada je možda odabir kraja smjene jednostavniji i možda to promjenim</p>
-              <p>Sve u svemu i jedna i druga metoda se komplicira kod noćnog rada jer smjena započinje jedan dan, a završava drugi dan. Kako nisam još radio noćne i nije da planiram, mada ćujem da je dosta veća lova, s tim djelom problema se nisam dodatno pozabavio pa preostaje ručno narihtavanje.</p>
+              <p>Kada je smjena završila, ako je noćna onda bi trebalo biti 24:00 i dodati ostatak u drugi dan jer automatsko prebacivanje nočnih sati na drugi dan još nisam složio. Kako nisam još radio noćne i nije da planiram, mada ćujem da je dosta veća lova, s tim djelom problema se nisam dodatno pozabavio pa preostaje ručno narihtavanje.</p>
             </div>
 
             <div class="flex items-center justify-end mt-4">

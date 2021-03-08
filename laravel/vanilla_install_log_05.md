@@ -243,3 +243,28 @@ git commit -am "dodan datum zaposljavanja [laravel]"
 ```
 git commit -am "dodani alerti [laravel]"
 ```
+### app\Http\Controllers\PlatnaLista.php
+```
+    $minWork = 0;
+    $minWorkHoli = 0;
+    $minWorkSunday = 0;
+      if ($daysColection->where('date', '=', $from->addDays($i))->first() != null) {
+        $temp_day = $daysColection->where('date', '=', $from->addDays($i))->first();
+        $temp_minWork = $temp_day->duration->diffInMinutes($temp_day->start) + $temp_day->night_duration->format('H') * 60 + $temp_day->night_duration->format('i');
+        $minWork += $temp_minWork;
+        if ($holidaysColection->where('date', '=', $from->addDays($i))->first() != null) {
+          $minWorkHoli += $temp_minWork;
+        }
+        if ($def_h == 0) {
+          $minWorkSunday += $temp_minWork;
+        }
+      }
+```
+### resources\views\days\index.blade.php
+```
+                    <div class="absolute bg-indigo-500 min-h-full" style="margin-left: {{($day->start->hour*60 + $day->start->minute)/1440*100}}%; width: {{($day->duration->diffInMinutes($day->start))/1440*100}}%;"></div>
+```
+promjenio create, edit i show blade da tocno opiče promjenu
+```
+git commit -am "platna lista v0.5 [laravel]"
+```

@@ -14,7 +14,7 @@
           <p>{{ $day[0]->go ? 'bio sam' : 'nisam bio' }} na godišnjem</p>
           <p>od ponoći {{ $day[0]->night_duration->hour > 0 ? 'sam radio ' + $day[0]->night_duration->format('H:i') + 'sati' : 'nisam radio' }}</p>
           <p>smjena je započela u {{ $day[0]->start->format('H:i') }} sati</p>
-          <p>radio sam {{ $day[0]->duration->format('H:i') }} sati</p>
+          <p>smjena je završila u {{ $day[0]->duration->format('H:i') }} sati</p>
         </div>
       </div>
     </div>

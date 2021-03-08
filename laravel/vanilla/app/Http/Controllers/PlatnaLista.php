@@ -92,9 +92,9 @@ class PlatnaLista extends Controller
     $hoursNormSick = 0;
     $hoursNormGO = 0;
     $daysGO = 0;
-    $hoursWork = Carbon::create(0);
-    $hoursWorkHoli = Carbon::create(0);
-    $hoursWorkSunday = Carbon::create(0);
+    $minWork = 0;
+    $minWorkHoli = 0;
+    $minWorkSunday = 0;
     for ($i = 0; $i < $from->daysInMonth; $i++) {
       $temp_date = $from->addDays($i)->format('d.m.Y');
       $dayOfWeek = $from->addDays($i)->dayOfWeek;
@@ -126,29 +126,18 @@ class PlatnaLista extends Controller
       }
       if ($daysColection->where('date', '=', $from->addDays($i))->first() != null) {
         $temp_day = $daysColection->where('date', '=', $from->addDays($i))->first();
-        //dd($temp_day->duration);
-        $hoursWork->addMinutes($temp_day->night_duration->format('i'));
-        $hoursWork->addHours($temp_day->night_duration->format('H'));
-        $hoursWork->addMinutes($temp_day->duration->format('i'));
-        $hoursWork->addHours($temp_day->duration->format('H'));
+        $temp_minWork = $temp_day->duration->diffInMinutes($temp_day->start) + $temp_day->night_duration->format('H') * 60 + $temp_day->night_duration->format('i');
+        //dd($temp_day, $temp_day->duration->diffInMinutes($temp_day->start), $temp_minWork);
+        $minWork += $temp_minWork;
         if ($holidaysColection->where('date', '=', $from->addDays($i))->first() != null) {
-          $hoursWorkHoli->addMinutes($temp_day->night_duration->format('i'));
-          $hoursWorkHoli->addHours($temp_day->night_duration->format('H'));
-          $hoursWorkHoli->addMinutes($temp_day->duration->format('i'));
-          $hoursWorkHoli->addHours($temp_day->duration->format('H'));
+          $minWorkHoli += $temp_minWork;
         }
         if ($def_h == 0) {
-          $hoursWorkSunday->addMinutes($temp_day->night_duration->format('i'));
-          $hoursWorkSunday->addHours($temp_day->night_duration->format('H'));
-          $hoursWorkSunday->addMinutes($temp_day->duration->format('i'));
-          $hoursWorkSunday->addHours($temp_day->duration->format('H'));
+          $minWorkSunday += $temp_minWork;
         }
       }
     }
 
-    $minWork = $hoursWork->format('d') * 1440 - 1440 + $hoursWork->format('H') * 60 + $hoursWork->format('i');
-    $minWorkHoli = $hoursWorkHoli->format('d') * 1440 - 1440 + $hoursWorkHoli->format('H') * 60 + $hoursWorkHoli->format('i');
-    $minWorkSunday = $hoursWorkSunday->format('d') * 1440 - 1440 + $hoursWorkSunday->format('H') * 60 + $hoursWorkSunday->format('i');
     $perHour = round(($bruto / $hoursNorm), 2);
     //dd($minWork/60, $minWorkHoli/60, $hoursNorm, $hoursNormHoli);
     //dd($perHour);

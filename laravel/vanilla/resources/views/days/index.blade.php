@@ -24,7 +24,7 @@
                     {{$_month['x']->format('m.Y')}}
                   </a>
                 </th>
-                <th class="w-24">
+                <th class="w-32">
                   <a class="float-right" href="{{route('month').'/'.$_month['+']->format('m.Y')}}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
                       <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
@@ -42,7 +42,7 @@
                 <td>
                   <div class="w-full rounded-md relative {{$day->sick ? 'bg-red' : ($day->go ? 'bg-green' : 'bg-indigo')}}-{{$day->date->format('D') == 'Sun' ? '300' : '100'}}" style="min-height: 18px;" title={{$day->date->format('d.m.Y')}}>
                     <div class="absolute rounded-l-md bg-indigo-700 min-h-full" style="width: {{($day->night_duration->hour*60 + $day->night_duration->minute)/1440*100}}%;"></div>
-                    <div class="absolute bg-indigo-500 min-h-full" style="margin-left: {{($day->start->hour*60 + $day->start->minute)/1440*100}}%; width: {{($day->duration->hour*60 + $day->duration->minute)/1440*100}}%;"></div>
+                    <div class="absolute bg-indigo-500 min-h-full" style="margin-left: {{($day->start->hour*60 + $day->start->minute)/1440*100}}%; width: {{($day->duration->diffInMinutes($day->start))/1440*100}}%;"></div>
                   </div>
                 </td>
                 <td>
@@ -90,6 +90,11 @@
                   <a class="float-left ml-1" href="{{ route('days.create', ['date' => $day->date->format('d.m.Y'), 'start' => '22:00']) }}" title="3.smjena">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-sunset" viewBox="0 0 16 16">
                       <path d="M7.646 4.854a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0-.708-.708l-.646.647V1.5a.5.5 0 0 0-1 0v1.793l-.646-.647a.5.5 0 1 0-.708.708l1.5 1.5zm-5.303-.51a.5.5 0 0 1 .707 0l1.414 1.413a.5.5 0 0 1-.707.707L2.343 5.05a.5.5 0 0 1 0-.707zm11.314 0a.5.5 0 0 1 0 .706l-1.414 1.414a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zM8 7a3 3 0 0 1 2.599 4.5H5.4A3 3 0 0 1 8 7zm3.71 4.5a4 4 0 1 0-7.418 0H.499a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1h-3.79zM0 10a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2A.5.5 0 0 1 0 10zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+                    </svg>
+                  </a>
+                  <a class="float-left ml-1" href=# title="bolovanje">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                      <path d="M6 2h4v4h4v4h-4v4h-4v-4h-4v-4h4v-4z" fill="red" />
                     </svg>
                   </a>
                 </td>
