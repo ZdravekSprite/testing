@@ -5,6 +5,9 @@ use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PlatnaLista;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +30,37 @@ Route::get('/dashboard', function () {
 
 require __DIR__ . '/auth.php';
 
+Route::get('login/{provider}', function ($provider) {
+  return Socialite::driver($provider)->redirect();
+})->name('{provider}Login');
+Route::get('login/{provider}/callback', function ($provider) {
+  $social_user = Socialite::driver($provider)->user();
+  // $user->token
+  $user = User::firstOrCreate([
+    'email' => $social_user->getEmail(),
+  ]);
+  if (!$user->name) {
+    $user->name = $social_user->getName();
+  }
+  if (!$user[$provider . "_id"]) {
+    $user[$provider . "_id"] = $social_user->getId();
+  }
+  if ($social_user->getAvatar()) {
+    if (!$user->avatar) {
+      $user->avatar = $social_user->getAvatar();
+    }
+    if (!$user[$provider . "_avatar"]) {
+      $user[$provider . "_avatar"] = $social_user->getAvatar();
+    }
+  }
+  $user->save();
+  Auth::Login($user, true);
+  return redirect(route('home'));
+})->name('{provider}Callback');
+/*
+Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider')->name('{provider}Login');
+Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback')->name('{provider}Callback');
+*/
 Route::resource('days', DayController::class);
 Route::resource('holidays', HolidayController::class);
 Route::get('/month', [DayController::class, 'month'])->name('month');

@@ -264,7 +264,7 @@ git commit -am "dodani alerti [laravel]"
 ```
                     <div class="absolute bg-indigo-500 min-h-full" style="margin-left: {{($day->start->hour*60 + $day->start->minute)/1440*100}}%; width: {{($day->duration->diffInMinutes($day->start))/1440*100}}%;"></div>
 ```
-promjenio create, edit i show blade da tocno opiče promjenu
+promjenio create, edit i show blade da tocno opiše promjenu
 ```
 git commit -am "platna lista v0.5 [laravel]"
 ```

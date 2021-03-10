@@ -1,51 +1,145 @@
-<x-guest-layout>
-  <x-auth-card>
-    <x-slot name="logo">
-      <a href="/">
-        <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-      </a>
-    </x-slot>
+## Laravel Socialite
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+```bash
+composer require laravel/socialite
+composer require doctrine/dbal
+php artisan make:migration add_socialite_to_users_table --table=users
+```
+### database\migrations\2021_03_09_090727_add_socialite_to_users_table.php
+```php
+  public function up()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->string('name')->nullable()->change();
+      $table->string('password')->nullable()->change();
+      $table->string('facebook_id')->nullable();
+      $table->string('twitter_id')->nullable();
+      $table->string('linkedin_id')->nullable();
+      $table->string('google_id')->nullable();
+      $table->string('github_id')->nullable();
+      $table->string('avatar')->nullable();
+      $table->string('facebook_avatar')->nullable();
+      $table->string('twitter_avatar')->nullable();
+      $table->string('linkedin_avatar')->nullable();
+      $table->string('google_avatar')->nullable();
+      $table->string('github_avatar')->nullable();
+    });
+  }
+  public function down()
+  {
+    Schema::table('users', function (Blueprint $table) {
+      $table->string('name')->change();
+      $table->string('password')->change();
+      $table->dropColumn('facebook_id', 'twitter_id', 'linkedin_id', 'google_id', 'github_id');
+      $table->dropColumn('avatar', 'facebook_avatar', 'twitter_avatar', 'linkedin_avatar', 'google_avatar', 'github_avatar');
+    });
+  }
+```
+```bash
+php artisan migrate
+```
+## https://developers.facebook.com/
+> - /login/facebook/callback
+## https://developer.twitter.com/
+> - /login/twitter/callback
+## https://www.linkedin.com/developers/
+> - /login/linkedin/callback
+## https://console.developers.google.com/
+> - /login/google/callback
+## https://github.com/settings/apps
+> - /login/github/callback
+### .env
+```ts
+APP_LOCALE=hr
 
-    <!-- Validation Errors -->
-    <x-auth-validation-errors class="mb-4" :errors="$errors" />
+FACEBOOK_CLIENT_ID=FACEBOOK_CLIENT_ID
+FACEBOOK_CLIENT_SECRET=FACEBOOK_CLIENT_SECRET
+FACEBOOK_REDIRECT="${APP_URL}/login/facebook/callback"
 
-    <form method="POST" action="{{ route('login') }}">
-      @csrf
+TWITTER_CLIENT_ID=TWITTER_CLIENT_ID
+TWITTER_CLIENT_SECRET=TWITTER_CLIENT_SECRET
+TWITTER_REDIRECT="${APP_URL}/login/twitter/callback"
 
-      <!-- Email Address -->
-      <div>
-        <x-label for="email" :value="__('Email')" />
-        <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-      </div>
+LINKEDIN_CLIENT_ID=LINKEDIN_CLIENT_ID
+LINKEDIN_CLIENT_SECRET=LINKEDIN_CLIENT_SECRET
+LINKEDIN_REDIRECT="${APP_URL}/login/linkedin/callback"
 
-      <!-- Password -->
-      <div class="mt-4">
-        <x-label for="password" :value="__('Password')" />
-        <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
-      </div>
+GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET=GOOGLE_CLIENT_SECRET
+GOOGLE_REDIRECT="${APP_URL}/login/google/callback"
 
-      <!-- Remember Me -->
-      <div class="block mt-4">
-        <label for="remember_me" class="inline-flex items-center">
-          <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="remember">
-          <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-        </label>
-      </div>
+GITHUB_CLIENT_ID=GITHUB_CLIENT_ID
+GITHUB_CLIENT_SECRET=GITHUB_CLIENT_SECRET
+GITHUB_REDIRECT="${APP_URL}/login/github/callback" 
+```
+## config\services.php
+```php
+  'facebook' => [
+    'client_id' => env('FACEBOOK_CLIENT_ID'),
+    'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+    'redirect' => env('FACEBOOK_REDIRECT'),
+  ],
 
-      <div class="flex items-center justify-end mt-4">
-        @if (Route::has('password.request'))
-        <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-          {{ __('Forgot your password?') }}
-        </a>
-        @endif
-        <x-button class="ml-3">
-          {{ __('Log in') }}
-        </x-button>
-      </div>
-    </form>
+  'twitter' => [
+    'client_id' => env('TWITTER_CLIENT_ID'),
+    'client_secret' => env('TWITTER_CLIENT_SECRET'),
+    'redirect' => env('TWITTER_REDIRECT'),
+  ],
+
+  'linkedin' => [
+    'client_id' => env('LINKEDIN_CLIENT_ID'),
+    'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
+    'redirect' => env('LINKEDIN_REDIRECT'),
+  ],
+
+  'google' => [
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => env('GOOGLE_REDIRECT'),
+  ],
+
+  'github' => [
+    'client_id' => env('GITHUB_CLIENT_ID'),
+    'client_secret' => env('GITHUB_CLIENT_SECRET'),
+    'redirect' => env('GITHUB_REDIRECT'),
+  ],
+```
+## routes\web.php
+```php
+Route::get('login/{provider}', function ($provider) {
+  return Socialite::driver($provider)->redirect();
+})->name('{provider}Login');
+Route::get('login/{provider}/callback', function ($provider) {
+  $social_user = Socialite::driver($provider)->user();
+  // $user->token
+  $user = User::firstOrCreate([
+    'email' => $social_user->getEmail(),
+  ]);
+  if (!$user->name) {
+    $user->name = $social_user->getName();
+  }
+  if (!$user[$provider . "_id"]) {
+    $user[$provider . "_id"] = $social_user->getId();
+  }
+  if ($social_user->getAvatar()) {
+    if (!$user->avatar) {
+      $user->avatar = $social_user->getAvatar();
+    }
+    if (!$user[$provider . "_avatar"]) {
+      $user[$provider . "_avatar"] = $social_user->getAvatar();
+    }
+  }
+  $user->save();
+  Auth::Login($user, true);
+  return redirect(route('home'));
+})->name('{provider}Callback');
+/*
+Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider')->name('{provider}Login');
+Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback')->name('{provider}Callback');
+*/
+```
+## resources\views\auth\login.blade.php
+```php
     <div class="flex justify-between items-center mt-3">
       <hr class="w-full"> <span class="p-2 text-gray-400 mb-1">OR</span>
       <hr class="w-full">
@@ -111,5 +205,8 @@
         <strong>Google</strong>
       </a>
     </div>
-  </x-auth-card>
-</x-guest-layout>
+```
+```
+git add .
+git commit -am "Laravel Socialite v0.6 [laravel]"
+```

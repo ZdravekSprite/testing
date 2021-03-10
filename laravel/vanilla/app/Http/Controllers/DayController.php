@@ -89,6 +89,7 @@ class DayController extends Controller
       if ($request->input('sick') == true) $day->sick = true;
       if ($request->input('go') == true) $day->go = true;
       if ($request->input('start') != null) $day->start = $request->input('start');
+      if ($request->input('duration') != null) $day->duration = $request->input('duration');
     }
     //dd($day);
     return view('days.create')->with(compact('day'));

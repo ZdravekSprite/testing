@@ -56,7 +56,7 @@
             <!-- duzina -->
             <div class="mt-4">
               <x-label for="duration" :value="__('Kraj smjene')" />
-              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value="{{old('duration')?? '08:00'}}" required />
+              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value="{{$day->duration ? $day->duration->format('H:i') : old('duration')?? '14:00'}}" required />
               <p>Kada je smjena završila, ako je noćna onda bi trebalo biti 24:00 i dodati ostatak u drugi dan jer automatsko prebacivanje nočnih sati na drugi dan još nisam složio. Kako nisam još radio noćne i nije da planiram, mada ćujem da je dosta veća lova, s tim djelom problema se nisam dodatno pozabavio pa preostaje ručno narihtavanje.</p>
             </div>
 
