@@ -23,17 +23,27 @@
               <p>Dan za koji se određuju sati rada</p>
             </div>
 
+            <script type="text/javascript">
+              function ShowHideDiv(chkId) {
+                //var dvEl = document.getElementById("time");
+                //dvEl.style.display = chkId.checked ? "none" : "block";
+                document.getElementById("night_duration").value = "00:00";
+                document.getElementById("start").value = "00:00";
+                document.getElementById("duration").value = "00:00";
+              }
+
+            </script>
             <!-- bolovanje -->
             <div class="mt-4">
               <x-label for="sick" :value="__('Bolovanje')" />
-              <input id="sick" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="sick" />
+              <input onclick="ShowHideDiv(this)" id="sick" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="sick" />
               <p>Da li ste taj dan bili na bolovanju? Ako je bolovanje onda bi ostale vrijednosti trebale biti 00:00</p>
             </div>
 
             <!-- GO -->
             <div class="mt-4">
               <x-label for="go" :value="__('Godišnji')" />
-              <input id="go" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="go" />
+              <input onclick="ShowHideDiv(this)" id="go" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="go" />
               <p>Da li ste taj dan bili na godišnjem? Ako je godišnji onda bi ostale vrijednosti trebale biti 00:00</p>
               <p>Kako nisam još bio na GO ne znam kak se računa ali pretpostavljam da kao i za bolovanje, ali ako netko zna točno slobodno javi na <a href="mailto:zdravek.sprite@gmail.com">mail zdravek.sprite@gmail.com</a></p>
             </div>

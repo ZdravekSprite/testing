@@ -68,6 +68,7 @@ Route::get('/month/{month}', [DayController::class, 'month']);
 Route::get('/days/create/{date}', [DayController::class, 'create']);
 Route::get('/lista', PlatnaLista::class)->name('lista');
 Route::put('/lista', [PlatnaLista::class, 'data']);
+Route::put('/sick/{date}', [DayController::class, 'sick'])->name('sick');
 Route::get('migrate', function () {
   Artisan::call('migrate');
   return 'Database migration success.';
