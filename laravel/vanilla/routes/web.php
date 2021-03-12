@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Artisan;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,10 @@ Route::get('login/{provider}/callback', function ($provider) {
     if (!$user[$provider . "_avatar"]) {
       $user[$provider . "_avatar"] = $social_user->getAvatar();
     }
+  }
+  if (!$user->roles->pluck('name')->contains('socialuser')) {
+    $socialUserRole = Role::where('name', 'socialuser')->first();
+    $user->roles()->attach($socialUserRole);
   }
   $user->save();
   Auth::Login($user, true);

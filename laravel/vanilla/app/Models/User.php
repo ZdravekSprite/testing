@@ -48,4 +48,22 @@ class User extends Authenticatable
   {
     return $this->hasMany(Day::class);
   }
+
+  /**
+   * The roles that belong to the user.
+   */
+  public function roles()
+  {
+    return $this->belongsToMany(Role::class);
+  }
+
+  public function hasAnyRoles($roles)
+  {
+    return null !== $this->roles()->whereIn('name', $roles)->first();
+  }
+
+  public function hasAnyRole($role)
+  {
+    return null !== $this->roles()->where('name', $role)->first();
+  }
 }

@@ -209,4 +209,5 @@ Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCall
 ```
 git add .
 git commit -am "Laravel Socialite v0.6 [laravel]"
+git commit -am "v0.6.1 [laravel]"
 ```
