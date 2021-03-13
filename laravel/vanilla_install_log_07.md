@@ -148,3 +148,7 @@ use Illuminate\Support\Facades\Auth;
 ```php
         App\Providers\BladeServiceProvider::class,
 ```
+```
+git add .
+git commit -am "Laravel Role v0.7 [laravel]"
+```

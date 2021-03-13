@@ -12,6 +12,11 @@
           You're logged in!
           @hasrole('superadmin')
           You're superadmin!
+          @else
+          You're not superadmin!
+          @endhasrole
+          @hasrole('admin')
+          <a class="nav-link" href="{{ route('admin.users.index') }}">{{ __('Menage Users') }}</a>
           @endhasrole
           @if (Auth::id() == 1)
           <p>

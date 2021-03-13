@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PlatnaLista;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
@@ -82,3 +83,7 @@ Route::get('rollback', function () {
   Artisan::call('migrate:rollback');
   return 'Database migrate:rollback success.';
 })->middleware(['auth'])->name('rollback');
+
+Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->group(function () {
+  Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);
+});
