@@ -16,6 +16,13 @@
             {{ __('Dashboard') }}
           </x-nav-link>
         </div>
+        @hasrole('superadmin')
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+            {{ __('Menage Users') }}
+          </x-nav-link>
+        </div>
+        @endhasrole
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
             {{ __('Praznici') }}
@@ -106,6 +113,13 @@
         {{ __('Dashboard') }}
       </x-responsive-nav-link>
     </div>
+    @hasrole('superadmin')
+    <div class="pt-4 pb-1 border-t border-gray-200">
+      <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+        {{ __('Menage Users') }}
+      </x-responsive-nav-link>
+    </div>
+    @endhasrole
     <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
         {{ __('Praznici') }}

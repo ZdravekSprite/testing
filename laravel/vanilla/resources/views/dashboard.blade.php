@@ -9,16 +9,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
-          You're logged in!
-          @hasrole('superadmin')
-          You're superadmin!
-          @else
-          You're not superadmin!
-          @endhasrole
           @hasrole('admin')
-          <a class="nav-link" href="{{ route('admin.users.index') }}">{{ __('Menage Users') }}</a>
-          @endhasrole
-          @if (Auth::id() == 1)
           <p>
             <a href="{{ route('migrate') }}">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
@@ -35,7 +26,12 @@
               rollback
             </a>
           </p>
-          @endif
+          @endhasrole
+          @hasrole('superadmin')
+          <p>You're super admin!</p>
+          <a class="nav-link" href="{{ route('admin.users.index') }}">{{ __('Menage Users') }}</a>
+          @else
+          <p>You're logged in!</p>
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
@@ -82,6 +78,7 @@
               </x-button>
             </div>
           </form>
+          @endhasrole
         </div>
       </div>
     </div>

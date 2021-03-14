@@ -109,9 +109,9 @@
               @endforeach
               @else
               <p> No days found</p>
-              @endif </tbody>
+              @endif
+            </tbody>
           </table>
-
         </div>
       </div>
     </div>
