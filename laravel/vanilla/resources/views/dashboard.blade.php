@@ -29,7 +29,6 @@
           @endhasrole
           @hasrole('superadmin')
           <p>You're super admin!</p>
-          <a class="nav-link" href="{{ route('admin.users.index') }}">{{ __('Menage Users') }}</a>
           @else
           <p>You're logged in!</p>
           <!-- Validation Errors -->

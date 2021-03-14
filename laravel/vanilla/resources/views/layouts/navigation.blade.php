@@ -22,7 +22,7 @@
             {{ __('Menage Users') }}
           </x-nav-link>
         </div>
-        @endhasrole
+        @else
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
             {{ __('Praznici') }}
@@ -63,6 +63,7 @@
             {{ __('Platna lista') }}
           </x-nav-link>
         </div>
+        @endhasrole
       </div>
 
       <!-- Settings Dropdown -->
@@ -119,7 +120,7 @@
         {{ __('Menage Users') }}
       </x-responsive-nav-link>
     </div>
-    @endhasrole
+    @else
     <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
         {{ __('Praznici') }}
@@ -140,6 +141,7 @@
         {{ __('Platna lista') }}
       </x-responsive-nav-link>
     </div>
+    @endhasrole
 
     <!-- Responsive Settings Options -->
     <div class="pt-4 pb-1 border-t border-gray-200">
