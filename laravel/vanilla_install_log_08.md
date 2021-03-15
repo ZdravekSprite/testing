@@ -302,4 +302,5 @@ git commit -am "Laravel AccessAdmin v0.8a [laravel]"
 ```bash
 git add .
 git commit -am "Laravel AccessAdmin v0.8b [laravel]"
+git commit -am "Laravel AccessAdmin v0.8 [laravel]"
 ```

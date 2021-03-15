@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PlatnaLista;
+use App\Http\Controllers\Admin\ImpersonateController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Socialite\Facades\Socialite;
@@ -84,6 +85,8 @@ Route::get('rollback', function () {
   return 'Database migrate:rollback success.';
 })->middleware(['auth'])->name('rollback');
 
+Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
 Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->group(function () {
   Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);
+  Route::get('/impersonate/{id}', [ImpersonateController::class, 'start'])->name('impersonate.start');
 });
