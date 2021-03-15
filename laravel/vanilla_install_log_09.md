@@ -8,14 +8,12 @@ php artisan make:controller Admin\\ImpersonateController
   {
     $user = User::where('id', $id)->first();
     if ($user) {
-      session()->put('impersonate', Auth::id());
-      Auth::login($user);
+      session()->put('impersonate', $user->id);
     }
     return redirect()->route('home');
   }
   public function stop()
   {
-    Auth::loginUsingId(session('impersonate'));
     session()->forget('impersonate');
     return redirect(route('home'));
   }
@@ -77,5 +75,5 @@ use Illuminate\Support\Facades\Auth;
 ```
 ```bash
 git add .
-git commit -am "Laravel Impersonate v0.9 [laravel]"
+git commit -am "Laravel Impersonate v0.9 fix [laravel]"
 ```
