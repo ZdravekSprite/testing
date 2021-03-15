@@ -89,6 +89,7 @@ class DayController extends Controller
       if ($request->input('sick') == true) $day->sick = true;
       if ($request->input('go') == true) $day->go = true;
       if ($request->input('start') != null) $day->start = $request->input('start');
+      if ($request->input('duration') != null) $day->duration = $request->input('duration');
     }
     //dd($day);
     return view('days.create')->with(compact('day'));
@@ -136,7 +137,7 @@ class DayController extends Controller
     $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
     if (count($day) == 0) return redirect(route('month'));
     //dd($day);
-    return view('days.show')->with('day', $day);
+    return view('days.show')->with('day', $day[0]);
   }
 
   /**
@@ -174,6 +175,24 @@ class DayController extends Controller
     return redirect(route('days.show', ['day' => $day[0]->date->format('d.m.Y')]))->with('success', 'Day Updated');
   }
 
+  public function sick($date)
+  {
+    //dd($date);
+    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
+    if (count($day) == 0)  {
+      $day = new Day;
+      $day->date = date('Y-m-d', strtotime($date));
+      $day->user_id = Auth::user()->id;
+      //$day->sick = true;
+    }
+    $day->sick = !$day->sick;
+    $day->night_duration = '00:00';
+    $day->start = '00:00';
+    $day->duration = '00:00';
+    $day->save();
+    //return redirect(route('days.show', ['day' => $day->date->format('d.m.Y')]))->with('success', 'Day Updated');
+    return redirect(route('month').'/'.$day->date->format('m.Y'))->with('success', 'Day Updated');
+  }
   /**
    * Remove the specified resource from storage.
    *
@@ -182,7 +201,9 @@ class DayController extends Controller
    */
   public function destroy(Day $day)
   {
+    $month = $day->date->format('m.Y');
     $day->delete();
-    return redirect(route('days.index'))->with('success', 'Day removed');
+    //return redirect(route('days.index'))->with('success', 'Day removed');
+    return redirect(route('month').'/'.$month)->with('success', 'Day removed');
   }
 }

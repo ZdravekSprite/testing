@@ -20,34 +20,46 @@
             <!-- date -->
             <input id="date" class="hidden" type="date" name="date" value={{$day->date->format('Y-m-d')}} required autofocus />
 
+            <script type="text/javascript">
+              function ShowHideDiv(chkId) {
+                var dvEl = document.getElementById("time");
+                dvEl.style.display = chkId.checked ? "none" : "block";
+                document.getElementById("night_duration").value = "00:00";
+                document.getElementById("start").value = "00:00";
+                document.getElementById("duration").value = "00:00";
+              }
+
+            </script>
             <!-- bolovanje -->
             <div class="mt-4">
               <x-label for="sick" :value="__('Bolovanje')" />
-              <input id="sick" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="sick" {{$day->sick ? 'checked' : ''}} />
+              <input onclick="ShowHideDiv(this)" id="sick" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="sick" {{$day->sick ? 'checked' : ''}} />
             </div>
 
             <!-- GO -->
             <div class="mt-4">
               <x-label for="go" :value="__('Godišnji')" />
-              <input id="go" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="go" {{$day->go ? 'checked' : ''}} />
+              <input onclick="ShowHideDiv(this)" id="go" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="go" {{$day->go ? 'checked' : ''}} />
             </div>
 
-            <!-- nocna -->
-            <div class="mt-4">
-              <x-label for="night_duration" :value="__('Rad od ponoći')" />
-              <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value={{$day->night_duration ? $day->night_duration->format('H:i') : '00:00'}} required />
-            </div>
+            <div id="time">
+              <!-- nocna -->
+              <div class="mt-4">
+                <x-label for="night_duration" :value="__('Kraj noćne prijašnji dan')" />
+                <input id="night_duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="night_duration" value={{$day->night_duration ? $day->night_duration->format('H:i') : '00:00'}} required />
+              </div>
 
-            <!-- pocetak -->
-            <div class="mt-4">
-              <x-label for="start" :value="__('Početak smjene')" />
-              <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value={{$day->start->format('H:i')}} required />
-            </div>
+              <!-- pocetak -->
+              <div class="mt-4">
+                <x-label for="start" :value="__('Početak smjene')" />
+                <input id="start" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="start" value={{$day->start->format('H:i')}} required />
+              </div>
 
-            <!-- duzina -->
-            <div class="mt-4">
-              <x-label for="duration" :value="__('Dužina rada')" />
-              <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value={{$day->duration->format('H:i')}} required />
+              <!-- duzina -->
+              <div class="mt-4">
+                <x-label for="duration" :value="__('Kraj smjene')" />
+                <input id="duration" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="time" name="duration" value={{$day->duration->format('H:i')}} required />
+              </div>
             </div>
 
             <div class="flex items-center justify-end mt-4">

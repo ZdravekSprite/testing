@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
    */
   public function run()
   {
+    $this->call(RoleSeeder::class);
     User::factory()
       ->create([
         'name' => env('ADMIN_NAME', 'admin'),

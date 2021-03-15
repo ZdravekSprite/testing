@@ -16,6 +16,19 @@
             {{ __('Dashboard') }}
           </x-nav-link>
         </div>
+        @impersonate
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <a class="inline-flex items-center px-1 pt-1 border-b-2 border-indigo-400 text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out" href="{{ route('admin.impersonate.stop') }}">{{ __('Stop Impersonating') }}</a>
+        </div>
+        @endimpersonate
+        @hasrole('superadmin')
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+            {{ __('Menage Users') }}
+          </x-nav-link>
+        </div>
+        @endhasrole
+        @hasrole('user')
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
             {{ __('Praznici') }}
@@ -56,6 +69,7 @@
             {{ __('Platna lista') }}
           </x-nav-link>
         </div>
+        @endhasrole
       </div>
 
       <!-- Settings Dropdown -->
@@ -106,6 +120,13 @@
         {{ __('Dashboard') }}
       </x-responsive-nav-link>
     </div>
+    @hasrole('superadmin')
+    <div class="pt-4 pb-1 border-t border-gray-200">
+      <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+        {{ __('Menage Users') }}
+      </x-responsive-nav-link>
+    </div>
+    @else
     <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
         {{ __('Praznici') }}
@@ -126,6 +147,7 @@
         {{ __('Platna lista') }}
       </x-responsive-nav-link>
     </div>
+    @endhasrole
 
     <!-- Responsive Settings Options -->
     <div class="pt-4 pb-1 border-t border-gray-200">
