@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PlatnaLista;
@@ -90,3 +91,7 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->grou
   Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);
   Route::get('/impersonate/{id}', [ImpersonateController::class, 'start'])->name('impersonate.start');
 });
+
+Route::get('/chat', [ChatController::class, 'index'])->name('chat');
+Route::get('/messages', [ChatController::class, 'fetchAllMessages']);
+Route::post('/messages', [ChatController::class, 'sendMessage']);
