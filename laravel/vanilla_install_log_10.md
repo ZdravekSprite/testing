@@ -336,3 +336,107 @@ php artisan serve
 git add .
 git commit -am "Laravel Chat v0.10b [laravel]"
 ```
+### resources\views\layouts\navigation.blade.php
+```php
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
+            {{ __('Chat') }}
+          </x-nav-link>
+        </div>
+```
+### app\Models\Chat.php
+```php
+  protected $casts = [
+    'created_at' => 'datetime:Y-m-d H:i',
+  ];
+```
+### resources\js\components\ChatComponent.vue
+```ts
+<template>
+  <div class="grid grid-rows-3 grid-flow-col gap-4">
+    <div class="row-span-3 h-96 bg-white rounded shadow-2xl">
+      <nav
+        class="w-full h-10 bg-gray-900 rounded-tr rounded-tl flex justify-between items-center"
+      >
+        <div class="flex justify-center items-center">
+          <span class="text-xs font-medium text-gray-300 ml-1">Messages</span>
+        </div>
+        <div class="flex items-center">
+          <span class="text-xs font-medium text-gray-300 ml-1">...</span>
+        </div>
+      </nav>
+      <div class="overflow-auto px-1 py-1">
+        <ul
+          class="list-unstyled"
+          style="height: 300px; overflow-y: scroll"
+          v-chat-scroll
+        >
+          <li
+            class="flex items-center pr-10"
+            v-for="(message, index) in messages"
+            :key="index"
+          >
+            <img
+              class="rounded-full shadow-xl"
+              style="box-shadow: "
+              width="20"
+              height="20"
+              v-bind:src="message.user.avatar"
+            />
+            <span style="font-size: 12px">{{ message.user.name }}</span>
+            <span
+              class="flex ml-1 h-auto bg-gray-900 text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end"
+              style="font-size: 12px"
+            >
+              {{ message.message }}
+              <span class="text-gray-400 pl-1" style="font-size: 10px">
+                {{ message.created_at }}
+              </span>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="flex justify-between items-center p-1">
+        <div class="relative">
+          <input
+            @keydown="sendTypingEvent"
+            @keyup.enter="sendMessage"
+            v-model="newMessage"
+            type="text"
+            name="message"
+            placeholder="Enter your message..."
+            class="rounded-full pl-6 pr-12 py-2 focus:outline-none h-auto placeholder-gray-100 bg-gray-900 text-white"
+            style="font-size: 11px; width: 250px"
+          />
+          <span class="text-muted" v-if="activeUser"
+            >{{ activeUser.name }} is typing...</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-1">
+      <div class="card card-default">
+        <div class="card-header">Active Users</div>
+        <div class="card-body">
+          <ul>
+            <li class="py-2" v-for="(user, index) in users" :key="index">
+              <img width="20" height="20" v-bind:src="user.avatar" />
+              {{ user.name }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+```
+```bash
+php artisan serve
+npm run watch
+git commit -am "Laravel Chat v0.10c [laravel]"
+```
+#To-do
+srediti da kad nema vue da ne javlja da nemože naći app
+chat sloziti ui sa tailwindom
+ikone u chatu narihtati

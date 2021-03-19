@@ -3846,6 +3846,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["user"],
   data: function data() {
@@ -27790,80 +27819,119 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
-    _c("div", { staticClass: "col-8" }, [
-      _c("div", { staticClass: "card card-default" }, [
-        _c("div", { staticClass: "card-header" }, [_vm._v("Messages")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body p-0" }, [
-          _c(
-            "ul",
-            {
-              directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
-              staticClass: "list-unstyled",
-              staticStyle: { height: "300px", "overflow-y": "scroll" }
-            },
-            _vm._l(_vm.messages, function(message, index) {
-              return _c("li", { key: index, staticClass: "p-2" }, [
+  return _c("div", { staticClass: "grid grid-rows-3 grid-flow-col gap-4" }, [
+    _c("div", { staticClass: "row-span-3 h-96 bg-white rounded shadow-2xl" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("div", { staticClass: "overflow-auto px-1 py-1" }, [
+        _c(
+          "ul",
+          {
+            directives: [{ name: "chat-scroll", rawName: "v-chat-scroll" }],
+            staticClass: "list-unstyled",
+            staticStyle: { height: "300px", "overflow-y": "scroll" }
+          },
+          _vm._l(_vm.messages, function(message, index) {
+            return _c(
+              "li",
+              { key: index, staticClass: "flex items-center pr-10" },
+              [
                 _c("img", {
+                  staticClass: "rounded-full shadow-xl",
+                  staticStyle: { "box-shadow": "" },
                   attrs: { width: "20", height: "20", src: message.user.avatar }
                 }),
                 _vm._v(" "),
-                _c("strong", [_vm._v(_vm._s(message.user.name))]),
-                _vm._v(
-                  "\n            " + _vm._s(message.message) + "\n          "
+                _c("span", { staticStyle: { "font-size": "12px" } }, [
+                  _vm._v(_vm._s(message.user.name))
+                ]),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass:
+                      "flex ml-1 h-auto bg-gray-900 text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end",
+                    staticStyle: { "font-size": "12px" }
+                  },
+                  [
+                    _vm._v(
+                      "\n            " +
+                        _vm._s(message.message) +
+                        "\n            "
+                    ),
+                    _c(
+                      "span",
+                      {
+                        staticClass: "text-gray-400 pl-1",
+                        staticStyle: { "font-size": "10px" }
+                      },
+                      [
+                        _vm._v(
+                          "\n              " +
+                            _vm._s(message.created_at) +
+                            "\n            "
+                        )
+                      ]
+                    )
+                  ]
                 )
-              ])
-            }),
-            0
-          )
-        ]),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.newMessage,
-              expression: "newMessage"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: {
-            type: "text",
-            name: "message",
-            placeholder: "Enter your message..."
-          },
-          domProps: { value: _vm.newMessage },
-          on: {
-            keydown: _vm.sendTypingEvent,
-            keyup: function($event) {
-              if (
-                !$event.type.indexOf("key") &&
-                _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-              ) {
-                return null
-              }
-              return _vm.sendMessage($event)
-            },
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.newMessage = $event.target.value
-            }
-          }
-        })
+              ]
+            )
+          }),
+          0
+        )
       ]),
       _vm._v(" "),
-      _vm.activeUser
-        ? _c("span", { staticClass: "text-muted" }, [
-            _vm._v(_vm._s(_vm.activeUser.name) + " is typing...")
-          ])
-        : _vm._e()
+      _c("div", { staticClass: "flex justify-between items-center p-1" }, [
+        _c("div", { staticClass: "relative" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.newMessage,
+                expression: "newMessage"
+              }
+            ],
+            staticClass:
+              "rounded-full pl-6 pr-12 py-2 focus:outline-none h-auto placeholder-gray-100 bg-gray-900 text-white",
+            staticStyle: { "font-size": "11px", width: "250px" },
+            attrs: {
+              type: "text",
+              name: "message",
+              placeholder: "Enter your message..."
+            },
+            domProps: { value: _vm.newMessage },
+            on: {
+              keydown: _vm.sendTypingEvent,
+              keyup: function($event) {
+                if (
+                  !$event.type.indexOf("key") &&
+                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                ) {
+                  return null
+                }
+                return _vm.sendMessage($event)
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.newMessage = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _vm.activeUser
+            ? _c("span", { staticClass: "text-muted" }, [
+                _vm._v(_vm._s(_vm.activeUser.name) + " is typing...")
+              ])
+            : _vm._e()
+        ])
+      ])
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "col-4" }, [
+    _c("div", { staticClass: "col-span-1" }, [
       _c("div", { staticClass: "card card-default" }, [
         _c("div", { staticClass: "card-header" }, [_vm._v("Active Users")]),
         _vm._v(" "),
@@ -27885,7 +27953,37 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "nav",
+      {
+        staticClass:
+          "w-full h-10 bg-gray-900 rounded-tr rounded-tl flex justify-between items-center"
+      },
+      [
+        _c("div", { staticClass: "flex justify-center items-center" }, [
+          _c(
+            "span",
+            { staticClass: "text-xs font-medium text-gray-300 ml-1" },
+            [_vm._v("Messages")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "flex items-center" }, [
+          _c(
+            "span",
+            { staticClass: "text-xs font-medium text-gray-300 ml-1" },
+            [_vm._v("...")]
+          )
+        ])
+      ]
+    )
+  }
+]
 render._withStripped = true
 
 

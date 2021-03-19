@@ -1,38 +1,67 @@
 <template>
-  <div class="row">
-    <div class="col-8">
-      <div class="card card-default">
-        <div class="card-header">Messages</div>
-        <div class="card-body p-0">
-          <ul
-            class="list-unstyled"
-            style="height: 300px; overflow-y: scroll"
-            v-chat-scroll
-          >
-            <li class="p-2" v-for="(message, index) in messages" :key="index">
-              <img width="20" height="20" v-bind:src="message.user.avatar" />
-              <strong>{{ message.user.name }}</strong>
-              {{ message.message }}
-            </li>
-          </ul>
-        </div>
-
-        <input
-          @keydown="sendTypingEvent"
-          @keyup.enter="sendMessage"
-          v-model="newMessage"
-          type="text"
-          name="message"
-          placeholder="Enter your message..."
-          class="form-control"
-        />
-      </div>
-      <span class="text-muted" v-if="activeUser"
-        >{{ activeUser.name }} is typing...</span
+  <div class="grid grid-rows-3 grid-flow-col gap-4">
+    <div class="row-span-3 h-96 bg-white rounded shadow-2xl">
+      <nav
+        class="w-full h-10 bg-gray-900 rounded-tr rounded-tl flex justify-between items-center"
       >
+        <div class="flex justify-center items-center">
+          <span class="text-xs font-medium text-gray-300 ml-1">Messages</span>
+        </div>
+        <div class="flex items-center">
+          <span class="text-xs font-medium text-gray-300 ml-1">...</span>
+        </div>
+      </nav>
+      <div class="overflow-auto px-1 py-1">
+        <ul
+          class="list-unstyled"
+          style="height: 300px; overflow-y: scroll"
+          v-chat-scroll
+        >
+          <li
+            class="flex items-center pr-10"
+            v-for="(message, index) in messages"
+            :key="index"
+          >
+            <img
+              class="rounded-full shadow-xl"
+              style="box-shadow: "
+              width="20"
+              height="20"
+              v-bind:src="message.user.avatar"
+            />
+            <span style="font-size: 12px">{{ message.user.name }}</span>
+            <span
+              class="flex ml-1 h-auto bg-gray-900 text-gray-200 text-xs font-normal rounded-sm px-1 p-1 items-end"
+              style="font-size: 12px"
+            >
+              {{ message.message }}
+              <span class="text-gray-400 pl-1" style="font-size: 10px">
+                {{ message.created_at }}
+              </span>
+            </span>
+          </li>
+        </ul>
+      </div>
+      <div class="flex justify-between items-center p-1">
+        <div class="relative">
+          <input
+            @keydown="sendTypingEvent"
+            @keyup.enter="sendMessage"
+            v-model="newMessage"
+            type="text"
+            name="message"
+            placeholder="Enter your message..."
+            class="rounded-full pl-6 pr-12 py-2 focus:outline-none h-auto placeholder-gray-100 bg-gray-900 text-white"
+            style="font-size: 11px; width: 250px"
+          />
+          <span class="text-muted" v-if="activeUser"
+            >{{ activeUser.name }} is typing...</span
+          >
+        </div>
+      </div>
     </div>
 
-    <div class="col-4">
+    <div class="col-span-1">
       <div class="card card-default">
         <div class="card-header">Active Users</div>
         <div class="card-body">
