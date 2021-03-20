@@ -21,7 +21,7 @@
             <tbody>
               @foreach ($users as $user)
               <tr>
-                <th>{{$user->name}}</th>
+                <th class="flex items-center pr-10"><img class="rounded-full shadow-xl" style="box-shadow: " width="20" height="20" src="{{$user->avatar}}" />{{$user->name}}</th>
                 <td>{{$user->email}}</td>
                 <td>{{ implode(', ', $user->roles()->get()->pluck('name')->toArray()) }}</td>
                 <td>

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ImpersonateController extends Controller
 {
@@ -19,8 +18,7 @@ class ImpersonateController extends Controller
   {
     $user = User::where('id', $id)->first();
     if ($user) {
-      session()->put('impersonate', Auth::id());
-      Auth::login($user);
+      session()->put('impersonate', $user->id);
     }
     return redirect()->route('home');
   }
@@ -32,7 +30,6 @@ class ImpersonateController extends Controller
    */
   public function stop()
   {
-    Auth::loginUsingId(session('impersonate'));
     session()->forget('impersonate');
     return redirect(route('home'));
   }

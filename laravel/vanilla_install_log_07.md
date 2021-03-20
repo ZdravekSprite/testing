@@ -88,13 +88,42 @@ use Illuminate\Support\Facades\Hash;
 ```bash
 php artisan db:seed --class=RoleSeeder
 ```
+
 ### routes\web.php
 ```php
 use App\Models\Role;
+Route::get('login/{provider}/callback', function ($provider) {
+  $social_user = Socialite::driver($provider)->user();
+  // $user->token
+  $user = User::firstOrCreate([
+    'email' => $social_user->getEmail(),
+  ]);
+  if (!$user->name) {
+    $user->name = $social_user->getName();
+  }
+  if (!$user[$provider . "_id"]) {
+    $user[$provider . "_id"] = $social_user->getId();
+  }
+  if ($social_user->getAvatar()) {
+    if (!$user->avatar) {
+      $user->avatar = $social_user->getAvatar();
+    }
+    if (!$user[$provider . "_avatar"]) {
+      $user[$provider . "_avatar"] = $social_user->getAvatar();
+    }
+  }
   if (!$user->roles->pluck('name')->contains('socialuser')) {
     $socialUserRole = Role::where('name', 'socialuser')->first();
     $user->roles()->attach($socialUserRole);
   }
+  $user->save();
+  Auth::Login($user, true);
+  return redirect(route('home'));
+})->name('{provider}Callback');
+Route::get('seed', function () {
+  Artisan::call('db:seed --class=RoleSeeder');
+  return 'php artisan db:seed --class=RoleSeeder success.';
+})->middleware(['auth'])->name('seed');
 ```
 ### app\Http\Controllers\Auth\RegisteredUserController.php
 ```php

@@ -29,6 +29,9 @@
           @endhasrole
           @hasrole('superadmin')
           <p>You're super admin!</p>
+          <div id="app">
+            <example-component></example-component>
+          </div>
           @else
           <p>You're logged in!</p>
           <!-- Validation Errors -->
