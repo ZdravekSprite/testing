@@ -90,7 +90,6 @@ Route::get('seed', function () {
   return 'php artisan db:seed --class=RoleSeeder success.';
 })->middleware(['auth'])->name('seed');
 
-
 Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
 Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->group(function () {
   Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);

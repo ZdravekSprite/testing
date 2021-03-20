@@ -1,10 +1,4 @@
 # Laravel Vue
-### resources\views\dashboard.blade.php
-```php
-          <div id="app">
-            <example-component></example-component>
-          </div>
-```
 ```bash
 npm install
 npm install vue
@@ -174,7 +168,7 @@ use App\Events\ChatEvent;
   <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6 bg-white border-b border-gray-200">
+        <div class="p-6 bg-gray-100 border-b border-gray-200">
           <div id="app">
             <chat-component :user="{{ auth()->user() }}"></chat-component>
           </div>
@@ -350,11 +344,26 @@ git commit -am "Laravel Chat v0.10b [laravel]"
     'created_at' => 'datetime:Y-m-d H:i',
   ];
 ```
+### app\Models\User.php
+```php
+  public function getAvatarAttribute($value)
+  {
+    if (is_null($value)) {
+      $value = asset('img/avatar.jpg');
+    }
+
+    return $value;
+  }
+```
+### resources\views\admin\users\index.blade.php
+```php
+                <th class="flex items-center pr-10"><img class="rounded-full shadow-xl" style="box-shadow: " width="20" height="20" src="{{$user->avatar}}" />{{$user->name}}</th>
+```
 ### resources\js\components\ChatComponent.vue
 ```ts
 <template>
-  <div class="grid grid-rows-3 grid-flow-col gap-4">
-    <div class="row-span-3 h-96 bg-white rounded shadow-2xl">
+  <div class="grid grid-cols-4 grid-flow-col gap-2 h-auto rounded shadow-2xl">
+    <div class="col-span-3">
       <nav
         class="w-full h-10 bg-gray-900 rounded-tr rounded-tl flex justify-between items-center"
       >
@@ -389,7 +398,7 @@ git commit -am "Laravel Chat v0.10b [laravel]"
               style="font-size: 12px"
             >
               {{ message.message }}
-              <span class="text-gray-400 pl-1" style="font-size: 10px">
+              <span class="text-gray-400 pl-1" style="font-size: 10px">@
                 {{ message.created_at }}
               </span>
             </span>
@@ -416,16 +425,33 @@ git commit -am "Laravel Chat v0.10b [laravel]"
     </div>
 
     <div class="col-span-1">
-      <div class="card card-default">
-        <div class="card-header">Active Users</div>
-        <div class="card-body">
-          <ul>
-            <li class="py-2" v-for="(user, index) in users" :key="index">
-              <img width="20" height="20" v-bind:src="user.avatar" />
-              {{ user.name }}
-            </li>
-          </ul>
+      <nav
+        class="w-full h-10 bg-gray-900 rounded-tr rounded-tl flex justify-between items-center"
+      >
+        <div class="flex justify-center items-center">
+          <span class="text-xs font-medium text-gray-300 ml-1">Active Users</span>
         </div>
+        <div class="flex items-center">
+          <span class="text-xs font-medium text-gray-300 ml-1">...</span>
+        </div>
+      </nav>
+      <div class="overflow-auto px-1 py-1">
+        <ul>
+          <li
+            class="flex items-center pr-10"
+            v-for="(user, index) in users"
+            :key="index"
+          >
+            <img
+              class="rounded-full shadow-xl"
+              style="box-shadow: "
+              width="20"
+              height="20"
+              v-bind:src="user.avatar"
+            />
+            <span style="font-size: 12px">{{ user.name }}</span>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -434,7 +460,8 @@ git commit -am "Laravel Chat v0.10b [laravel]"
 ```bash
 php artisan serve
 npm run watch
-git commit -am "Laravel Chat v0.10c [laravel]"
+git add .
+git commit -am "Laravel Chat v0.10e [laravel]"
 ```
 #To-do
 srediti da kad nema vue da ne javlja da nemože naći app
