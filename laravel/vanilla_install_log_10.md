@@ -438,5 +438,3 @@ git commit -am "Laravel Chat v0.10c [laravel]"
 ```
 #To-do
 srediti da kad nema vue da ne javlja da nemože naći app
-chat sloziti ui sa tailwindom
-ikone u chatu narihtati

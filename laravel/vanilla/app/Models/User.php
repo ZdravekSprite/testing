@@ -71,4 +71,13 @@ class User extends Authenticatable
   {
     return $this->hasMany(Chat::class);
   }
+
+  public function getAvatarAttribute($value)
+  {
+    if (is_null($value)) {
+      $value = asset('img/avatar.jpg');
+    }
+
+    return $value;
+  }
 }

@@ -85,6 +85,11 @@ Route::get('rollback', function () {
   Artisan::call('migrate:rollback');
   return 'Database migrate:rollback success.';
 })->middleware(['auth'])->name('rollback');
+Route::get('seed', function () {
+  Artisan::call('db:seed --class=RoleSeeder');
+  return 'php artisan db:seed --class=RoleSeeder success.';
+})->middleware(['auth'])->name('seed');
+
 
 Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
 Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->group(function () {
