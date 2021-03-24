@@ -124,6 +124,11 @@
         {{ __('Dashboard') }}
       </x-responsive-nav-link>
     </div>
+    <div class="pt-4 pb-1 border-t border-gray-200">
+      <x-responsive-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
+        {{ __('Chat') }}
+      </x-responsive-nav-link>
+    </div>
     @hasrole('superadmin')
     <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">

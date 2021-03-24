@@ -1,3 +1,13 @@
+# kad se clonira repo
+```
+git pull
+npm install && npm run dev
+composer update
+php artisan key:generate
+php artisan migrate
+php artisan serve
+npm run watch
+```
 ```
 git checkout -b laravel
 composer create-project --prefer-dist laravel/laravel vanilla
