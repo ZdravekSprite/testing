@@ -50,5 +50,5 @@ flask run
 
 ```bash
 git add .
-git commit -am "Part 6 [binance]"
+git commit -am "Part 7 [binance]"
 ```
