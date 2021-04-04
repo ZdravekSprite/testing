@@ -22,8 +22,16 @@ wscat -c wss://stream.binance.com:9443/ws/btcusdt@kline_5m
 ```bash
 wscat -c wss://stream.binance.com:9443/ws/btcusdt@kline_5m | tee dataset.txt
 ```
+## Part 3
+- [Lightweight Charts](https://github.com/tradingview/lightweight-charts)
+## Part 4
+- [python-binance](https://python-binance.readthedocs.io/en/latest/)
+```bash
+pip install python-binance
+python get_data.py
+```
 
 ```bash
 git add .
-git commit -am "Part 3 [binance]"
+git commit -am "Part 4 [binance]"
 ```
