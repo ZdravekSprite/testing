@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coinview</title>
+  <title>{{ title }}</title>
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 
 <body>
-  <h2>Trades</h2>
+  <h1>{{ title }}</h1>
 
   <div id="chart"></div>
 
@@ -40,7 +40,7 @@
       //tradeDiv.append(messageObject.p)
     }
   </script>
-  <script src="chart.js"></script>
+  <script src="{{ url_for('static', filename='chart.js') }}"></script>
 </body>
 
 </html>

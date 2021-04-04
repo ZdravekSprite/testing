@@ -39,8 +39,16 @@ pip install TA_Lib-0.4.19-cp38-cp38-win_amd64.whl
 pip install numpy
 python ta.py
 ```
+## Part 6
+- [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+```bash
+pip install flask
+export FLASK_APP=app.py
+export FLASK_ENV=development
+flask run
+```
 
 ```bash
 git add .
-git commit -am "Part 5 [binance]"
+git commit -am "Part 6 [binance]"
 ```
