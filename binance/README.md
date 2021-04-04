@@ -25,5 +25,5 @@ wscat -c wss://stream.binance.com:9443/ws/btcusdt@kline_5m | tee dataset.txt
 
 ```bash
 git add .
-git commit -am "Part 2 [binance]"
+git commit -am "Part 3 [binance]"
 ```
