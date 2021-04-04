@@ -30,8 +30,17 @@ wscat -c wss://stream.binance.com:9443/ws/btcusdt@kline_5m | tee dataset.txt
 pip install python-binance
 python get_data.py
 ```
+## Part 5
+- [Python wrapper for TA-Lib](https://mrjbq7.github.io/ta-lib/install.html)
+- [How to install Ta-Lib in python on Windows](https://medium.com/@keng16302/how-to-install-ta-lib-in-python-on-window-9303eb003fbb)
+```bash
+pip install TA-Lib
+pip install TA_Lib-0.4.19-cp38-cp38-win_amd64.whl
+pip install numpy
+python ta.py
+```
 
 ```bash
 git add .
-git commit -am "Part 4 [binance]"
+git commit -am "Part 5 [binance]"
 ```
