@@ -462,6 +462,8 @@ php artisan serve
 npm run watch
 git add .
 git commit -am "Laravel Chat v0.10e [laravel]"
+git add .
+git commit -am "čišćenje [laravel]"
 ```
 #To-do
 srediti da kad nema vue da ne javlja da nemože naći app
