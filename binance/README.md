@@ -47,8 +47,38 @@ export FLASK_APP=app.py
 export FLASK_ENV=development
 flask run
 ```
+## Part 9
+```bash
+python get_data.py
+pip install backtrader
+pip install matplotlib
+```
+```bash
+  File "C:\Program Files\Python38\lib\site-packages\backtrader\plot\locator.py", line 35, in <module>
+    from matplotlib.dates import (HOURS_PER_DAY, MIN_PER_HOUR, SEC_PER_MIN,
+ImportError: cannot import name 'warnings' from 'matplotlib.dates' (/Users/ch4r0n/.pyenv/versions/3.7.5/lib/python3.7/site-packages/matplotlib/dates.py)
+backtrader/plot/locator.py
+```
+```py
+from matplotlib.dates import (HOURS_PER_DAY, MIN_PER_HOUR, SEC_PER_MIN,
+                              MONTHS_PER_YEAR, DAYS_PER_WEEK,
+                              SEC_PER_HOUR, SEC_PER_DAY,
+                              num2date, rrulewrapper, YearLocator,
+                              MicrosecondLocator, warnings)
+```
+- The 'warnings' modules has been remove in the matplotlib3.3.0 so you should delete it warnings
+```py
+from matplotlib.dates import (HOURS_PER_DAY, MIN_PER_HOUR, SEC_PER_MIN,
+                              MONTHS_PER_YEAR, DAYS_PER_WEEK,
+                              SEC_PER_HOUR, SEC_PER_DAY,
+                              num2date, rrulewrapper, YearLocator,
+                              MicrosecondLocator)
+```
+```bash
+python backtest.py
+```
 
 ```bash
 git add .
-git commit -am "Part 8 [binance]"
+git commit -am "Part 9 [binance]"
 ```
