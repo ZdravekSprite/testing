@@ -12,10 +12,19 @@
 <body>
   <h1>{{ title }}</h1>
 
+  {% if symbols %}
+  <select id="symbol_chart" name="symbol_chart" onchange="self.location='/pair/' + this.value">
+    {% for symbol in symbols %}
+    <option {% if symbol['symbol']==pair %} selected {% endif %}>{{ symbol['symbol'] }}</option>
+    {% endfor %}
+  </select>
+
   <div id="chart"></div>
 
   <div id="trades"></div>
+  {% endif %}
 
+  {% if symbol %}
   <div style="border: solid gray 1px; padding: 20px; width: 760px; margin-top: 20px;">
     <h3>Buy Crypto</h3>
     {% with messages = get_flashed_messages() %}
@@ -48,6 +57,8 @@
     Oversold
     <input type="text" id="rsi_oversold" name="rsi_oversold" placeholder="30" />
   </div>
+  {% endif %}
+  {% if my_balances %}
   <div id="my_balances">
     <h2>Balances</h2>
 
@@ -56,6 +67,7 @@
         <th>asset</th>
         <th>free</th>
         <th>locked</th>
+        <th>€</th>
       </tr>
       {% for balance in my_balances %}
       <tr>
@@ -68,27 +80,83 @@
         <td>
           {{ balance['locked'] }}
         </td>
+        <td>
+          {{ balance['eur'] }}
+        </td>
       </tr>
 
       {% endfor %}
     </table>
 
   </div>
+  {% endif %}
+  {% if pair %}
   <script>
-    var binanceSocket = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade")
-    //console.log(binanceSocket)
+    var chart = LightweightCharts.createChart(document.getElementById('chart'), {
+      width: 800,
+      height: 400,
+      layout: {
+        backgroundColor: '#000000',
+        textColor: 'rgba(255, 255, 255, 0.9)',
+      },
+      grid: {
+        vertLines: {
+          color: 'rgba(197, 203, 206, 0.5)',
+        },
+        horzLines: {
+          color: 'rgba(197, 203, 206, 0.5)',
+        },
+      },
+      crosshair: {
+        mode: LightweightCharts.CrosshairMode.Normal,
+      },
+      priceScale: {
+        borderColor: 'rgba(197, 203, 206, 0.8)',
+      },
+      timeScale: {
+        borderColor: 'rgba(197, 203, 206, 0.8)',
+        timeVisible: true,
+        secondsVisible: false,
+      },
+    });
 
-    var tradeDiv = document.getElementById('trades')
+    var candleSeries = chart.addCandlestickSeries({
+      upColor: '#00ff00',
+      downColor: '#ff0000',
+      borderDownColor: 'rgba(255, 144, 0, 1)',
+      borderUpColor: 'rgba(255, 144, 0, 1)',
+      wickDownColor: 'rgba(255, 144, 0, 1)',
+      wickUpColor: 'rgba(255, 144, 0, 1)',
+    });
+
+    fetch('http://localhost:5000/history/{{ pair.upper() }}')
+      .then((r) => r.json())
+      .then((response) => {
+        //console.log(response)
+
+        candleSeries.setData(response);
+      })
+
+
+    var binanceSocket = new WebSocket("wss://stream.binance.com:9443/ws/{{ pair.lower() }}@kline_15m");
 
     binanceSocket.onmessage = function (event) {
-      //console.log(event.data)
+      var message = JSON.parse(event.data);
 
-      var messageObject = JSON.parse(event.data)
+      var candlestick = message.k;
 
-      //tradeDiv.append(messageObject.p)
+      //console.log(candlestick)
+
+      candleSeries.update({
+        time: candlestick.t / 1000,
+        open: candlestick.o,
+        high: candlestick.h,
+        low: candlestick.l,
+        close: candlestick.c
+      })
     }
   </script>
-  <script src="{{ url_for('static', filename='chart.js') }}"></script>
+  {% endif %}
 </body>
 
 </html>

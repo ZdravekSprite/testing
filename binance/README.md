@@ -77,8 +77,13 @@ from matplotlib.dates import (HOURS_PER_DAY, MIN_PER_HOUR, SEC_PER_MIN,
 ```bash
 python backtest.py
 ```
+## Part CCXT
+```bash
+pip install -r requirements.txt
+python app_ccxt.py
+```
 
 ```bash
 git add .
-git commit -am "Part 9 [binance]"
+git commit -am "Part CCXT [binance]"
 ```
