@@ -90,8 +90,8 @@
 
   </div>
   {% endif %}
-  {% if pair %}
   <script>
+    {% if pair %}
     var chart = LightweightCharts.createChart(document.getElementById('chart'), {
       width: 800,
       height: 400,
@@ -137,7 +137,6 @@
         candleSeries.setData(response);
       })
 
-
     var binanceSocket = new WebSocket("wss://stream.binance.com:9443/ws/{{ pair.lower() }}@kline_15m");
 
     binanceSocket.onmessage = function (event) {
@@ -155,8 +154,18 @@
         close: candlestick.c
       })
     }
+    {% endif %}
+    console.log('response')
+    fetch('https://api.hnb.hr/tecajn/v2?valuta=EUR', {
+      mode: 'no-cors' // 'cors' by default no-cors
+    })
+      //.then((r) => r.json())
+      .then((response) => {
+        console.log(response.json())
+        //console.log(response)
+      })
+
   </script>
-  {% endif %}
 </body>
 
 </html>

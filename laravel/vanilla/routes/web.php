@@ -90,6 +90,28 @@ Route::get('seed', function () {
   return 'php artisan db:seed --class=RoleSeeder success.';
 })->middleware(['auth'])->name('seed');
 
+Route::get('lista', function () {
+  /*
+  https://api.hnb.hr/tecajn/v1
+    ?datum=2014-03-02
+    ?valuta=EUR
+  https://api.hnb.hr/tecajn/v2
+    ?datum-primjene=2019-03-02
+    ?valuta=EUR
+  */
+  $response = Http::get('https://api.hnb.hr/tecajn/v2?valuta=EUR');
+  $data = $response->json();
+  dd($data);
+  return 'Database migrate:rollback success.';
+})->middleware(['auth'])->name('binance');
+Route::get('binance', function () {
+  //https://api.binance.com/api/v3/exchangeInfo
+  $response = Http::get('https://api.binance.com/api/v3/trades?symbol=ETHUSDT&limit=10');
+  $data = $response->json();
+  dd($data);
+  return 'Database migrate:rollback success.';
+})->middleware(['auth'])->name('binance');
+
 Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
 Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->group(function () {
   Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);
