@@ -82,8 +82,12 @@ python backtest.py
 pip install -r requirements.txt
 python app_ccxt.py
 ```
+## Laravel
+```bash
+composer create-project --prefer-dist laravel/laravel command
+```
 
 ```bash
 git add .
-git commit -am "Part CCXT [binance]"
+git commit -am "install laravel [binance]"
 ```
