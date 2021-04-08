@@ -85,9 +85,12 @@ python app_ccxt.py
 ## Laravel
 ```bash
 composer create-project --prefer-dist laravel/laravel command
+php artisan list
+php artisan make:command GetPrice
+php artisan binance:get-prices
 ```
 
 ```bash
 git add .
-git commit -am "install laravel [binance]"
+git commit -am "command [binance]"
 ```
