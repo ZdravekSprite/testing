@@ -88,9 +88,11 @@ composer create-project --prefer-dist laravel/laravel command
 php artisan list
 php artisan make:command GetPrice
 php artisan binance:get-prices
+php artisan make:command GetAccountSnapshot
+php artisan binance:get-account-snapshot
 ```
 
 ```bash
 git add .
-git commit -am "command [binance]"
+git commit -am "GetAccountSnapshot [binance]"
 ```
