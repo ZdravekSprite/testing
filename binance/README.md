@@ -90,9 +90,11 @@ php artisan make:command GetPrice
 php artisan binance:get-prices
 php artisan make:command GetAccountSnapshot
 php artisan binance:get-account-snapshot
+php artisan make:command GetMarketDataEndpoints
+php artisan binance:get-market-data-endpoints
 ```
 
 ```bash
 git add .
-git commit -am "fix [binance]"
+git commit -am "GetMarketDataEndpoints [binance]"
 ```
