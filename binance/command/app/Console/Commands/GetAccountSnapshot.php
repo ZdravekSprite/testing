@@ -64,16 +64,24 @@ class GetAccountSnapshot extends Command
     $euro = str_replace(',', '.', $data[0]['kupovni_tecaj']) * 1;
     $this->line('Euro (kupovni tečaj u HNB):' . $euro);
 
+    $response = Http::get($Server . '/v3/exchangeInfo');
+    $exchangeInfo = $response->json();
+    //dd($exchangeInfo['serverTime']);
+
     /**
      * Get server time
      * the server time must be obtained to sign the requests curl
      * Time is the variable used for requests
      */
-    $ServerTimeUrl = $Server . '/v1/time';
+    $ServerTimeUrl = $Server . '/v3/time';
     $ClassServerTime = new APIREST($ServerTimeUrl);
     $CallServerTime = $ClassServerTime->call(array());
     $DecodeCallTime = json_decode($CallServerTime);
     $Time = $DecodeCallTime->serverTime;
+    /*
+    $Time = $exchangeInfo['serverTime'];
+     */
+    //dd($exchangeInfo['serverTime'],$Time);
     $Timestamp = 'timestamp=' . $Time; // build timestamp type url get
     $Signature = hash_hmac('SHA256', $Timestamp, $ApiSecret); // build firm with sha256
     /**
@@ -87,8 +95,20 @@ class GetAccountSnapshot extends Command
     $CallBalance = $ClassBalance->call(
       array('X-MBX-APIKEY:' . $ApiKey)
     );
-    //echo "$CallBalance";
     //dd(json_decode($CallBalance)->balances);
+    /**
+     * Get balance
+     * @var OpenOrdersUrl is the url of the request
+     * @var ClassOpenOrders initializes the APIREST class
+     * @var CallOpenOrders request balance sheets, X-MBX-APIKEY is required by binance api
+     */
+    $OpenOrdersUrl = $Server . '/v3/openOrders?timestamp=' . $Time . '&signature=' . $Signature;
+    $ClassOpenOrders = new APIREST($OpenOrdersUrl);
+    $CallOpenOrders = $ClassOpenOrders->call(
+      array('X-MBX-APIKEY:' . $ApiKey)
+    );
+    //dd($CallOpenOrders);
+
     $kn = 0;
     $this->line('Balance:');
     foreach (json_decode($CallBalance)->balances as $key => $crypto) {
@@ -100,19 +120,23 @@ class GetAccountSnapshot extends Command
           $this->line($crypto->asset . ': ' . $total);
         } else {
           $price = 1;
-          if ($crypto->asset != 'USDT') {
-            $res = Http::get($Server . '/v3/ticker/price?symbol=' . $crypto->asset . 'EUR');
+          if ($crypto->asset == 'EUR') {
+            $total_kn = $total * $euro;
           } else {
-            $res = Http::get($Server . '/v3/ticker/price?symbol=EURUSDT');
+            if ($crypto->asset != 'USDT') {
+              $res = Http::get($Server . '/v3/ticker/price?symbol=' . $crypto->asset . 'EUR');
+            } else {
+              $res = Http::get($Server . '/v3/ticker/price?symbol=EURUSDT');
+            }
+            $data = $res->json();
+            //dd($data);
+            if ($crypto->asset != 'USDT') {
+              $price = $data['price'] * 1;
+            } else {
+              $price = 1 / $data['price'];
+            }
+            $total_kn = $total * $price * $euro * (1 - 0.00075);
           }
-          $data = $res->json();
-          //dd($data);
-          if ($crypto->asset != 'USDT') {
-            $price = $data['price'] * 1;
-          } else {
-            $price = 1 / $data['price'];
-          }
-          $total_kn = $total * $price * $euro * (1 - 0.00075);
           $kn += $total_kn;
           $this->line($crypto->asset . ': < ' . $total_kn . ' kn(HNB) [' . $total . ' ' . $price . ' euro]');
         }
@@ -125,29 +149,29 @@ class GetAccountSnapshot extends Command
     });
     */
 
-    $OpenOrdersUrl = $Server . '/v3/openOrders?timestamp=' . $Time . '&signature=' . $Signature;
-    $ClassOpenOrders = new APIREST($OpenOrdersUrl);
-    $CallOpenOrders = $ClassOpenOrders->call(
-      array('X-MBX-APIKEY:' . $ApiKey)
-    );
-    //echo "$CallOpenOrders";
+    //dd($exchangeInfo['symbols'][0]);
     $this->newLine();
     $this->line('Orders:');
     foreach (json_decode($CallOpenOrders) as $key => $order) {
       $res = Http::get($Server . '/v3/ticker/price?symbol=' . $order->symbol);
       $data = $res->json();
-
+      //dd($data);
+      foreach ($exchangeInfo['symbols'] as $key => $symbol) {
+        if ($symbol['symbol'] == $order->symbol) {
+          $order->baseAsset = $symbol['baseAsset'];
+          $order->quoteAsset = $symbol['quoteAsset'];
+        }
+      }
       $this->line(
         'date: ' . gmdate("Y-m-d H:i:s", $order->time / 1000)
           . ' pair: ' . $order->symbol
           . ' type: ' . $order->type
           . ' side: ' . $order->side
           . ' price: ' . $order->price * 1 . ' ( ' . (round(100 * $data['price'] / $order->price, 2) - 100) . '%)'
-          . ' amount: ' . $order->origQty * 1
+          . ' amount: ' . $order->origQty * 1 . ' ' . $order->baseAsset . ' (' . 1 * $order->origQty * $order->price . ' ' . $order->quoteAsset . ')'
         /*. ' flled: '
           . ' total: '
           . ' trigger condition: '*/
-
       );
     }
   }

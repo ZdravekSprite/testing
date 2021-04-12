@@ -94,5 +94,5 @@ php artisan binance:get-account-snapshot
 
 ```bash
 git add .
-git commit -am "if test [binance]"
+git commit -am "fix [binance]"
 ```
