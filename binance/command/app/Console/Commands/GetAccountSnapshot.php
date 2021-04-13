@@ -109,7 +109,7 @@ class GetAccountSnapshot extends Command
     );
     //dd($CallOpenOrders);
 
-    $kn = 0;
+    $kn = -0.8 * $euro;
     $this->line('Balance:');
     foreach (json_decode($CallBalance)->balances as $key => $crypto) {
       //dd($crypto);

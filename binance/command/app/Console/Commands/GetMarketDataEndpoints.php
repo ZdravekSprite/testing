@@ -56,6 +56,7 @@ class GetMarketDataEndpoints extends Command
     }
 
     $this->line('Get Market Data Endpoints:');
+    $this->line('Test Connectivity:');
     /*
      *Test Connectivity
      * Response:
@@ -67,6 +68,7 @@ class GetMarketDataEndpoints extends Command
      * Parameters:
      *  NONE
     */
+    $this->line('Check Server Time:');
     /*
      *Check Server Time
      * Response:
@@ -82,6 +84,78 @@ class GetMarketDataEndpoints extends Command
     //dd(json_decode(Http::get($Server . '/v3/time')));
     $DecodeTime = json_decode(Http::get($Server . '/v3/time'));
     $serverTime = $DecodeTime->serverTime;
-    echo gmdate("Y-m-d H:i:s", $serverTime / 1000);
+    $this->line('$serverTime: ' . gmdate("Y-m-d H:i:s", $serverTime / 1000));
+    $this->line('Exchange Information:');
+    /*
+     *Exchange Information
+     * Response:
+     *  {
+     *   "timezone": "UTC",
+     *   "serverTime": 1565246363776,
+     *   "rateLimits": [
+     *     {
+     *       //These are defined in the `ENUM definitions` section under `Rate Limiters (rateLimitType)`.
+     *       //All limits are optional
+     *     }
+     *   ],
+     *   "exchangeFilters": [
+     *     //These are the defined filters in the `Filters` section.
+     *     //All filters are optional.
+     *   ],
+     *   "symbols": [
+     *     {
+     *       "symbol": "ETHBTC",
+     *       "status": "TRADING",
+     *       "baseAsset": "ETH",
+     *       "baseAssetPrecision": 8,
+     *       "quoteAsset": "BTC",
+     *       "quotePrecision": 8,
+     *       "quoteAssetPrecision": 8,
+     *       "orderTypes": [
+     *         "LIMIT",
+     *         "LIMIT_MAKER",
+     *         "MARKET",
+     *         "STOP_LOSS",
+     *         "STOP_LOSS_LIMIT",
+     *         "TAKE_PROFIT",
+     *         "TAKE_PROFIT_LIMIT"
+     *       ],
+     *       "icebergAllowed": true,
+     *       "ocoAllowed": true,
+     *       "isSpotTradingAllowed": true,
+     *       "isMarginTradingAllowed": true,
+     *       "filters": [
+     *         //These are defined in the Filters section.
+     *         //All filters are optional
+     *       ],
+     *       "permissions": [
+     *          "SPOT",
+     *          "MARGIN"
+     *       ]
+     *     }
+     *   ]
+     *  }
+     * GET /api/v3/exchangeInfo
+     *Current exchange trading rules and symbol information
+     * Weight: 1
+     * Parameters:
+     *  NONE
+     */
+    //dd(json_decode(Http::get($Server . '/v3/exchangeInfo')));
+    $DecodeExchangeInfo = json_decode(Http::get($Server . '/v3/exchangeInfo'));
+    $timezone = $DecodeExchangeInfo->timezone;
+    $this->line('$timezone: ' . $timezone);
+    $serverTime = $DecodeExchangeInfo->serverTime;
+    $this->line('$serverTime: ' . gmdate("Y-m-d H:i:s", $serverTime / 1000));
+    $rateLimits = $DecodeExchangeInfo->rateLimits;
+    $this->line('$rateLimits: ' . json_encode($rateLimits));
+    foreach ($rateLimits as $key => $value) {
+      $this->line($key.': ' . json_encode($value));
+    }
+    $exchangeFilters = $DecodeExchangeInfo->exchangeFilters;
+    $this->line('$exchangeFilters: ' . json_encode($exchangeFilters));
+    foreach ($exchangeFilters as $key => $value) {
+      $this->line($key.': ' . json_encode($value));
+    }
   }
 }

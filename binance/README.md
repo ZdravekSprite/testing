@@ -96,5 +96,5 @@ php artisan binance:get-market-data-endpoints
 
 ```bash
 git add .
-git commit -am "GetMarketDataEndpoints [binance]"
+git commit -am "GetMarketDataEndpoints Exchange Information [binance]"
 ```
