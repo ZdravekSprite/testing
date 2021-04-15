@@ -4,11 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
-/*
- * Get Balance Binance Exchange
- * Documentation https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
- */
-use API;
 
 class GetAccountSnapshot extends Command
 {
@@ -43,20 +38,20 @@ class GetAccountSnapshot extends Command
    */
   public function handle()
   {
-    $test = false;
+    $test = true;
 
     if ($test) {
-      $Server = 'https://testnet.binance.vision/api';
+      $server = 'https://testnet.binance.vision/api';
       $ws = 'wss://testnet.binance.vision/ws';
       $stream = 'wss://testnet.binance.vision/stream';
-      $ApiKey = env('BINANCE_TEST_API_KEY');
-      $ApiSecret = env('BINANCE_TEST_API_SECRET');
+      $apiKey = env('BINANCE_TEST_API_KEY');
+      $apiSecret = env('BINANCE_TEST_API_SECRET');
     } else {
-      $Server = 'https://api.binance.com/api';
+      $server = 'https://api.binance.com/api';
       $ws = 'wss://stream.binance.com:9443/ws';
       $stream = 'wss://stream.binance.com:9443/stream';
-      $ApiKey = env('BINANCE_API_KEY');
-      $ApiSecret = env('BINANCE_API_SECRET');
+      $apiKey = env('BINANCE_API_KEY');
+      $apiSecret = env('BINANCE_API_SECRET');
     }
 
     $response = Http::get('https://api.hnb.hr/tecajn/v2?valuta=EUR');
@@ -64,7 +59,7 @@ class GetAccountSnapshot extends Command
     $euro = str_replace(',', '.', $data[0]['kupovni_tecaj']) * 1;
     $this->line('Euro (kupovni tečaj u HNB):' . $euro);
 
-    $response = Http::get($Server . '/v3/exchangeInfo');
+    $response = Http::get($server . '/v3/exchangeInfo');
     $exchangeInfo = $response->json();
     //dd($exchangeInfo['serverTime']);
 
@@ -73,45 +68,34 @@ class GetAccountSnapshot extends Command
      * the server time must be obtained to sign the requests curl
      * Time is the variable used for requests
      */
-    $ServerTimeUrl = $Server . '/v3/time';
-    $ClassServerTime = new APIREST($ServerTimeUrl);
-    $CallServerTime = $ClassServerTime->call(array());
-    $DecodeCallTime = json_decode($CallServerTime);
-    $Time = $DecodeCallTime->serverTime;
+    $time = json_decode(Http::get($server . '/v3/time'));
+    $serverTime = $time->serverTime;
     /*
     $Time = $exchangeInfo['serverTime'];
      */
     //dd($exchangeInfo['serverTime'],$Time);
-    $Timestamp = 'timestamp=' . $Time; // build timestamp type url get
-    $Signature = hash_hmac('SHA256', $Timestamp, $ApiSecret); // build firm with sha256
-    /**
-     * Get balance
-     * @var BalanceUrl is the url of the request
-     * @var ClassBalance initializes the APIREST class
-     * @var CallBalance request balance sheets, X-MBX-APIKEY is required by binance api
-     */
-    $BalanceUrl = $Server . '/v3/account?timestamp=' . $Time . '&signature=' . $Signature;
-    $ClassBalance = new APIREST($BalanceUrl);
-    $CallBalance = $ClassBalance->call(
-      array('X-MBX-APIKEY:' . $ApiKey)
-    );
+    $timeStamp = 'timestamp=' . $serverTime; // build timestamp type url get
+    $signature = hash_hmac('SHA256', $timeStamp, $apiSecret); // build firm with sha256
+
+    $account = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get($server . '/v3/account', [
+      'timestamp' => $serverTime,
+      'signature' => $signature
+    ]));
     //dd(json_decode($CallBalance)->balances);
-    /**
-     * Get balance
-     * @var OpenOrdersUrl is the url of the request
-     * @var ClassOpenOrders initializes the APIREST class
-     * @var CallOpenOrders request balance sheets, X-MBX-APIKEY is required by binance api
-     */
-    $OpenOrdersUrl = $Server . '/v3/openOrders?timestamp=' . $Time . '&signature=' . $Signature;
-    $ClassOpenOrders = new APIREST($OpenOrdersUrl);
-    $CallOpenOrders = $ClassOpenOrders->call(
-      array('X-MBX-APIKEY:' . $ApiKey)
-    );
+
+    $openOrders = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get($server . '/v3/openOrders', [
+      'timestamp' => $serverTime,
+      'signature' => $signature
+    ]));
     //dd($CallOpenOrders);
 
     $kn = -0.8 * $euro;
     $this->line('Balance:');
-    foreach (json_decode($CallBalance)->balances as $key => $crypto) {
+    foreach ($account->balances as $key => $crypto) {
       //dd($crypto);
       $total = $crypto->free * 1 + $crypto->locked * 1;
       //dd($total);
@@ -124,16 +108,24 @@ class GetAccountSnapshot extends Command
             $total_kn = $total * $euro;
           } else {
             if ($crypto->asset != 'USDT') {
-              $res = Http::get($Server . '/v3/ticker/price?symbol=' . $crypto->asset . 'EUR');
+              $res = Http::get($server . '/v3/ticker/price?symbol=' . $crypto->asset . 'EUR');
             } else {
-              $res = Http::get($Server . '/v3/ticker/price?symbol=EURUSDT');
+              $res = Http::get($server . '/v3/ticker/price?symbol=EURUSDT');
             }
             $data = $res->json();
-            //dd($data);
-            if ($crypto->asset != 'USDT') {
-              $price = $data['price'] * 1;
+            if (isset($data['code'])) {
+              $res = Http::get($server . '/v3/ticker/price?symbol=' . $crypto->asset . 'USDT');
+              $data = $res->json();
+              $usdt = $data['price'] * 1;
+              $res = Http::get($server . '/v3/ticker/price?symbol=EURUSDT');
+              $data = $res->json();
+              $price = (1 - 0.0075) * $usdt / $data['price'];
             } else {
-              $price = 1 / $data['price'];
+              if ($crypto->asset != 'USDT') {
+                $price = $data['price'] * 1;
+              } else {
+                $price = 1 / $data['price'];
+              }
             }
             $total_kn = $total * $price * $euro * (1 - 0.00075);
           }
@@ -152,8 +144,8 @@ class GetAccountSnapshot extends Command
     //dd($exchangeInfo['symbols'][0]);
     $this->newLine();
     $this->line('Orders:');
-    foreach (json_decode($CallOpenOrders) as $key => $order) {
-      $res = Http::get($Server . '/v3/ticker/price?symbol=' . $order->symbol);
+    foreach ($openOrders as $key => $order) {
+      $res = Http::get($server . '/v3/ticker/price?symbol=' . $order->symbol);
       $data = $res->json();
       //dd($data);
       foreach ($exchangeInfo['symbols'] as $key => $symbol) {

@@ -92,9 +92,11 @@ php artisan make:command GetAccountSnapshot
 php artisan binance:get-account-snapshot
 php artisan make:command GetMarketDataEndpoints
 php artisan binance:get-market-data-endpoints
+php artisan make:command SpotAccountTrade
+php artisan binance:spot-account-trade
 ```
 
 ```bash
 git add .
-git commit -am "GetMarketDataEndpoints Exchange Information [binance]"
+git commit -am "SpotAccountTrade [binance]"
 ```

@@ -142,20 +142,39 @@ class GetMarketDataEndpoints extends Command
      *  NONE
      */
     //dd(json_decode(Http::get($Server . '/v3/exchangeInfo')));
-    $DecodeExchangeInfo = json_decode(Http::get($Server . '/v3/exchangeInfo'));
-    $timezone = $DecodeExchangeInfo->timezone;
+    $exchangeInfo = json_decode(Http::get($Server . '/v3/exchangeInfo'));
+    $timezone = $exchangeInfo->timezone;
     $this->line('$timezone: ' . $timezone);
-    $serverTime = $DecodeExchangeInfo->serverTime;
+    $serverTime = $exchangeInfo->serverTime;
     $this->line('$serverTime: ' . gmdate("Y-m-d H:i:s", $serverTime / 1000));
-    $rateLimits = $DecodeExchangeInfo->rateLimits;
+    $rateLimits = $exchangeInfo->rateLimits;
     $this->line('$rateLimits: ' . json_encode($rateLimits));
     foreach ($rateLimits as $key => $value) {
-      $this->line($key.': ' . json_encode($value));
+      $this->line($key . ': ' . json_encode($value));
     }
-    $exchangeFilters = $DecodeExchangeInfo->exchangeFilters;
+    $exchangeFilters = $exchangeInfo->exchangeFilters;
     $this->line('$exchangeFilters: ' . json_encode($exchangeFilters));
     foreach ($exchangeFilters as $key => $value) {
-      $this->line($key.': ' . json_encode($value));
+      $this->line($key . ': ' . json_encode($value));
+    }
+    $symbols = $exchangeInfo->symbols;
+    //$this->line('$symbols: ' . json_encode($symbols));
+    $this->line('$symbols:');
+    foreach ($symbols as $key => $value) {
+      $symbol = $value->symbol;
+      if ($value->quoteAsset == 'USDT') {
+        $klines = json_decode(Http::get($Server . '/v3/klines?symbol='.$symbol.'&interval=1m&limit=5'));
+        //dd($klines[0][1]);
+        $tick = 100 * ($klines[0][1] - $klines[4][4]) / $klines[0][1];
+        if ($tick < -5 ) $this->line($symbol . ' ' . $tick);
+      }
+    }
+    /* Kline/Candlestick Data */
+    //dd(json_decode(Http::get($Server . '/v3/klines?symbol=BNBUSDT&interval=1m&limit=10')));
+    $klines = json_decode(Http::get($Server . '/v3/klines?symbol=TRXUSDT&interval=1m&limit=5'));
+    foreach ($klines as $key => $value) {
+      //dd($value);
+      $this->line($key . ': ' . gmdate("Y-m-d H:i:s", $value[0] / 1000) . ' ' . $value[1] . ' -> ' . $value[4] . ' '  . gmdate("Y-m-d H:i:s", $value[6] / 1000));
     }
   }
 }
