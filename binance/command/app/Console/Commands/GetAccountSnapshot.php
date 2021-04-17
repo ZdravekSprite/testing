@@ -38,7 +38,7 @@ class GetAccountSnapshot extends Command
    */
   public function handle()
   {
-    $test = true;
+    $test = false;
 
     if ($test) {
       $server = 'https://testnet.binance.vision/api';
