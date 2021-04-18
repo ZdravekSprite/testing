@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Symbol extends Model
+class Trade extends Model
 {
   use HasFactory;
   /**
@@ -18,4 +18,9 @@ class Symbol extends Model
     'created_at',
     'updated_at',
   ];
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }

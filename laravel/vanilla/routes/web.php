@@ -5,6 +5,8 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PlatnaLista;
+use App\Http\Controllers\SymbolController;
+use App\Http\Controllers\TradeController;
 use App\Http\Controllers\Admin\ImpersonateController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Artisan;
@@ -99,3 +101,7 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->grou
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::get('/messages', [ChatController::class, 'fetchAllMessages']);
 Route::post('/messages', [ChatController::class, 'sendMessage']);
+
+Route::resource('trades', TradeController::class);
+Route::resource('symbols', SymbolsController::class);
+Route::get('/binance/test', [TradeController::class, 'allMyTrades']);

@@ -46,5 +46,6 @@ class DatabaseSeeder extends Seeder
       HolidaySeeder::class,
     ]);
     $this->call(SymbolSeeder::class);
+    $this->call(TradeSeeder::class);
   }
 }

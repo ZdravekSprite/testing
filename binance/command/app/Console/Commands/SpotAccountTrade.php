@@ -234,6 +234,7 @@ class SpotAccountTrade extends Command
      */
     $this->line('Cancel Order (TRADE):');
     /* Cancel Order (TRADE) */
+/*
     $time = json_decode(Http::get($server . '/v3/time'));
     $serverTime = $time->serverTime;
     $queryArray = array(
@@ -258,10 +259,10 @@ class SpotAccountTrade extends Command
     $order = $curl->response;
     //dd($order);
     if(isset($order->{'orderId'})) $this->line('Order ID: ' . $order->{'orderId'});
-
+*/
     $this->line('Current Open Orders (USER_DATA):');
     /* Current Open Orders (USER_DATA) */
-
+/*
     $time = json_decode(Http::get($server . '/v3/time'));
     $serverTime = $time->serverTime;
     $signature = hash_hmac('SHA256', 'timestamp=' . $serverTime, $apiSecret);
@@ -278,5 +279,47 @@ class SpotAccountTrade extends Command
           . ' orderId: ' . $order->orderId
       );
     }
+*/
+    $this->line('Account Trade List (USER_DATA):');
+    /* Account Trade List (USER_DATA) */
+
+    $time = json_decode(Http::get($server . '/v3/time'));
+    $serverTime = $time->serverTime;
+    $queryArray = array(
+      "symbol" => $symbol,
+      "timestamp" => $serverTime
+    );
+    $signature = hash_hmac("sha256", http_build_query($queryArray), $apiSecret);
+    $signatureArray = array("signature" => $signature);
+    $curlArray = $queryArray + $signatureArray;
+    $curl = new Curl();
+    $curl->setHeader("Content-Type", "application/x-www-form-urlencoded");
+    $curl->setHeader("X-MBX-APIKEY", $apiKey);
+    $curl->get($server . '/v3/myTrades', $curlArray);
+    if ($curl->error) {
+      echo 'Error: ' . $curl->errorCode . ': ' . $curl->errorMessage . "\n";
+    }
+    $orders = $curl->response;
+    //dd($orders);
+    foreach ($orders as $key => $order) {
+      //dd($order);
+      $this->line(
+        'date: ' . gmdate("Y-m-d H:i:s", $order->time / 1000)
+          . ' pair: ' . $order->symbol
+          . ' orderId: ' . $order->orderId
+          . ' id: ' . $order->id
+          . ' orderListId: ' . $order->orderListId
+          . ' price: ' . $order->price
+          . ' qty: ' . $order->qty
+          . ' quoteQty: ' . $order->quoteQty
+          . ' commission: ' . $order->commission
+          . ' commissionAsset: ' . $order->commissionAsset
+          . ' time: ' . $order->time
+          . ' isBuyer: ' . $order->isBuyer
+          . ' isMaker: ' . $order->isMaker
+          . ' isBestMatch: ' . $order->isBestMatch
+      );
+    }
+
   }
 }
