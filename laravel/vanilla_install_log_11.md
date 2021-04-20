@@ -174,10 +174,46 @@ Route::resource('trades', TradeController::class);
 Route::resource('symbols', SymbolsController::class);
 Route::get('/binance/test', [TradeController::class, 'allMyTrades']);
 ```
+# HNB
+```bash
+php artisan make:model Hnb -a
+```
+### database\migrations\2021_04_19_213143_create_hnbs_table.php
+```php
+  public function up()
+  {
+    Schema::create('hnbs', function (Blueprint $table) {
+      $table->id();
+      $table->string('broj_tecajnice');
+      $table->date('datum_primjene');
+      $table->string('drzava');
+      $table->string('drzava_iso');
+      $table->string('sifra_valute');
+      $table->string('valuta');
+      $table->tinyInteger('jedinica');
+      $table->string('kupovni_tecaj');
+      $table->string('srednji_tecaj');
+      $table->string('prodajni_tecaj');
+      $table->unique(['datum_primjene', 'valuta']);
+      $table->timestamps();
+    });
+  }
+```
+```bash
+php artisan migrate
+```
+### app\Models\Hnb.php
+```php
+  protected $hidden = [
+    'id',
+    'created_at',
+    'updated_at',
+  ];
+```
 
 ```bash
 php artisan serve
 npm run watch
 git add .
-git commit -am "symbol [binance]"
+git commit -am "hnb [binance]"
 ```

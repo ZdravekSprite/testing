@@ -98,5 +98,5 @@ php artisan binance:spot-account-trade
 
 ```bash
 git add .
-git commit -am "SpotAccountTrade [binance]"
+git commit -am "trades temp [binance]"
 ```
