@@ -28,8 +28,8 @@
             <tbody>
               @if(count($trades) > 0)
               @foreach($trades as $trade)
-              <tr>
-                <td>
+              <tr style="color:@if($trade->orderListId == -2) @if($trade->isBuyer) blue @else tomato @endif @else @if($trade->isBuyer) red @else green @endif @endif;" >
+                <td title="{{$trade->qty}} {{$trade->isBuyer ? 'BUY' : 'SELL'}} {{$trade->quoteQty}} {{$trade->commission}} {{$trade->commissionAsset}}">
                   {{gmdate("Y-m-d H:i:s", $trade->time / 1000)}} {{$trade->symbol}}
                 </td>
                 @foreach($trade->assets as $asset)
@@ -37,9 +37,9 @@
                   {{round($asset, 8)}}
                 </td>
                 @endforeach
-                <td>
-                  1$ = {{$trade->hnb->where('valuta', '=', 'USD')->first()->kupovni_tecaj}}kn
-                  1EUR = {{$trade->hnb->where('valuta', '=', 'EUR')->first()->kupovni_tecaj}}kn
+                <td title="1$ = {{$trade->hnb->where('valuta', '=', 'USD')->first()->kupovni_tecaj}}kn
+                  1EUR = {{$trade->hnb->where('valuta', '=', 'EUR')->first()->kupovni_tecaj}}kn">
+                  $/EUR
                 </td>
               </tr>
               @endforeach

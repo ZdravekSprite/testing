@@ -195,12 +195,14 @@ php artisan make:model Kline -a
       $table->string('q'); // Quote asset volume
       $table->string('base_volume'); // Taker buy base asset volume
       $table->string('quote_volume'); // Taker buy quote asset volume
+      $table->unique(['symbol', 'interval', 'start_time']);
       $table->timestamps();
     });
   }
 ```
 ```bash
 php artisan migrate
+npm install apexcharts --save
 ```
 # HNB
 ```bash
@@ -243,5 +245,5 @@ php artisan migrate
 php artisan serve
 npm run watch
 git add .
-git commit -am "hnb [binance]"
+git commit -am "klines start [binance]"
 ```

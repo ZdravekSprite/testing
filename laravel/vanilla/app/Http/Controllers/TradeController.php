@@ -19,10 +19,10 @@ class TradeController extends Controller
   public function allMyTrades()
   {
     set_time_limit(0);
-    //$symbols = Symbol::where('status', '=', 'TRADING');
+    $symbols = Symbol::where('status', '=', 'TRADING')->pluck('symbol');
     $trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'asc')->get();
     $symbols = $trades->pluck('symbol')->unique();
-    //dd($symbols);
+    //dd(http_build_query(json_decode($symbols)));
     $allTrades = [];
     foreach ($symbols as $key => $symbol) {
       //$myTrades = $this->myTrades($symbol->symbol);
@@ -126,11 +126,17 @@ class TradeController extends Controller
           $trade->binanceId = $myDust->transId;
           $trade->orderId = $myDust->transId;
           $trade->orderListId = -2;
-          $trade->price = number_format($myDust->amount / $myDust->transferedAmount, 8);
-          $trade->qty = number_format($myDust->amount, 8);
-          $trade->quoteQty = number_format($myDust->transferedAmount, 8);
           $trade->commission = number_format($myDust->serviceChargeAmount, 8);
           $trade->commissionAsset = 'BNB';
+
+          $qty = $myDust->isBuyer ? $myDust->transferedAmount + $myDust->serviceChargeAmount : $myDust->amount;
+          $quoteQty = $myDust->isBuyer ? $myDust->amount : $myDust->transferedAmount + $myDust->serviceChargeAmount;
+          $price = $quoteQty / $qty;
+          //dd($myDust,$symbol->symbol,$price,$qty,$quoteQty);
+          $trade->price = number_format($price, 8);
+          $trade->qty = number_format($qty, 8);
+          $trade->quoteQty = number_format($quoteQty, 8);
+
           $trade->time = $myDust->operateTime;
           $trade->isBuyer = $myDust->isBuyer;
           $trade->isMaker = true;
@@ -159,14 +165,22 @@ class TradeController extends Controller
       $assets[$symbol->quoteAsset] = 0;
     }
     $zero = 100000000;
+    
     $assets['BTC'] = number_format((0.000341 + 0.000333), 8);
-    $assets['USDT'] = number_format((59.36301 + 58.847475 + 58.563814), 8);
+    $assets['USDT'] = number_format((59.36301 + 58.847475 + 58.563814), 8); //10.29,319.15004872
+    $assets['BNB'] = number_format((0), 8); //0.21,0.00001586,0.04978458
     $assets['XRP'] = number_format((62.7), 8);
+    
     $symbols = $assets;
     //$symbols = collect($assets)->unique();
 
     foreach ($trades as $key => $trade) {
       $symbol = Symbol::where('symbol', '=', $trade->symbol)->first();
+      /*if ($trade->symbol == 'BNBUSDT') {
+        $trade->isBuyer = !$trade->isBuyer;
+        $symbol->baseAsset = 'BNB';
+        $symbol->baseAsset = 'USDT';
+      } */
       //dd($trade, $assets, number_format($assets[$symbol->baseAsset] + ($trade->isBuyer ? 1 : -1) * $trade->qty, 8));
       $assets[$symbol->baseAsset] = number_format((float)$assets[$symbol->baseAsset] + (float)$trade->qty * ($trade->isBuyer ? 1 : -1), 8, '.', '');
       $assets[$symbol->quoteAsset] = number_format((float)$assets[$symbol->quoteAsset] + (float)$trade->quoteQty * ($trade->isBuyer ? -1 : 1), 8, '.', '');

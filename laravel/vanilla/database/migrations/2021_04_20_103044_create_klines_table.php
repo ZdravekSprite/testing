@@ -28,6 +28,7 @@ class CreateKlinesTable extends Migration
       $table->string('q'); // Quote asset volume
       $table->string('base_volume'); // Taker buy base asset volume
       $table->string('quote_volume'); // Taker buy quote asset volume
+      $table->unique(['symbol', 'interval', 'start_time']);
       $table->timestamps();
     });
   }

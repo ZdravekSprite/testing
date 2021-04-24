@@ -106,4 +106,5 @@ Route::post('/messages', [ChatController::class, 'sendMessage']);
 Route::resource('trades', TradeController::class);
 Route::resource('symbols', SymbolsController::class);
 Route::get('/binance/test', [TradeController::class, 'allMyTrades']);
+Route::get('/dust', [TradeController::class, 'dustLog']);
 Route::resource('klines', KlineController::class);
