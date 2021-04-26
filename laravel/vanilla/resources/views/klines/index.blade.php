@@ -10,14 +10,14 @@
 </head>
 
 <body>
-  <div id="chart_BTCUSDT"></div>
-  <div id="chart_ETHUSDT"></div>
-  <div id="chart_BNBUSDT"></div>
+  @foreach($symbols as $symbol)
+  <div style="float: left; padding: 10px;" id="chart_{{$symbol[0]}}"></div>
+  @endforeach
   <script>
-  @foreach(['BTCUSDT' , 'ETHUSDT', 'BNBUSDT'] as $symbol)
-    var chart_{{$symbol}} = LightweightCharts.createChart(document.getElementById('chart_{{$symbol}}'), {
-      width: 800
-      , height: 400
+    @foreach($symbols as $symbol)
+    var chart_{{ $symbol[0] }} = LightweightCharts.createChart(document.getElementById('chart_{{ $symbol[0] }}'), {
+      width: 900
+      , height: 300
       , layout: {
         backgroundColor: '#000000'
         , textColor: 'rgba(255, 255, 255, 0.9)'
@@ -43,7 +43,17 @@
       , }
     , });
 
-    var candleSeries_{{$symbol}} = chart_{{$symbol}}.addCandlestickSeries({
+    chart_{{ $symbol[0] }}.applyOptions({
+      watermark: {
+        color: 'rgba(70, 75, 80, 0.5)'
+        , visible: true
+        , text: '{{ $symbol[0] }}'
+        , fontSize: 24
+        , horzAlign: 'left'
+        , vertAlign: 'bottom'
+      , }
+    , });
+    var candleSeries_{{ $symbol[0] }} = chart_{{ $symbol[0] }}.addCandlestickSeries({
       upColor: '#00ff00'
       , downColor: '#ff0000'
       , borderDownColor: 'rgba(255, 144, 0, 1)'
@@ -52,7 +62,27 @@
       , wickUpColor: 'rgba(255, 144, 0, 1)'
     , });
 
-    fetch('https://api.binance.com/api/v3/klines?symbol={{$symbol}}&interval=1m&limit=100')
+    // create a horizontal price line at a certain price level.
+    @if(isset($symbol[1]))
+    const buypriceLine{{ $symbol[0] }} = candleSeries_{{ $symbol[0] }}.createPriceLine({
+          price: {{ $symbol[1] }},
+          color: 'red',
+          lineWidth: 2,
+          lineStyle: LightweightCharts.LineStyle.Dotted,
+          axisLabelVisible: true,
+    });
+    @endif
+    @if(isset($symbol[2]))
+    const sellpriceLine{{ $symbol[0] }} = candleSeries_{{ $symbol[0] }}.createPriceLine({
+          price: {{ $symbol[2] }},
+          color: 'green',
+          lineWidth: 2,
+          lineStyle: LightweightCharts.LineStyle.Dotted,
+          axisLabelVisible: true,
+    });
+    @endif
+
+    fetch('https://api.binance.com/api/v3/klines?symbol={{ $symbol[0] }}&interval=1m&limit=200')
       .then((r) => r.json())
       .then((response) => {
         //console.log('response_binance', response)
@@ -67,21 +97,23 @@
         });
         console.log(objs);
         //console.log('response_data', data)
-        candleSeries_{{$symbol}}.setData(objs);
+        candleSeries_{{ $symbol[0] }}.setData(objs);
       })
 
-  @endforeach
+    @endforeach
 
     // /stream?streams=<streamName1>/<streamName2>/<streamName3>
     //var binanceSocket = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@kline_1m");
-    var binanceSocket = new WebSocket("wss://stream.binance.com:9443/stream?streams=btcusdt@kline_1m/ethusdt@kline_1m/bnbusdt@kline_1m");
+    //var binanceSocket = new WebSocket("wss://stream.binance.com:9443/stream?streams=btcusdt@kline_1m/ethusdt@kline_1m/bnbusdt@kline_1m/ethbtc@kline_1m");
+    var binanceSocket = new WebSocket("wss://stream.binance.com:9443/stream?streams={{ $link }}");
 
     binanceSocket.onmessage = function(event) {
       var message = JSON.parse(event.data);
       console.log('message', message)
-      if (message.stream == 'bnbusdt@kline_1m') {
+      @foreach($symbols as $symbol)
+      if (message.stream == '{{ strtolower($symbol[0]) }}@kline_1m') {
         var candlestick = message.data.k;
-        candleSeries_BNBUSDT.update({
+        candleSeries_{{ $symbol[0] }}.update({
           time: candlestick.t / 1000
           , open: candlestick.o
           , high: candlestick.h
@@ -89,26 +121,7 @@
           , close: candlestick.c
         })
       }
-      if (message.stream == 'ethusdt@kline_1m') {
-        var candlestick = message.data.k;
-        candleSeries_ETHUSDT.update({
-          time: candlestick.t / 1000
-          , open: candlestick.o
-          , high: candlestick.h
-          , low: candlestick.l
-          , close: candlestick.c
-        })
-      }
-      if (message.stream == 'btcusdt@kline_1m') {
-        var candlestick = message.data.k;
-        candleSeries_BTCUSDT.update({
-          time: candlestick.t / 1000
-          , open: candlestick.o
-          , high: candlestick.h
-          , low: candlestick.l
-          , close: candlestick.c
-        })
-      }
+      @endforeach
 
       //var candlestick = message.k;
 

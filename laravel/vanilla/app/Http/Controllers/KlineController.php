@@ -6,12 +6,15 @@ use App\Models\Kline;
 use App\Models\Symbol;
 use App\Models\Trade;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
 class KlineController extends Controller
 {
   public function add_kline($symbol, $interval, $kline)
   {
+    $old_kline = Kline::where('symbol', '=', $symbol)->where('interval', '=', $interval)->where('start_time', '=', $kline[0])->first();
+    if ($old_kline) return $old_kline;
     $new_kline = new Kline;
     $new_kline->symbol = $symbol;
     $new_kline->interval = $interval;
@@ -70,11 +73,87 @@ class KlineController extends Controller
   public function index()
   {
     //ini_set("memory_limit","1024M");
-    $symbols = Symbol::where('status', '=', 'TRADING')->where('quoteAsset', '=', 'USDT')->get();
-    $klines = $this->klines('BTCUSDT');
-    $klines = $this->klines('ETHUSDT');
-    $klines = $this->klines('BNBUSDT');
-    return view('klines.index')->with(compact('symbols', 'klines'));
+    //$symbols = Symbol::where('status', '=', 'TRADING')->where('quoteAsset', '=', 'USDT')->get();
+    /*
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->get();
+    $symbols = $trades->pluck('symbol')->unique();
+    $times = $trades->pluck('time')->map(function ($time) {
+      return floor($time / 60000) * 60000;
+    })->unique();
+    $assets = [];
+    $klines = [];
+    $klines_symbols = [];
+    foreach ($symbols as $key => $value) {
+      $symbol = Symbol::where('symbol', '=', $value)->first();
+      //dd($symbol);
+      $assets[] = $symbol->baseAsset;
+      $assets[] = $symbol->quoteAsset;
+    }
+    //dd(array_unique($assets));
+    foreach (array_unique($assets) as $key => $value) {
+      if (Symbol::where('symbol', '=', $value . 'EUR')->first()) $klines_symbols[] = Symbol::where('symbol', '=', $value . 'EUR')->first()->symbol;
+      if (Symbol::where('symbol', '=', 'EUR' . $value)->first()) $klines_symbols[] = Symbol::where('symbol', '=', 'EUR' . $value)->first()->symbol;
+      if (Symbol::where('symbol', '=', $value . 'USDT')->first()) $klines_symbols[] = Symbol::where('symbol', '=', $value . 'USDT')->first()->symbol;
+      if (Symbol::where('symbol', '=', 'USDT' . $value)->first()) $klines_symbols[] = Symbol::where('symbol', '=', 'USDT' . $value)->first()->symbol;
+      //dd($klines_symbols);
+    }
+    //dd($klines_symbols);
+    set_time_limit(0);
+    foreach ($times as $key => $time) {
+      foreach ($klines_symbols as $key => $symbol) {
+        $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $symbol . '&interval=1m&limit=1&startTime=' . $time));
+        //dd($kline);
+        $old_kline = Kline::where('symbol', '=', $symbol)->where('interval', '=', '1m')->where('start_time', '=', $kline[0])->first();
+        if (!$old_kline) $kline = $this->add_kline($symbol, '1m', $kline[0]);
+      }
+      //dd($klines_symbols);
+    }
+    */
+    $test = false;
+
+    if ($test) {
+      $server = 'https://testnet.binance.vision/api';
+      $ws = 'wss://testnet.binance.vision/ws';
+      $stream = 'wss://testnet.binance.vision/stream';
+      $apiKey = env('BINANCE_TEST_API_KEY');
+      $apiSecret = env('BINANCE_TEST_API_SECRET');
+    } else {
+      $server = 'https://api.binance.com/api';
+      $ws = 'wss://stream.binance.com:9443/ws';
+      $stream = 'wss://stream.binance.com:9443/stream';
+      $apiKey = env('BINANCE_API_KEY');
+      $apiSecret = env('BINANCE_API_SECRET');
+    }
+
+    $time = json_decode(Http::get($server . '/v3/time'));
+    $serverTime = $time->serverTime;
+    $timeStamp = 'timestamp=' . $serverTime; // build timestamp type url get
+    $signature = hash_hmac('SHA256', $timeStamp, $apiSecret); // build firm with sha256
+    $openOrders = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get($server . '/v3/openOrders', [
+      'timestamp' => $serverTime,
+      'signature' => $signature
+    ]));
+    $symbols = [['BTCUSDT',0,0], ['ETHBTC',0,0], ['ETHUSDT',0,0], ['BNBBTC',0,0], ['BNBUSDT',0,0], ['BNBETH',0,0]];
+    //dd($openOrders,$symbols);
+    foreach ($symbols as $key => $symbol) {
+      foreach ($openOrders as $order) {
+        if($order->symbol == $symbol[0]) {
+          if($order->side == 'BUY') {
+            $symbols[$key][1] = $order->price;
+          }
+          if($order->side == 'SELL') {
+            $symbols[$key][2] = $order->price;
+          }
+        }
+      }
+    }
+    //dd($symbols);
+//    $symbols = [['BTCUSDT',53600,53200], ['ETHBTC'], ['ETHUSDT',2510,2480], ['BNBBTC'], ['BNBUSDT',540,532], ['BNBETH']];
+    $link = implode('/', array_map(fn($n) => strtolower($n[0]).'@kline_1m', $symbols));
+    //dd($link);
+    return view('klines.index')->with(compact('symbols', 'link'));
   }
 
   /**

@@ -176,6 +176,7 @@ class TradeController extends Controller
 
     foreach ($trades as $key => $trade) {
       $symbol = Symbol::where('symbol', '=', $trade->symbol)->first();
+      $trade->symbolFull = $symbol;
       /*if ($trade->symbol == 'BNBUSDT') {
         $trade->isBuyer = !$trade->isBuyer;
         $symbol->baseAsset = 'BNB';
