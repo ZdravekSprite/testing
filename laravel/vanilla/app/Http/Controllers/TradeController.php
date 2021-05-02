@@ -8,7 +8,9 @@ use App\Models\Symbol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Arr;
 use App\Http\Controllers\HnbController;
+use App\Models\Kline;
 
 class TradeController extends Controller
 {
@@ -51,9 +53,11 @@ class TradeController extends Controller
     $myTrades = json_decode(Http::withHeaders([
       'X-MBX-APIKEY' => $apiKey
     ])->get($server . '/v3/myTrades', $getArray));
+    //dd($myTrades);
     foreach ($myTrades as $key => $myTrade) {
       //dd($myTrade);
       //dd(Trade::where('binanceId', '=', $myTrade->id)->count());
+      if (!is_object($myTrade)) return null;
       if (Trade::where('binanceId', '=', $myTrade->id)->count() == 0) {
         //dd($myTrade);
         $trade = new Trade;
@@ -114,11 +118,27 @@ class TradeController extends Controller
       //dd($myDusts);
       foreach ($myDusts->userAssetDribbletDetails as $key => $myDust) {
         //dd(Trade::where('binanceId', '=', $myTrade->id)->count());
+        //dd(Symbol::where('quoteAsset', '=', 'KEY')->orWhere('baseAsset', '=', 'KEY')->get());
         $symbol = Symbol::where('quoteAsset', '=', 'BNB')->where('baseAsset', '=', $myDust->fromAsset)->first();
         $myDust->isBuyer = !$symbol;
         if (!$symbol) $symbol = Symbol::where('baseAsset', '=', 'BNB')->where('quoteAsset', '=', $myDust->fromAsset)->first();
-        //dd($symbol);
-        if (Trade::where('binanceId', '=', $myDust->transId)->where('symbol', '=', $symbol->symbol)->count() == 0) {
+        if (!$symbol) {
+          $symbol = Symbol::create([
+            'symbol' => $myDust->fromAsset . 'BNB',
+            'status' => 'DUST',
+            'baseAsset' => $myDust->fromAsset,
+            'baseAssetPrecision' => 8,
+            'quoteAsset' => 'BNB',
+            'quotePrecision' => 8,
+            'quoteAssetPrecision' => 8,
+            'icebergAllowed' => false,
+            'ocoAllowed' => false,
+            'isSpotTradingAllowed' => false,
+            'isMarginTradingAllowed' => false
+          ]);
+          //dd($symbol);
+        }
+        if (Trade::where('binanceId', '=', $myDust->transId)->where('symbol', '=', $myDust->fromAsset . 'BNB')->orWhere('symbol', '=',  'BNB' . $myDust->fromAsset)->count() == 0) {
           //dd($symbol, $myDust);
           $trade = new Trade;
           $trade->user_id = Auth::user()->id;
@@ -155,42 +175,70 @@ class TradeController extends Controller
    */
   public function index()
   {
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'asc')->get();
+    $server = 'https://api.binance.com';
+    $apiKey = Auth::user()->BINANCE_API_KEY; //env('BINANCE_API_KEY');
+    $apiSecret = Auth::user()->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
+    $time = json_decode(Http::get($server . '/api/v3/time'));
+    $serverTime = $time->serverTime;
+    $timeStamp = 'timestamp=' . $serverTime;
+    $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
+    $getall = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get($server . '/sapi/v1/capital/config/getall', [
+      'timestamp' => $serverTime,
+      'signature' => $signature
+    ]));
+    //dd($getall);
+
+    $all_assets = [];
+    foreach ($getall as $coin) {
+      //dd($coin->coin);
+      $all_assets = Arr::add($all_assets, $coin->coin, (object) array('name' => $coin->name));
+      $total = $coin->free + $coin->locked + $coin->freeze + $coin->withdrawing + $coin->ipoing + $coin->ipoable + $coin->storage;
+      $all_assets[$coin->coin]->total = number_format($total, 8,'.', '');
+    }
+    //dd($all_assets);
+
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'desc')->get();
     $symbols = $trades->pluck('symbol')->unique();
-    $assets = [];
+
+    $my_assets = [];
     foreach ($symbols as $key => $value) {
       $symbol = Symbol::where('symbol', '=', $value)->first();
-      //dd($symbol);
-      $assets[$symbol->baseAsset] = 0;
-      $assets[$symbol->quoteAsset] = 0;
+      $my_assets = Arr::add($my_assets, $symbol->baseAsset, $all_assets[$symbol->baseAsset]);
+      $my_assets = Arr::add($my_assets, $symbol->quoteAsset, $all_assets[$symbol->quoteAsset]);
     }
-    $zero = 100000000;
-    
+    //dd($my_assets);
+
+    foreach ($my_assets as $key => $coin) {
+      $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', $key)->where('quoteAsset', '=', 'EUR')->first();
+      if (!$symbol) $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', 'EUR')->where('quoteAsset', '=', $key)->first();
+      if (!$symbol) $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', $key)->where('quoteAsset', '=', 'BUSD')->first();
+      if (!$symbol) $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', 'BUSD')->where('quoteAsset', '=', $key)->first();
+      if (!$symbol) $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', $key)->where('quoteAsset', '=', 'USDT')->first();
+      if (!$symbol) $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', 'USDT')->where('quoteAsset', '=', $key)->first();
+      //dd($symbol);
+      $coin->symbol = $symbol->symbol;
+      $coin->isBase = $symbol->baseAsset == $key;
+      $coin->fiat = $coin->isBase ? $symbol->quoteAsset : $symbol->baseAsset;
+    }
+    //dd($my_assets);
+
+    //$assets = $my_assets;
+    //$zero = 100000000;
+    /*
     $assets['BTC'] = number_format((0.000341 + 0.000333), 8);
     $assets['USDT'] = number_format((59.36301 + 58.847475 + 58.563814), 8); //10.29,319.15004872
     $assets['BNB'] = number_format((0), 8); //0.21,0.00001586,0.04978458
     $assets['XRP'] = number_format((62.7), 8);
-    
-    $symbols = $assets;
-    //$symbols = collect($assets)->unique();
-
-    foreach ($trades as $key => $trade) {
-      $symbol = Symbol::where('symbol', '=', $trade->symbol)->first();
-      $trade->symbolFull = $symbol;
-      /*if ($trade->symbol == 'BNBUSDT') {
-        $trade->isBuyer = !$trade->isBuyer;
-        $symbol->baseAsset = 'BNB';
-        $symbol->baseAsset = 'USDT';
-      } */
-      //dd($trade, $assets, number_format($assets[$symbol->baseAsset] + ($trade->isBuyer ? 1 : -1) * $trade->qty, 8));
-      $assets[$symbol->baseAsset] = number_format((float)$assets[$symbol->baseAsset] + (float)$trade->qty * ($trade->isBuyer ? 1 : -1), 8, '.', '');
-      $assets[$symbol->quoteAsset] = number_format((float)$assets[$symbol->quoteAsset] + (float)$trade->quoteQty * ($trade->isBuyer ? -1 : 1), 8, '.', '');
-      $assets[$trade->commissionAsset] = number_format((float)$assets[$trade->commissionAsset] - (float)$trade->commission, 8, '.', '');
-      $trade->assets = $assets;
+    */
+    //$symbols = $assets;
+    set_time_limit(0);
+    foreach ($trades as $trade_key => $trade) {
       $date = gmdate("Y-m-d", $trade->time / 1000);
-      $trade->hnb = Hnb::where('datum_primjene', '=', $date)->get();
-      //dd($trade->hnb);
-      if ($trade->hnb->count() == 0) {
+      $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
+      //dd($trade->eur_kn);
+      if (!$hnb_eur_kn) {
         $response = Http::get('https://api.hnb.hr/tecajn/v2?datum-primjene=' . $date);
         $day = $response->json();
         //dd($day[0]['datum_primjene']);
@@ -208,14 +256,62 @@ class TradeController extends Controller
           $hnb->prodajni_tecaj = $valuta['prodajni_tecaj'];
           $hnb->save();
         }
-        $trade->hnb = Hnb::where('datum_primjene', '=', $date)->get();
+        $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
       }
+      $trade->eur_kn = str_replace(',', '.', $hnb_eur_kn->kupovni_tecaj);
+      //dd($trade->eur_kn);
+
+      //$klines = Kline::where('start_time', '=', floor($trade->time / 60000) * 60000)->get();
+      //
+      $time = floor($trade->time / 60000) * 60000;
+      $eur_kn = $trade->eur_kn * 1;
+      $total_kn = 0;
+
+      $k_eur_usdt = KlineController::kline('EURUSDT',$time);
+      $eur_usdt = 2 / ($k_eur_usdt->o + $k_eur_usdt->c);
+      $k_eur_busd = KlineController::kline('EURBUSD',$time);
+      $eur_busd = 2 / ($k_eur_busd->o + $k_eur_busd->c);
+
+      $trade->kline = KlineController::kline($trade->symbol,$time);
+      foreach ($my_assets as $key => $coin) {
+        $kline = KlineController::kline($coin->symbol, $time);
+        $fiat_price = $coin->isBase ? ($kline->o + $kline->c)/2 : 2/($kline->o + $kline->c);
+        
+        switch ($coin->fiat) {
+          case 'EUR':
+            $coin->price = $fiat_price * $eur_kn;
+            break;
+          case 'BUSD':
+            $coin->price = $fiat_price * $eur_busd * $eur_kn;
+            break;
+          case 'USDT':
+            $coin->price = $fiat_price * $eur_usdt * $eur_kn;
+            break;
+        }
+        $total_kn = $total_kn + $coin->price * $coin->total;
+      }
+      $trade->total_kn = $total_kn;
+      //dd($eur_kn,$trade,$my_assets, $eur_usdt, $eur_busd);
+
+      $symbol = Symbol::where('symbol', '=', $trade->symbol)->first();
+      $trade->symbolFull = $symbol;
+      //dd($trade, $assets, number_format($assets[$symbol->baseAsset] + ($trade->isBuyer ? 1 : -1) * $trade->qty, 8));
+
+      $trade->assets = $my_assets;
+      $my_assets[$symbol->baseAsset]->total = number_format((float)$my_assets[$symbol->baseAsset]->total - (float)$trade->qty * ($trade->isBuyer ? 1 : -1), 8, '.', '');
+      $my_assets[$symbol->quoteAsset]->total = number_format((float)$my_assets[$symbol->quoteAsset]->total - (float)$trade->quoteQty * ($trade->isBuyer ? -1 : 1), 8, '.', '');
+      $my_assets[$trade->commissionAsset]->total = number_format((float)$my_assets[$trade->commissionAsset]->total + (float)$trade->commission, 8, '.', '');
+      //dd($trade, $my_assets);
+      //$trade->assets = $assets;
       //dd($trade->hnb->where('valuta', '=', 'USD')->first()->prodajni_tecaj);
+      //dd($trade_key);
+      if ($trade_key > 99) break;
     }
 
     $trades = $trades->sortByDesc('time');
 
     $trades->values()->all();
+    //dd($trades,$symbols);
     //return view('trades.index')->with('trades', $trades);
     return view('trades.index')->with(compact('trades', 'symbols'));
   }

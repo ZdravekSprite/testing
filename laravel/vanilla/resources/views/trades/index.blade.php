@@ -14,9 +14,11 @@
               <tr>
                 <th>
                 </th>
+                <th>
+                </th>
                 @if(count($symbols) > 0)
-                @foreach($symbols as $key => $symbol)
-                <th>{{$key}}</th>
+                @foreach($trades[0]->assets as $coin => $asset)
+                <th>{{$coin}}<br />({{$asset->name}})</th>
                 @endforeach
                 @else
                 <p> No symbols found</p>
@@ -27,20 +29,19 @@
             </thead>
             <tbody>
               @if(count($trades) > 0)
-              @foreach($trades as $trade)
+              @foreach($trades as $key => $trade)
               <tr style="color:@if($trade->orderListId == -2) @if($trade->isBuyer) blue @else tomato @endif @else @if($trade->isBuyer) red @else green @endif @endif;" >
-                <td title="{{$trade->qty}} {{$trade->isBuyer ? 'BUY' : 'SELL'}} {{$trade->quoteQty}} {{$trade->commission}} {{$trade->commissionAsset}}">
+                <td title="{{$trade->price}} {{$trade->total_kn}} {{$trade->qty}} {{$trade->isBuyer ? 'BUY' : 'SELL'}} {{$trade->quoteQty}} {{$trade->commission}} {{$trade->commissionAsset}}">
                   {{gmdate("Y-m-d H:i:s", $trade->time / 1000)}} {{$trade->symbol}}
                 </td>
-                @foreach($trade->assets as $asset)
                 <td>
-                  {{round($asset, 8)}}
+                  {{round($trade->total_kn, 2)}}kn
                 </td>
+                @if($trade->assets)
+                @foreach($trade->assets as $coin => $asset)
+                  <td>{{round($asset->total, 8)}}</td>
                 @endforeach
-                <td title="1$ = {{$trade->hnb->where('valuta', '=', 'USD')->first()->kupovni_tecaj}}kn
-                  1EUR = {{$trade->hnb->where('valuta', '=', 'EUR')->first()->kupovni_tecaj}}kn">
-                  $/EUR
-                </td>
+                @endif
               </tr>
               @endforeach
               @else

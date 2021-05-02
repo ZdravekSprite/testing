@@ -175,7 +175,7 @@ class GetMarketDataEndpoints extends Command
           $tick1 = (isset($klines[4]) && isset($klines[0])) ? 100 * ($klines[4][4] - $klines[0][1]) / $klines[0][1] : 0;
           $tick2 = (isset($klines[9]) && isset($klines[5])) ? 100 * ($klines[9][4] - $klines[5][1]) / $klines[5][1] : 0;
           $tick3 = (isset($klines[14]) && isset($klines[10])) ? 100 * ($klines[14][4] - $klines[10][1]) / $klines[10][1] : 0;
-          if ($tick3 > 1) $this->line($klines[10][0] . ' ' . gmdate("Y-m-d H:i:s", $klines[10][0] / 1000) . ' ' . $symbol . ' ' . $tick1 . ' ' . $tick2 . ' ' . $tick3);
+          if ($tick3 > 2) $this->line($klines[10][0] . ' ' . gmdate("Y-m-d H:i:s", $klines[10][0] / 1000) . ' ' . $symbol . ' ' . $tick1 . ' ' . $tick2 . ' ' . $tick3);
         }
       }
     }

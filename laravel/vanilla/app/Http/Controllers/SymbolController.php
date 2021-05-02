@@ -9,79 +9,30 @@ use Illuminate\Support\Facades\Auth;
 
 class SymbolController extends Controller
 {
-  public function __construct()
-  {
-    $this->middleware('auth');
-  }
   public function exchangeInfo()
   {
     $exchangeInfo = json_decode(Http::get('https://api.binance.com/api/v3/exchangeInfo'));
     $symbols = $exchangeInfo->symbols;
-    foreach ($symbols as $key => $value) {
-      if (!Symbol::where('symbol', '=', $value->symbol)) {
+    //dd('exchangeInfo', $symbols);
+    foreach ($symbols as $symbol) {
+      if (!Symbol::where('symbol', '=', $symbol->symbol)->first()) {
+        //dd('exchangeInfo', $symbol);
         Symbol::create([
-          'symbol' => $value->symbol,
-          'status' => $value->status,
-          'baseAsset' => $value->baseAsset,
-          'baseAssetPrecision' => $value->baseAssetPrecision,
-          'quoteAsset' => $value->quoteAsset,
-          'quotePrecision' => $value->quotePrecision,
-          'quoteAssetPrecision' => $value->quoteAssetPrecision,
-          'icebergAllowed' => $value->icebergAllowed,
-          'ocoAllowed' => $value->ocoAllowed,
-          'isSpotTradingAllowed' => $value->isSpotTradingAllowed,
-          'isMarginTradingAllowed' => $value->isMarginTradingAllowed
+          'symbol' => $symbol->symbol,
+          'status' => $symbol->status,
+          'baseAsset' => $symbol->baseAsset,
+          'baseAssetPrecision' => $symbol->baseAssetPrecision,
+          'quoteAsset' => $symbol->quoteAsset,
+          'quotePrecision' => $symbol->quotePrecision,
+          'quoteAssetPrecision' => $symbol->quoteAssetPrecision,
+          'icebergAllowed' => $symbol->icebergAllowed,
+          'ocoAllowed' => $symbol->ocoAllowed,
+          'isSpotTradingAllowed' => $symbol->isSpotTradingAllowed,
+          'isMarginTradingAllowed' => $symbol->isMarginTradingAllowed
         ]);
       }
     }
     return Symbol::where('status', '=', 'TRADING')->get();
-  }
-  public function getAccountSnapshot()
-  {
-    $test = false;
-
-    if ($test) {
-      $server = 'https://testnet.binance.vision/api';
-      $ws = 'wss://testnet.binance.vision/ws';
-      $stream = 'wss://testnet.binance.vision/stream';
-      $apiKey = env('BINANCE_TEST_API_KEY');
-      $apiSecret = env('BINANCE_TEST_API_SECRET');
-    } else {
-      $server = 'https://api.binance.com/api';
-      $ws = 'wss://stream.binance.com:9443/ws';
-      $stream = 'wss://stream.binance.com:9443/stream';
-      $apiKey = Auth::user()->BINANCE_API_KEY; //env('BINANCE_API_KEY');
-      $apiSecret = Auth::user()->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
-    }
-
-    $time = json_decode(Http::get($server . '/v3/time'));
-    $serverTime = $time->serverTime;
-    $timeStamp = 'timestamp=' . $serverTime;
-    $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-    $account = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get($server . '/v3/account', [
-      'timestamp' => $serverTime,
-      'signature' => $signature
-    ]));
-    $openOrders = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get($server . '/v3/openOrders', [
-      'timestamp' => $serverTime,
-      'signature' => $signature
-    ]));
-    $balances = [];
-    foreach ($account->balances as $key => $crypto) {
-      //dd($crypto);
-      $total = $crypto->free + $crypto->locked;
-      if ($total > 0) {
-        $balances[] = $crypto;
-      }
-    }
-    foreach ($openOrders as $key => $order) {
-      dd($order);
-    }
-    return $balances;
   }
   /**
    * Display a listing of the resource.
@@ -90,7 +41,28 @@ class SymbolController extends Controller
    */
   public function index()
   {
-    //
+    $symbols = Symbol::all();
+    if($symbols->count() == 0) {
+      $symbols = $this->exchangeInfo();
+      //dd($symbols->count());
+    }
+    $symbols_usdt = Symbol::where('status', '=', 'TRADING')
+      ->where('baseAsset', '=', 'USDT')
+      ->orWhere('quoteAsset', '=', 'USDT')
+      ->get()
+      ->pluck('symbol')
+      ->toArray();
+    $symbols_busd = Symbol::where('status', '=', 'TRADING')
+      ->where('baseAsset', '=', 'BUSD')
+      ->orWhere('quoteAsset', '=', 'BUSD')
+      ->get()
+      ->pluck('symbol')
+      ->toArray();
+    //dd(count($symbols_usdt),count($symbols_busd));
+    $symbols = array_merge($symbols_usdt, $symbols_busd);
+    $link = implode('/', array_map(fn($n) => strtolower($n).'@kline_1m', $symbols));
+    //dd($link,$symbols);
+    return view('symbols.index')->with(compact('symbols', 'symbols_usdt', 'symbols_busd', 'link'));
   }
 
   /**

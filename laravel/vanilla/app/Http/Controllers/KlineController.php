@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\Http;
 
 class KlineController extends Controller
 {
-  public function add_kline($symbol, $interval, $kline)
+  public static function add_kline($symbol, $interval, $kline)
   {
+    //dd('add',$kline);
     $old_kline = Kline::where('symbol', '=', $symbol)->where('interval', '=', $interval)->where('start_time', '=', $kline[0])->first();
     if ($old_kline) return $old_kline;
     $new_kline = new Kline;
@@ -31,6 +32,18 @@ class KlineController extends Controller
     $new_kline->quote_volume = $kline[10];
     $new_kline->save();
     return $new_kline;
+  }
+  public static function kline($symbol, $time)
+  {
+    if(Symbol::where('symbol', '=', $symbol)->where('status', '=', 'DUST')->first()) return null;
+    $kline = Kline::where('symbol', '=', $symbol)->where('start_time', '=', $time)->first();
+    if (!$kline) {
+      $decode_kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $symbol . '&interval=1m&limit=1&startTime=' . $time));
+      //dd($symbol);
+      $kline = KlineController::add_kline($symbol,'1m',$decode_kline[0]);
+    }
+    //dd($kline);
+    return $kline;
   }
   public function klines($symbol)
   {
@@ -74,11 +87,11 @@ class KlineController extends Controller
   {
     //ini_set("memory_limit","1024M");
     //$symbols = Symbol::where('status', '=', 'TRADING')->where('quoteAsset', '=', 'USDT')->get();
-    /*
+    
     $trades = Trade::where('user_id', '=', Auth::user()->id)->get();
     $symbols = $trades->pluck('symbol')->unique();
     $times = $trades->pluck('time')->map(function ($time) {
-      return floor($time / 60000) * 60000;
+      return number_format(floor($time / 60000) * 60000, 0, '.', '');
     })->unique();
     $assets = [];
     $klines = [];
@@ -92,23 +105,28 @@ class KlineController extends Controller
     //dd(array_unique($assets));
     foreach (array_unique($assets) as $key => $value) {
       if (Symbol::where('symbol', '=', $value . 'EUR')->first()) $klines_symbols[] = Symbol::where('symbol', '=', $value . 'EUR')->first()->symbol;
-      if (Symbol::where('symbol', '=', 'EUR' . $value)->first()) $klines_symbols[] = Symbol::where('symbol', '=', 'EUR' . $value)->first()->symbol;
-      if (Symbol::where('symbol', '=', $value . 'USDT')->first()) $klines_symbols[] = Symbol::where('symbol', '=', $value . 'USDT')->first()->symbol;
-      if (Symbol::where('symbol', '=', 'USDT' . $value)->first()) $klines_symbols[] = Symbol::where('symbol', '=', 'USDT' . $value)->first()->symbol;
+      elseif (Symbol::where('symbol', '=', 'EUR' . $value)->first()) $klines_symbols[] = Symbol::where('symbol', '=', 'EUR' . $value)->first()->symbol;
+      elseif (Symbol::where('symbol', '=', $value . 'BUSD')->first()) $klines_symbols[] = Symbol::where('symbol', '=', $value . 'BUSD')->first()->symbol;
+      elseif (Symbol::where('symbol', '=', 'BUSD' . $value)->first()) $klines_symbols[] = Symbol::where('symbol', '=', 'BUSD' . $value)->first()->symbol;
+      elseif (Symbol::where('symbol', '=', $value . 'USDT')->first()) $klines_symbols[] = Symbol::where('symbol', '=', $value . 'USDT')->first()->symbol;
+      elseif (Symbol::where('symbol', '=', 'USDT' . $value)->first()) $klines_symbols[] = Symbol::where('symbol', '=', 'USDT' . $value)->first()->symbol;
       //dd($klines_symbols);
     }
-    //dd($klines_symbols);
-    set_time_limit(0);
+    //dd($times,$klines_symbols);
+/*    set_time_limit(0);
+    
     foreach ($times as $key => $time) {
+      //dd($time);
       foreach ($klines_symbols as $key => $symbol) {
-        $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $symbol . '&interval=1m&limit=1&startTime=' . $time));
-        //dd($kline);
-        $old_kline = Kline::where('symbol', '=', $symbol)->where('interval', '=', '1m')->where('start_time', '=', $kline[0])->first();
-        if (!$old_kline) $kline = $this->add_kline($symbol, '1m', $kline[0]);
+        $old_kline = Kline::where('symbol', '=', $symbol)->where('interval', '=', '1m')->where('start_time', '=', $time)->first();
+        if (!$old_kline) {
+          $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $symbol . '&interval=1m&limit=1&startTime=' . $time));
+          if (isset($kline[0])) $kline = $this->add_kline($symbol, '1m', $kline[0]);
+        }
       }
       //dd($klines_symbols);
     }
-    */
+*/
     $test = false;
 
     if ($test) {
@@ -135,7 +153,9 @@ class KlineController extends Controller
       'timestamp' => $serverTime,
       'signature' => $signature
     ]));
-    $symbols = [['BTCUSDT',0,0], ['ETHBTC',0,0], ['ETHUSDT',0,0], ['BNBBTC',0,0], ['BNBUSDT',0,0], ['BNBETH',0,0]];
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 1000*60000))->get();
+    //dd($trades);
+    $symbols = [['BTCUSDT',0,0,[]], ['ETHUSDT',0,0,[]], ['BNBUSDT',0,0,[]], ['IOTXUSDT',0,0,[]], ['BTCBUSD',0,0,[]], ['ETHBUSD',0,0,[]], ['BNBBUSD',0,0,[]], ['MATICUSDT',0,0,[]], ['DOGEUSDT',0,0,[]], ['SOLUSDT',0,0,[]], ['MFTUSDT',0,0,[]], ['FIOBUSD',0,0,[]], ['TKOBUSD',0,0,[]], ['TLMBUSD',0,0,[]], ['GHSTBUSD',0,0,[]], ['SYSBUSD',0,0,[]]];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       foreach ($openOrders as $order) {
@@ -146,6 +166,19 @@ class KlineController extends Controller
           if($order->side == 'SELL') {
             $symbols[$key][2] = $order->price;
           }
+        }
+      }
+      foreach ($trades as $trade) {
+        if($trade->symbol == $symbol[0]) {
+          $marker = (object)[];
+          $marker->time = $trade->time/1000;//gmdate("Y-m-d h:i:s",$trade->time);//
+          $marker->position = $trade->isBuyer ? 'belowBar' : 'aboveBar';
+          $marker->color = $trade->isBuyer ? 'red' : 'green';
+          $marker->shape = $trade->isBuyer ? 'arrowUp' : 'arrowDown';
+          $marker->id = $trade->orderId;
+          $marker->text = $trade->price;
+          $marker->size = 1;
+          $symbols[$key][3][] = $marker;
         }
       }
     }

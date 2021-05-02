@@ -18,4 +18,19 @@ class Symbol extends Model
     'created_at',
     'updated_at',
   ];
+
+  protected $fillable = [
+    'symbol',
+    'status',
+    'baseAsset',
+    'baseAssetPrecision',
+    'quoteAsset',
+    'quotePrecision',
+    'quoteAssetPrecision',
+    'icebergAllowed',
+    'ocoAllowed',
+    'isSpotTradingAllowed',
+    'isMarginTradingAllowed'
+  ];
+
 }
