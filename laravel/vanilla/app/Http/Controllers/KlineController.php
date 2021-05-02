@@ -40,6 +40,7 @@ class KlineController extends Controller
     if (!$kline) {
       $decode_kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $symbol . '&interval=1m&limit=1&startTime=' . $time));
       //dd($symbol);
+      if(!isset($decode_kline[0])) return null;
       $kline = KlineController::add_kline($symbol,'1m',$decode_kline[0]);
     }
     //dd($kline);
@@ -155,7 +156,7 @@ class KlineController extends Controller
     ]));
     $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 1000*60000))->get();
     //dd($trades);
-    $symbols = [['BTCUSDT',0,0,[]], ['ETHUSDT',0,0,[]], ['BNBUSDT',0,0,[]], ['IOTXUSDT',0,0,[]], ['BTCBUSD',0,0,[]], ['ETHBUSD',0,0,[]], ['BNBBUSD',0,0,[]], ['MATICUSDT',0,0,[]], ['DOGEUSDT',0,0,[]], ['SOLUSDT',0,0,[]], ['MFTUSDT',0,0,[]], ['FIOBUSD',0,0,[]], ['TKOBUSD',0,0,[]], ['TLMBUSD',0,0,[]], ['GHSTBUSD',0,0,[]], ['SYSBUSD',0,0,[]]];
+    $symbols = [['BTCUSDT',0,0,[]], ['ETHUSDT',0,0,[]], ['BNBUSDT',0,0,[]], ['IOTXUSDT',0,0,[]], ['BTCBUSD',0,0,[]], ['ETHBUSD',0,0,[]], ['BNBBUSD',0,0,[]], ['MATICUSDT',0,0,[]], ['DOGEUSDT',0,0,[]], ['SOLUSDT',0,0,[]], ['MFTUSDT',0,0,[]], ['PROMBUSD',0,0,[]], ['TKOBUSD',0,0,[]], ['TLMBUSD',0,0,[]], ['GHSTBUSD',0,0,[]], ['SYSBUSD',0,0,[]]];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       foreach ($openOrders as $order) {

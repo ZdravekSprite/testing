@@ -22,8 +22,8 @@ class TradeController extends Controller
   {
     set_time_limit(0);
     $symbols = Symbol::where('status', '=', 'TRADING')->pluck('symbol');
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'asc')->get();
-    $symbols = $trades->pluck('symbol')->unique();
+    //$trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'asc')->get();
+    //$symbols = $trades->pluck('symbol')->unique();
     //dd(http_build_query(json_decode($symbols)));
     $allTrades = [];
     foreach ($symbols as $key => $symbol) {
@@ -153,9 +153,9 @@ class TradeController extends Controller
           $quoteQty = $myDust->isBuyer ? $myDust->amount : $myDust->transferedAmount + $myDust->serviceChargeAmount;
           $price = $quoteQty / $qty;
           //dd($myDust,$symbol->symbol,$price,$qty,$quoteQty);
-          $trade->price = number_format($price, 8);
-          $trade->qty = number_format($qty, 8);
-          $trade->quoteQty = number_format($quoteQty, 8);
+          $trade->price = number_format($price, 8,'.', '');
+          $trade->qty = number_format($qty, 8,'.', '');
+          $trade->quoteQty = number_format($quoteQty, 8,'.', '');
 
           $trade->time = $myDust->operateTime;
           $trade->isBuyer = $myDust->isBuyer;
@@ -191,24 +191,31 @@ class TradeController extends Controller
     //dd($getall);
 
     $all_assets = [];
+    $balance = [];
+    $my_assets = [];
     foreach ($getall as $coin) {
       //dd($coin->coin);
       $all_assets = Arr::add($all_assets, $coin->coin, (object) array('name' => $coin->name));
       $total = $coin->free + $coin->locked + $coin->freeze + $coin->withdrawing + $coin->ipoing + $coin->ipoable + $coin->storage;
+      if ($total > 0) {
+        $balance = Arr::add($balance, $coin->coin, $total);
+        $my_assets = Arr::add($my_assets, $coin->coin, $all_assets[$coin->coin]);
+      }
       $all_assets[$coin->coin]->total = number_format($total, 8,'.', '');
     }
-    //dd($all_assets);
+    //dd($balance,$all_assets);
 
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'desc')->get();
+    //$trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'desc')->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 24*60*60*1000))->orderBy('time', 'desc')->get();
     $symbols = $trades->pluck('symbol')->unique();
+    //dd($balance,$all_assets,$trades,$symbols);
 
-    $my_assets = [];
     foreach ($symbols as $key => $value) {
       $symbol = Symbol::where('symbol', '=', $value)->first();
       $my_assets = Arr::add($my_assets, $symbol->baseAsset, $all_assets[$symbol->baseAsset]);
       $my_assets = Arr::add($my_assets, $symbol->quoteAsset, $all_assets[$symbol->quoteAsset]);
     }
-    //dd($my_assets);
+    //dd($balance,$my_assets,$trades,$symbols);
 
     foreach ($my_assets as $key => $coin) {
       $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', $key)->where('quoteAsset', '=', 'EUR')->first();
@@ -265,7 +272,7 @@ class TradeController extends Controller
       //
       $time = floor($trade->time / 60000) * 60000;
       $eur_kn = $trade->eur_kn * 1;
-      $total_kn = 0;
+      $total_kn = -0.8 * $eur_kn;
 
       $k_eur_usdt = KlineController::kline('EURUSDT',$time);
       $eur_usdt = 2 / ($k_eur_usdt->o + $k_eur_usdt->c);
@@ -273,10 +280,11 @@ class TradeController extends Controller
       $eur_busd = 2 / ($k_eur_busd->o + $k_eur_busd->c);
 
       $trade->kline = KlineController::kline($trade->symbol,$time);
+      $trade->assets = [];
       foreach ($my_assets as $key => $coin) {
         $kline = KlineController::kline($coin->symbol, $time);
         $fiat_price = $coin->isBase ? ($kline->o + $kline->c)/2 : 2/($kline->o + $kline->c);
-        
+        $trade->assets = Arr::add($trade->assets, $key, (object) array('total' => $my_assets[$key]->total, 'name' => $my_assets[$key]->name));
         switch ($coin->fiat) {
           case 'EUR':
             $coin->price = $fiat_price * $eur_kn;
@@ -285,19 +293,20 @@ class TradeController extends Controller
             $coin->price = $fiat_price * $eur_busd * $eur_kn;
             break;
           case 'USDT':
-            $coin->price = $fiat_price * $eur_usdt * $eur_kn;
+            $coin->price = (1 - 0.0075) * $fiat_price * $eur_usdt * $eur_kn;
             break;
         }
         $total_kn = $total_kn + $coin->price * $coin->total;
       }
-      $trade->total_kn = $total_kn;
+      $trade->total_kn = $total_kn * (1 - 0.00075);
       //dd($eur_kn,$trade,$my_assets, $eur_usdt, $eur_busd);
 
       $symbol = Symbol::where('symbol', '=', $trade->symbol)->first();
       $trade->symbolFull = $symbol;
       //dd($trade, $assets, number_format($assets[$symbol->baseAsset] + ($trade->isBuyer ? 1 : -1) * $trade->qty, 8));
 
-      $trade->assets = $my_assets;
+      //$old_assets = $my_assets;
+      //$trade->assets = $old_assets;
       $my_assets[$symbol->baseAsset]->total = number_format((float)$my_assets[$symbol->baseAsset]->total - (float)$trade->qty * ($trade->isBuyer ? 1 : -1), 8, '.', '');
       $my_assets[$symbol->quoteAsset]->total = number_format((float)$my_assets[$symbol->quoteAsset]->total - (float)$trade->quoteQty * ($trade->isBuyer ? -1 : 1), 8, '.', '');
       $my_assets[$trade->commissionAsset]->total = number_format((float)$my_assets[$trade->commissionAsset]->total + (float)$trade->commission, 8, '.', '');
@@ -305,15 +314,15 @@ class TradeController extends Controller
       //$trade->assets = $assets;
       //dd($trade->hnb->where('valuta', '=', 'USD')->first()->prodajni_tecaj);
       //dd($trade_key);
-      if ($trade_key > 99) break;
+      //if ($trade_key > 246) break;
     }
 
     $trades = $trades->sortByDesc('time');
 
     $trades->values()->all();
-    //dd($trades,$symbols);
+    //dd($trades[0]->assets,$trades[1]->assets,$symbols,$balance);
     //return view('trades.index')->with('trades', $trades);
-    return view('trades.index')->with(compact('trades', 'symbols'));
+    return view('trades.index')->with(compact('trades', 'symbols', 'balance'));
   }
 
   /**

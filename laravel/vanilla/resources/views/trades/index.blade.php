@@ -18,7 +18,7 @@
                 </th>
                 @if(count($symbols) > 0)
                 @foreach($trades[0]->assets as $coin => $asset)
-                <th>{{$coin}}<br />({{$asset->name}})</th>
+                <th title="{{$asset->name}} {{isset($balance[$coin]) ? $balance[$coin] : ''}}">{{$coin}}</th>
                 @endforeach
                 @else
                 <p> No symbols found</p>
@@ -27,11 +27,11 @@
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="text-sm">
               @if(count($trades) > 0)
               @foreach($trades as $key => $trade)
               <tr style="color:@if($trade->orderListId == -2) @if($trade->isBuyer) blue @else tomato @endif @else @if($trade->isBuyer) red @else green @endif @endif;" >
-                <td title="{{$trade->price}} {{$trade->total_kn}} {{$trade->qty}} {{$trade->isBuyer ? 'BUY' : 'SELL'}} {{$trade->quoteQty}} {{$trade->commission}} {{$trade->commissionAsset}}">
+                <td title="{{$trade->price}} {{$trade->qty}} {{$trade->isBuyer ? 'BUY' : 'SELL'}} {{$trade->quoteQty}} {{$trade->commission}} {{$trade->commissionAsset}}">
                   {{gmdate("Y-m-d H:i:s", $trade->time / 1000)}} {{$trade->symbol}}
                 </td>
                 <td>
