@@ -42,6 +42,45 @@
       </div>
 
       <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
+        <div class="grid grid-cols-3">
+
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="ml-4 text-lg leading-7 font-semibold">DOGE</div>
+            </div>
+            <div class="ml-12">
+              <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                <div class="container" id="doge"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="ml-4 text-lg leading-7 font-semibold">MATIC</div>
+            </div>
+            <div class="ml-12">
+              <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                <div class="container" id="matic"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="flex items-center">
+              <div class="ml-4 text-lg leading-7 font-semibold">svasta</div>
+            </div>
+            <div class="ml-12">
+              <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
+                <div class="container" id="svasta"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
         <div class="grid grid-cols-1 md:grid-cols-2">
 
           <div class="p-6">
@@ -91,17 +130,29 @@
 
     binanceSocket.onmessage = function(event) {
       var message = JSON.parse(event.data);
-      if (message.stream == 'bnbusdt@kline_1m') {
+      if (message.stream == 'bnbbusd@kline_1m') {
         bnb = message.data.k.c*1;
         document.getElementById('bnb').innerHTML = bnb;
       }
-      if (message.stream == 'btcusdt@kline_1m') {
+      if (message.stream == 'btcbusd@kline_1m') {
         btc = message.data.k.c*1;
         document.getElementById('btc').innerHTML = btc;
       }
-      if (message.stream == 'ethusdt@kline_1m') {
+      if (message.stream == 'ethbusd@kline_1m') {
         eth = message.data.k.c*1;
         document.getElementById('eth').innerHTML = eth;
+      }
+      if (message.stream == 'dogebusd@kline_1m') {
+        doge = message.data.k.c*1;
+        document.getElementById('doge').innerHTML = doge;
+      }
+      if (message.stream == 'maticbusd@kline_1m') {
+        matic = message.data.k.c*1;
+        document.getElementById('matic').innerHTML = matic;
+      }
+      if (message.stream == 'bnbbtc@kline_1m') {
+        var bnbbtc = message.data.k.c*1;
+        document.getElementById('svasta').innerHTML = bnbbtc + ' ( ' + (bnb / btc).toFixed(6) + ' ) ';
       }
       document.title = btc + ' ' + bnb + ' ' + eth;
       //console.log('message', message)

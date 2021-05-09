@@ -245,5 +245,5 @@ php artisan migrate
 php artisan serve
 npm run watch
 git add .
-git commit -am "klines trades d [binance]"
+git commit -am "klines trades e [binance]"
 ```

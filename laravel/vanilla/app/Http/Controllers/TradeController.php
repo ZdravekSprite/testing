@@ -206,7 +206,7 @@ class TradeController extends Controller
     //dd($balance,$all_assets);
 
     //$trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'desc')->get();
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 24*60*60*1000))->orderBy('time', 'desc')->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 7*24*60*60*1000))->orderBy('time', 'desc')->get();
     $symbols = $trades->pluck('symbol')->unique();
     //dd($balance,$all_assets,$trades,$symbols);
 

@@ -154,18 +154,18 @@ class KlineController extends Controller
       'timestamp' => $serverTime,
       'signature' => $signature
     ]));
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 1000*60000))->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 1000*600000))->get();
     //dd($trades);
-    $symbols = [['BTCUSDT',0,0,[]], ['ETHUSDT',0,0,[]], ['BNBUSDT',0,0,[]], ['IOTXUSDT',0,0,[]], ['BTCBUSD',0,0,[]], ['ETHBUSD',0,0,[]], ['BNBBUSD',0,0,[]], ['MATICUSDT',0,0,[]], ['DOGEUSDT',0,0,[]], ['SOLUSDT',0,0,[]], ['MFTUSDT',0,0,[]], ['PROMBUSD',0,0,[]], ['TKOBUSD',0,0,[]], ['TLMBUSD',0,0,[]], ['GHSTBUSD',0,0,[]], ['SYSBUSD',0,0,[]]];
+    $symbols = [['BTCBUSD',[],[],[]], ['ETHBUSD',[],[],[]], ['BNBBUSD',[],[],[]], ['MATICBUSD',[],[],[]], ['DOGEBUSD',[],[],[]], ['ADABUSD',[],[],[]], ['PROMBUSD',[],[],[]], ['SOLBUSD',[],[],[]]];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       foreach ($openOrders as $order) {
         if($order->symbol == $symbol[0]) {
           if($order->side == 'BUY') {
-            $symbols[$key][1] = $order->price;
+            $symbols[$key][1][$order->orderId] = $order->price;
           }
           if($order->side == 'SELL') {
-            $symbols[$key][2] = $order->price;
+            $symbols[$key][2][$order->orderId] = $order->price;
           }
         }
       }
@@ -184,7 +184,7 @@ class KlineController extends Controller
       }
     }
     //dd($symbols);
-//    $symbols = [['BTCUSDT',53600,53200], ['ETHBTC'], ['ETHUSDT',2510,2480], ['BNBBTC'], ['BNBUSDT',540,532], ['BNBETH']];
+    //$symbols = [['BTCUSDT',53600,53200], ['ETHBTC'], ['ETHUSDT',2510,2480], ['BNBBTC'], ['BNBUSDT',540,532], ['BNBETH']];
     $link = implode('/', array_map(fn($n) => strtolower($n[0]).'@kline_1m', $symbols));
     //dd($link);
     return view('klines.index')->with(compact('symbols', 'link'));

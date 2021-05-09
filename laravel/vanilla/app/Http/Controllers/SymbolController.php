@@ -58,8 +58,14 @@ class SymbolController extends Controller
       ->get()
       ->pluck('symbol')
       ->toArray();
+    $symbols_bnbbtc = Symbol::where('status', '=', 'TRADING')
+      ->where('baseAsset', '=', 'BNB')
+      ->where('quoteAsset', '=', 'BTC')
+      ->get()
+      ->pluck('symbol')
+      ->toArray();
     //dd(count($symbols_usdt),count($symbols_busd));
-    $symbols = array_merge($symbols_usdt, $symbols_busd);
+    $symbols = array_merge($symbols_usdt, $symbols_busd, $symbols_bnbbtc);
     $link = implode('/', array_map(fn($n) => strtolower($n).'@kline_1m', $symbols));
     //dd($link,$symbols);
     return view('symbols.index')->with(compact('symbols', 'symbols_usdt', 'symbols_busd', 'link'));
