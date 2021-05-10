@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Binance;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
@@ -108,3 +109,5 @@ Route::resource('symbols', SymbolController::class);
 Route::get('/binance/test', [TradeController::class, 'allMyTrades']);
 Route::get('/dust', [TradeController::class, 'dustLog']);
 Route::resource('klines', KlineController::class);
+
+Route::get('/binance/portfolio', [Binance::class, 'portfolio']);
