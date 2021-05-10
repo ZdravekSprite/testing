@@ -134,7 +134,7 @@ class Binance extends Controller
       }
       //dd($balance);
 
-      return view('binance.portfolio')->with(compact('balance', 'total'));
+      return view('binance.portfolio')->with(compact('balance', 'total', 'busd_kn'));
     }
   }
 }
