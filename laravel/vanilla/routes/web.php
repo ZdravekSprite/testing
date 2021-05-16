@@ -107,7 +107,11 @@ Route::post('/messages', [ChatController::class, 'sendMessage']);
 Route::resource('trades', TradeController::class);
 Route::resource('symbols', SymbolController::class);
 Route::get('/binance/test', [TradeController::class, 'allMyTrades']);
+Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo']);
 Route::get('/dust', [TradeController::class, 'dustLog']);
 Route::resource('klines', KlineController::class);
 
 Route::get('/binance/portfolio', [Binance::class, 'portfolio']);
+Route::get('/binance/chart', [Binance::class, 'chart']);
+Route::get('/binance/chart/{coin}', [Binance::class, 'chart']);
+Route::get('/binance/orders', [Binance::class, 'orders']);

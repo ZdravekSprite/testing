@@ -102,7 +102,7 @@ class Binance extends Controller
               if (isset($data['price'])) {
                 $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn * $data['price'];
               } else {
-                dd('test',$coin,$data);
+                //dd('test',$coin,$data);
                 $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=EUR' . $coin->coin);
                 $data = $res->json();
                 if (isset($data['price'])) $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn / $data['price'];
@@ -125,7 +125,7 @@ class Binance extends Controller
                 $data = $res->json();
                 if (isset($data['price'])) $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn / $data['price'];
               }
-              $coin->price = max($coin->eur, $coin->busd, $coin->usdt);
+              $coin->price = $coin->busd;//max($coin->eur, $coin->busd, $coin->usdt);
               //dd($coin);
             }
           $balance = Arr::add($balance, $coin->coin, $coin);
@@ -134,7 +134,63 @@ class Binance extends Controller
       }
       //dd($balance);
 
-      return view('binance.portfolio')->with(compact('balance', 'total', 'busd_kn'));
+      return view('binance.portfolio')->with(compact('balance', 'total', 'eur_kn', 'busd_kn'));
     }
+  }
+
+  /**
+   * Show the orders size.
+   *
+   * @return \Illuminate\View\View
+   */
+  public function orders()
+  {
+    $coins = [['ETH',5,2],['BTC',6,2],['BNB',4,2],['ADA',2,4],['MATIC',1,5]];
+    $simbols = [];
+    foreach ($coins as $coin) {
+      $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol='.$coin[0].'BUSD');
+      $data = $res->json();
+      $coin_data = [];
+      $price = $data['price'];
+      $coin_data = Arr::add($coin_data, 'price', $price);
+      $busd10 = 10/$price;
+      $pow1 = pow(10,$coin[1]);
+      $pow2 = pow(10,$coin[2]);
+      $up = [];
+      $busd10up = [];
+      $down = [];
+      $busd10down = [];
+
+      $up[0] = floor($busd10*$pow1)/$pow1;
+      $busd10up[0] = ceil(1/$up[0]*10*$pow2)/$pow2;
+      $down[0] = ceil($busd10*$pow1)/$pow1;
+      $busd10down[0] = ceil(1/$down[0]*10*$pow2)/$pow2;
+
+      for ($i=0; $i < 10; $i++) { 
+        $up[$i+1] = $up[$i]-1/$pow1;
+        $busd10up[$i+1] = ceil(1/$up[$i+1]*10*$pow2)/$pow2;
+        $down[$i+1] = $down[$i]+1/$pow1;
+        $busd10down[$i+1] = ceil(1/$down[$i+1]*10*$pow2)/$pow2;
+        # code...
+      }
+
+      $coin_data = Arr::add($coin_data, 'up', $up);
+      $coin_data = Arr::add($coin_data, 'busd10up', $busd10up);
+      $coin_data = Arr::add($coin_data, 'down', $down);
+      $coin_data = Arr::add($coin_data, 'busd10down', $busd10down);
+      $simbols = Arr::add($simbols, $coin[0], $coin_data);
+    }
+    //dd($simbols);
+    return view('binance.orders')->with(compact('simbols'));
+  }
+
+  /**
+   * Show the chart.
+   *
+   * @return \Illuminate\View\View
+   */
+  public function chart($coin = 'BNB')
+  {
+    return view('binance.chart')->with(compact('coin'));
   }
 }

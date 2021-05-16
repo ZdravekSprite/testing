@@ -24,43 +24,35 @@
     </div>
   </div>
     <script>
-    var binanceSocket = new WebSocket("wss://stream.binance.com:9443/stream?streams=adabusd@kline_1m/bnbbusd@kline_1m/ethbusd@kline_1m/maticbusd@kline_1m/btcbusd@kline_1m");
-    var ada = {{$balance['ADA']->price}};
-    var bnb = {{$balance['BNB']->price}};
-    var eth = {{$balance['ETH']->price}};
-    var busd = {{$balance['BUSD']->price}};
-    var matic = {{$balance['MATIC']->price}};
-    var btc = {{$balance['BTC']->price}};
+    var binanceSocket = new WebSocket("wss://stream.binance.com:9443/stream?streams=adabusd@kline_1m/bnbbusd@kline_1m/ethbusd@kline_1m/maticbusd@kline_1m/btcbusd@kline_1m/eurbusd@kline_1m");
+    @foreach($balance as $coin => $asset)
+    var {{strtolower($coin)}} = {{$balance[$coin]->price}};
+    @endforeach
     // Create our number formatter.
     var formatter = new Intl.NumberFormat('hr-HR', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
+    var busd_kn = {{$busd_kn}};
     binanceSocket.onmessage = function(event) {
       var message = JSON.parse(event.data);
-      if (message.stream == 'adabusd@kline_1m') {
-        ada = message.data.k.c * {{$balance['ADA']->total}} * {{$busd_kn}};
-        document.getElementById('ADA').innerHTML = formatter.format(ada,2);
+      @foreach($balance as $coin => $asset)
+      if (message.stream == '{{strtolower($coin)}}busd@kline_1m') {
+        {{strtolower($coin)}} = message.data.k.c * {{$balance[$coin]->total}} * busd_kn;
+        document.getElementById('{{$coin}}').innerHTML = formatter.format({{strtolower($coin)}},2);
       }
-      if (message.stream == 'bnbbusd@kline_1m') {
-        bnb = message.data.k.c * {{$balance['BNB']->total}} * {{$busd_kn}};
-        document.getElementById('BNB').innerHTML = formatter.format(bnb,2);
+      @endforeach
+      if (message.stream == 'eurbusd@kline_1m') {
+        busd_kn = {{$eur_kn}} / message.data.k.c;
+        busd = {{$balance['BUSD']->total}} * busd_kn;
+        document.getElementById('BUSD').innerHTML = formatter.format(busd,2);
       }
-      if (message.stream == 'ethbusd@kline_1m') {
-        eth = message.data.k.c * {{$balance['ETH']->total}} * {{$busd_kn}};
-        document.getElementById('ETH').innerHTML = formatter.format(eth,2);
-      }
-      if (message.stream == 'maticbusd@kline_1m') {
-        matic = message.data.k.c * {{$balance['MATIC']->total}} * {{$busd_kn}};
-        document.getElementById('MATIC').innerHTML = formatter.format(matic,2);
-      }
-      if (message.stream == 'btcbusd@kline_1m') {
-        btc = message.data.k.c * {{$balance['BTC']->total}} * {{$busd_kn}};
-        document.getElementById('BTC').innerHTML = formatter.format(btc,2);
-      }
-      var total = formatter.format(ada + bnb + eth + busd + matic + btc,2);
-      document.getElementById('total').innerHTML = total;
-      document.title = total;
+      var total = 0;
+      @foreach($balance as $coin => $asset)
+      total = total + {{strtolower($coin)}};
+      @endforeach
+      document.getElementById('total').innerHTML = formatter.format(total,2);
+      document.title = formatter.format(total,2);
     }
 
   </script>

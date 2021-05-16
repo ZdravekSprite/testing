@@ -7,6 +7,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>test</title>
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+  .floating-tooltip-2 {
+    width: 75px;
+    height: 100px;
+    position: absolute;
+    display: none;
+    padding: 8px;
+    box-sizing: border-box;
+    font-size: 12px;
+    color: #131722;
+    background-color: rgba(255, 255, 255, 1);
+    text-align: left;
+    z-index: 1000;
+    top: 12px;
+    left: 12px;
+    pointer-events: none;
+    border: 1px solid rgba(255, 70, 70, 1);
+    border-radius: 2px;
+  }
+  </style>
 </head>
 
 <body>
@@ -15,6 +35,13 @@
     var btc = '';
     var eth = '';
 
+    var chartWidth = 470;
+    var chartHeight = 230;
+
+    var toolTipWidth = 100;
+    var toolTipHeight = 80;
+    var toolTipMargin = 15;
+
     @foreach($symbols as $symbol)
     @foreach(['1h','1m'] as $tick)
     var container{{ $tick }}_{{$symbol[0]}} = document.createElement('div');
@@ -22,9 +49,6 @@
     container{{ $tick }}_{{$symbol[0]}}.style.cssText = 'float: left; padding: 1px;';
 
     document.body.appendChild(container{{ $tick }}_{{$symbol[0]}});
-
-    var chartWidth = 470;
-    var chartHeight = 230;
 
     var chart{{ $tick }}_{{ $symbol[0] }} = LightweightCharts.createChart(container{{ $tick }}_{{$symbol[0]}}, {
       width: chartWidth,
@@ -75,6 +99,44 @@
     chart{{ $tick }}_{{ $symbol[0] }}.subscribeClick(function(param){
       console.log(`An user clicks at (${param.point.x}, ${param.point.y}) point, the time is ${param.time}`);
       console.log(candleSeries{{ $tick }}_{{ $symbol[0] }}.coordinateToPrice(param.point.x));
+    });
+
+    var toolTip{{ $tick }}_{{ $symbol[0] }} = document.createElement('div');
+    toolTip{{ $tick }}_{{ $symbol[0] }}.className = 'floating-tooltip-2';
+    container{{ $tick }}_{{ $symbol[0] }}.appendChild(toolTip{{ $tick }}_{{ $symbol[0] }});
+
+// update tooltip
+    chart{{ $tick }}_{{ $symbol[0] }}.subscribeCrosshairMove(function(param) {
+      if (!param.time || param.point.x < 0 || param.point.x > chartWidth || param.point.y < 0 || param.point.y > chartHeight) {
+        toolTip{{ $tick }}_{{ $symbol[0] }}.style.display = 'none';
+        return;
+      }
+
+      toolTip{{ $tick }}_{{ $symbol[0] }}.style.display = 'block';
+      var price{{ $tick }}_{{ $symbol[0] }} = param.seriesPrices.get(candleSeries{{ $tick }}_{{ $symbol[0] }});
+      var txt{{ $tick }}_{{ $symbol[0] }} = ((price{{ $tick }}_{{ $symbol[0] }}.close - price{{ $tick }}_{{ $symbol[0] }}.open ) / price{{ $tick }}_{{ $symbol[0] }}.open );
+      toolTip{{ $tick }}_{{ $symbol[0] }}.innerHTML = '<div style="font-size: 10px; color: rgba(255, 70, 70, 1)">{{ $symbol[0] }}</div>' +
+        '<div style="font-size: 12px; margin: 2px 0px">' + (txt{{ $tick }}_{{ $symbol[0] }}*100).toFixed(2) + '%</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.high*1 + '</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.open*1 + '</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.close*1 + '</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.low*1 + '</div>';
+
+      var y{{ $tick }}_{{ $symbol[0] }} = container{{ $tick }}_{{$symbol[0]}}.offsetTop + param.point.y;
+      var x{{ $tick }}_{{ $symbol[0] }} = container{{ $tick }}_{{$symbol[0]}}.offsetLeft + param.point.x;
+
+      var left{{ $tick }}_{{ $symbol[0] }} = x{{ $tick }}_{{ $symbol[0] }} + toolTipMargin;
+      if (left{{ $tick }}_{{ $symbol[0] }} > chartWidth - toolTipWidth) {
+        left{{ $tick }}_{{ $symbol[0] }} = x{{ $tick }}_{{ $symbol[0] }} - toolTipMargin - toolTipWidth;
+      }
+
+      var top{{ $tick }}_{{ $symbol[0] }} = y{{ $tick }}_{{ $symbol[0] }} + toolTipMargin;
+      if (top{{ $tick }}_{{ $symbol[0] }} > chartHeight - toolTipHeight) {
+        top{{ $tick }}_{{ $symbol[0] }} = y{{ $tick }}_{{ $symbol[0] }} - toolTipHeight - toolTipMargin;
+      }
+
+      toolTip{{ $tick }}_{{ $symbol[0] }}.style.left = left{{ $tick }}_{{ $symbol[0] }} + 'px';
+      toolTip{{ $tick }}_{{ $symbol[0] }}.style.top = top{{ $tick }}_{{ $symbol[0] }} + 'px';
     });
 
     var candleSeries{{ $tick }}_{{ $symbol[0] }} = chart{{ $tick }}_{{ $symbol[0] }}.addCandlestickSeries({
@@ -198,11 +260,8 @@
         });
       }
       @endforeach
-
       //var candlestick = message.k;
-
       //console.log('candlestick', candlestick)
-
     }
 
   </script>

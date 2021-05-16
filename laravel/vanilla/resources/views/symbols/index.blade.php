@@ -160,7 +160,7 @@
       if (message.stream == '{{ strtolower($symbol) }}@kline_1m') {
         var postotak = 100 * (message.data.k.c - message.data.k.o) / message.data.k.o;
         if (postotak > 0.7) {
-          document.getElementById('{{ $symbol }}').innerHTML = '{{ $symbol }} ' + (message.data.k.c*1) + '(' + postotak + '%)';
+          document.getElementById('{{ $symbol }}').innerHTML = '<a href="/binance/chart/{{ stristr($symbol,"BUSD",true) ? stristr($symbol,"BUSD",true) : stristr($symbol,"USDT",true)}}" target="_blank">{{ $symbol }}</a> ' + (message.data.k.c*1) + '(' + postotak + '%)';
         } else {
           document.getElementById('{{ $symbol }}').innerHTML = '';
         }

@@ -156,7 +156,7 @@ class KlineController extends Controller
     ]));
     $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 1000*600000))->get();
     //dd($trades);
-    $symbols = [['BTCBUSD',[],[],[]], ['ETHBUSD',[],[],[]], ['BNBBUSD',[],[],[]], ['MATICBUSD',[],[],[]], ['DOGEBUSD',[],[],[]], ['ADABUSD',[],[],[]], ['PROMBUSD',[],[],[]], ['SOLBUSD',[],[],[]]];
+    $symbols = [['BTCBUSD',[],[],[]], ['ETHBUSD',[],[],[]], ['BNBBUSD',[],[],[]], ['MATICBUSD',[],[],[]], ['YFIBUSD',[],[],[]], ['ADABUSD',[],[],[]], ['LTCBUSD',[],[],[]], ['SOLBUSD',[],[],[]]];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       foreach ($openOrders as $order) {
@@ -177,7 +177,7 @@ class KlineController extends Controller
           $marker->color = $trade->isBuyer ? 'red' : 'green';
           $marker->shape = $trade->isBuyer ? 'arrowUp' : 'arrowDown';
           $marker->id = $trade->orderId;
-          $marker->text = $trade->price;
+          $marker->text = $trade->price*1;
           $marker->size = 1;
           $symbols[$key][3][] = $marker;
         }
