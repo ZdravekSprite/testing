@@ -150,7 +150,7 @@
       .then((res) => {
         klines = res.map(function(x) {
           return {
-            time: x[0] / 1000,
+            time: x[0] / 1000 + 60*60*2,
             open: x[1],
             high: x[2],
             low: x[3],
