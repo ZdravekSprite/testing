@@ -193,4 +193,15 @@ class Binance extends Controller
   {
     return view('binance.chart')->with(compact('coin'));
   }
+
+  /**
+   * Show the chart.
+   *
+   * @return \Illuminate\View\View
+   */
+  public function dashboard()
+  {
+    $symbol = 'BNBBUSD';
+    return view('binance.dashboard')->with(compact('symbol'));
+  }
 }

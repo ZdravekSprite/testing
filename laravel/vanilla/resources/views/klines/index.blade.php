@@ -45,7 +45,7 @@
     @foreach($symbols as $symbol)
     @foreach(['1h','1m'] as $tick)
     var container{{ $tick }}_{{$symbol[0]}} = document.createElement('div');
-    container{{ $tick }}_{{$symbol[0]}}.id = "chart1h_{{$symbol[0]}}";
+    container{{ $tick }}_{{$symbol[0]}}.id = "chart{{$tick}}_{{$symbol[0]}}";
     container{{ $tick }}_{{$symbol[0]}}.style.cssText = 'float: left; padding: 1px;';
 
     document.body.appendChild(container{{ $tick }}_{{$symbol[0]}});
@@ -114,8 +114,10 @@
 
       toolTip{{ $tick }}_{{ $symbol[0] }}.style.display = 'block';
       var price{{ $tick }}_{{ $symbol[0] }} = param.seriesPrices.get(candleSeries{{ $tick }}_{{ $symbol[0] }});
+      //console.log(param.time);
       var txt{{ $tick }}_{{ $symbol[0] }} = ((price{{ $tick }}_{{ $symbol[0] }}.close - price{{ $tick }}_{{ $symbol[0] }}.open ) / price{{ $tick }}_{{ $symbol[0] }}.open );
       toolTip{{ $tick }}_{{ $symbol[0] }}.innerHTML = '<div style="font-size: 10px; color: rgba(255, 70, 70, 1)">{{ $symbol[0] }}</div>' +
+        //'<div style="font-size: 10px; margin: 2px 0px">' + new Date(param.time * 1000) + '%</div>' +
         '<div style="font-size: 12px; margin: 2px 0px">' + (txt{{ $tick }}_{{ $symbol[0] }}*100).toFixed(2) + '%</div>' +
         '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.high*1 + '</div>' +
         '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.open*1 + '</div>' +

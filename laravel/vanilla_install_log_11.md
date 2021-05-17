@@ -242,6 +242,8 @@ php artisan migrate
 ```
 
 ```bash
+npm install lightweight-charts
+
 php artisan serve
 npm run watch
 git add .
