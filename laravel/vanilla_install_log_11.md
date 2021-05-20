@@ -247,5 +247,5 @@ npm install lightweight-charts
 php artisan serve
 npm run watch
 git add .
-git commit -am "portfolio v4b [binance]"
+git commit -am "portfolio v4c [binance]"
 ```

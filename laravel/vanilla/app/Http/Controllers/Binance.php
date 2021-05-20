@@ -181,7 +181,7 @@ class Binance extends Controller
       $simbols = Arr::add($simbols, $coin[0], $coin_data);
     }
     //dd($simbols);
-    return view('binance.orders')->with(compact('simbols'));
+    return view('binance.orders')->with(compact('simbols', 'coins'));
   }
 
   /**
