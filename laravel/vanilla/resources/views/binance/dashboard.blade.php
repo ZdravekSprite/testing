@@ -145,6 +145,8 @@
       crosshairMarkerRadius: 3,
     });
 
+    var list = [];
+    var rang = 60;
     fetch('https://api.binance.com/api/v3/klines?symbol=' + base + quote + '&interval=1m&limit=1000')
       .then((res) => res.json())
       .then((res) => {
@@ -178,11 +180,14 @@
           };
         });
         var area_objs = res.map(function(x) {
+          list.push(x[4]);
           return {
+            list: list.slice(Math.max(list.length - rang, 0)),
             time: x[0] / 1000 + 60*60*2,
-            value: x[4]
+            value: list.slice(Math.max(list.length - rang, 0)).reduce((a, b) => a*1 + b*1, 0) / rang //x[4]
           };
         });
+        console.log('area',area_objs);
         candleSeries.setData(candle_objs);
         histogramSeries.setData(histogram_objs);
         areaSeries.setData(area_objs);
@@ -207,9 +212,14 @@
         value: candlestick.v * candlestick.c,
         color: candlestick.o > candlestick.c ? 'rgba(255,82,82, 0.8)' : 'rgba(0, 150, 136, 0.8)'
       });
+      if (candlestick.x) list.push(candlestick.c);
+      //console.log('price', list.slice(Math.max(list.length - rang, 0)))
+      //param.seriesPrices.get(areaSeries);
+      var temp_val
       areaSeries.update({
+        list: list.slice(Math.max(list.length - rang, 0)),
         time: candlestick.t / 1000 + 60*60*2,
-        value: candlestick.c
+        value: candlestick.x ? (list.slice(Math.max(list.length - rang, 0)).reduce((a, b) => a*1 + b*1, 0) / rang) : ((list.slice(Math.max(list.length - rang + 1, 0)).reduce((a, b) => a*1 + b*1, 0) + candlestick.c*1) / rang) 
       });
     }
 
