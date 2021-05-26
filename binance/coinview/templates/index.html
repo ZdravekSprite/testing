@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+
+<body>
+  <h1>{{ title }}</h1>
+
+  {% if symbols %}
+  <select id="symbol_chart" name="symbol_chart" onchange="self.location='/pair/' + this.value">
+    {% for symbol in symbols %}
+    <option {% if symbol['symbol']==pair %} selected {% endif %}>{{ symbol['symbol'] }}</option>
+    {% endfor %}
+  </select>
+
+  <div id="chart"></div>
+
+  <div id="trades"></div>
+  {% endif %}
+
+  {% if symbol %}
+  <div style="border: solid gray 1px; padding: 20px; width: 760px; margin-top: 20px;">
+    <h3>Buy Crypto</h3>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div style="padding: 10px; margin-bottom: 10px; background: pink; border: solid red 1px; color: red;">
+      {% for message in messages %}
+      {{ message }}
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <form action="/buy" method="post">
+      <input type="text" id="quantity" name="quantity" placeholder="eg. 0.001" />
+      <select id="symbol" name="symbol">
+        {% for symbol in symbols %}
+        <option>{{ symbol['symbol'] }}</option>
+        {% endfor %}
+      </select>
+      <input type="submit" name="buy" value="buy" />
+    </form>
+  </div>
+
+  <h3>Settings</h3>
+
+  <div id="settings">
+    <input type="checkbox" /> RSI
+    <input type="text" id="rsi_length" name="rsi_length" placeholder="14" />
+    Overbought
+    <input type="text" id="rsi_overbought" name="rsi_overbought" placeholder="70" />
+    Oversold
+    <input type="text" id="rsi_oversold" name="rsi_oversold" placeholder="30" />
+  </div>
+  {% endif %}
+  {% if my_balances %}
+  <div id="my_balances">
+    <h2>Balances</h2>
+
+    <table>
+      <tr>
+        <th>asset</th>
+        <th>free</th>
+        <th>locked</th>
+        <th>€</th>
+      </tr>
+      {% for balance in my_balances %}
+      <tr>
+        <td>
+          {{ balance['asset'] }}
+        </td>
+        <td>
+          {{ balance['free'] }}
+        </td>
+        <td>
+          {{ balance['locked'] }}
+        </td>
+        <td>
+          {{ balance['eur'] }}
+        </td>
+      </tr>
+
+      {% endfor %}
+    </table>
+
+  </div>
+  {% endif %}
+  <script>
+    {% if pair %}
+    var chart = LightweightCharts.createChart(document.getElementById('chart'), {
+      width: 800,
+      height: 400,
+      layout: {
+        backgroundColor: '#000000',
+        textColor: 'rgba(255, 255, 255, 0.9)',
+      },
+      grid: {
+        vertLines: {
+          color: 'rgba(197, 203, 206, 0.5)',
+        },
+        horzLines: {
+          color: 'rgba(197, 203, 206, 0.5)',
+        },
+      },
+      crosshair: {
+        mode: LightweightCharts.CrosshairMode.Normal,
+      },
+      priceScale: {
+        borderColor: 'rgba(197, 203, 206, 0.8)',
+      },
+      timeScale: {
+        borderColor: 'rgba(197, 203, 206, 0.8)',
+        timeVisible: true,
+        secondsVisible: false,
+      },
+    });
+
+    var candleSeries = chart.addCandlestickSeries({
+      upColor: '#00ff00',
+      downColor: '#ff0000',
+      borderDownColor: 'rgba(255, 144, 0, 1)',
+      borderUpColor: 'rgba(255, 144, 0, 1)',
+      wickDownColor: 'rgba(255, 144, 0, 1)',
+      wickUpColor: 'rgba(255, 144, 0, 1)',
+    });
+
+    fetch('http://localhost:5000/history/{{ pair.upper() }}')
+      .then((r) => r.json())
+      .then((response) => {
+        //console.log(response)
+
+        candleSeries.setData(response);
+      })
+
+    var binanceSocket = new WebSocket("wss://stream.binance.com:9443/ws/{{ pair.lower() }}@kline_15m");
+
+    binanceSocket.onmessage = function (event) {
+      var message = JSON.parse(event.data);
+
+      var candlestick = message.k;
+
+      //console.log(candlestick)
+
+      candleSeries.update({
+        time: candlestick.t / 1000,
+        open: candlestick.o,
+        high: candlestick.h,
+        low: candlestick.l,
+        close: candlestick.c
+      })
+    }
+    {% endif %}
+    console.log('response')
+    fetch('https://api.hnb.hr/tecajn/v2?valuta=EUR', {
+      mode: 'no-cors' // 'cors' by default no-cors
+    })
+      //.then((r) => r.json())
+      .then((response) => {
+        console.log(response.json())
+        //console.log(response)
+      })
+
+  </script>
+</body>
+
+</html>

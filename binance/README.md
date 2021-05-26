@@ -22,8 +22,81 @@ wscat -c wss://stream.binance.com:9443/ws/btcusdt@kline_5m
 ```bash
 wscat -c wss://stream.binance.com:9443/ws/btcusdt@kline_5m | tee dataset.txt
 ```
+## Part 3
+- [Lightweight Charts](https://github.com/tradingview/lightweight-charts)
+## Part 4
+- [python-binance](https://python-binance.readthedocs.io/en/latest/)
+```bash
+pip install python-binance
+python get_data.py
+```
+## Part 5
+- [Python wrapper for TA-Lib](https://mrjbq7.github.io/ta-lib/install.html)
+- [How to install Ta-Lib in python on Windows](https://medium.com/@keng16302/how-to-install-ta-lib-in-python-on-window-9303eb003fbb)
+```bash
+pip install TA-Lib
+pip install TA_Lib-0.4.19-cp38-cp38-win_amd64.whl
+pip install numpy
+python ta.py
+```
+## Part 6
+- [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+```bash
+pip install flask
+export FLASK_APP=app.py
+export FLASK_ENV=development
+flask run
+```
+## Part 9
+```bash
+python get_data.py
+pip install backtrader
+pip install matplotlib
+```
+```bash
+  File "C:\Program Files\Python38\lib\site-packages\backtrader\plot\locator.py", line 35, in <module>
+    from matplotlib.dates import (HOURS_PER_DAY, MIN_PER_HOUR, SEC_PER_MIN,
+ImportError: cannot import name 'warnings' from 'matplotlib.dates' (/Users/ch4r0n/.pyenv/versions/3.7.5/lib/python3.7/site-packages/matplotlib/dates.py)
+backtrader/plot/locator.py
+```
+```py
+from matplotlib.dates import (HOURS_PER_DAY, MIN_PER_HOUR, SEC_PER_MIN,
+                              MONTHS_PER_YEAR, DAYS_PER_WEEK,
+                              SEC_PER_HOUR, SEC_PER_DAY,
+                              num2date, rrulewrapper, YearLocator,
+                              MicrosecondLocator, warnings)
+```
+- The 'warnings' modules has been remove in the matplotlib3.3.0 so you should delete it warnings
+```py
+from matplotlib.dates import (HOURS_PER_DAY, MIN_PER_HOUR, SEC_PER_MIN,
+                              MONTHS_PER_YEAR, DAYS_PER_WEEK,
+                              SEC_PER_HOUR, SEC_PER_DAY,
+                              num2date, rrulewrapper, YearLocator,
+                              MicrosecondLocator)
+```
+```bash
+python backtest.py
+```
+## Part CCXT
+```bash
+pip install -r requirements.txt
+python app_ccxt.py
+```
+## Laravel
+```bash
+composer create-project --prefer-dist laravel/laravel command
+php artisan list
+php artisan make:command GetPrice
+php artisan binance:get-prices
+php artisan make:command GetAccountSnapshot
+php artisan binance:get-account-snapshot
+php artisan make:command GetMarketDataEndpoints
+php artisan binance:get-market-data-endpoints
+php artisan make:command SpotAccountTrade
+php artisan binance:spot-account-trade
+```
 
 ```bash
 git add .
-git commit -am "Part 2 [binance]"
+git commit -am "trades temp [binance]"
 ```

@@ -80,4 +80,12 @@ class User extends Authenticatable
 
     return $value;
   }
+
+  /**
+   * Get the users days.
+   */
+  public function trades()
+  {
+    return $this->hasMany(Trade::class);
+  }
 }
