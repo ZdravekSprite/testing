@@ -84,8 +84,12 @@
       toolTip.style.display = 'block';
       var price = param.seriesPrices.get(candleSeries);
       var pres = ((price.close - price.open ) / price.open );
+      var d = new Date(param.time * 1000);
+      var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
+      var timestring = d.getHours() + ":" + d.getMinutes();
       toolTip.innerHTML = '<div style="font-size: 10px; color: rgba(255, 70, 70, 1)">' + base + quote + '</div>' +
-        '<div style="font-size: 10px; margin: 2px 0px">' + new Date(param.time * 1000) + '%</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + datestring + '</div>' +
+        '<div style="font-size: 12px; margin: 2px 0px">' + timestring + '</div>' +
         '<div style="font-size: 12px; margin: 2px 0px">' + (pres*100).toFixed(2) + '%</div>' +
         '<div style="font-size: 10px; margin: 2px 0px">' + price.high*1 + '</div>' +
         '<div style="font-size: 10px; margin: 2px 0px">' + price.open*1 + '</div>' +
@@ -181,10 +185,11 @@
         });
         var area_objs = res.map(function(x) {
           list.push(x[4]);
+          var dev = list.length < rang ? list.length : rang;
           return {
             list: list.slice(Math.max(list.length - rang, 0)),
             time: x[0] / 1000 + 60*60*2,
-            value: list.slice(Math.max(list.length - rang, 0)).reduce((a, b) => a*1 + b*1, 0) / rang //x[4]
+            value: list.slice(Math.max(list.length - rang, 0)).reduce((a, b) => a*1 + b*1, 0) / dev //x[4]
           };
         });
         console.log('area',area_objs);
