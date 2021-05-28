@@ -36,7 +36,7 @@
     var eth = '';
 
     var chartWidth = 470;
-    var chartHeight = 230;
+    var chartHeight = 310;
 
     var toolTipWidth = 100;
     var toolTipHeight = 80;
@@ -151,7 +151,7 @@
       priceFormat: { type: 'price', minMove: 0.0001, precision: 4 },
       scaleMargins: {
         top: 1,
-        bottom: 0.05,
+        bottom: 0.1,
       },
     });
 
@@ -190,7 +190,7 @@
             high: x[2],
             low: x[3],
             close: x[4],
-            value: x[5]*x[4],
+            value: x[5]*(x[4] - x[1])*(x[2] - x[3]),
             color: x[1] > x[4] ? 'rgba(255,82,82, 0.8)' : 'rgba(0, 150, 136, 0.8)'
           };
         });
@@ -257,7 +257,7 @@
         });
         histogramSeries1m_{{ $symbol[0] }}.update({
           time: candlestick.t / 1000 + 60*60*2,
-          value: candlestick.v * candlestick.c,
+          value: candlestick.v * (candlestick.c - candlestick.o) * (candlestick.h - candlestick.l),
           color: candlestick.o > candlestick.c ? 'rgba(255,82,82, 0.8)' : 'rgba(0, 150, 136, 0.8)'
         });
       }

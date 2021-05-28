@@ -156,7 +156,7 @@ class KlineController extends Controller
     ]));
     $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 1000*600000))->get();
     //dd($trades);
-    $symbols = [['BTCBUSD',[],[],[]], ['ETHBUSD',[],[],[]], ['BNBBUSD',[],[],[]], ['MATICBUSD',[],[],[]], ['ONEBUSD',[],[],[]], ['ADABUSD',[],[],[]], ['XRPBUSD',[],[],[]], ['SOLBUSD',[],[],[]]];
+    $symbols = [['BTCBUSD',[],[],[]], ['ETHBUSD',[],[],[]], ['BNBBUSD',[],[],[]], ['MATICBUSD',[],[],[]], ['ADABUSD',[],[],[]], ['SOLBUSD',[],[],[]]];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       foreach ($openOrders as $order) {
