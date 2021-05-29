@@ -141,7 +141,29 @@
       toolTip{{ $tick }}_{{ $symbol[0] }}.style.top = top{{ $tick }}_{{ $symbol[0] }} + 'px';
     });
 
-    var candleSeries{{ $tick }}_{{ $symbol[0] }} = chart{{ $tick }}_{{ $symbol[0] }}.addCandlestickSeries({
+    const histogramSeries{{ $tick }}_{{ $symbol[0] }} = chart{{ $tick }}_{{ $symbol[0] }}.addHistogramSeries({
+      color: '#26a69a',
+      priceFormat: {
+        type: 'volume',
+      },
+      priceScaleId: '',
+      scaleMargins: {
+        top: 0.90,
+        bottom: 0,
+      },
+    });
+
+    const lineSeries{{ $tick }}_{{ $symbol[0] }} = chart{{ $tick }}_{{ $symbol[0] }}.addLineSeries({
+      priceScaleId: 'left',
+      color: '#f48fb1',
+      lineStyle: 0,
+      lineWidth: 1,
+      drawCrosshairMarker: true,
+      crosshairMarkerRadius: 1,
+      lineType: 1,
+    });
+
+    const candleSeries{{ $tick }}_{{ $symbol[0] }} = chart{{ $tick }}_{{ $symbol[0] }}.addCandlestickSeries({
       upColor: '#00ff00',
       downColor: '#ff0000',
       borderDownColor: 'rgba(255, 144, 0, 1)',
@@ -181,16 +203,16 @@
 
     fetch('https://api.binance.com/api/v3/klines?symbol={{ $symbol[0] }}&interval={{ $tick }}&limit=1000')
       .then((r) => r.json())
-      .then((response) => {
+      .then((r) => {
         //console.log('response_binance', response)
-        var objs = response.map(function(x) {
+        var objs = r.map(function(x) {
           return {
             time: x[0] / 1000 + 60*60*2,
             open: x[1],
             high: x[2],
             low: x[3],
             close: x[4],
-            value: x[5]*(x[4] - x[1])*(x[2] - x[3]),
+            value: x[5]*x[4],
             color: x[1] > x[4] ? 'rgba(255,82,82, 0.8)' : 'rgba(0, 150, 136, 0.8)'
           };
         });
@@ -198,19 +220,13 @@
         //console.log('response_data', data)
         candleSeries{{ $tick }}_{{ $symbol[0] }}.setData(objs);
         histogramSeries{{ $tick }}_{{ $symbol[0] }}.setData(objs);
+        lineSeries{{ $tick }}_{{ $symbol[0] }}.setData(objs.map(function(x) {
+          return {
+            time: x.time,
+            value: x.value*(x.close - x.open)*(x.high - x.low)
+          };
+        }));
       })
-
-    const histogramSeries{{ $tick }}_{{ $symbol[0] }} = chart{{ $tick }}_{{ $symbol[0] }}.addHistogramSeries({
-      color: '#26a69a',
-      priceFormat: {
-        type: 'volume',
-      },
-      priceScaleId: '',
-      scaleMargins: {
-        top: 0.90,
-        bottom: 0,
-      },
-    });
 
 // set markers
     candleSeries{{ $tick }}_{{ $symbol[0] }}.setMarkers([
@@ -257,8 +273,12 @@
         });
         histogramSeries1m_{{ $symbol[0] }}.update({
           time: candlestick.t / 1000 + 60*60*2,
-          value: candlestick.v * (candlestick.c - candlestick.o) * (candlestick.h - candlestick.l),
+          value: candlestick.v * candlestick.c,
           color: candlestick.o > candlestick.c ? 'rgba(255,82,82, 0.8)' : 'rgba(0, 150, 136, 0.8)'
+        });
+        lineSeries1m_{{ $symbol[0] }}.update({
+          time: candlestick.t / 1000 + 60*60*2,
+          value: candlestick.v * candlestick.c * (candlestick.c - candlestick.o) * (candlestick.h - candlestick.l),
         });
       }
       @endforeach
