@@ -115,7 +115,10 @@ Route::get('/binance/portfolio', [Binance::class, 'portfolio']);
 Route::get('/binance/chart', [Binance::class, 'chart']);
 Route::get('/binance/chart/{coin}', [Binance::class, 'chart']);
 Route::get('/binance/orders', [Binance::class, 'orders']);
+Route::get('/binance/dashboard', [Binance::class, 'dashboard'])->middleware(['auth']);
+/*
 Route::get('/binance/dashboard', function () {
   return view('/binance/dashboard');
 })->middleware(['auth']);
-
+*/
+Route::post('/binance/order/test', [Binance::class, 'testNewOrder'])->name('testNewOrder');

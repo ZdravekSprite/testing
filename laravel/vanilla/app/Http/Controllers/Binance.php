@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hnb;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
@@ -201,7 +202,64 @@ class Binance extends Controller
    */
   public function dashboard()
   {
-    $symbol = 'BNBBUSD';
-    return view('binance.dashboard')->with(compact('symbol'));
+    $symbol = 'MATICBUSD';
+    $base = 'MATIC';
+    $dec1 = 1;
+    $quote = 'BUSD';
+    $dec2 = 5;
+
+    return view('binance.dashboard')->with(compact('symbol','base','dec1','quote','dec2'));
+  }
+
+  /**
+   * Test New Order (TRADE)
+   * Response:
+   * 
+   * {}
+   * POST /api/v3/order/test (HMAC SHA256)
+   * 
+   * Test new order creation and signature/recvWindow long. Creates and validates a new order but does not send it into the matching engine.
+   * 
+   * Weight: 1
+   * 
+   * Parameters:
+   * 
+   * Same as POST /api/v3/order
+   * 
+   * Data Source: Memory
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function testNewOrder(Request $request)
+  {
+    $symbol = $request->input('symbol');
+    $side =  $request->input('side');
+    $type = $request->input('type');
+
+    $quantity = $request->input('quantity');
+    $quoteOrderQty = $request->input('quoteOrderQty');
+    $price = $request->input('price');
+    //dd($symbol, $side, $type, $quantity, $quoteOrderQty, $price);
+    $apiKey = Auth::user()->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->BINANCE_API_SECRET;
+    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+    $serverTime = $time->serverTime;
+    $queryArray = array(
+      "symbol" => $symbol,
+      "side" => $side,
+      "type" => $type,
+      "quantity" => $quantity,
+      "quoteOrderQty" => $quoteOrderQty,
+      "price" => $price,
+      "timestamp" => $serverTime
+    );
+    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+    $signatureArray = array("signature" => $signature);
+    $getArray = $queryArray + $signatureArray;
+    $testNewOrder = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get('https://api.binance.com/api/v3/order/test', $getArray));
+    dd($request->input('sell'),$testNewOrder);
   }
 }

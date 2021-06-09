@@ -35,8 +35,8 @@
     var btc = '';
     var eth = '';
 
-    var chartWidth = 470;
-    var chartHeight = 310;
+    var chartWidth = 470; //470;
+    var chartHeight = 230; //230 310;
 
     var toolTipWidth = 100;
     var toolTipHeight = 80;

@@ -140,8 +140,10 @@ class KlineController extends Controller
       $server = 'https://api.binance.com/api';
       $ws = 'wss://stream.binance.com:9443/ws';
       $stream = 'wss://stream.binance.com:9443/stream';
-      $apiKey = env('BINANCE_API_KEY');
-      $apiSecret = env('BINANCE_API_SECRET');
+      //$apiKey = env('BINANCE_API_KEY');
+      //$apiSecret = env('BINANCE_API_SECRET');
+      $apiKey = Auth::user()->BINANCE_API_KEY;
+      $apiSecret = Auth::user()->BINANCE_API_SECRET;
     }
 
     $time = json_decode(Http::get($server . '/v3/time'));
@@ -156,7 +158,7 @@ class KlineController extends Controller
     ]));
     $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 1000*600000))->get();
     //dd($trades);
-    $symbols = [['BTCBUSD',[],[],[]], ['ETHBUSD',[],[],[]], ['BNBBUSD',[],[],[]], ['MATICBUSD',[],[],[]], ['ADABUSD',[],[],[]], ['SOLBUSD',[],[],[]]];
+    $symbols = [['BTCBUSD',[],[],[]], ['ETHBUSD',[],[],[]], ['BNBBUSD',[],[],[]], ['MATICBUSD',[],[],[]], ['ADABUSD',[],[],[]], ['SOLBUSD',[],[],[]], ['LPTBUSD',[],[],[]], ['KSMBUSD',[],[],[]]];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       foreach ($openOrders as $order) {
@@ -185,7 +187,11 @@ class KlineController extends Controller
     }
     //dd($symbols);
     //$symbols = [['BTCUSDT',53600,53200], ['ETHBTC'], ['ETHUSDT',2510,2480], ['BNBBTC'], ['BNBUSDT',540,532], ['BNBETH']];
-    $link = implode('/', array_map(fn($n) => strtolower($n[0]).'@kline_1m', $symbols));
+    //$link = implode('/', array_map(fn($n) => strtolower($n[0]).'@kline_1m', $symbols));
+    $func = function($n) {
+      return strtolower($n[0]).'@kline_1m';
+    };
+    $link = implode('/', array_map($func, $symbols));
     //dd($link);
     return view('klines.index')->with(compact('symbols', 'link'));
   }
