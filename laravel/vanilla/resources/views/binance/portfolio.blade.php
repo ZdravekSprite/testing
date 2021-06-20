@@ -12,7 +12,11 @@
           <div id="app">
             @if(count($balance) > 0)
             @foreach($balance as $coin => $asset)
-            <p title="{{$asset->name}} {{round($asset->price,2)}}">{{$asset->name}}: {{$asset->total}} {{$coin}} (<span id="{{$coin}}">{{round($asset->price,2)}}</span> kn)</p>
+            <p title="{{$asset->name}} {{round($asset->price,2)}}">
+              {{$asset->name}}: {{$asset->total}} {{$coin}} (<span id="{{$coin}}">{{round($asset->price,2)}}</span> kn)
+              <br />Free: {{$asset->free}}
+              <br />Order: {{$asset->locked}}
+            </p>
             @endforeach
             <p> Total: <span id="total">{{round($total,2)}}</span> kn</p>
             @else

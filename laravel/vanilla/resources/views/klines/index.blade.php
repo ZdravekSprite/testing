@@ -35,15 +35,15 @@
     var btc = '';
     var eth = '';
 
-    var chartWidth = 470; //470;
-    var chartHeight = 230; //230 310;
+    var chartWidth = 627; //470 627;
+    var chartHeight = 230; //230 310 465;
 
     var toolTipWidth = 100;
     var toolTipHeight = 80;
     var toolTipMargin = 15;
 
     @foreach($symbols as $symbol)
-    @foreach(['1h','1m'] as $tick)
+    @foreach(['1d','1h','1m'] as $tick)
     var container{{ $tick }}_{{$symbol[0]}} = document.createElement('div');
     container{{ $tick }}_{{$symbol[0]}}.id = "chart{{$tick}}_{{$symbol[0]}}";
     container{{ $tick }}_{{$symbol[0]}}.style.cssText = 'float: left; padding: 1px;';

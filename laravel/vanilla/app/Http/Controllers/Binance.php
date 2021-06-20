@@ -127,6 +127,8 @@ class Binance extends Controller
                 if (isset($data['price'])) $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn / $data['price'];
               }
               $coin->price = $coin->busd;//max($coin->eur, $coin->busd, $coin->usdt);
+              $coin->openOrders = (new Binance)->openOrders($coin->coin . "BUSD");
+              //$coin->allOrders = (new Binance)->allOrders($coin->coin);
               //dd($coin);
             }
           $balance = Arr::add($balance, $coin->coin, $coin);
@@ -137,6 +139,51 @@ class Binance extends Controller
 
       return view('binance.portfolio')->with(compact('balance', 'total', 'eur_kn', 'busd_kn'));
     }
+  }
+
+  /**
+   */
+  public function openOrders($symbol = 'BNBBUSD')
+  {
+    $apiKey = Auth::user()->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->BINANCE_API_SECRET;
+    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+    $serverTime = $time->serverTime;
+    $queryArray = array(
+      "symbol" => $symbol,
+      "timestamp" => $serverTime
+    );
+    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+    $signatureArray = array("signature" => $signature);
+    $getArray = $queryArray + $signatureArray;
+    $openOrders = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get('https://api.binance.com/api/v3/openOrders', $getArray));
+
+    return $openOrders;
+  }
+
+  /**
+   */
+  public function allOrders($symbol = 'BNBBUSD')
+  {
+
+    $apiKey = Auth::user()->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->BINANCE_API_SECRET;
+    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+    $serverTime = $time->serverTime;
+    $queryArray = array(
+      "symbol" => $symbol,
+      "timestamp" => $serverTime
+    );
+    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+    $signatureArray = array("signature" => $signature);
+    $getArray = $queryArray + $signatureArray;
+    $allOrders = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get('https://api.binance.com/api/v3/allOrders', $getArray));
+
+    return $allOrders;
   }
 
   /**
@@ -260,6 +307,6 @@ class Binance extends Controller
     $testNewOrder = json_decode(Http::withHeaders([
       'X-MBX-APIKEY' => $apiKey
     ])->get('https://api.binance.com/api/v3/order/test', $getArray));
-    dd($request->input('sell'),$testNewOrder);
+    dd($testNewOrder);
   }
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Binance;
+use App\Http\Controllers\TestBinance;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
@@ -106,7 +107,7 @@ Route::post('/messages', [ChatController::class, 'sendMessage']);
 
 Route::resource('trades', TradeController::class);
 Route::resource('symbols', SymbolController::class);
-Route::get('/binance/test', [TradeController::class, 'allMyTrades']);
+Route::get('/binance/allMyTrades', [TradeController::class, 'allMyTrades']);
 Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo']);
 Route::get('/dust', [TradeController::class, 'dustLog']);
 Route::resource('klines', KlineController::class);
@@ -122,3 +123,4 @@ Route::get('/binance/dashboard', function () {
 })->middleware(['auth']);
 */
 Route::post('/binance/order/test', [Binance::class, 'testNewOrder'])->name('testNewOrder');
+Route::get('/binance/test', [TestBinance::class, 'test']);
