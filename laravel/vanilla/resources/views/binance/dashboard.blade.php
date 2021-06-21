@@ -68,6 +68,7 @@
     </div>
   </div>
   <script>
+    document.title = '{{ config('app.name', 'Laravel') }} - B - dashboard';
     var base = '{{ $base }}';
     var dec1 = {{ $dec1 }};
     var quote = '{{ $quote }}';
@@ -274,12 +275,13 @@
       if (candlestick.x) list.push(candlestick.c);
       //console.log('price', list.slice(Math.max(list.length - rang, 0)))
       //param.seriesPrices.get(areaSeries);
+      var off = 2;
       var busd10 = 10/candlestick.c;
       var pow1 = Math.pow(10,dec1);
       var pow2 = Math.pow(10,dec2);
-      var down = Math.ceil(busd10*pow1*1.1)/pow1;
+      var down = Math.ceil(busd10*pow1*(100+off)/100)/pow1;
       var busd10down = Math.ceil(1/down*10*pow2)/pow2;
-      var up = Math.floor(busd10*pow1*0.9)/pow1;
+      var up = Math.floor(busd10*pow1*(100-off)/100)/pow1;
       var busd10up = Math.ceil(1/up*10*pow2)/pow2;
 
       document.getElementById("buy_price").value = busd10down;

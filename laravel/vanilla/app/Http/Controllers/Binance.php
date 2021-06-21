@@ -10,6 +10,13 @@ use Illuminate\Support\Arr;
 
 class Binance extends Controller
 {
+  protected $base = 'https://api.binance.com';
+  protected $api1 = 'https://api1.binance.com';
+  protected $api2 = 'https://api2.binance.com';
+  protected $api3 = 'https://api3.binance.com';
+
+  protected $getSystemStatus = '/sapi/v1/system/status';
+
   /**
    * Show the portfolio.
    *
@@ -247,7 +254,7 @@ class Binance extends Controller
    *
    * @return \Illuminate\View\View
    */
-  public function dashboard()
+  public function dashboard($symbol = 'MATICBUSD')
   {
     $symbol = 'MATICBUSD';
     $base = 'MATIC';

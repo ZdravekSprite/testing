@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HttpCurl;
 
 class TestBinance extends Controller
 {
@@ -220,6 +221,7 @@ class TestBinance extends Controller
    */
   public function order()
   {
+    $url = 'https://api.binance.com/api/v3/order';
     $symbol = "ETHBUSD";
     $side = "SELL";
     $type = "LIMIT_MAKER"; // "LIMIT" "LIMIT_MAKER" "MARKET"
@@ -227,7 +229,7 @@ class TestBinance extends Controller
     $quantity = 0.004; // DECIMAL
     //$quoteOrderQty = 10.01528;
     $price = 2503.82;
-    $newClientOrderId = "newClientOrderIdTest";
+    $newClientOrderId = "newClientOrderIdTest2";
     $array = array(
       "symbol" => $symbol,
       "side" => $side,
@@ -239,6 +241,9 @@ class TestBinance extends Controller
       "newClientOrderId" => $newClientOrderId
     );
     $order = (new $this)->http_post('https://api.binance.com/api/v3/order/test', $array);
+    $curl = new HttpCurl();
+    $order = $curl->post($url, $array, true);
+    dd($order);
     return $order;
   }
 
@@ -253,7 +258,7 @@ class TestBinance extends Controller
     $quantity = 0.004; // DECIMAL
     //$quoteOrderQty = 10.01528;
     $price = 2503.82;
-    $newClientOrderId = "newClientOrderIdTest";
+    $newClientOrderId = "newClientOrderIdTest2";
     $array = array(
       "symbol" => $symbol,
       "side" => $side,
@@ -265,35 +270,16 @@ class TestBinance extends Controller
       "newClientOrderId" => $newClientOrderId
     );
 
-    $apiKey = Auth::user()->BINANCE_API_KEY;
-    $apiSecret = Auth::user()->BINANCE_API_SECRET;
-    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-    $serverTime = $time->serverTime;
-    $timestampArray = array(
-      "timestamp" => $serverTime
-    );
-    $queryArray = $array ? $array + $timestampArray : $timestampArray;
-    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-    $signatureArray = array("signature" => $signature);
-    $postArray = $queryArray + $signatureArray;
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-      'X-MBX-APIKEY: ' . $apiKey,
-  ));
-    curl_setopt($curl, CURLOPT_POST, 1);
-    $query = http_build_query($postArray, '', '&');
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    $server_output = curl_exec($curl);
-    curl_close ($curl);
-    $json = json_decode($server_output, true);
-    dd($json);
-    return $json;
+    $curl = new HttpCurl();
+    $post = $curl->post($url, $array, true);
+    dd($post);
+    return $post;
   }
   public function test()
   {
-    $test = (new $this)->curl_post();
+    $test = (new $this)->order();
+    //$test = new HttpCurl();
     dd($test);
+    //dd($test->curl());
   }
 }
