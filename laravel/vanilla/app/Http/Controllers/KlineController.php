@@ -156,9 +156,33 @@ class KlineController extends Controller
       'timestamp' => $serverTime,
       'signature' => $signature
     ]));
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 1000*600000))->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 3000*600000))->get();
     //dd($trades);
-    $symbols = [['BTCBUSD',[],[],[]], ['ETHBUSD',[],[],[]], ['BNBBUSD',[],[],[]], ['ADABUSD',[],[],[]], ['MATICBUSD',[],[],[]], ['SOLBUSD',[],[],[]]];//, ['LPTBUSD',[],[],[]], ['KSMBUSD',[],[],[]]];
+    $symbols = [
+      ['BTCBUSD',[],[],[],'1d',2],
+      ['BTCBUSD',[],[],[],'1h',2],
+      ['BTCBUSD',[],[],[],'1m',2],
+      ['ETHBTC',[],[],[],'1m',6],
+      ['ETHBUSD',[],[],[],'1d',2],
+      ['ETHBUSD',[],[],[],'1h',2],
+      ['ETHBUSD',[],[],[],'1m',2],
+      ['BNBBTC',[],[],[],'1m',6],
+      ['BNBBUSD',[],[],[],'1d',2],
+      ['BNBBUSD',[],[],[],'1h',2],
+      ['BNBBUSD',[],[],[],'1m',2],
+      ['ADABTC',[],[],[],'1m',8],
+      ['ADABUSD',[],[],[],'1d',4],
+      ['ADABUSD',[],[],[],'1h',4],
+      ['ADABUSD',[],[],[],'1m',4],
+      ['MATICBTC',[],[],[],'1m',8],
+      ['MATICBUSD',[],[],[],'1d',4],
+      ['MATICBUSD',[],[],[],'1h',4],
+      ['MATICBUSD',[],[],[],'1m',4],
+      ['SOLBTC',[],[],[],'1m',8],
+      ['SOLBUSD',[],[],[],'1d',4],
+      ['SOLBUSD',[],[],[],'1h',4],
+      ['SOLBUSD',[],[],[],'1m',4],
+    ];//, ['LPTBUSD',[],[],[]], ['KSMBUSD',[],[],[]]];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       foreach ($openOrders as $order) {

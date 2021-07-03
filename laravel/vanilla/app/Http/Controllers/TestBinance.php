@@ -207,9 +207,8 @@ class TestBinance extends Controller
    *   }
    * ]
    */
-  public function openOrders()
+  public function openOrders($symbol = "ETHBUSD")
   {
-    $symbol = "ETHBUSD";
     $array = array(
       "symbol" => $symbol
     );
@@ -217,19 +216,129 @@ class TestBinance extends Controller
     return $openOrders;
   }
   /*
-   * New Order (TRADE)
+   * New buy Order (TRADE)
    */
-  public function order()
+  public function buy($symbol, $quantity, $price, $newClientOrderId)
+  {
+    $side = "BUY";
+    $type = "LIMIT_MAKER";
+/*
+    $symbol = "BTCBUSD";
+    $quantity = 0.000325; // DECIMAL
+    $price = 30845;
+    $newClientOrderId = "buy_btc";
+/*
+    $symbol = "ETHBUSD";
+    $quantity = 0.0055; // DECIMAL
+    $price = 1819;
+    $newClientOrderId = "buy_eth";
+/*
+    $symbol = "BNBBUSD";
+    $quantity = 0.0379; // DECIMAL
+    $price = 264;
+    $newClientOrderId = "buy_bnb";
+/*
+    $symbol = "ADABUSD";
+    $quantity = 8.63; // DECIMAL
+    $price = 1.16;
+    $newClientOrderId = "buy_ada";
+/*
+    $symbol = "MATICBUSD";
+    $quantity = 9.1; // DECIMAL
+    $price = 1.1;
+    $newClientOrderId = "buy_matic1";
+/*
+    $symbol = "MATICBUSD";
+    $quantity = 9.8; // DECIMAL
+    $price = 1.025;
+    $newClientOrderId = "buy_matic2";
+/*
+    $symbol = "SOLBUSD";
+    $quantity = 0.359; // DECIMAL
+    $price = 27.9;
+    $newClientOrderId = "buy_sol1";
+/*
+    $symbol = "SOLBUSD";
+    $quantity = 0.371; // DECIMAL
+    $price = 27;
+    $newClientOrderId = "buy_sol2";
+*/
+    $buy = (new $this)->order($symbol, $side, $type, $quantity, $price, $newClientOrderId);
+    //dd($buy);
+    return $buy;
+  }
+  /*
+   * New sell Order (TRADE)
+   */
+  public function sell($symbol, $quantity, $price, $newClientOrderId)
+  {
+    $side = "SELL";
+    $type = "LIMIT_MAKER";
+/*
+    $symbol = "BTCBUSD";
+    $quantity = 0.000292; // DECIMAL
+    $price = 34272;
+    $newClientOrderId = "sell_btc";
+/*
+    $symbol = "ETHBUSD";
+    $quantity = 0.00495; // DECIMAL
+    $price = 2021;
+    $newClientOrderId = "sell_eth1";
+/*
+    $symbol = "ETHBUSD";
+    $quantity = 0.00493; // DECIMAL
+    $price = 2029;
+    $newClientOrderId = "sell_eth2";
+/*
+    $symbol = "BNBBUSD";
+    $quantity = 0.0342; // DECIMAL
+    $price = 293;
+    $newClientOrderId = "sell_bnb";
+/*
+    $symbol = "ADABUSD";
+    $quantity = 7.77; // DECIMAL
+    $price = 1.288;
+    $newClientOrderId = "sell_ada1";
+/*
+    $symbol = "ADABUSD";
+    $quantity = 7.45; // DECIMAL
+    $price = 1.344;
+    $newClientOrderId = "sell_ada2";
+/*
+    $symbol = "MATICBUSD";
+    $quantity = 8.4; // DECIMAL
+    $price = 1.2;
+    $newClientOrderId = "sell_matic1";
+/*
+    $symbol = "MATICBUSD";
+    $quantity = 8.2; // DECIMAL
+    $price = 1.225;
+    $newClientOrderId = "sell_matic2";
+/*
+    $symbol = "SOLBUSD";
+    $quantity = 0.323; // DECIMAL
+    $price = 31;
+    $newClientOrderId = "sell_sol1";
+/*
+    $symbol = "SOLBUSD";
+    $quantity = 0.313; // DECIMAL
+    $price = 32;
+    $newClientOrderId = "sell_sol2";
+*/
+    $sell = (new $this)->order($symbol, $side, $type, $quantity, $price, $newClientOrderId);
+    //dd($sell);
+    return $sell;
+  }
+  /*
+   * New Order (TRADE)
+    $type = "LIMIT" "LIMIT_MAKER" "MARKET"
+    $side = "SELL" "BUY"
+   */
+  public function order($symbol, $side, $type, $quantity, $price, $newClientOrderId)
   {
     $url = 'https://api.binance.com/api/v3/order';
-    $symbol = "ETHBUSD";
-    $side = "SELL";
-    $type = "LIMIT_MAKER"; // "LIMIT" "LIMIT_MAKER" "MARKET"
     //$timeInForce = "GTC";
-    $quantity = 0.004; // DECIMAL
     //$quoteOrderQty = 10.01528;
-    $price = 2503.82;
-    $newClientOrderId = "newClientOrderIdTest2";
     $array = array(
       "symbol" => $symbol,
       "side" => $side,
@@ -240,44 +349,80 @@ class TestBinance extends Controller
       "price" => $price,
       "newClientOrderId" => $newClientOrderId
     );
+    //dd($array);
     $order = (new $this)->http_post('https://api.binance.com/api/v3/order/test', $array);
     $curl = new HttpCurl();
     $order = $curl->post($url, $array, true);
-    dd($order);
+    //dd($order);
     return $order;
   }
 
-  public function curl_post()
+  /*
+   * New sell Orders (TRADE)
+   */
+  public function sell_targets()
   {
-
-    $url = 'https://api.binance.com/api/v3/order';
-    $symbol = "ETHBUSD";
-    $side = "SELL";
-    $type = "LIMIT_MAKER"; // "LIMIT" "LIMIT_MAKER" "MARKET"
-    //$timeInForce = "GTC";
-    $quantity = 0.004; // DECIMAL
-    //$quoteOrderQty = 10.01528;
-    $price = 2503.82;
-    $newClientOrderId = "newClientOrderIdTest2";
-    $array = array(
-      "symbol" => $symbol,
-      "side" => $side,
-      "type" => $type,
-      //"timeInForce" => $timeInForce,
-      "quantity" => $quantity,
-      //"quoteOrderQty" => $quoteOrderQty,
-      "price" => $price,
-      "newClientOrderId" => $newClientOrderId
-    );
-
-    $curl = new HttpCurl();
-    $post = $curl->post($url, $array, true);
-    dd($post);
-    return $post;
+    $sells = [];
+    //$sells[] = (new $this)->sell("BTCBUSD", 0.000289, 34630.38, "sell_btc01");
+    //$sells[] = (new $this)->sell("BTCBUSD", 0.000275, 36447.29, "sell_btc02");
+    //$sells[] = (new $this)->sell("ETHBUSD", 0.00506, 2050, "sell_eth0");
+    //$sells[] = (new $this)->sell("ETHBUSD", 0.00506, 1944.33, "sell_eth01");
+    //$sells[] = (new $this)->sell("ETHBUSD", 0.0044, 2276.2, "sell_eth02");
+    //$sells[] = (new $this)->sell("BNBBUSD", 0.0346, 289.16, "sell_bnb01");
+    //$sells[] = (new $this)->sell("BNBBUSD", 0.0319, 313.93, "sell_bnb02");
+    //$sells[] = (new $this)->sell("ADABUSD", 7.49, 1.35, "sell_ada0");
+    //$sells[] = (new $this)->sell("ADABUSD", 7.49, 1.3365, "sell_ada01");
+    //$sells[] = (new $this)->sell("ADABUSD", 7.15, 1.3996, "sell_ada02");
+    //$sells[] = (new $this)->sell("ADABUSD", 7.15, 1.3996, "sell_ada_quick");
+    //$sells[] = (new $this)->sell("MATICBUSD", 9.1, 1.10781, "sell_matic01");
+    //$sells[] = (new $this)->sell("MATICBUSD", 8.1, 1.24375, "sell_matic02");
+    //$sells[] = (new $this)->sell("SOLBUSD", 0.317, 31.64, "sell_sol01");
+    //$sells[] = (new $this)->sell("SOLBUSD", 0.28, 35.81, "sell_sol02");
+    //dd($sells);
+    return $sells;
+  }
+  /*
+   * New buy Orders (TRADE)
+   */
+  public function buy_targets()
+  {
+    $buys = [];
+    //$buys[] = (new $this)->buy("BTCBUSD", 0.000329, 30454.74, "buy_btc01");
+    //$buys[] = (new $this)->buy("BTCBUSD", 0.00033, 30303.98, "buy_btc02");
+    //$buys[] = (new $this)->buy("ETHBUSD", 0.00577, 1734.58, "buy_eth01");
+    //$buys[] = (new $this)->buy("ETHBUSD", 0.0058, 1726, "buy_eth02");
+    //$buys[] = (new $this)->buy("BNBBUSD", 0.0374, 267.96, "buy_bnb0");
+    //$buys[] = (new $this)->buy("BNBBUSD", 0.0376, 266.64, "buy_bnb01");
+    //$buys[] = (new $this)->buy("BNBBUSD", 0.0377, 265.32, "buy_bnb02");
+    //$buys[] = (new $this)->buy("ADABUSD", 8.28, 1.2078, "buy_ada01");
+    $buys[] = (new $this)->buy("ADABUSD", 7.71, 1.2979, "buy_ada02");
+    //$buys[] = (new $this)->buy("ADABUSD", 7.19, 1.3926, "buy_ada_quick");
+    //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.01583, "buy_matic01");
+    //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.0108, "buy_matic02");
+    //$buys[] = (new $this)->buy("SOLBUSD", 0.37, 27.07, "buy_sol0");
+    //$buys[] = (new $this)->buy("SOLBUSD", 0.372, 26.94, "buy_sol01");
+    //$buys[] = (new $this)->buy("SOLBUSD", 0.373, 26.81, "buy_sol02");
+    //dd($buys);
+    return $buys;
+  }
+  public function openOrders_list()
+  {
+    $openOrders = [];
+    $openOrders[] = (new $this)->openOrders("BTCBUSD");
+    $openOrders[] = (new $this)->openOrders("ETHBUSD");
+    $openOrders[] = (new $this)->openOrders("BNBBUSD");
+    $openOrders[] = (new $this)->openOrders("ADABUSD");
+    $openOrders[] = (new $this)->openOrders("MATICBUSD");
+    $openOrders[] = (new $this)->openOrders("SOLBUSD");
+    //dd($openOrders);
+    return $openOrders;
   }
   public function test()
   {
-    $test = (new $this)->order();
+    $test = [];
+    //$test[] = (new $this)->openOrders_list();
+    $test[] = (new $this)->sell_targets();
+    $test[] = (new $this)->buy_targets();
     //$test = new HttpCurl();
     dd($test);
     //dd($test->curl());
