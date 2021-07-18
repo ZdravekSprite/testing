@@ -142,6 +142,13 @@ class Binance extends Controller
           $total = $total + $coin->price;
         }
       }
+      foreach ($balance as $coin) {
+        if ($coin->coin == 'BUSD') {
+          $coin->target = 1500 / $coin->price * $coin->total;
+        } else {
+          $coin->target = $total / 3000 * 300 / $coin->price * $coin->total;
+        }
+    }
       //dd($balance);
 
       return view('binance.portfolio')->with(compact('balance', 'total', 'eur_kn', 'busd_kn'));

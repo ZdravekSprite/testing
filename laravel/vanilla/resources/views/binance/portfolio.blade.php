@@ -14,11 +14,19 @@
             @foreach($balance as $coin => $asset)
             <p title="{{$asset->name}} {{round($asset->price,2)}}">
               {{$asset->name}}: {{$asset->total}} {{$coin}} (<span id="{{$coin}}">{{round($asset->price,2)}}</span> kn)
-              <br />Free: {{$asset->free}}
-              <br />Order: {{$asset->locked}}
             </p>
             @endforeach
+            <hr>
             <p> Total: <span id="total">{{round($total,2)}}</span> kn</p>
+            <hr>
+            <br />
+            @foreach($balance as $coin => $asset)
+            <p title="{{$asset->name}} {{round($asset->price,2)}}">
+              {{$asset->name}}: {{$asset->total}} {{$coin}} ({{round($asset->price,2)}} kn)
+              <br />Free: {{$asset->free}} / Order: {{$asset->locked}}
+              <br />Target: {{$asset->target}} <span id="{{$coin}}_target"></span>
+            </p>
+            @endforeach
             @else
             <p> No assets found</p>
             @endif

@@ -388,20 +388,18 @@ class TestBinance extends Controller
   {
     $buys = [];
     //$buys[] = (new $this)->buy("BTCBUSD", 0.000329, 30454.74, "buy_btc01");
-    //$buys[] = (new $this)->buy("BTCBUSD", 0.00033, 30303.98, "buy_btc02");
+    //$buys[] = (new $this)->buy("BTCBUSD", 0.000303, 33024.03, "buy_btc02");
     //$buys[] = (new $this)->buy("ETHBUSD", 0.00577, 1734.58, "buy_eth01");
-    //$buys[] = (new $this)->buy("ETHBUSD", 0.0058, 1726, "buy_eth02");
-    //$buys[] = (new $this)->buy("BNBBUSD", 0.0374, 267.96, "buy_bnb0");
-    //$buys[] = (new $this)->buy("BNBBUSD", 0.0376, 266.64, "buy_bnb01");
-    //$buys[] = (new $this)->buy("BNBBUSD", 0.0377, 265.32, "buy_bnb02");
+    //$buys[] = (new $this)->buy("ETHBUSD", 0.00491, 2038.18, "buy_eth02");
+    //$buys[] = (new $this)->buy("BNBBUSD", 0.0374, 267.96, "buy_bnb01");
+    //$buys[] = (new $this)->buy("BNBBUSD", 0.0359, 279.25, "buy_bnb02");
     //$buys[] = (new $this)->buy("ADABUSD", 8.28, 1.2078, "buy_ada01");
-    $buys[] = (new $this)->buy("ADABUSD", 7.71, 1.2979, "buy_ada02");
+    //$buys[] = (new $this)->buy("ADABUSD", 7.71, 1.2979, "buy_ada02");
     //$buys[] = (new $this)->buy("ADABUSD", 7.19, 1.3926, "buy_ada_quick");
     //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.01583, "buy_matic01");
     //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.0108, "buy_matic02");
-    //$buys[] = (new $this)->buy("SOLBUSD", 0.37, 27.07, "buy_sol0");
-    //$buys[] = (new $this)->buy("SOLBUSD", 0.372, 26.94, "buy_sol01");
-    //$buys[] = (new $this)->buy("SOLBUSD", 0.373, 26.81, "buy_sol02");
+    //$buys[] = (new $this)->buy("SOLBUSD", 0.37, 27.07, "buy_sol01");
+    //$buys[] = (new $this)->buy("SOLBUSD", 0.316, 31.687, "buy_sol02");
     //dd($buys);
     return $buys;
   }
@@ -420,9 +418,18 @@ class TestBinance extends Controller
   public function test()
   {
     $test = [];
+    $symbol = 'ADABUSD';
+    $interval = '1w';
+    $limit = 1;
+    $klines = json_decode(Http::get('https://api.binance.com/api/v3/klines', [
+      'symbol' => $symbol,
+      'interval' => $interval,
+      'limit' => $limit
+    ]));
+    $test[] = $klines;
     //$test[] = (new $this)->openOrders_list();
-    $test[] = (new $this)->sell_targets();
-    $test[] = (new $this)->buy_targets();
+    //$test[] = (new $this)->sell_targets();
+    //$test[] = (new $this)->buy_targets();
     //$test = new HttpCurl();
     dd($test);
     //dd($test->curl());

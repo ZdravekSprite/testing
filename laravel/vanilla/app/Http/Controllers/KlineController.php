@@ -84,8 +84,10 @@ class KlineController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
+    $show = $request->input('show');
+
     //ini_set("memory_limit","1024M");
     //$symbols = Symbol::where('status', '=', 'TRADING')->where('quoteAsset', '=', 'USDT')->get();
     
@@ -216,8 +218,29 @@ class KlineController extends Controller
       return strtolower($n[0]).'@kline_1m';
     };
     $link = implode('/', array_map($func, $symbols));
+
+    $chartWidth = 627; //313 470 627;
+    $chartWidth_btc = 417; // 207 417
+    $chartHeight = 310; //230 310 465;
+    switch ($show) {
+      case 'all':
+        $chartWidth = 313;
+        $chartWidth_btc = 207;
+        $chartHeight = 310;
+        break;
+      case 'big':
+        $chartWidth = 627;
+        $chartWidth_btc = 417;
+        $chartHeight = 310;
+        break;
+      case 'one':
+        $chartWidth = 627;
+        $chartWidth_btc = 417;
+        $chartHeight = 465;
+        break;
+  }
     //dd($link);
-    return view('klines.index')->with(compact('symbols', 'link'));
+    return view('klines.index')->with(compact('symbols', 'link', 'chartWidth', 'chartWidth_btc', 'chartHeight'));
   }
 
   /**

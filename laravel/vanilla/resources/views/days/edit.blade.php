@@ -42,6 +42,12 @@
               <input onclick="ShowHideDiv(this)" id="go" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="go" {{$day->go ? 'checked' : ''}} />
             </div>
 
+            <!-- dopust -->
+            <div class="mt-4">
+              <x-label for="dopust" :value="__('Plačeni dopust')" />
+              <input onclick="ShowHideDiv(this)" id="dopust" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="dopust" {{$day->dopust ? 'checked' : ''}} />
+            </div>
+
             <div id="time">
               <!-- nocna -->
               <div class="mt-4">

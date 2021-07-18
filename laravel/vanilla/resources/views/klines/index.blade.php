@@ -35,9 +35,9 @@
     var btc = '';
     var eth = '';
 
-    var chartWidth = 627; //470 627;
-    var chartWidth_btc = 417;
-    var chartHeight = 310; //230 310 465;
+    var chartWidth = {{ $chartWidth }}; //313 470 627;
+    var chartWidth_btc = {{ $chartWidth_btc }}; // 207 417
+    var chartHeight = {{ $chartHeight }}; //230 310 465;
 
     var toolTipWidth = 100;
     var toolTipHeight = 80;

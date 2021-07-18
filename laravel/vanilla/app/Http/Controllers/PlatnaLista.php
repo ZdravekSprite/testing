@@ -92,6 +92,8 @@ class PlatnaLista extends Controller
     $hoursNormSick = 0;
     $hoursNormGO = 0;
     $daysGO = 0;
+    $hoursNormDopust = 0;
+    $daysDopust = 0;
     $minWork = 0;
     $minWorkHoli = 0;
     $minWorkSunday = 0;
@@ -124,6 +126,10 @@ class PlatnaLista extends Controller
         $hoursNormGO += $def_h;
         if ($def_h > 0) $daysGO++;
       }
+      if ($daysColection->where('date', '=', $from->addDays($i))->where('dopust', '=', true)->first() != null) {
+        $hoursNormDopust += $def_h;
+        if ($def_h > 0) $daysDopust++;
+      }
       if ($daysColection->where('date', '=', $from->addDays($i))->first() != null) {
         $temp_day = $daysColection->where('date', '=', $from->addDays($i))->first();
         $temp_minWork = $temp_day->duration->diffInMinutes($temp_day->start) + $temp_day->night_duration->format('H') * 60 + $temp_day->night_duration->format('i');
@@ -149,7 +155,7 @@ class PlatnaLista extends Controller
     $data['III.do'] = $to->format('d');
     // 1.1. Za redoviti rad
     //dd($from, $firstFrom, $hoursNorm, $hoursNormHoli, $firstHoursNorm, $firstHoursNormHoli);
-    $hoursWorkNorm = ($from > $firstFrom ? $hoursNorm - $hoursNormHoli : $firstHoursNorm - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO;
+    $hoursWorkNorm = ($from > $firstFrom ? $hoursNorm - $hoursNormHoli : $firstHoursNorm - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO - $hoursNormDopust;
     $h1_1 = $minWork / 60 > $hoursWorkNorm ? $hoursWorkNorm : $minWork / 60;
     $data['1.1.h'] = number_format($h1_1, 2, ',', '.'); //'158,00';
     $data['1.1.kn'] = number_format($h1_1 * $perHour, 2, ',', '.'); //'4.867,98';
@@ -167,6 +173,9 @@ class PlatnaLista extends Controller
     // 1.7a Praznici. Blagdani, izbori
     $data['1.7a.h'] = number_format($hoursNormHoli, 2, ',', '.'); //'14,00';
     $data['1.7a.kn'] = number_format($hoursNormHoli * $perHour, 2, ',', '.'); //'431,34';
+    // 1.7c Plaćeni dopust
+    $data['1.7c.h'] = number_format($hoursNormDopust, 2, ',', '.'); //'14,00';
+    $data['1.7c.kn'] = number_format($hoursNormDopust * $perHour, 2, ',', '.'); //'431,34';
     // 1.7d Bolovanje do 42 dana
     $data['1.7d.h'] = number_format($hoursNormSick, 2, ',', '.'); //'0,00';
     $data['1.7d.kn'] = number_format($hoursNormSick * $perHour * 0.7588, 2, ',', '.'); //'0,00';
