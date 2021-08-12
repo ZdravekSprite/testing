@@ -364,10 +364,10 @@ class TestBinance extends Controller
   {
     $sells = [];
     //$sells[] = (new $this)->sell("BTCBUSD", 0.000289, 34630.38, "sell_btc01");
-    //$sells[] = (new $this)->sell("BTCBUSD", 0.000275, 36447.29, "sell_btc02");
+    //$sells[] = (new $this)->sell("BTCBUSD", 0.000238, 42114.12, "sell_btc02");
     //$sells[] = (new $this)->sell("ETHBUSD", 0.00506, 2050, "sell_eth0");
     //$sells[] = (new $this)->sell("ETHBUSD", 0.00506, 1944.33, "sell_eth01");
-    //$sells[] = (new $this)->sell("ETHBUSD", 0.0044, 2276.2, "sell_eth02");
+    //$sells[] = (new $this)->sell("ETHBUSD", 0.00559, 2684.92, "sell_eth02");
     //$sells[] = (new $this)->sell("BNBBUSD", 0.0346, 289.16, "sell_bnb01");
     //$sells[] = (new $this)->sell("BNBBUSD", 0.0319, 313.93, "sell_bnb02");
     //$sells[] = (new $this)->sell("ADABUSD", 7.49, 1.35, "sell_ada0");
@@ -428,7 +428,7 @@ class TestBinance extends Controller
     ]));
     $test[] = $klines;
     //$test[] = (new $this)->openOrders_list();
-    //$test[] = (new $this)->sell_targets();
+    $test[] = (new $this)->sell_targets();
     //$test[] = (new $this)->buy_targets();
     //$test = new HttpCurl();
     dd($test);

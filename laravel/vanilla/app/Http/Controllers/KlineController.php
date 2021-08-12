@@ -158,7 +158,7 @@ class KlineController extends Controller
       'timestamp' => $serverTime,
       'signature' => $signature
     ]));
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 3000*600000))->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000*600000))->get();
     //dd($trades);
     $symbols = [
       ['BTCBUSD',[],[],[],'1d',2],

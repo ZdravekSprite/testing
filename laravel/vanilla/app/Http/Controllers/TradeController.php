@@ -325,6 +325,24 @@ class TradeController extends Controller
     return view('trades.index')->with(compact('trades', 'symbols', 'balance'));
   }
 
+  public function prosjek()
+  {
+    $coin = 0;
+    $busd = 0;
+    $trades = $this->myTrades('ETHBUSD');
+    foreach ($trades as $trade_key => $trade) {
+      if ($trade->isBuyer) {
+        $coin += $trade->qty;
+        $busd += $trade->quoteQty;
+      } else {
+        $coin -= $trade->qty;
+        $busd -= $trade->quoteQty;
+      }
+      //dd($trade->price);
+      //dd($coin,$busd,$trade);
+    }
+    dd($busd/$coin,$trades);
+  }
   /**
    * Show the form for creating a new resource.
    *

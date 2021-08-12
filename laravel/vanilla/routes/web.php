@@ -110,6 +110,7 @@ Route::resource('symbols', SymbolController::class);
 Route::get('/binance/allMyTrades', [TradeController::class, 'allMyTrades']);
 Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo']);
 Route::get('/dust', [TradeController::class, 'dustLog']);
+Route::get('/binance/prosjek', [TradeController::class, 'prosjek']);
 Route::resource('klines', KlineController::class);
 
 Route::get('/binance/portfolio', [Binance::class, 'portfolio']);
