@@ -8,16 +8,71 @@
   <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <!-- Validation Errors -->
+        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+
+        <div class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg">
+          <div class="grid grid-cols-1 md:grid-cols-2">
+
+            <div class="p-6">
+              <form method="POST" action="{{ route('testNewOrder') }}">
+                @csrf
+                <div class="mt-4">
+                  <input id="buy_price" step="0.00001" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="price" value="{{old('buy_price')?? '0'}}" />
+                  <input id="buy_quantity" step="0.1" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="quantity" value="{{old('buy_quantity')?? '0'}}" />
+                  <input id="buy_quoteOrderQty" step="0.000001" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="quoteOrderQty" value="{{old('buy_quoteOrderQty')?? '0'}}" />
+                </div>
+                <input type="hidden" name="symbol" value="{{ $symbol }}">
+                <input type="hidden" name="side" value="BUY">
+                <input type="hidden" name="type" value="LIMIT">
+                <div class="flex items-center justify-end mt-4">
+                  <x-button class="ml-4">
+                    {{ __('Buy') }}
+                  </x-button>
+                </div>
+              </form>
+            </div>
+
+            <div class="p-6">
+              <form method="POST" action="{{ route('testNewOrder') }}">
+                @csrf
+                <div class="mt-4">
+                  <input id="sell_price" step="0.00001" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="price" value=0 />
+                  <input id="sell_quantity" step="0.1" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="quantity" value=0 />
+                  <input id="sell_quoteOrderQty" step="0.000001" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="quoteOrderQty" value=0 />
+                </div>
+                <input type="hidden" name="symbol" value="{{ $symbol }}">
+                <input type="hidden" name="side" value="SELL">
+                <input type="hidden" name="type" value="LIMIT">
+                <div class="flex items-center justify-end mt-4">
+                  <x-button class="ml-4">
+                    {{ __('Sell') }}
+                  </x-button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
         <div class="p-6 bg-white border-b border-gray-200" id="container">
         </div>
         <div class="floating-tooltip-2" id="tooltip">
         </div>
+
+        <div id="app">
+        <example-component></example-component>
+        </div>
+
       </div>
     </div>
   </div>
   <script>
-    var base = 'BNB';
-    var quote = 'BUSD';
+    document.title = '{{ config('app.name', 'Laravel') }} - B - dashboard';
+    var base = '{{ $base }}';
+    var dec1 = {{ $dec1 }};
+    var quote = '{{ $quote }}';
+    var dec2 = {{ $dec2 }};
 
     var container = document.getElementById("container");
     var toolTip = document.getElementById("tooltip");
@@ -84,8 +139,12 @@
       toolTip.style.display = 'block';
       var price = param.seriesPrices.get(candleSeries);
       var pres = ((price.close - price.open ) / price.open );
+      var d = new Date(param.time * 1000);
+      var datestring = d.getDate()  + "-" + (d.getMonth()+1) + "-" + d.getFullYear();
+      var timestring = d.getHours() + ":" + d.getMinutes();
       toolTip.innerHTML = '<div style="font-size: 10px; color: rgba(255, 70, 70, 1)">' + base + quote + '</div>' +
-        '<div style="font-size: 10px; margin: 2px 0px">' + new Date(param.time * 1000) + '%</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + datestring + '</div>' +
+        '<div style="font-size: 12px; margin: 2px 0px">' + timestring + '</div>' +
         '<div style="font-size: 12px; margin: 2px 0px">' + (pres*100).toFixed(2) + '%</div>' +
         '<div style="font-size: 10px; margin: 2px 0px">' + price.high*1 + '</div>' +
         '<div style="font-size: 10px; margin: 2px 0px">' + price.open*1 + '</div>' +
@@ -181,10 +240,11 @@
         });
         var area_objs = res.map(function(x) {
           list.push(x[4]);
+          var dev = list.length < rang ? list.length : rang;
           return {
             list: list.slice(Math.max(list.length - rang, 0)),
             time: x[0] / 1000 + 60*60*2,
-            value: list.slice(Math.max(list.length - rang, 0)).reduce((a, b) => a*1 + b*1, 0) / rang //x[4]
+            value: list.slice(Math.max(list.length - rang, 0)).reduce((a, b) => a*1 + b*1, 0) / dev //x[4]
           };
         });
         console.log('area',area_objs);
@@ -215,6 +275,22 @@
       if (candlestick.x) list.push(candlestick.c);
       //console.log('price', list.slice(Math.max(list.length - rang, 0)))
       //param.seriesPrices.get(areaSeries);
+      var off = 2;
+      var busd10 = 10/candlestick.c;
+      var pow1 = Math.pow(10,dec1);
+      var pow2 = Math.pow(10,dec2);
+      var down = Math.ceil(busd10*pow1*(100+off)/100)/pow1;
+      var busd10down = Math.ceil(1/down*10*pow2)/pow2;
+      var up = Math.floor(busd10*pow1*(100-off)/100)/pow1;
+      var busd10up = Math.ceil(1/up*10*pow2)/pow2;
+
+      document.getElementById("buy_price").value = busd10down;
+      document.getElementById("buy_quantity").value = down;
+      document.getElementById("buy_quoteOrderQty").value = busd10down*down;
+      document.getElementById("sell_price").value = busd10up;
+      document.getElementById("sell_quantity").value = up;
+      document.getElementById("sell_quoteOrderQty").value = busd10up*up;
+
       var temp_val
       areaSeries.update({
         list: list.slice(Math.max(list.length - rang, 0)),

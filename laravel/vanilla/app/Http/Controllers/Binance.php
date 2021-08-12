@@ -3,12 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hnb;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
 
 class Binance extends Controller
 {
+  protected $base = 'https://api.binance.com';
+  protected $api1 = 'https://api1.binance.com';
+  protected $api2 = 'https://api2.binance.com';
+  protected $api3 = 'https://api3.binance.com';
+
+  protected $getSystemStatus = '/sapi/v1/system/status';
+
   /**
    * Show the portfolio.
    *
@@ -126,16 +134,70 @@ class Binance extends Controller
                 if (isset($data['price'])) $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn / $data['price'];
               }
               $coin->price = $coin->busd;//max($coin->eur, $coin->busd, $coin->usdt);
+              $coin->openOrders = (new Binance)->openOrders($coin->coin . "BUSD");
+              //$coin->allOrders = (new Binance)->allOrders($coin->coin);
               //dd($coin);
             }
           $balance = Arr::add($balance, $coin->coin, $coin);
           $total = $total + $coin->price;
         }
       }
+      foreach ($balance as $coin) {
+        if ($coin->coin == 'BUSD') {
+          $coin->target = 1500 / $coin->price * $coin->total;
+        } else {
+          $coin->target = $total / 3000 * 300 / $coin->price * $coin->total;
+        }
+    }
       //dd($balance);
 
       return view('binance.portfolio')->with(compact('balance', 'total', 'eur_kn', 'busd_kn'));
     }
+  }
+
+  /**
+   */
+  public function openOrders($symbol = 'BNBBUSD')
+  {
+    $apiKey = Auth::user()->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->BINANCE_API_SECRET;
+    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+    $serverTime = $time->serverTime;
+    $queryArray = array(
+      "symbol" => $symbol,
+      "timestamp" => $serverTime
+    );
+    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+    $signatureArray = array("signature" => $signature);
+    $getArray = $queryArray + $signatureArray;
+    $openOrders = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get('https://api.binance.com/api/v3/openOrders', $getArray));
+
+    return $openOrders;
+  }
+
+  /**
+   */
+  public function allOrders($symbol = 'BNBBUSD')
+  {
+
+    $apiKey = Auth::user()->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->BINANCE_API_SECRET;
+    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+    $serverTime = $time->serverTime;
+    $queryArray = array(
+      "symbol" => $symbol,
+      "timestamp" => $serverTime
+    );
+    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+    $signatureArray = array("signature" => $signature);
+    $getArray = $queryArray + $signatureArray;
+    $allOrders = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get('https://api.binance.com/api/v3/allOrders', $getArray));
+
+    return $allOrders;
   }
 
   /**
@@ -199,9 +261,66 @@ class Binance extends Controller
    *
    * @return \Illuminate\View\View
    */
-  public function dashboard()
+  public function dashboard($symbol = 'MATICBUSD')
   {
-    $symbol = 'BNBBUSD';
-    return view('binance.dashboard')->with(compact('symbol'));
+    $symbol = 'MATICBUSD';
+    $base = 'MATIC';
+    $dec1 = 1;
+    $quote = 'BUSD';
+    $dec2 = 5;
+
+    return view('binance.dashboard')->with(compact('symbol','base','dec1','quote','dec2'));
+  }
+
+  /**
+   * Test New Order (TRADE)
+   * Response:
+   * 
+   * {}
+   * POST /api/v3/order/test (HMAC SHA256)
+   * 
+   * Test new order creation and signature/recvWindow long. Creates and validates a new order but does not send it into the matching engine.
+   * 
+   * Weight: 1
+   * 
+   * Parameters:
+   * 
+   * Same as POST /api/v3/order
+   * 
+   * Data Source: Memory
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+   */
+  public function testNewOrder(Request $request)
+  {
+    $symbol = $request->input('symbol');
+    $side =  $request->input('side');
+    $type = $request->input('type');
+
+    $quantity = $request->input('quantity');
+    $quoteOrderQty = $request->input('quoteOrderQty');
+    $price = $request->input('price');
+    //dd($symbol, $side, $type, $quantity, $quoteOrderQty, $price);
+    $apiKey = Auth::user()->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->BINANCE_API_SECRET;
+    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+    $serverTime = $time->serverTime;
+    $queryArray = array(
+      "symbol" => $symbol,
+      "side" => $side,
+      "type" => $type,
+      "quantity" => $quantity,
+      "quoteOrderQty" => $quoteOrderQty,
+      "price" => $price,
+      "timestamp" => $serverTime
+    );
+    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+    $signatureArray = array("signature" => $signature);
+    $getArray = $queryArray + $signatureArray;
+    $testNewOrder = json_decode(Http::withHeaders([
+      'X-MBX-APIKEY' => $apiKey
+    ])->get('https://api.binance.com/api/v3/order/test', $getArray));
+    dd($testNewOrder);
   }
 }

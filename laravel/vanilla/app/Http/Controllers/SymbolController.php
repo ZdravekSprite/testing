@@ -66,7 +66,11 @@ class SymbolController extends Controller
       ->toArray();
     //dd(count($symbols_usdt),count($symbols_busd));
     $symbols = array_merge($symbols_usdt, $symbols_busd, $symbols_bnbbtc);
-    $link = implode('/', array_map(fn($n) => strtolower($n).'@kline_1m', $symbols));
+    $func = function($n) {
+      return strtolower($n).'@kline_1m';
+    };
+    $link = implode('/', array_map($func, $symbols));
+    //$link = implode('/', array_map(fn($n) => strtolower($n).'@kline_1m', $symbols));
     //dd($link,$symbols);
     return view('symbols.index')->with(compact('symbols', 'symbols_usdt', 'symbols_busd', 'link'));
   }

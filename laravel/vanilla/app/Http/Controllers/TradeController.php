@@ -22,8 +22,8 @@ class TradeController extends Controller
   {
     set_time_limit(0);
     $symbols = Symbol::where('status', '=', 'TRADING')->pluck('symbol');
-    //$trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'asc')->get();
-    //$symbols = $trades->pluck('symbol')->unique();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'asc')->get();
+    $symbols = $trades->pluck('symbol')->unique();
     //dd(http_build_query(json_decode($symbols)));
     $allTrades = [];
     foreach ($symbols as $key => $symbol) {
@@ -206,7 +206,7 @@ class TradeController extends Controller
     //dd($balance,$all_assets);
 
     //$trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'desc')->get();
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 7*24*60*60*1000))->orderBy('time', 'desc')->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 14*24*60*60*1000))->orderBy('time', 'desc')->get();
     $symbols = $trades->pluck('symbol')->unique();
     //dd($balance,$all_assets,$trades,$symbols);
 
@@ -325,6 +325,24 @@ class TradeController extends Controller
     return view('trades.index')->with(compact('trades', 'symbols', 'balance'));
   }
 
+  public function prosjek()
+  {
+    $coin = 0;
+    $busd = 0;
+    $trades = $this->myTrades('ETHBUSD');
+    foreach ($trades as $trade_key => $trade) {
+      if ($trade->isBuyer) {
+        $coin += $trade->qty;
+        $busd += $trade->quoteQty;
+      } else {
+        $coin -= $trade->qty;
+        $busd -= $trade->quoteQty;
+      }
+      //dd($trade->price);
+      //dd($coin,$busd,$trade);
+    }
+    dd($busd/$coin,$trades);
+  }
   /**
    * Show the form for creating a new resource.
    *

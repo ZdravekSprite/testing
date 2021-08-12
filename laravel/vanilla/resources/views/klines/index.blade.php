@@ -35,23 +35,45 @@
     var btc = '';
     var eth = '';
 
-    var chartWidth = 470;
-    var chartHeight = 230;
+    var chartWidth = {{ $chartWidth }}; //313 470 627;
+    var chartWidth_btc = {{ $chartWidth_btc }}; // 207 417
+    var chartHeight = {{ $chartHeight }}; //230 310 465;
 
     var toolTipWidth = 100;
     var toolTipHeight = 80;
     var toolTipMargin = 15;
 
     @foreach($symbols as $symbol)
-    @foreach(['1h','1m'] as $tick)
-    var container{{ $tick }}_{{$symbol[0]}} = document.createElement('div');
-    container{{ $tick }}_{{$symbol[0]}}.id = "chart{{$tick}}_{{$symbol[0]}}";
-    container{{ $tick }}_{{$symbol[0]}}.style.cssText = 'float: left; padding: 1px;';
+    var container{{ $symbol[4] }}_{{$symbol[0]}} = document.createElement('div');
+    container{{ $symbol[4] }}_{{$symbol[0]}}.id = "chart{{$symbol[4]}}_{{$symbol[0]}}";
+    container{{ $symbol[4] }}_{{$symbol[0]}}.style.cssText = 'float: left; padding: 1px;';
 
-    document.body.appendChild(container{{ $tick }}_{{$symbol[0]}});
+    document.body.appendChild(container{{ $symbol[4] }}_{{$symbol[0]}});
 
-    var chart{{ $tick }}_{{ $symbol[0] }} = LightweightCharts.createChart(container{{ $tick }}_{{$symbol[0]}}, {
-      width: chartWidth,
+    var chart{{ $symbol[4] }}_{{ $symbol[0] }} = LightweightCharts.createChart(container{{ $symbol[4] }}_{{$symbol[0]}}, {
+      @if ($symbol[0] === 'BTCBUSD')
+        width: chartWidth,
+      @else
+        @switch($symbol[4])
+          @case('1d')
+            width: chartWidth_btc,
+            @break
+
+          @case('1h')
+            width: chartWidth_btc,
+            @break
+
+          @default
+            @switch(substr($symbol[0], -3))
+              @case('BTC')
+                width: chartWidth_btc,
+                @break
+
+              @default
+                width: chartWidth,
+            @endswitch
+        @endswitch
+      @endif
       height: chartHeight,
       layout: {
         backgroundColor: '#000000',
@@ -85,80 +107,102 @@
       },
     });
 
-    chart{{ $tick }}_{{ $symbol[0] }}.applyOptions({
+    chart{{ $symbol[4] }}_{{ $symbol[0] }}.applyOptions({
       watermark: {
         color: 'rgba(170, 175, 180, 0.5)',
         visible: true,
-        text: '{{ $symbol[0] }}',
+        text: '{{ $symbol[0]."_".$symbol[4] }}',
         fontSize: 22,
         horzAlign: 'left',
         vertAlign: 'top',
       },
     });
 
-    chart{{ $tick }}_{{ $symbol[0] }}.subscribeClick(function(param){
+    chart{{ $symbol[4] }}_{{ $symbol[0] }}.subscribeClick(function(param){
       console.log(`An user clicks at (${param.point.x}, ${param.point.y}) point, the time is ${param.time}`);
-      console.log(candleSeries{{ $tick }}_{{ $symbol[0] }}.coordinateToPrice(param.point.x));
+      console.log(candleSeries{{ $symbol[4] }}_{{ $symbol[0] }}.coordinateToPrice(param.point.x));
     });
 
-    var toolTip{{ $tick }}_{{ $symbol[0] }} = document.createElement('div');
-    toolTip{{ $tick }}_{{ $symbol[0] }}.className = 'floating-tooltip-2';
-    container{{ $tick }}_{{ $symbol[0] }}.appendChild(toolTip{{ $tick }}_{{ $symbol[0] }});
+    var toolTip{{ $symbol[4] }}_{{ $symbol[0] }} = document.createElement('div');
+    toolTip{{ $symbol[4] }}_{{ $symbol[0] }}.className = 'floating-tooltip-2';
+    container{{ $symbol[4] }}_{{ $symbol[0] }}.appendChild(toolTip{{ $symbol[4] }}_{{ $symbol[0] }});
 
 // update tooltip
-    chart{{ $tick }}_{{ $symbol[0] }}.subscribeCrosshairMove(function(param) {
+    chart{{ $symbol[4] }}_{{ $symbol[0] }}.subscribeCrosshairMove(function(param) {
       if (!param.time || param.point.x < 0 || param.point.x > chartWidth || param.point.y < 0 || param.point.y > chartHeight) {
-        toolTip{{ $tick }}_{{ $symbol[0] }}.style.display = 'none';
+        toolTip{{ $symbol[4] }}_{{ $symbol[0] }}.style.display = 'none';
         return;
       }
 
-      toolTip{{ $tick }}_{{ $symbol[0] }}.style.display = 'block';
-      var price{{ $tick }}_{{ $symbol[0] }} = param.seriesPrices.get(candleSeries{{ $tick }}_{{ $symbol[0] }});
+      toolTip{{ $symbol[4] }}_{{ $symbol[0] }}.style.display = 'block';
+      var price{{ $symbol[4] }}_{{ $symbol[0] }} = param.seriesPrices.get(candleSeries{{ $symbol[4] }}_{{ $symbol[0] }});
       //console.log(param.time);
-      var txt{{ $tick }}_{{ $symbol[0] }} = ((price{{ $tick }}_{{ $symbol[0] }}.close - price{{ $tick }}_{{ $symbol[0] }}.open ) / price{{ $tick }}_{{ $symbol[0] }}.open );
-      toolTip{{ $tick }}_{{ $symbol[0] }}.innerHTML = '<div style="font-size: 10px; color: rgba(255, 70, 70, 1)">{{ $symbol[0] }}</div>' +
+      var txt{{ $symbol[4] }}_{{ $symbol[0] }} = ((price{{ $symbol[4] }}_{{ $symbol[0] }}.close - price{{ $symbol[4] }}_{{ $symbol[0] }}.open ) / price{{ $symbol[4] }}_{{ $symbol[0] }}.open );
+      toolTip{{ $symbol[4] }}_{{ $symbol[0] }}.innerHTML = '<div style="font-size: 10px; color: rgba(255, 70, 70, 1)">{{ $symbol[0] }}</div>' +
         //'<div style="font-size: 10px; margin: 2px 0px">' + new Date(param.time * 1000) + '%</div>' +
-        '<div style="font-size: 12px; margin: 2px 0px">' + (txt{{ $tick }}_{{ $symbol[0] }}*100).toFixed(2) + '%</div>' +
-        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.high*1 + '</div>' +
-        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.open*1 + '</div>' +
-        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.close*1 + '</div>' +
-        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $tick }}_{{ $symbol[0] }}.low*1 + '</div>';
+        '<div style="font-size: 12px; margin: 2px 0px">' + (txt{{ $symbol[4] }}_{{ $symbol[0] }}*100).toFixed(2) + '%</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $symbol[4] }}_{{ $symbol[0] }}.high*1 + '</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $symbol[4] }}_{{ $symbol[0] }}.open*1 + '</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $symbol[4] }}_{{ $symbol[0] }}.close*1 + '</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $symbol[4] }}_{{ $symbol[0] }}.low*1 + '</div>';
 
-      var y{{ $tick }}_{{ $symbol[0] }} = container{{ $tick }}_{{$symbol[0]}}.offsetTop + param.point.y;
-      var x{{ $tick }}_{{ $symbol[0] }} = container{{ $tick }}_{{$symbol[0]}}.offsetLeft + param.point.x;
+      var y{{ $symbol[4] }}_{{ $symbol[0] }} = container{{ $symbol[4] }}_{{$symbol[0]}}.offsetTop + param.point.y;
+      var x{{ $symbol[4] }}_{{ $symbol[0] }} = container{{ $symbol[4] }}_{{$symbol[0]}}.offsetLeft + param.point.x;
 
-      var left{{ $tick }}_{{ $symbol[0] }} = x{{ $tick }}_{{ $symbol[0] }} + toolTipMargin;
-      if (left{{ $tick }}_{{ $symbol[0] }} > chartWidth - toolTipWidth) {
-        left{{ $tick }}_{{ $symbol[0] }} = x{{ $tick }}_{{ $symbol[0] }} - toolTipMargin - toolTipWidth;
+      var left{{ $symbol[4] }}_{{ $symbol[0] }} = x{{ $symbol[4] }}_{{ $symbol[0] }} + toolTipMargin;
+      if (left{{ $symbol[4] }}_{{ $symbol[0] }} > chartWidth - toolTipWidth) {
+        left{{ $symbol[4] }}_{{ $symbol[0] }} = x{{ $symbol[4] }}_{{ $symbol[0] }} - toolTipMargin - toolTipWidth;
       }
 
-      var top{{ $tick }}_{{ $symbol[0] }} = y{{ $tick }}_{{ $symbol[0] }} + toolTipMargin;
-      if (top{{ $tick }}_{{ $symbol[0] }} > chartHeight - toolTipHeight) {
-        top{{ $tick }}_{{ $symbol[0] }} = y{{ $tick }}_{{ $symbol[0] }} - toolTipHeight - toolTipMargin;
+      var top{{ $symbol[4] }}_{{ $symbol[0] }} = y{{ $symbol[4] }}_{{ $symbol[0] }} + toolTipMargin;
+      if (top{{ $symbol[4] }}_{{ $symbol[0] }} > chartHeight - toolTipHeight) {
+        top{{ $symbol[4] }}_{{ $symbol[0] }} = y{{ $symbol[4] }}_{{ $symbol[0] }} - toolTipHeight - toolTipMargin;
       }
 
-      toolTip{{ $tick }}_{{ $symbol[0] }}.style.left = left{{ $tick }}_{{ $symbol[0] }} + 'px';
-      toolTip{{ $tick }}_{{ $symbol[0] }}.style.top = top{{ $tick }}_{{ $symbol[0] }} + 'px';
+      toolTip{{ $symbol[4] }}_{{ $symbol[0] }}.style.left = left{{ $symbol[4] }}_{{ $symbol[0] }} + 'px';
+      toolTip{{ $symbol[4] }}_{{ $symbol[0] }}.style.top = top{{ $symbol[4] }}_{{ $symbol[0] }} + 'px';
     });
 
-    var candleSeries{{ $tick }}_{{ $symbol[0] }} = chart{{ $tick }}_{{ $symbol[0] }}.addCandlestickSeries({
+    const histogramSeries{{ $symbol[4] }}_{{ $symbol[0] }} = chart{{ $symbol[4] }}_{{ $symbol[0] }}.addHistogramSeries({
+      color: '#26a69a',
+      priceFormat: {
+        type: 'volume',
+      },
+      priceScaleId: '',
+      scaleMargins: {
+        top: 0.90,
+        bottom: 0,
+      },
+    });
+
+    const lineSeries{{ $symbol[4] }}_{{ $symbol[0] }} = chart{{ $symbol[4] }}_{{ $symbol[0] }}.addLineSeries({
+      priceScaleId: 'left',
+      color: '#f48fb1',
+      lineStyle: 0,
+      lineWidth: 1,
+      drawCrosshairMarker: true,
+      crosshairMarkerRadius: 1,
+      lineType: 1,
+    });
+
+    const candleSeries{{ $symbol[4] }}_{{ $symbol[0] }} = chart{{ $symbol[4] }}_{{ $symbol[0] }}.addCandlestickSeries({
       upColor: '#00ff00',
       downColor: '#ff0000',
       borderDownColor: 'rgba(255, 144, 0, 1)',
       borderUpColor: 'rgba(255, 144, 0, 1)',
       wickDownColor: 'rgba(255, 144, 0, 1)',
       wickUpColor: 'rgba(255, 144, 0, 1)',
-      priceFormat: { type: 'price', minMove: 0.0001, precision: 4 },
+      priceFormat: { type: 'price', minMove: {{ 1/pow(10,$symbol[5]) }}, precision: {{ $symbol[5] }} },
       scaleMargins: {
         top: 1,
-        bottom: 0.05,
+        bottom: 0.1,
       },
     });
 
     // create a horizontal price line at a certain price level.
     @if(isset($symbol[1]))
     @foreach($symbol[1] as $key => $buy)
-    const buypriceLine{{ $tick }}{{ $symbol[0] }}{{ $key }} = candleSeries{{ $tick }}_{{ $symbol[0] }}.createPriceLine({
+    const buypriceLine{{ $symbol[4] }}{{ $symbol[0] }}{{ $key }} = candleSeries{{ $symbol[4] }}_{{ $symbol[0] }}.createPriceLine({
           price: {{ $buy }},
           color: 'red',
           lineWidth: 2,
@@ -169,7 +213,7 @@
     @endif
     @if(isset($symbol[2]))
     @foreach($symbol[2] as $key => $sell)
-    const sellpriceLine{{ $tick }}{{ $symbol[0] }}{{ $key }} = candleSeries{{ $tick }}_{{ $symbol[0] }}.createPriceLine({
+    const sellpriceLine{{ $symbol[4] }}{{ $symbol[0] }}{{ $key }} = candleSeries{{ $symbol[4] }}_{{ $symbol[0] }}.createPriceLine({
           price: {{ $sell }},
           color: 'green',
           lineWidth: 2,
@@ -179,11 +223,11 @@
     @endforeach
     @endif
 
-    fetch('https://api.binance.com/api/v3/klines?symbol={{ $symbol[0] }}&interval={{ $tick }}&limit=1000')
+    fetch('https://api.binance.com/api/v3/klines?symbol={{ $symbol[0] }}&interval={{ $symbol[4] }}&limit=1000')
       .then((r) => r.json())
-      .then((response) => {
+      .then((r) => {
         //console.log('response_binance', response)
-        var objs = response.map(function(x) {
+        var objs = r.map(function(x) {
           return {
             time: x[0] / 1000 + 60*60*2,
             open: x[1],
@@ -196,24 +240,18 @@
         });
         console.log(objs);
         //console.log('response_data', data)
-        candleSeries{{ $tick }}_{{ $symbol[0] }}.setData(objs);
-        histogramSeries{{ $tick }}_{{ $symbol[0] }}.setData(objs);
+        candleSeries{{ $symbol[4] }}_{{ $symbol[0] }}.setData(objs);
+        histogramSeries{{ $symbol[4] }}_{{ $symbol[0] }}.setData(objs);
+        lineSeries{{ $symbol[4] }}_{{ $symbol[0] }}.setData(objs.map(function(x) {
+          return {
+            time: x.time,
+            value: x.value*(x.close - x.open)*(x.high - x.low)
+          };
+        }));
       })
 
-    const histogramSeries{{ $tick }}_{{ $symbol[0] }} = chart{{ $tick }}_{{ $symbol[0] }}.addHistogramSeries({
-      color: '#26a69a',
-      priceFormat: {
-        type: 'volume',
-      },
-      priceScaleId: '',
-      scaleMargins: {
-        top: 0.90,
-        bottom: 0,
-      },
-    });
-
 // set markers
-    candleSeries{{ $tick }}_{{ $symbol[0] }}.setMarkers([
+    candleSeries{{ $symbol[4] }}_{{ $symbol[0] }}.setMarkers([
       @foreach($symbol[3] as $marker)
       {
         time: {{ $marker->time + 60*60*2 }},
@@ -226,8 +264,6 @@
       },
       @endforeach
     ]);
-
-    @endforeach
 
     @endforeach
 
@@ -246,6 +282,7 @@
 
       //console.log('message', message)
       @foreach($symbols as $symbol)
+      @if($symbol[4] == '1m')
       if (message.stream == '{{ strtolower($symbol[0]) }}@kline_1m') {
         var candlestick = message.data.k;
         candleSeries1m_{{ $symbol[0] }}.update({
@@ -260,7 +297,12 @@
           value: candlestick.v * candlestick.c,
           color: candlestick.o > candlestick.c ? 'rgba(255,82,82, 0.8)' : 'rgba(0, 150, 136, 0.8)'
         });
+        lineSeries1m_{{ $symbol[0] }}.update({
+          time: candlestick.t / 1000 + 60*60*2,
+          value: candlestick.v * candlestick.c * (candlestick.c - candlestick.o) * (candlestick.h - candlestick.l),
+        });
       }
+      @endif
       @endforeach
       //var candlestick = message.k;
       //console.log('candlestick', candlestick)

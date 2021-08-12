@@ -84,8 +84,10 @@ class KlineController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
+    $show = $request->input('show');
+
     //ini_set("memory_limit","1024M");
     //$symbols = Symbol::where('status', '=', 'TRADING')->where('quoteAsset', '=', 'USDT')->get();
     
@@ -140,8 +142,10 @@ class KlineController extends Controller
       $server = 'https://api.binance.com/api';
       $ws = 'wss://stream.binance.com:9443/ws';
       $stream = 'wss://stream.binance.com:9443/stream';
-      $apiKey = env('BINANCE_API_KEY');
-      $apiSecret = env('BINANCE_API_SECRET');
+      //$apiKey = env('BINANCE_API_KEY');
+      //$apiSecret = env('BINANCE_API_SECRET');
+      $apiKey = Auth::user()->BINANCE_API_KEY;
+      $apiSecret = Auth::user()->BINANCE_API_SECRET;
     }
 
     $time = json_decode(Http::get($server . '/v3/time'));
@@ -154,9 +158,33 @@ class KlineController extends Controller
       'timestamp' => $serverTime,
       'signature' => $signature
     ]));
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 1000*600000))->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000*600000))->get();
     //dd($trades);
-    $symbols = [['BTCBUSD',[],[],[]], ['ETHBUSD',[],[],[]], ['BNBBUSD',[],[],[]], ['MATICBUSD',[],[],[]], ['ONEBUSD',[],[],[]], ['ADABUSD',[],[],[]], ['XRPBUSD',[],[],[]], ['SOLBUSD',[],[],[]]];
+    $symbols = [
+      ['BTCBUSD',[],[],[],'1d',2],
+      ['BTCBUSD',[],[],[],'1h',2],
+      ['BTCBUSD',[],[],[],'1m',2],
+      ['ETHBTC',[],[],[],'1m',6],
+      ['ETHBUSD',[],[],[],'1d',2],
+      ['ETHBUSD',[],[],[],'1h',2],
+      ['ETHBUSD',[],[],[],'1m',2],
+      ['BNBBTC',[],[],[],'1m',6],
+      ['BNBBUSD',[],[],[],'1d',2],
+      ['BNBBUSD',[],[],[],'1h',2],
+      ['BNBBUSD',[],[],[],'1m',2],
+      ['ADABTC',[],[],[],'1m',8],
+      ['ADABUSD',[],[],[],'1d',4],
+      ['ADABUSD',[],[],[],'1h',4],
+      ['ADABUSD',[],[],[],'1m',4],
+      ['MATICBTC',[],[],[],'1m',8],
+      ['MATICBUSD',[],[],[],'1d',4],
+      ['MATICBUSD',[],[],[],'1h',4],
+      ['MATICBUSD',[],[],[],'1m',4],
+      ['SOLBTC',[],[],[],'1m',8],
+      ['SOLBUSD',[],[],[],'1d',4],
+      ['SOLBUSD',[],[],[],'1h',4],
+      ['SOLBUSD',[],[],[],'1m',4],
+    ];//, ['LPTBUSD',[],[],[]], ['KSMBUSD',[],[],[]]];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       foreach ($openOrders as $order) {
@@ -185,9 +213,34 @@ class KlineController extends Controller
     }
     //dd($symbols);
     //$symbols = [['BTCUSDT',53600,53200], ['ETHBTC'], ['ETHUSDT',2510,2480], ['BNBBTC'], ['BNBUSDT',540,532], ['BNBETH']];
-    $link = implode('/', array_map(fn($n) => strtolower($n[0]).'@kline_1m', $symbols));
+    //$link = implode('/', array_map(fn($n) => strtolower($n[0]).'@kline_1m', $symbols));
+    $func = function($n) {
+      return strtolower($n[0]).'@kline_1m';
+    };
+    $link = implode('/', array_map($func, $symbols));
+
+    $chartWidth = 627; //313 470 627;
+    $chartWidth_btc = 417; // 207 417
+    $chartHeight = 310; //230 310 465;
+    switch ($show) {
+      case 'all':
+        $chartWidth = 313;
+        $chartWidth_btc = 207;
+        $chartHeight = 310;
+        break;
+      case 'big':
+        $chartWidth = 627;
+        $chartWidth_btc = 417;
+        $chartHeight = 310;
+        break;
+      case 'one':
+        $chartWidth = 627;
+        $chartWidth_btc = 417;
+        $chartHeight = 465;
+        break;
+  }
     //dd($link);
-    return view('klines.index')->with(compact('symbols', 'link'));
+    return view('klines.index')->with(compact('symbols', 'link', 'chartWidth', 'chartWidth_btc', 'chartHeight'));
   }
 
   /**

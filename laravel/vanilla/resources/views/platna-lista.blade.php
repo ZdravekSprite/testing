@@ -114,6 +114,13 @@
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7a.kn'] }}</td>
               </tr>
               @endif
+              @if($data['1.7c.h'] > 0)
+              <tr>
+                <td class="w-3/4 border p-2 pl-6" colspan="2">1.7c Plaćeni dopust</td>
+                <td class="w-1/8 border p-2 text-center">{{ $data['1.7c.h'] }}</td>
+                <td class="w-1/8 border p-2 text-right">{{ $data['1.7c.kn'] }}</td>
+              </tr>
+              @endif
               @if($data['1.7d.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7d Bolovanje do 42 dana</td>

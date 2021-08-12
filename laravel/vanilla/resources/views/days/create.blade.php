@@ -48,6 +48,14 @@
               <p>Kako nisam još bio na GO ne znam kak se računa ali pretpostavljam da kao i za bolovanje, ali ako netko zna točno slobodno javi na <a href="mailto:zdravek.sprite@gmail.com">mail zdravek.sprite@gmail.com</a></p>
             </div>
 
+            <!-- dopust -->
+            <div class="mt-4">
+              <x-label for="dopust" :value="__('Dopust')" />
+              <input onclick="ShowHideDiv(this)" id="dopust" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="dopust" />
+              <p>Da li ste taj dan dobili plačeni dopust? Ako je godišnji onda bi ostale vrijednosti trebale biti 00:00</p>
+              <p>Dobio za smrt u obitelji 2 dana plačena <a href="mailto:zdravek.sprite@gmail.com">mail zdravek.sprite@gmail.com</a></p>
+            </div>
+
             <!-- nocna -->
             <div class="mt-4">
               <x-label for="night_duration" :value="__('Kraj noćne prijašnji dan')" />

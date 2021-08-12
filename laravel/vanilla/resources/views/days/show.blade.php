@@ -16,6 +16,9 @@
           @if($day->go)
           <p>Bio sam na godišnjem</p>
           @endif
+          @if($day->dopust)
+          <p>Bio sam na plaćenom dopustu</p>
+          @endif
           @if(!($day->sick) && !($day->go))
           @if($day->night_duration->hour > 0)
           <p>od ponoći sam radio do {{ $day->night_duration->format('H:i') }}</p>
