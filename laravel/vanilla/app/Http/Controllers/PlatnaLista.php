@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Day;
 use App\Models\Holiday;
+use App\Models\Month;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,19 +33,52 @@ class PlatnaLista extends Controller
       'odbitak' => 'required',
       'prirez' => 'required'
     ]);
-    $bruto = $request->input('bruto');
-    $prijevoz = $request->input('prijevoz');
-    $odbitak = $request->input('odbitak');
+    $bruto = $request->input('bruto')*1;
+    $prijevoz = $request->input('prijevoz')*1;
+    $odbitak = $request->input('odbitak')*1;
     $prirez = $request->input('prirez') * 10;
+
     $user = User::find(Auth::id());
+    $month = $request->input('month')*1;
+    $year = $request->input('year')*1;
+
+    $old_month = Month::where('user_id', '=', Auth::user()->id)->where('month', '=', ($year * 12 + $month - 1))->get();
+    $new_month = new Month;
+    $new_month->month = $year * 12 + $month - 1;
+    $new_month->user_id = Auth::user()->id;
+    $new_month->bruto = $bruto;
+    $new_month->prijevoz = $prijevoz;
+    $new_month->odbitak = $odbitak;
+    $new_month->prirez = $prirez;
+    $new_month->prekovremeni = $request->input('prekovremeni')*1;
+    $new_month->stimulacija = $request->input('stimulacija')*1;
+    $new_month->regres = $request->input('regres')*1;
+    if ($user->month <= $new_month->month) {
+      $user->month = $new_month->month;
+      $user->bruto = $bruto;
+      $user->prijevoz = $prijevoz;
+      $user->odbitak = $odbitak;
+      $user->prirez = $prirez;
+      $user->save();
+    }
+  if (count($old_month) > 0) {
+      $old_month[0]->user_id = Auth::user()->id;
+      $old_month[0]->bruto = $bruto;
+      $old_month[0]->prijevoz = $prijevoz;
+      $old_month[0]->odbitak = $odbitak;
+      $old_month[0]->prirez = $prirez;
+      $old_month[0]->prekovremeni = $request->input('prekovremeni')*1;
+      $old_month[0]->stimulacija = $request->input('stimulacija')*1;
+      $old_month[0]->regres = $request->input('regres')*1;
+      $old_month[0]->save();
+    } else {
+      $new_month->save();
+    }
+
+    //dd($old_month,$new_month);
     //$user = Auth::user();
     //dd($user);
     if (null != $request->input('zaposlen')) $user->zaposlen = $request->input('zaposlen');
-    $user->bruto = $bruto;
-    $user->prijevoz = $prijevoz;
-    $user->odbitak = $odbitak;
-    $user->prirez = $prirez;
-    $user->save();
     return redirect(route('dashboard'))->with('success', 'User Updated');
   }
 
@@ -56,24 +90,33 @@ class PlatnaLista extends Controller
    */
   public function __invoke(Request $request)
   {
-    $bruto = Auth::user()->bruto ?? 5300;
-    $data['bruto'] = $bruto;
-    $prijevoz = Auth::user()->prijevoz ?? 360;
-    $data['prijevoz'] = $prijevoz;
-    $odbitak = Auth::user()->odbitak ?? 4000;
-    $data['odbitak'] = $odbitak;
-    $prirez = Auth::user()->prirez ?? 180;
-    $data['prirez'] = $prirez / 10;
-    $prekovremeni = $request->input('prekovremeni') != null ? $request->input('prekovremeni') : 0;
-    $data['prekovremeni'] = $prekovremeni;
-    $data['prekovremeniOptions'] = [0, 8, 16, 24, 32];
-
     if ($request->input('month') == null) {
       $month['x'] = Carbon::now();
     } else {
       $month['x'] = Carbon::parse('01.' . $request->input('month'));
       //dd($month);
     }
+
+    $data['month'] = $month['x']->format('Y') * 12 + $month['x']->format('m') - 1;
+
+    $month_data = Month::where('user_id', '=', Auth::user()->id)->where('month', '<=', $data['month'])->orderBy('month', 'desc')->get();
+
+    $bruto = $month_data[0]->bruto ?? Auth::user()->bruto ?? 5300;
+    $data['bruto'] = $bruto;
+    $prijevoz = $month_data[0]->prijevoz ?? Auth::user()->prijevoz ?? 360;
+    $data['prijevoz'] = $prijevoz;
+    $odbitak = $month_data[0]->odbitak ?? Auth::user()->odbitak ?? 4000;
+    $data['odbitak'] = $odbitak;
+    $prirez = $month_data[0]->prirez ?? Auth::user()->prirez ?? 180;
+    $data['prirez'] = $prirez / 10;
+    $prekovremeni = $request->input('prekovremeni') != null ? $request->input('prekovremeni') : 0;
+    $data['prekovremeni'] = $prekovremeni;
+    $data['prekovremeniOptions'] = [0, 8, 16, 24, 32];
+/*
+    if (count($month_data) > 0) {
+      dd($month_data);
+    }
+*/
     $month['-'] = Carbon::parse($month['x'])->subMonthsNoOverflow();
     $month['+'] = Carbon::parse($month['x'])->addMonthsNoOverflow();
     $from = CarbonImmutable::parse($month['x'])->firstOfMonth();
@@ -163,16 +206,16 @@ class PlatnaLista extends Controller
     $h1_4 = $prekovremeni;
     $overWork = $minWork / 60 - $hoursWorkNorm;
 
-    $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . $overWork . ')'; //'24,00';
+    $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')'; //'24,00';
     $data['1.4.kn'] = number_format($h1_4 * $perHour * 1.5, 2, ',', '.'); //'1.109,16';
-    // 1.x Za godišnji
-    $h1_go = $hoursNormGO;
 
-    $data['1.go.h'] = number_format($h1_go, 2, ',', '.') . ' (' . $daysGO . ')';
-    $data['1.go.kn'] = number_format($h1_go * $perHour, 2, ',', '.');
     // 1.7a Praznici. Blagdani, izbori
     $data['1.7a.h'] = number_format($hoursNormHoli, 2, ',', '.'); //'14,00';
     $data['1.7a.kn'] = number_format($hoursNormHoli * $perHour, 2, ',', '.'); //'431,34';
+    // 1.7b Godišnji odmor
+    $h1_go = $hoursNormGO;
+    $data['1.7b.h'] = number_format($h1_go, 2, ',', '.') . ' (' . $daysGO . ')';
+    $data['1.7b.kn'] = number_format($h1_go * $perHour, 2, ',', '.');
     // 1.7c Plaćeni dopust
     $data['1.7c.h'] = number_format($hoursNormDopust, 2, ',', '.'); //'14,00';
     $data['1.7c.kn'] = number_format($hoursNormDopust * $perHour, 2, ',', '.'); //'431,34';
@@ -185,14 +228,22 @@ class PlatnaLista extends Controller
     // 1.7f Dodatak za rad na praznik
     $data['1.7f.h'] = number_format($minWorkHoli / 60, 2, ',', '.'); //'8,00';
     $data['1.7f.kn'] = number_format($minWorkHoli / 60 * $perHour * 0.5, 2, ',', '.'); //'123,24';
+    // 2. OSTALI OBLICI
+    $stimulacija = 361.36;
+    $kn2 = $stimulacija;
+    $data['2.kn'] = number_format($kn2, 2, ',', '.'); //'361,36';
+    // 2.8. Stimulacija bruto
+    $data['2.8.kn'] = number_format($stimulacija, 2, ',', '.'); //'361,36';
+    
     // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
+    $prijevoz = $hoursNormGO ? $prijevoz * $hoursWorkNorm / $hoursNorm : $prijevoz;
     $prijevoz = $from > $firstFrom ? $prijevoz : $prijevoz * $firstHoursNorm / $hoursNorm;
     $kn3 = $prijevoz;
     $data['3.kn'] = number_format($kn3, 2, ',', '.'); //'400,00';
     // 3.1. Prijevoz
     $data['3.1.kn'] = number_format($prijevoz, 2, ',', '.'); //'400,00';
     // 4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA PO STAVKAMA 1. DO 3.
-    $kn5 = ($h1_1 + $h1_4 * 1.5 + $hoursNormHoli + $hoursNormSick * 0.7588 + $hoursNormGO + $minWorkSunday / 60 * 0.35 + $minWorkHoli / 60 * 0.5) * $perHour;
+    $kn5 = ($h1_1 + $h1_4 * 1.5 + $hoursNormHoli + $hoursNormSick * 0.7588 + $hoursNormGO + $minWorkSunday / 60 * 0.35 + $minWorkHoli / 60 * 0.5) * $perHour + $kn2;
     $data['4.kn'] = number_format($kn5 + $kn3, 2, ',', '.'); //'7.104,26';
     // 5. OSNOVICA ZA OBRAČUN DOPRINOSA
     $kn5 = round($kn5, 2);

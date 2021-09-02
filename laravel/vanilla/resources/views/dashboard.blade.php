@@ -40,6 +40,16 @@
           <form method="POST" action="{{ route('lista') }}">
             @csrf
             @method('PUT')
+            <!-- month -->
+            <div class="mt-4">
+              <x-label for="month" :value="__('Mjesec')" />
+              <input id="month" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="month" value="{{$month ? $month : old('month')?? 1}}" min="1" step="1" />
+            </div>
+            <!-- year -->
+            <div class="mt-4">
+              <x-label for="year" :value="__('Godina')" />
+              <input id="year" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="year" value="{{$year ? $year : old('year')?? 2021}}" min="1900" step="1" />
+            </div>
             <!-- bruto -->
             <div class="mt-4">
               <x-label for="bruto" :value="__('Bruto')" />

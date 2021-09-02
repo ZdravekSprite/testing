@@ -100,18 +100,18 @@
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.4.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.4.kn'] }}</td>
               </tr>
-              @if($data['1.go.h'] > 0)
-              <tr>
-                <td class="w-3/4 border p-2 pl-6" colspan="2">GO (pretpostavljam da se ovak računa)</td>
-                <td class="w-1/8 border p-2 text-center">{{ $data['1.go.h'] }}</td>
-                <td class="w-1/8 border p-2 text-right">{{ $data['1.go.kn'] }}</td>
-              </tr>
-              @endif
               @if($data['1.7a.h'] > 0)
               <tr>
                 <td class="w-3/4 border p-2 pl-6" colspan="2">1.7a Praznici. Blagdani, izbori</td>
                 <td class="w-1/8 border p-2 text-center">{{ $data['1.7a.h'] }}</td>
                 <td class="w-1/8 border p-2 text-right">{{ $data['1.7a.kn'] }}</td>
+              </tr>
+              @endif
+              @if($data['1.7b.h'] > 0)
+              <tr>
+                <td class="w-3/4 border p-2 pl-6" colspan="2">1.7b Godišnji odmor</td>
+                <td class="w-1/8 border p-2 text-center">{{ $data['1.7b.h'] }}</td>
+                <td class="w-1/8 border p-2 text-right">{{ $data['1.7b.kn'] }}</td>
               </tr>
               @endif
               @if($data['1.7c.h'] > 0)
@@ -146,6 +146,11 @@
                 <td class="w-3/4 border p-2" colspan="2">2. OSTALI OBLICI RADA TEMELJEM KOJIH OSTVARUJE PRAVO NA UVEĆANJE PLAĆE PREMA KOLEKTIVNOM UGOVORU, PRAVILNIKU O RADU ILI UGOVORU O RADU I NOVČANI IZNOS PO TOJ OSNOVI (SATI PRIPRAVNOSTI)</td>
                 <td class="w-1/8 border p-2 text-center"></td>
                 <td class="w-1/8 border p-2 text-right"></td>
+              </tr>
+              <tr>
+                <td class="w-3/4 border p-2 pl-6" colspan="2">2.8. Stimulacija bruto</td>
+                <td class="w-1/8 border p-2 text-center"></td>
+                <td class="w-1/8 border p-2 text-right">{{ $data['2.8.kn'] }}</td>
               </tr>
               <tr>
                 <td class="w-3/4 border p-2" colspan="2">3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI</td>
