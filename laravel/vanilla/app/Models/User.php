@@ -50,6 +50,14 @@ class User extends Authenticatable
   }
 
   /**
+   * Get the users months.
+   */
+  public function months()
+  {
+    return $this->hasMany(Months::class);
+  }
+
+  /**
    * The roles that belong to the user.
    */
   public function roles()

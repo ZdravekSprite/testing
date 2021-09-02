@@ -34,7 +34,9 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/dashboard', function () {
-  return view('dashboard');
+  $month = Auth::user()->month % 12 + 1;
+  $year = (Auth::user()->month - $month + 1) / 12;
+  return view('dashboard')->with(compact('month', 'year'));
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__ . '/auth.php';

@@ -222,47 +222,6 @@ class TestBinance extends Controller
   {
     $side = "BUY";
     $type = "LIMIT_MAKER";
-/*
-    $symbol = "BTCBUSD";
-    $quantity = 0.000325; // DECIMAL
-    $price = 30845;
-    $newClientOrderId = "buy_btc";
-/*
-    $symbol = "ETHBUSD";
-    $quantity = 0.0055; // DECIMAL
-    $price = 1819;
-    $newClientOrderId = "buy_eth";
-/*
-    $symbol = "BNBBUSD";
-    $quantity = 0.0379; // DECIMAL
-    $price = 264;
-    $newClientOrderId = "buy_bnb";
-/*
-    $symbol = "ADABUSD";
-    $quantity = 8.63; // DECIMAL
-    $price = 1.16;
-    $newClientOrderId = "buy_ada";
-/*
-    $symbol = "MATICBUSD";
-    $quantity = 9.1; // DECIMAL
-    $price = 1.1;
-    $newClientOrderId = "buy_matic1";
-/*
-    $symbol = "MATICBUSD";
-    $quantity = 9.8; // DECIMAL
-    $price = 1.025;
-    $newClientOrderId = "buy_matic2";
-/*
-    $symbol = "SOLBUSD";
-    $quantity = 0.359; // DECIMAL
-    $price = 27.9;
-    $newClientOrderId = "buy_sol1";
-/*
-    $symbol = "SOLBUSD";
-    $quantity = 0.371; // DECIMAL
-    $price = 27;
-    $newClientOrderId = "buy_sol2";
-*/
     $buy = (new $this)->order($symbol, $side, $type, $quantity, $price, $newClientOrderId);
     //dd($buy);
     return $buy;
@@ -274,57 +233,6 @@ class TestBinance extends Controller
   {
     $side = "SELL";
     $type = "LIMIT_MAKER";
-/*
-    $symbol = "BTCBUSD";
-    $quantity = 0.000292; // DECIMAL
-    $price = 34272;
-    $newClientOrderId = "sell_btc";
-/*
-    $symbol = "ETHBUSD";
-    $quantity = 0.00495; // DECIMAL
-    $price = 2021;
-    $newClientOrderId = "sell_eth1";
-/*
-    $symbol = "ETHBUSD";
-    $quantity = 0.00493; // DECIMAL
-    $price = 2029;
-    $newClientOrderId = "sell_eth2";
-/*
-    $symbol = "BNBBUSD";
-    $quantity = 0.0342; // DECIMAL
-    $price = 293;
-    $newClientOrderId = "sell_bnb";
-/*
-    $symbol = "ADABUSD";
-    $quantity = 7.77; // DECIMAL
-    $price = 1.288;
-    $newClientOrderId = "sell_ada1";
-/*
-    $symbol = "ADABUSD";
-    $quantity = 7.45; // DECIMAL
-    $price = 1.344;
-    $newClientOrderId = "sell_ada2";
-/*
-    $symbol = "MATICBUSD";
-    $quantity = 8.4; // DECIMAL
-    $price = 1.2;
-    $newClientOrderId = "sell_matic1";
-/*
-    $symbol = "MATICBUSD";
-    $quantity = 8.2; // DECIMAL
-    $price = 1.225;
-    $newClientOrderId = "sell_matic2";
-/*
-    $symbol = "SOLBUSD";
-    $quantity = 0.323; // DECIMAL
-    $price = 31;
-    $newClientOrderId = "sell_sol1";
-/*
-    $symbol = "SOLBUSD";
-    $quantity = 0.313; // DECIMAL
-    $price = 32;
-    $newClientOrderId = "sell_sol2";
-*/
     $sell = (new $this)->order($symbol, $side, $type, $quantity, $price, $newClientOrderId);
     //dd($sell);
     return $sell;
@@ -368,16 +276,17 @@ class TestBinance extends Controller
     //$sells[] = (new $this)->sell("ETHBUSD", 0.00506, 2050, "sell_eth0");
     //$sells[] = (new $this)->sell("ETHBUSD", 0.00506, 1944.33, "sell_eth01");
     //$sells[] = (new $this)->sell("ETHBUSD", 0.00559, 2684.92, "sell_eth02");
-    //$sells[] = (new $this)->sell("BNBBUSD", 0.0346, 289.16, "sell_bnb01");
+    $sells[] = (new $this)->sell("BNBBUSD", 0.041, 480.0, "sell_bnb01");
     //$sells[] = (new $this)->sell("BNBBUSD", 0.0319, 313.93, "sell_bnb02");
     //$sells[] = (new $this)->sell("ADABUSD", 7.49, 1.35, "sell_ada0");
     //$sells[] = (new $this)->sell("ADABUSD", 7.49, 1.3365, "sell_ada01");
     //$sells[] = (new $this)->sell("ADABUSD", 7.15, 1.3996, "sell_ada02");
     //$sells[] = (new $this)->sell("ADABUSD", 7.15, 1.3996, "sell_ada_quick");
-    //$sells[] = (new $this)->sell("MATICBUSD", 9.1, 1.10781, "sell_matic01");
+    //$sells[] = (new $this)->sell("MATICBUSD", 9.2, 1.4, "sell_matic01");
     //$sells[] = (new $this)->sell("MATICBUSD", 8.1, 1.24375, "sell_matic02");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.317, 31.64, "sell_sol01");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.28, 35.81, "sell_sol02");
+    //$sells[] = (new $this)->sell("SOLBUSD", 0.146, 68.508, "sell_sol01");
+    //$sells[] = (new $this)->sell("SOLBUSD", 0.15, 68.51, "sell_sol02");
+    //$sells[] = (new $this)->sell("LUNABUSD", 0.46, 1.4, "sell_luna01");
     //dd($sells);
     return $sells;
   }
@@ -398,7 +307,7 @@ class TestBinance extends Controller
     //$buys[] = (new $this)->buy("ADABUSD", 7.19, 1.3926, "buy_ada_quick");
     //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.01583, "buy_matic01");
     //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.0108, "buy_matic02");
-    //$buys[] = (new $this)->buy("SOLBUSD", 0.37, 27.07, "buy_sol01");
+    //$buys[] = (new $this)->buy("SOLBUSD", 0.15, 70.28, "buy_sol01");
     //$buys[] = (new $this)->buy("SOLBUSD", 0.316, 31.687, "buy_sol02");
     //dd($buys);
     return $buys;
@@ -412,6 +321,7 @@ class TestBinance extends Controller
     $openOrders[] = (new $this)->openOrders("ADABUSD");
     $openOrders[] = (new $this)->openOrders("MATICBUSD");
     $openOrders[] = (new $this)->openOrders("SOLBUSD");
+    $openOrders[] = (new $this)->openOrders("LUNABUSD");
     //dd($openOrders);
     return $openOrders;
   }
@@ -427,9 +337,9 @@ class TestBinance extends Controller
       'limit' => $limit
     ]));
     $test[] = $klines;
-    //$test[] = (new $this)->openOrders_list();
     $test[] = (new $this)->sell_targets();
-    //$test[] = (new $this)->buy_targets();
+    $test[] = (new $this)->buy_targets();
+    $test[] = (new $this)->openOrders_list();
     //$test = new HttpCurl();
     dd($test);
     //dd($test->curl());

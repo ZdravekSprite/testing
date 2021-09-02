@@ -68,7 +68,7 @@ class Binance extends Controller
         }
         $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
       }
-      $eur_kn = str_replace(',', '.', $hnb_eur_kn->kupovni_tecaj);
+      $eur_kn = str_replace(',', '.', $hnb_eur_kn->kupovni_tecaj)/1.01;
       $total_kn = -0.8 * $eur_kn;
       //dd($total_kn);
 
