@@ -188,6 +188,10 @@ class KlineController extends Controller
       ['LUNABUSD',[],[],[],'1d',2],
       ['LUNABUSD',[],[],[],'1h',2],
       ['LUNABUSD',[],[],[],'1m',2],
+      ['BTCEUR',[],[],[],'1h',2],
+      ['EURBUSD',[],[],[],'1d',3],
+      ['EURBUSD',[],[],[],'1h',3],
+      ['EURBUSD',[],[],[],'1m',3],
     ];//, ['LPTBUSD',[],[],[]], ['KSMBUSD',[],[],[]]];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
