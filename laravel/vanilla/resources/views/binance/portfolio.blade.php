@@ -27,7 +27,7 @@
     </div>
   </div>
     <script>
-    var binanceSocket = new WebSocket("wss://stream.binance.com:9443/stream?streams=adabusd@kline_1m/bnbbusd@kline_1m/ethbusd@kline_1m/maticbusd@kline_1m/btcbusd@kline_1m/eurbusd@kline_1m");
+    var binanceSocket = new WebSocket("wss://stream.binance.com:9443/stream?streams=adabusd@kline_1m/bnbbusd@kline_1m/ethbusd@kline_1m/maticbusd@kline_1m/btcbusd@kline_1m/eurbusd@kline_1m/solbusd@kline_1m/mboxbusd@kline_1m/lunabusd@kline_1m/fttbusd@kline_1m");
     @foreach($balance as $coin => $asset)
     var {{strtolower($coin)}} = {{$balance[$coin]->price}};
     @endforeach

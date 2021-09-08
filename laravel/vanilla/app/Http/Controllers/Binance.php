@@ -85,10 +85,43 @@ class Binance extends Controller
       //dd($total_kn, $usdt_kn, $busd_usdt, $busd_kn, $busdt_kn);
 
       //dd($getall);
+/*
+      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+      $serverTime = $time->serverTime;
+      $timeStamp = 'timestamp=' . $serverTime;
+      $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
+      $lendingList = json_decode(Http::withHeaders([
+        'X-MBX-APIKEY' => $apiKey
+      ])->get('https://api.binance.com/sapi/v1/lending/daily/product/list', [
+        'timestamp' => $serverTime,
+        'signature' => $signature
+      ]));
+      dd($lendingList);
+      */
+      /* */
+      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+      $serverTime = $time->serverTime;
+      $timeStamp = 'timestamp=' . $serverTime;
+      $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
+      $lendingAccount = json_decode(Http::withHeaders([
+        'X-MBX-APIKEY' => $apiKey
+      ])->get('https://api.binance.com/sapi/v1/lending/union/account', [
+        'timestamp' => $serverTime,
+        'signature' => $signature
+      ]));
+      //dd($lendingAccount->positionAmountVos);
+      /* */
+
       $balance = [];
       $total = 0;
       foreach ($getall as $coin) {
-        $coin->total = $coin->free + $coin->locked + $coin->freeze + $coin->withdrawing + $coin->ipoing + $coin->ipoable + $coin->storage;
+        $coin->lending = 0;
+        foreach ($lendingAccount->positionAmountVos as $lending) {
+          if ($lending->asset == $coin->coin) {
+            $coin->lending = $lending->amount;
+          }
+        }
+        $coin->total = $coin->free + $coin->locked + $coin->freeze + $coin->withdrawing + $coin->ipoing + $coin->ipoable + $coin->storage + $coin->lending;
         if ($coin->total > 0) {
           $coin->price = 0;
           switch ($coin->coin) {
