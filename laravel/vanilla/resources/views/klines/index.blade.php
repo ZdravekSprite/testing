@@ -251,6 +251,7 @@
       })
 
 // set markers
+    @if($symbol[4] <> '1d')
     candleSeries{{ $symbol[4] }}_{{ $symbol[0] }}.setMarkers([
       @foreach($symbol[3] as $marker)
       {
@@ -264,6 +265,7 @@
       },
       @endforeach
     ]);
+    @endif
 
     @endforeach
 
