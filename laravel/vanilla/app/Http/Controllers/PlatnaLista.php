@@ -148,10 +148,10 @@ class PlatnaLista extends Controller
           $def_h = 0;
           break;
         case 6:
-          $def_h = Auth::id() == 2 ? 0 : 5;
+          $def_h = 5;
           break;
         default:
-          $def_h = Auth::id() == 2 ? 8 : 7;
+          $def_h = 7;
           break;
       }
       //dd($hoursWork);
@@ -229,7 +229,7 @@ class PlatnaLista extends Controller
     $data['1.7f.h'] = number_format($minWorkHoli / 60, 2, ',', '.'); //'8,00';
     $data['1.7f.kn'] = number_format($minWorkHoli / 60 * $perHour * 0.5, 2, ',', '.'); //'123,24';
     // 2. OSTALI OBLICI
-    $stimulacija = 361.36;
+    $stimulacija = 0; //361.36;
     $kn2 = $stimulacija;
     $data['2.kn'] = number_format($kn2, 2, ',', '.'); //'361,36';
     // 2.8. Stimulacija bruto

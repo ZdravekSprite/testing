@@ -79,6 +79,6 @@ php artisan migrate
 php artisan migrate
 git add .
 git commit -am "months [laravel]"
-git commit -am "save 2019 09 14"
+git commit -am "save 2019 09 15"
 git push
 ```
