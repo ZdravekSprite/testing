@@ -38,6 +38,42 @@ class TradeController extends Controller
     }
     return $allTrades;
   }
+  public function crta()
+  {
+    $symbols = [];
+    $symbols['SOLBUSD'] = 0;
+    $symbols['BTCBUSD'] = 0;
+    $symbols['ETHBUSD'] = 0;
+    $symbols['BNBBUSD'] = 0;
+    $symbols['MATICBUSD'] = 0;
+    $symbols['FTTBUSD'] = 0;
+    $symbols['LUNABUSD'] = 0;
+    $symbols['ADABUSD'] = 0;
+    foreach ($symbols as $symbol => $value) {
+      $myTrades = $this->myTrades($symbol);
+      $qty = 0;
+      $quoteQty = 0;
+      $commission = 0;
+      foreach ($myTrades as $trade) {
+        if ($trade->isBuyer) {
+          $qty += $trade->qty * 1;
+          $quoteQty -= $trade->quoteQty * 1;
+        } else {
+          $qty -= $trade->qty * 1;
+          $quoteQty += $trade->quoteQty * 1;
+        }
+        $commission -= $trade->commission * 1;
+      }
+      $res1 = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $symbol);
+      $price = $res1->json()['price'] * 1;
+      $res2 = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD');
+      $bnb = $res2->json()['price'] * 1;
+      $symbols[$symbol] = $qty * $price + $quoteQty + $commission * $bnb;
+      //dd($value, $qty, $quoteQty, $commission, $price, $bnb, $myTrades);
+    }
+    dd($symbols);
+    return $symbols;
+  }
   public function myTrades($symbol)
   {
     $server = 'https://api.binance.com/api';
@@ -155,9 +191,9 @@ class TradeController extends Controller
           $quoteQty = $myDust->isBuyer ? $myDust->amount : $myDust->transferedAmount + $myDust->serviceChargeAmount;
           $price = $quoteQty / $qty;
           //dd($myDust,$symbol->symbol,$price,$qty,$quoteQty);
-          $trade->price = number_format($price, 8,'.', '');
-          $trade->qty = number_format($qty, 8,'.', '');
-          $trade->quoteQty = number_format($quoteQty, 8,'.', '');
+          $trade->price = number_format($price, 8, '.', '');
+          $trade->qty = number_format($qty, 8, '.', '');
+          $trade->quoteQty = number_format($quoteQty, 8, '.', '');
 
           $trade->time = $myDust->operateTime;
           $trade->isBuyer = $myDust->isBuyer;
@@ -203,12 +239,12 @@ class TradeController extends Controller
         $balance = Arr::add($balance, $coin->coin, $total);
         $my_assets = Arr::add($my_assets, $coin->coin, $all_assets[$coin->coin]);
       }
-      $all_assets[$coin->coin]->total = number_format($total, 8,'.', '');
+      $all_assets[$coin->coin]->total = number_format($total, 8, '.', '');
     }
     //dd($balance,$all_assets);
 
     //$trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'desc')->get();
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 14*24*60*60*1000))->orderBy('time', 'desc')->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 14 * 24 * 60 * 60 * 1000))->orderBy('time', 'desc')->get();
     $symbols = $trades->pluck('symbol')->unique();
     //dd($balance,$all_assets,$trades,$symbols);
 
@@ -276,16 +312,16 @@ class TradeController extends Controller
       $eur_kn = $trade->eur_kn * 1;
       $total_kn = -0.8 * $eur_kn;
 
-      $k_eur_usdt = KlineController::kline('EURUSDT',$time);
+      $k_eur_usdt = KlineController::kline('EURUSDT', $time);
       $eur_usdt = 2 / ($k_eur_usdt->o + $k_eur_usdt->c);
-      $k_eur_busd = KlineController::kline('EURBUSD',$time);
+      $k_eur_busd = KlineController::kline('EURBUSD', $time);
       $eur_busd = 2 / ($k_eur_busd->o + $k_eur_busd->c);
 
-      $trade->kline = KlineController::kline($trade->symbol,$time);
+      $trade->kline = KlineController::kline($trade->symbol, $time);
       $trade->assets = [];
       foreach ($my_assets as $key => $coin) {
         $kline = KlineController::kline($coin->symbol, $time);
-        $fiat_price = $coin->isBase ? ($kline->o + $kline->c)/2 : 2/($kline->o + $kline->c);
+        $fiat_price = $coin->isBase ? ($kline->o + $kline->c) / 2 : 2 / ($kline->o + $kline->c);
         $trade->assets = Arr::add($trade->assets, $key, (object) array('total' => $my_assets[$key]->total, 'name' => $my_assets[$key]->name));
         switch ($coin->fiat) {
           case 'EUR':
@@ -343,7 +379,7 @@ class TradeController extends Controller
       //dd($trade->price);
       //dd($coin,$busd,$trade);
     }
-    dd($busd/$coin,$trades);
+    dd($busd / $coin, $trades);
   }
   /**
    * Show the form for creating a new resource.

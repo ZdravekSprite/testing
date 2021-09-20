@@ -37,7 +37,7 @@
               @if(count($days) > 0)
               @foreach($days as $day)
               <tr>
-                <td><a class="{{isset($day->holiday) ? ' text-red-400' : ''}}" href="/days/{{$day->date->format('d.m.Y')}}" title="{{$day->date->format('d.m.Y')}}{{isset($day->holiday) ? ' '.$day->holiday : ''}}">{{$day->date->format('d.m.Y')}}</a></td>
+                <td><a class="{{isset($day->holiday) ? ' text-red-400' : ''}}" href="/days/{{$day->date->format('d.m.Y')}}" title="{{$day->date->format('d.m.Y')}}{{isset($day->holiday) ? ' '.$day->holiday : ''}}">{{$day->date->format('d.m')}}  {{$day->dan()}}</a></td>
                 @if(isset($day->sick))
                 <td>
                   <div class="w-full rounded-md relative {{$day->sick ? 'bg-red' : ($day->go ? 'bg-green' : ($day->dopust ? 'bg-gray' : 'bg-indigo'))}}-{{$day->date->format('D') == 'Sun' ? '300' : '100'}}" style="min-height: 18px;" title={{$day->date->format('d.m.Y')}}>

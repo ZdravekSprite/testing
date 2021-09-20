@@ -127,3 +127,4 @@ Route::get('/binance/dashboard', function () {
 */
 Route::post('/binance/order/test', [Binance::class, 'testNewOrder'])->name('testNewOrder');
 Route::get('/binance/test', [TestBinance::class, 'test']);
+Route::get('/binance/crta', [TradeController::class, 'crta']);
