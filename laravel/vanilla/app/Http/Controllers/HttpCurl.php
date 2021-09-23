@@ -49,7 +49,10 @@ class HttpCurl extends Controller
     }
     // Delete Method
     if ($method === "DELETE") {
+      $query = http_build_query($methodArray, '', '&');
       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+      //dd($params, $query);
     }
 
     $server_output = curl_exec($ch);
@@ -61,6 +64,11 @@ class HttpCurl extends Controller
   public function post($url, $params, $hmac)
   {
     $post = (new $this)->curl($url, 'POST', $params, $hmac);
+    return $post;
+  }
+  public function delete($url, $params, $hmac)
+  {
+    $post = (new $this)->curl($url, 'DELETE', $params, $hmac);
     return $post;
   }
 }

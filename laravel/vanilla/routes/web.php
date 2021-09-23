@@ -10,6 +10,7 @@ use App\Http\Controllers\PlatnaLista;
 use App\Http\Controllers\SymbolController;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\KlineController;
+use App\Http\Controllers\LottoController;
 use App\Http\Controllers\Admin\ImpersonateController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Artisan;
@@ -128,3 +129,5 @@ Route::get('/binance/dashboard', function () {
 Route::post('/binance/order/test', [Binance::class, 'testNewOrder'])->name('testNewOrder');
 Route::get('/binance/test', [TestBinance::class, 'test']);
 Route::get('/binance/crta', [TradeController::class, 'crta']);
+
+Route::resource('lotto', LottoController::class);

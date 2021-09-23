@@ -1,11 +1,11 @@
 ## Months
 
 ### month model (+ factory + migration + seeder + controller)
-```
+```bash
 php artisan make:model Month -a
 ```
 ### database\migrations\2021_08_17_084756_create_months_table.php
-```
+```php
   public function up()
   {
     Schema::create('months', function (Blueprint $table) {
@@ -71,14 +71,16 @@ php artisan make:migration add_month_to_users_table --table=users
     });
   }
 ```
-```
-php artisan migrate
-```
-
 ```php
 php artisan migrate
 git add .
 git commit -am "months [laravel]"
-git commit -am "save 2019 09 20"
+git commit -am "save 2019 09 23"
 git push
+```
+## Lotto
+
+### lotto model (+ factory + migration + seeder + controller)
+```bash
+php artisan make:model Lotto -a
 ```
