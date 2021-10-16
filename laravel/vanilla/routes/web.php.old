@@ -8,11 +8,8 @@ use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\PlatnaLista;
 use App\Http\Controllers\SymbolController;
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\KlineController;
-use App\Http\Controllers\LottoController;
-use App\Http\Controllers\MonthController;
 use App\Http\Controllers\Admin\ImpersonateController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Artisan;
@@ -20,8 +17,6 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Day;
-use App\Models\Settings;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,10 +34,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/dashboard', function () {
-  $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
-  $month = Auth::user()->month % 12 + 1;
-  $year = (Auth::user()->month - $month + 1) / 12;
-  return view('dashboard')->with(compact('settings', 'month', 'year'));
+  return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__ . '/auth.php';
@@ -82,21 +74,9 @@ Route::get('login/{provider}/callback', function ($provider) {
 Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider')->name('{provider}Login');
 Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback')->name('{provider}Callback');
 */
-//Route::resource('days', DayController::class);
-Route::get('/days', [DayController::class, 'index'])->name('days.index');
-Route::get('/day/create', [DayController::class, 'create'])->name('day.create');
-Route::post('/day', [DayController::class, 'store'])->name('day.store');
-Route::get('/day/{date}', [DayController::class, 'show'])->name('day.show');
-Route::get('/day/edit/{date}', [DayController::class, 'edit'])->name('day.edit');
-Route::post('/day/{date}', [DayController::class, 'update'])->name('day.update');
-Route::delete('/day/{date}', [DayController::class, 'destroy'])->name('day.destroy');
-
+Route::resource('days', DayController::class);
 Route::resource('holidays', HolidayController::class);
-
 Route::get('/month', [DayController::class, 'month'])->name('month');
-Route::resource('months', MonthController::class)->middleware(['auth']);
-Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
-
 Route::get('/month/{month}', [DayController::class, 'month']);
 Route::get('/days/create/{date}', [DayController::class, 'create']);
 Route::get('/lista', PlatnaLista::class)->name('lista');
@@ -115,42 +95,6 @@ Route::get('seed', function () {
   return 'php artisan db:seed --class=RoleSeeder success.';
 })->middleware(['auth'])->name('seed');
 
-Route::get('convert', function () {
-  /*
-  Day::where('sick', 1)
-    ->update(['state' => 4]);
-  Day::where('go', 1)
-    ->update(['state' => 2]);
-  Day::where('dopust', 1)
-    ->update(['state' => 3]);
-  Day::where('state', 2)
-    ->update(['end' => '0:00:00']);
-    Day::where('state', 3)
-    ->update(['end' => '0:00:00']);
-    Day::where('state', 4)
-    ->update(['end' => '0:00:00']);
-  
-  Day::where('state', 0)
-  ->where('duration', '22:40:00')
-  ->update(['state' => 1,'end' => '22:40:00']);
-  
-  $days = Day::all();
-  foreach ($days as $day) {
-    //echo $day->name;
-    //if ($day->sick) $day->state = 4;
-    //if ($day->go) $day->state = 2;
-    //if ($day->dopust) $day->state = 3;
-    if ($day->duration) $day->end = $day->duration;
-    if ($day->duration && !$day->state) $day->state = 1;
-    if ($day->night_duration) $day->night = $day->night_duration;
-    $day->save;
-    dd($day);
-  }
-  dd($days, Day::all());
-  */
-  return 'Database days converted.';
-})->middleware(['auth'])->name('convert');
-
 Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
 Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->group(function () {
   Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);
@@ -166,7 +110,6 @@ Route::resource('symbols', SymbolController::class);
 Route::get('/binance/allMyTrades', [TradeController::class, 'allMyTrades']);
 Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo']);
 Route::get('/dust', [TradeController::class, 'dustLog']);
-Route::get('/binance/prosjek', [TradeController::class, 'prosjek']);
 Route::resource('klines', KlineController::class);
 
 Route::get('/binance/portfolio', [Binance::class, 'portfolio']);
@@ -181,6 +124,3 @@ Route::get('/binance/dashboard', function () {
 */
 Route::post('/binance/order/test', [Binance::class, 'testNewOrder'])->name('testNewOrder');
 Route::get('/binance/test', [TestBinance::class, 'test']);
-Route::get('/binance/crta', [TradeController::class, 'crta']);
-
-Route::resource('lotto', LottoController::class);

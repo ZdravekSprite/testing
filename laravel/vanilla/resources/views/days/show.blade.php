@@ -10,22 +10,34 @@
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
           <h3>Day {{ $day->date->format('d.m.Y') }}!</h3>
-          @if($day->sick)
-          <p>Bio sam na bolovanju</p>
-          @endif
-          @if($day->go)
-          <p>Bio sam na godišnjem</p>
-          @endif
-          @if($day->dopust)
-          <p>Bio sam na plaćenom dopustu</p>
-          @endif
-          @if(!($day->sick) && !($day->go))
-          @if($day->night_duration->hour > 0)
-          <p>od ponoći sam radio do {{ $day->night_duration->format('H:i') }}</p>
+
+          @switch($day->state)
+          @case(0)
+          <p>Nisam radio</p>
+          @break
+
+          @case(1)
+          @if($day->night->hour > 0)
+          <p>od ponoći sam radio do {{ $day->night->format('H:i') }}</p>
           @endif
           <p>smjena je započela u {{ $day->start->format('H:i') }}</p>
-          <p>smjena je završila u {{ $day->duration->format('H:i') }}</p>
-          @endif
+          <p>smjena je završila u {{ $day->end->format('H:i') }}</p>
+          @break
+
+          @case(2)
+          <p>Bio sam na godišnjem</p>
+          @break
+
+          @case(3)
+          <p>Bio sam na plaćenom dopustu</p>
+          @break
+
+          @case(4)
+          <p>Bio sam na bolovanju</p>
+          @break
+          @default
+          <p>Ne definirano</p>
+          @endswitch
         </div>
       </div>
     </div>

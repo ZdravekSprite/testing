@@ -21,8 +21,6 @@ class Day extends Model
     'updated_at',
   ];
 
-  protected $fillable = ['state', 'night', 'start', 'end'];
-
   /**
    * The attributes that should be cast to native types.
    *
@@ -30,11 +28,10 @@ class Day extends Model
    */
   protected $casts = [
     'date' => 'datetime:d.m.Y',
+    'sick' => 'boolean',
+    'start' => 'datetime:H:i',
     'duration' => 'datetime:H:i',
     'night_duration' => 'datetime:H:i',
-    'night' => 'datetime:H:i',
-    'start' => 'datetime:H:i',
-    'end' => 'datetime:H:i',
   ];
 
   /**

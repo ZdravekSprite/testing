@@ -37,45 +37,49 @@
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
+          <form method="POST" action="{{ route('settings.update')}}">
+            @csrf
+            <div class="mt-4">
+              <x-label for="norm" :value="__('Računanje norme')" />
+              <select class="form-select py-1 block w-full mt-1" name="norm">
+                <option value=0 @if (0==old('norm', $settings ? $settings->norm : 0)) selected="selected" @endif>5x7+5</option>
+                <option value=1 @if (1==old('norm', $settings ? $settings->norm : '')) selected="selected" @endif>5x8</option>
+              </select>
+            </div>
+            <div class="mt-4">
+              <x-label for="start1" :value="__('Početak 1. smjene')" />
+              <input id="start1" type="time" name="start1" value="{{ $settings ? $settings->start1->format('H:i') : old('start1')?? '06:00'}}" required class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <p>Vrijeme kada započinje 1. smjena.</p>
+              <x-label for="end1" :value="__('Kraj 1. smjene')" />
+              <input id="end1" type="time" name="end1" value="{{ $settings ? $settings->end1->format('H:i') : old('end1')?? '14:00'}}" required class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <p>Vrijeme kada završava 1. smjena.</p>
+            </div>
+            <div class="mt-4">
+              <x-label for="start2" :value="__('Početak 2. smjene')" />
+              <input id="start2" type="time" name="start2" value="{{ $settings ? $settings->start2->format('H:i') : old('start2')?? '14:00'}}" required class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <p>Vrijeme kada započinje 2. smjena.</p>
+              <x-label for="end2" :value="__('Kraj 2. smjene')" />
+              <input id="end2" type="time" name="end2" value="{{ $settings ? $settings->end2->format('H:i') : old('end2')?? '22:00'}}" required class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <p>Vrijeme kada završava 2. smjena.</p>
+            </div>
+            <div class="mt-4">
+              <x-label for="start3" :value="__('Početak 3. smjene')" />
+              <input id="start3" type="time" name="start3" value="{{ $settings ? $settings->start3->format('H:i') : old('start3')?? '22:00'}}" required class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <p>Vrijeme kada započinje 3. smjena.</p>
+              <x-label for="end2" :value="__('Kraj 3. smjene')" />
+              <input id="end3" type="time" name="end3" value="{{ $settings ? $settings->end3->format('H:i') : old('end3')?? '06:00'}}" required class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <p>Vrijeme kada završava 3. smjena.</p>
+            </div>
+            <div class="flex items-center justify-end mt-4">
+              <x-button class="ml-4">
+                {{ __('Spremi') }}
+              </x-button>
+            </div>
+          </form>
+
           <form method="POST" action="{{ route('lista') }}">
             @csrf
             @method('PUT')
-            <!-- month -->
-            <div class="mt-4">
-              <x-label for="month" :value="__('Mjesec')" />
-              <input id="month" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="month" value="{{$month ? $month : old('month')?? 1}}" min="1" step="1" />
-            </div>
-            <!-- year -->
-            <div class="mt-4">
-              <x-label for="year" :value="__('Godina')" />
-              <input id="year" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="year" value="{{$year ? $year : old('year')?? 2021}}" min="1900" step="1" />
-            </div>
-            <!-- bruto -->
-            <div class="mt-4">
-              <x-label for="bruto" :value="__('Bruto')" />
-              <input id="bruto" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="bruto" value="{{Auth::user()->bruto ? Auth::user()->bruto : old('bruto')?? 5300}}" min="4250" step="50" />
-            </div>
-            <!-- prijevoz -->
-            <div class="mt-4">
-              <x-label for="prijevoz" :value="__('Prijevoz')" />
-              <input id="prijevoz" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prijevoz" value="{{Auth::user()->prijevoz ? Auth::user()->prijevoz : old('prijevoz')?? 360}}" min="0" step="10" />
-            </div>
-            <!-- odbitak -->
-            <div class="mt-4">
-              <x-label for="odbitak" :value="__('Odbitak')" />
-              <input id="odbitak" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="odbitak" value="{{Auth::user()->odbitak ? Auth::user()->odbitak : old('odbitak')?? 4000}}" min="4000" step="50" />
-              <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                <a href="https://www.porezna-uprava.hr/baza_znanja/Stranice/OsobniOdbitak.aspx" class="underline text-gray-900 dark:text-white">OSOBNI ODBITAK</a>
-              </div>
-            </div>
-            <!-- prirez -->
-            <div class="mt-4">
-              <x-label for="prirez" :value="__('Prirez')" />
-              <input id="prirez" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="number" name="prirez" value="{{Auth::user()->prirez ? Auth::user()->prirez/10 : old('prirez')?? 18}}" min="0" step="0.5" />
-              <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                <a href="https://www.porezna-uprava.hr/HR_porezni_sustav/Stranice/Popisi/Stope.aspx" class="underline text-gray-900 dark:text-white">PRIREZ</a>
-              </div>
-            </div>
             <!-- zaposlen -->
             <div class="mt-4">
               <x-label for="zaposlen" :value="__('Zaposlen od')" />

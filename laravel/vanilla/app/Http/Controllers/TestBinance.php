@@ -281,27 +281,19 @@ class TestBinance extends Controller
   public function sell_targets()
   {
     $sells = [];
-    //$sells[] = (new $this)->sell("BTCBUSD", 0.00022, 45652.78, "sell_btc01");
-    //$sells[] = (new $this)->sell("BTCBUSD", 0.00254, 49271.16, "sell_btc02");
-    //$sells[] = (new $this)->sell("ETHBUSD", 0.00506, 2050, "sell_eth0");
-    //$sells[] = (new $this)->sell("ETHBUSD", 0.00506, 1944.33, "sell_eth01");
-    //$sells[] = (new $this)->sell("ETHBUSD", 0.00559, 2684.92, "sell_eth02");
-    //$sells[] = (new $this)->sell("BNBBUSD", 0.026, 398.4, "sell_bnb01");
-    //$sells[] = (new $this)->sell("BNBBUSD", 0.259, 489.6, "sell_bnb02");
-    //$sells[] = (new $this)->sell("ADABUSD", 7.49, 1.35, "sell_ada0");
-    //$sells[] = (new $this)->sell("ADABUSD", 4.3, 2.337, "sell_ada01");
-    //$sells[] = (new $this)->sell("ADABUSD", 37.6, 3.142, "sell_ada02");
+    //$sells[] = (new $this)->sell("BTCBUSD", 0.00021, 48894.81, "sell_btc01");
+    //$sells[] = (new $this)->sell("BTCBUSD", 0.00169, 49603.56, "sell_btc02");
+    //$sells[] = (new $this)->sell("ETHBUSD", 0.0193, 4106.42, "sell_eth02");
+    //$sells[] = (new $this)->sell("ETHBUSD", 0.0026, 3910.21, "sell_eth01");
+    //$sells[] = (new $this)->sell("BNBBUSD", 0.1, 528.3, "sell_bnb02");
+    //$sells[] = (new $this)->sell("BNBBUSD", 0.021, 496.3, "sell_bnb01");
+    //$sells[] = (new $this)->sell("ADABUSD", 36.6, 3.273, "sell_ada02");
+    //$sells[] = (new $this)->sell("ADABUSD", 3.9, 2.579, "sell_ada01");
     //$sells[] = (new $this)->sell("ADABUSD", 7.15, 1.3996, "sell_ada_quick");
-    //$sells[] = (new $this)->sell("MATICBUSD", 7.9, 1.266, "sell_matic01");
-    //$sells[] = (new $this)->sell("MATICBUSD", 125.7, 1.585, "sell_matic02");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.05, 215.99, "sell_sol00");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.06, 181.01, "sell_sol01");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.06, 179.56, "sell_sol01a");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.06, 187.77, "sell_sol02");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.06, 187.9, "sell_sol02a");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.06, 191.11, "sell_sol03");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.06, 197.56, "sell_sol03a");
-    //$sells[] = (new $this)->sell("SOLBUSD", 0.05, 215.99, "sell_sol04");
+    //$sells[] = (new $this)->sell("MATICBUSD", 26.9, 1.76, "sell_matic02");
+    //$sells[] = (new $this)->sell("MATICBUSD", 6.1, 1.659, "sell_matic01");
+    //$sells[] = (new $this)->sell("SOLBUSD", 0.43, 220.66, "sell_sol02");
+    //$sells[] = (new $this)->sell("SOLBUSD", 0.06, 171.44, "sell_sol01");
     //$sells[] = (new $this)->sell("LUNABUSD", 0.46, 1.4, "sell_luna01");
     //$sells[] = (new $this)->sell("EURBUSD", 10.0, 1.175, "sell_eur01");
     //$sells[] = (new $this)->sell("EURBUSD", 10.0, 1.180, "sell_eur02");
@@ -327,8 +319,8 @@ class TestBinance extends Controller
     //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.0108, "buy_matic02");
     //$buys[] = (new $this)->buy("SOLBUSD", 0.15, 70.28, "buy_sol01");
     //$buys[] = (new $this)->buy("SOLBUSD", 0.316, 31.687, "buy_sol02");
-    //$buys[] = (new $this)->buy("EURBUSD", 8.6, 1.163, "buy_eur01");
-    //$buys[] = (new $this)->buy("EURBUSD", 8.7, 1.150, "buy_eur02");
+    //$buys[] = (new $this)->buy("EURBUSD", 8.7, 1.150, "buy_eur01");
+    //$buys[] = (new $this)->buy("EURBUSD", 8.8, 1.149, "buy_eur02");
     //dd($buys);
     return $buys;
   }
