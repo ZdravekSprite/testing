@@ -249,6 +249,23 @@
                 <td class="w-1/8 border p-2 text-center"></td>
                 <td class="w-1/8 border p-2 text-right"><b>{{ $data['15.kn'] }}</b></td>
               </tr>
+
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2">17.5. vrsta i iznos obustave</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">Sindikalna članarina - PPDIV HRVATSKE</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['17_5a.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">Kredit</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['17_5b.kn'] }}</td>
+            </tr>
+
           </tbody>
         </table>
       </div>

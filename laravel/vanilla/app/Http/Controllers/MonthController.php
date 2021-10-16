@@ -271,6 +271,10 @@ class MonthController extends Controller
     // 15. IZNOS PLAĆE/NAKNADE PLAĆE ISPLAĆEN RADNIKU NA REDOVAN RAČUN
     $data['15.kn'] = number_format($kn13 - $sindikat - $kredit, 2, ',', '.');
 
+    // 17.5. vrsta i iznos obustave
+    $data['17_5a.kn'] = number_format($sindikat, 2, ',', '.');
+    $data['17_5b.kn'] = number_format($kredit, 2, ',', '.');
+
     //dd($month,$days,$data);
     return view('months.show')->with(compact('month', 'days', 'data', 'settings'));
   }

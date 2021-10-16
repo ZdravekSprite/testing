@@ -74,7 +74,7 @@ php artisan make:migration add_month_to_users_table --table=users
 ```php
 php artisan migrate
 git add .
-git commit -am "months 15 [laravel]"
+git commit -am "months 17 [laravel]"
 git commit -am "save 2019 10 16"
 git push
 ```
