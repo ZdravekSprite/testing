@@ -83,7 +83,8 @@ class Month extends Model
   {
     $firstDate = '01.' . $this->slug();
     $from = CarbonImmutable::createFromFormat('d.m.Y', $firstDate)->firstOfMonth();
-    return $from;
+    $firstFrom = $this->user->zaposlen > $from ? Carbon::parse($this->user->zaposlen) : $from;
+    return $firstFrom;
   }
 
   /**
@@ -133,8 +134,13 @@ class Month extends Model
    */
   public function hoursNorm()
   {
+    $firstDate = '01.' . $this->slug();
+    $from = CarbonImmutable::createFromFormat('d.m.Y', $firstDate)->firstOfMonth();
+    $firstFrom = $this->user->zaposlen > $from ? Carbon::parse($this->user->zaposlen) : $from;
     $hoursNormAll = 0;
+    $firstHoursNormAll = 0;
     $hoursNormHoli = 0;
+    $firstHoursNormHoli = 0;
 
     $hoursNormGO = 0;
     $hoursNormDopust = 0;
@@ -178,9 +184,12 @@ class Month extends Model
           break;
       }
       $hoursNormAll += $def_h;
+      //dd($firstFrom,$d->date);
+      $firstHoursNormAll += $firstFrom > $d->date ? 0 : $def_h;
 
       if ($d->holiday) {
         $hoursNormHoli += $def_h;
+        $firstHoursNormHoli += $firstFrom > $d->date ? 0 : $def_h;
         $minWorkHoli += $day_minWork;
       }
 
@@ -198,10 +207,13 @@ class Month extends Model
           break;
       }
     }
-    $hoursNormWork = $hoursNormAll - $hoursNormHoli - $hoursNormGO - $hoursNormDopust - $hoursNormSick;
+    $hoursNormWork = ($from > $firstFrom ? $hoursNormAll - $hoursNormHoli : $firstHoursNormAll - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO - $hoursNormDopust;
+
     $hoursNorm = (object) [
       'All' => $hoursNormAll,
       'Holiday' => $hoursNormHoli,
+      'firstAll' => $firstHoursNormAll,
+      'firstHoliday' => $firstHoursNormHoli,
       'GO' => $hoursNormGO,
       'Dopust' => $hoursNormDopust,
       'Sick' => $hoursNormSick,

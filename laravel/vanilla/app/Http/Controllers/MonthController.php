@@ -52,7 +52,17 @@ class MonthController extends Controller
   public function create()
   {
     $month = new Month;
-    //dd($day);
+    $last_month = Month::orderBy('month', 'desc')->where('user_id', '=', Auth::user()->id)->first();
+    $month->user_id = Auth::user()->id;
+    $bruto = $month->bruto ?? $last_month->last('bruto');
+    $month->bruto = $bruto;
+    $prijevoz = $month->prijevoz ?? $last_month->last('prijevoz');
+    $month->prijevoz = $prijevoz;
+    $odbitak = $month->odbitak ?? $last_month->last('odbitak');
+    $month->odbitak = $odbitak;
+    $prirez = $month->prirez ?? $last_month->last('prirez');
+    $month->prirez = $prirez;
+    //dd($month);
     return view('months.create')->with(compact('month'));
   }
 
@@ -196,6 +206,8 @@ class MonthController extends Controller
     // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
     $prijevoz = $month->prijevoz / 100 ?? 360;
     $prijevoz = $hoursNorm->GO ? $prijevoz * ($hoursNorm->All - $hoursNorm->GO) / $hoursNorm->All : $prijevoz;
+    //dd($hoursNorm);
+    $prijevoz = $hoursNorm->firstAll > $hoursNorm->All ? $prijevoz : $prijevoz * $hoursNorm->firstAll / $hoursNorm->All;
     $regres = $month->regres / 100 ?? 0;
     $kn3 = round($prijevoz + $regres, 2);
     $data['3.kn'] = number_format($kn3, 2, ',', '.');

@@ -283,8 +283,8 @@ class TestBinance extends Controller
     $sells = [];
     //$sells[] = (new $this)->sell("BTCBUSD", 0.00021, 48894.81, "sell_btc01");
     //$sells[] = (new $this)->sell("BTCBUSD", 0.00169, 49603.56, "sell_btc02");
-    //$sells[] = (new $this)->sell("ETHBUSD", 0.0193, 4106.42, "sell_eth02");
-    //$sells[] = (new $this)->sell("ETHBUSD", 0.0026, 3910.21, "sell_eth01");
+    $sells[] = (new $this)->sell("ETHBUSD", 0.0167, 4121.03, "sell_eth02");
+    $sells[] = (new $this)->sell("ETHBUSD", 0.0026, 3961.05, "sell_eth01");
     //$sells[] = (new $this)->sell("BNBBUSD", 0.1, 528.3, "sell_bnb02");
     //$sells[] = (new $this)->sell("BNBBUSD", 0.021, 496.3, "sell_bnb01");
     //$sells[] = (new $this)->sell("ADABUSD", 36.6, 3.273, "sell_ada02");
