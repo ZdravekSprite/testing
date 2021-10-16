@@ -243,6 +243,12 @@
                 <td class="w-1/8 border p-2 text-center"></td>
                 <td class="w-1/8 border p-2 text-right"><b>{{ $data['14.kn'] }}</b></td>
               </tr>
+
+              <tr>
+                <td class="w-3/4 border p-2" colspan="2"><b>15. IZNOS PLAĆE/NAKNADE PLAĆE ISPLAĆEN RADNIKU NA REDOVAN RAČUN</b></td>
+                <td class="w-1/8 border p-2 text-center"></td>
+                <td class="w-1/8 border p-2 text-right"><b>{{ $data['15.kn'] }}</b></td>
+              </tr>
           </tbody>
         </table>
       </div>

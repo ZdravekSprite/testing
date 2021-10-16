@@ -260,12 +260,16 @@ class MonthController extends Controller
     $data['12.kn'] = number_format($kn3 + $kn1_7p, 2, ',', '.');
 
     // 13. NETO + NAKNADE
-    $data['13.kn'] = number_format($kn7 - $kn10 + $kn3 + $kn1_7p, 2, ',', '.');
+    $kn13 = $kn7 - $kn10 + $kn3 + $kn1_7p;
+    $data['13.kn'] = number_format($kn13, 2, ',', '.');
 
     // 14. OBUSTAVE UKUPNO
     $sindikat = $month->sindikat ? round($kn5 * 0.01, 2) : 0;
     $kredit = $month->kredit / 100 ?? 0;
     $data['14.kn'] = number_format($sindikat + $kredit, 2, ',', '.');
+
+    // 15. IZNOS PLAĆE/NAKNADE PLAĆE ISPLAĆEN RADNIKU NA REDOVAN RAČUN
+    $data['15.kn'] = number_format($kn13 - $sindikat - $kredit, 2, ',', '.');
 
     //dd($month,$days,$data);
     return view('months.show')->with(compact('month', 'days', 'data', 'settings'));
