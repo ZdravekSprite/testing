@@ -62,7 +62,7 @@
             <!-- stimulacija -->
             <div class="mt-4">
               <x-label for="nagrada" :value="__('Stimulacija')" />
-              <input id="nagrada" type="number" name="nagrada" value="{{$month->nagrada/100?? old('nagrada')?? 0}}" min="0" step="100" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <input id="nagrada" type="number" name="nagrada" value="{{$month->nagrada/100?? old('nagrada')?? 0}}" min="0" step="50" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
             </div>
 
             <!-- regres -->

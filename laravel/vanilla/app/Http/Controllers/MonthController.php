@@ -287,7 +287,12 @@ class MonthController extends Controller
     }
     $days = $month->days();
 
-    $data  = $this->lista_data($month);
+    if ($settings->norm) {
+      $data  = $this->lista_data1($month);
+    } else {
+      $data  = $this->lista_data($month);
+    }
+    
     $data['-'] = route('months.show', ['month' => $month->prev()]);
     $data['+'] = route('months.show', ['month' => $month->next()]);
     //dd($month,$days,$data);
@@ -305,7 +310,13 @@ class MonthController extends Controller
     $data['month'] = $m['x']->format('Y') * 12 + $m['x']->format('m') - 1;
     $month = Month::orderBy('month', 'desc')->where('month', '<=', $data['month'])->where('user_id', '=', Auth::user()->id)->first();
     //dd($m, $month);
-    $data  = $this->lista_data($month);
+    $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
+    if ($settings->norm) {
+      $data  = $this->lista_data1($month);
+    } else {
+      $data  = $this->lista_data($month);
+    }
+
     $data['-'] = route('lista', ['month' => $month->prev()]);
     $data['+'] = route('lista', ['month' => $month->next()]);
     //dd($m, $month, $data);
@@ -377,5 +388,124 @@ class MonthController extends Controller
     $month = Month::where('month', '=', $unslug)->first();
     $month->delete();
     return redirect(route('months.index'))->with('success', 'Month removed');
+  }
+
+  public function lista_data1(Month $month)
+  {
+    $data['III.godina'] = explode(".", $month->slug())[1];
+    $data['III.mjesec'] = explode(".", $month->slug())[0];
+
+    $from = $month->from();
+    $to = $month->to();
+    $data['III.od'] = $from->format('d');
+    $data['III.do'] = $to->format('d');
+
+    $hoursNorm = $month->hoursNorm();
+    $bruto = $month->bruto ?? $month->last('bruto');
+    $month->bruto = $bruto;
+    $data['bruto'] = $bruto;
+    $perHour = $bruto / 100 / $hoursNorm->All;
+    $data['perHour'] = $perHour;
+    $hoursWorkNorm = $hoursNorm->Work;
+    $prijevoz = $month->prijevoz ?? $month->last('prijevoz');
+    $month->prijevoz = $prijevoz;
+    $data['prijevoz'] = $prijevoz;
+    $odbitak = $month->odbitak ?? $month->last('odbitak');
+    $month->odbitak = $odbitak;
+    $data['odbitak'] = $odbitak;
+    $prirez = $month->prirez ?? $month->last('prirez');
+    $month->prirez = $prirez;
+    $data['prirez'] = $prirez;
+    //dd($hoursNorm, $bruto, $perHour);
+
+    // 1.4 Za prekovremeni rad
+    $h1_4 = $month->prekovremeni;
+    $data['prekovremeni'] = $month->prekovremeni;
+    $overWork = $hoursNorm->min / 60 - $hoursWorkNorm;
+
+    $data['1.4.h'] = number_format($h1_4, 1, ',', '.') . ' (' . number_format($overWork, 1, ',', '.') . ')';
+    $kn1_4 = round($h1_4 * $perHour * 1.5, 2);
+    $data['1.4.kn'] = number_format($kn1_4, 2, ',', '.');
+
+    // 1.7 sati redovnog rada nedeljom
+    $h1_7 = $hoursNorm->minSunday / 60;
+    $data['1.7.h'] = number_format($h1_7, 1, ',', '.');
+    $kn1_7 = round($hoursNorm->minSunday / 60 * $perHour * 1.3, 2);
+    $data['1.7.kn'] = number_format($kn1_7, 2, ',', '.');
+
+    // 1.1. sati redovnog rada
+    $h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_7 : ($hoursNorm->min - $hoursNorm->minSunday) / 60;
+    $data['1.1.h'] = number_format($h1_1, 1, ',', '.');
+    $kn1_1 = round($h1_1 * $perHour, 2);
+    $data['1.1.kn'] = number_format($kn1_1, 2, ',', '.');
+
+    $h1 = $h1_1 + $h1_4 + $h1_7;
+    $kn1 = $kn1_1 + $kn1_4 + $kn1_7;
+
+    // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
+    $kn3 = round($kn1 * 0.025, 2);
+    $data['3.h'] = '2,5%';
+    $data['3.kn'] = number_format($kn3, 2, ',', '.');
+
+    // 4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA PO STAVKAMA 1. DO 3.
+    $kn4 = $kn1 + $kn3;
+    $data['4.h'] = number_format($h1, 1, ',', '.');;
+    $data['4.kn'] = number_format($kn4, 2, ',', '.');;
+
+    // 5. OSNOVICA ZA OBRAČUN DOPRINOSA
+    $kn5 = $kn4;
+    $data['5.kn'] = number_format($kn5, 2, ',', '.');;
+
+    // 6.1. za mirovinsko osiguranje na temelju generacijske solidarnosti (I. STUP)
+    $data['6.1.h'] = '15%';
+    $kn6_1 = round($kn5 * 0.15, 2);
+    $data['6.1.kn'] = number_format($kn6_1, 2, ',', '.');
+    // 6.2 za mirovinsko osiguranje na temelju individualne kapitalizirane štednje (II. STUP)
+    $data['6.2.h'] = '5%';
+    $kn6_2 = round($kn5 * 0.05, 2);
+    $data['6.2.kn'] = number_format($kn6_2, 2, ',', '.');
+
+    $data['6.h'] = '20%';
+    $kn6 = $kn6_1 + $kn6_2;
+    $data['6.kn'] = number_format($kn6, 2, ',', '.');
+
+    // 7. DOHODAK
+    $kn7 = $kn5 - $kn6;
+    $data['7.kn'] = number_format($kn7, 2, ',', '.');
+
+    // 8. OSOBNI ODBITAK 1.00 / 4000.00
+    $kn8 = $kn7 * 100 > $odbitak ? $odbitak / 100 : $kn7;
+    $data['8.kn'] = number_format($kn8, 2, ',', '.');
+
+    // 9. POREZNA OSNOVICA
+    $kn9 = $kn7 - $kn8;
+    $data['9.kn'] = number_format($kn9, 2, ',', '.');
+
+    // 10. IZNOS PREDUJMA POREZA I PRIREZA POREZU NA DOHODAK
+    $kn10_20 = round($kn9 * 0.2, 2);
+    $kn10_prirez = round($kn10_20 * $prirez / 10000, 2);
+    $kn10 = $kn10_20 + $kn10_prirez;
+    $data['10.kn'] = number_format($kn10, 2, ',', '.');
+    // 20.00%
+    $data['10.20.kn'] = number_format($kn10_20, 2, ',', '.');
+    // Prirez
+    $data['10.prirez.kn'] = number_format($kn10_prirez, 2, ',', '.');
+
+    // 11. NETO PLAĆA
+    $kn11 = $kn7 - $kn10;
+    $data['11.kn'] = number_format($kn11, 2, ',', '.');
+
+    // 12. NAKNADE UKUPNO
+    $prijevoz = $month->prijevoz / 100 ?? 360;
+    $nagrada = $month->nagrada / 100 ?? 0;
+    $kn12 = $prijevoz + $nagrada;
+    $data['12.a.kn'] = number_format($prijevoz, 2, ',', '.');
+    $data['12.b.kn'] = number_format($nagrada, 2, ',', '.');
+
+    // 15. IZNOS PLAĆE/NAKNADE PLAĆE ISPLAĆEN RADNIKU NA REDOVAN RAČUN
+    $data['15.kn'] = number_format($kn11 + $kn12, 2, ',', '.');
+
+    //dd($data);
+    return $data;
   }
 }

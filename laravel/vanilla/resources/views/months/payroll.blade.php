@@ -53,6 +53,125 @@
               <td class="border p-2" colspan="4"><b>III. RAZDOBLJE NA KOJE SE PLAĆA ODNOSI:</b> GODINA {{ $data['III.godina'] }}, MJESEC
                 {{ $data['III.mjesec'] }} DANI U MJESECU OD {{ $data['III.od'] }} DO {{ $data['III.do'] }}</td>
             </tr>
+            @if(isset($data['1.7.h']))
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>1. OSTVARENI SATI PO VREMENU</b></td>
+              <td class="w-1/8 border p-2 text-center"><b>sati rad/postotak</b></td>
+              <td class="w-1/8 border p-2 text-right"><b>IZNOS</b></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.1. sati redovnog rada</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['1.1.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['1.1.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.7. sati redovnog rada nedeljom</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['1.7.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['1.7.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>3. Propisani ili ugovoeni dodaci na plaću radnika i novčani iznosi po toj osnovi</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">Minuli rad</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['3.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['3.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA - BRUTTO PLAĆA<b></td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['4.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['4.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2">5. OSNOVICA ZA OBRAČUN DOPRINOSA</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"><b>{{ $data['5.kn'] }}<b></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2">6. Vrste i iznosi doprinosa za obvezna osiguranja koji se obustavljaju iz plaće</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">6.1. MIO</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['6.1.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['6.1.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">6.2 MIO II</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['6.2.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['6.2.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>UKUPNI DOPRINOS IZ PLAĆE</b></td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['6.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right"><b>{{ $data['6.kn'] }}</b></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>7. DOHODAK - PLAĆA PRIJE OPOREZIVANJA</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"><b>{{ $data['7.kn'] }}</b></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2">OBRAĆUN POREZA</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2">8. Osobni odbitak</td>
+              <td class="w-1/8 border p-2 text-center">1.60 / {{ number_format($month->odbitak/100, 2, '.', '') }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['8.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2">9. Osnovica za oporezivanje</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['9.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">Porez po stopi od 20.00%</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['9.kn'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['10.20.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">Prirez na porez</td>
+              <td class="w-1/8 border p-2 text-center">{{ number_format($month->prirez/100, 2, '.', ',') }} % / {{ $data['10.20.kn'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['10.prirez.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>10. Ukupno porez i prirez</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['10.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>11. PLAĆA NAKON OPOREZIVANJA</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['11.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>12. NEOPOREZIVE NAKNADE I OSTALE ISPLATE</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">PRIJEVOZ</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['12.a.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">Nagrada i Prehrana</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['12.b.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>15. ZA ISPLATU</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['15.kn'] }}</td>
+            </tr>
+
+
+            @else
             <tr>
               <td class="w-3/4 border p-2" colspan="2"><b>1. OPIS PLAĆE</b></td>
               <td class="w-1/8 border p-2 text-center"><b>SATI</b></td>
@@ -129,7 +248,7 @@
               <td class="w-3/4 border p-2" colspan="2">2. OSTALI OBLICI RADA TEMELJEM KOJIH OSTVARUJE PRAVO NA UVEĆANJE PLAĆE PREMA KOLEKTIVNOM UGOVORU, PRAVILNIKU O RADU ILI UGOVORU O RADU I NOVČANI IZNOS PO TOJ OSNOVI (SATI PRIPRAVNOSTI)</td>
               <td class="w-1/8 border p-2 text-center"></td>
               <td class="w-1/8 border p-2 text-right">
-                @if($data['2.8.kn'] > 0)
+                @if($data['2.kn'] > 0)
                 {{ $data['2.kn'] }}
                 @endif
               </td>
@@ -220,35 +339,35 @@
               <td class="w-1/8 border p-2 text-right">{{ $data['10.prirez.kn'] }}</td>
             </tr>
 
-              <tr>
-                <td class="w-3/4 border p-2" colspan="2"><b>11. NETO PLAĆA</b></td>
-                <td class="w-1/8 border p-2 text-center"></td>
-                <td class="w-1/8 border p-2 text-right"><b>{{ $data['11.kn'] }}</b></td>
-              </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>11. NETO PLAĆA</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"><b>{{ $data['11.kn'] }}</b></td>
+            </tr>
 
-              <tr>
-                <td class="w-3/4 border p-2" colspan="2">12. NAKNADE UKUPNO</td>
-                <td class="w-1/8 border p-2 text-center"></td>
-                <td class="w-1/8 border p-2 text-right">{{ $data['12.kn'] }}</td>
-              </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2">12. NAKNADE UKUPNO</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['12.kn'] }}</td>
+            </tr>
 
-              <tr>
-                <td class="w-3/4 border p-2" colspan="2"><b>13. NETO + NAKNADE</b></td>
-                <td class="w-1/8 border p-2 text-center"></td>
-                <td class="w-1/8 border p-2 text-right"><b>{{ $data['13.kn'] }}</b></td>
-              </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>13. NETO + NAKNADE</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"><b>{{ $data['13.kn'] }}</b></td>
+            </tr>
 
-              <tr>
-                <td class="w-3/4 border p-2" colspan="2"><b>14. OBUSTAVE UKUPNO</b></td>
-                <td class="w-1/8 border p-2 text-center"></td>
-                <td class="w-1/8 border p-2 text-right"><b>{{ $data['14.kn'] }}</b></td>
-              </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>14. OBUSTAVE UKUPNO</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"><b>{{ $data['14.kn'] }}</b></td>
+            </tr>
 
-              <tr>
-                <td class="w-3/4 border p-2" colspan="2"><b>15. IZNOS PLAĆE/NAKNADE PLAĆE ISPLAĆEN RADNIKU NA REDOVAN RAČUN</b></td>
-                <td class="w-1/8 border p-2 text-center"></td>
-                <td class="w-1/8 border p-2 text-right"><b>{{ $data['15.kn'] }}</b></td>
-              </tr>
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>15. IZNOS PLAĆE/NAKNADE PLAĆE ISPLAĆEN RADNIKU NA REDOVAN RAČUN</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"><b>{{ $data['15.kn'] }}</b></td>
+            </tr>
 
             <tr>
               <td class="w-3/4 border p-2" colspan="2">17.5. vrsta i iznos obustave</td>
@@ -266,6 +385,7 @@
               <td class="w-1/8 border p-2 text-right">{{ $data['17_5b.kn'] }}</td>
             </tr>
 
+            @endif
           </tbody>
         </table>
       </div>
