@@ -94,13 +94,17 @@ Route::delete('/day/{date}', [DayController::class, 'destroy'])->name('day.destr
 Route::resource('holidays', HolidayController::class);
 
 Route::get('/month', [DayController::class, 'month'])->name('month');
+//Route::get('/platna', [MonthController::class, 'platna_lista'])->name('platna');
 Route::resource('months', MonthController::class)->middleware(['auth']);
 Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
 Route::get('/month/{month}', [DayController::class, 'month']);
 Route::get('/days/create/{date}', [DayController::class, 'create']);
-Route::get('/lista', PlatnaLista::class)->name('lista');
-Route::put('/lista', [PlatnaLista::class, 'data']);
+//Route::get('/lista', PlatnaLista::class)->name('lista');
+Route::get('/lista', [MonthController::class, 'platna_lista'])->name('lista');
+Route::get('/lista/{month}', [MonthController::class, 'platna_lista']);
+
+//Route::put('/lista', [PlatnaLista::class, 'data']);
 Route::put('/sick/{date}', [DayController::class, 'sick'])->name('sick');
 Route::get('migrate', function () {
   Artisan::call('migrate');

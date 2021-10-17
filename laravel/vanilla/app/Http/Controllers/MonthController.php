@@ -6,6 +6,7 @@ use App\Models\Month;
 use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class MonthController extends Controller
 {
@@ -92,30 +93,10 @@ class MonthController extends Controller
     return redirect(route('months.show', ['month' => $month->slug()]))->with('success', 'Month Created');
   }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\Month  $month
-   * @return \Illuminate\Http\Response
-   */
-  //public function show(Month $month)
-  public function show($month)
+  public function lista_data(Month $month)
   {
-    $data['III.godina'] = explode(".", $month)[1];
-    $data['III.mjesec'] = explode(".", $month)[0];
-    $unslug = $data['III.mjesec'] - 1 + $data['III.godina'] * 12;
-    $month = Month::where('user_id', '=', Auth::user()->id)->where('month', '=', $unslug)->first();
-    $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
-    if (!$settings) {
-      $settings = new Settings();
-      $settings->start1 = '06:00';
-      $settings->end1 = '14:00';
-      $settings->start2 = '14:00';
-      $settings->end2 = '22:00';
-      $settings->start3 = '22:00';
-      $settings->end3 = '06:00';
-    }
-    $days = $month->days();
+    $data['III.godina'] = explode(".", $month->slug())[1];
+    $data['III.mjesec'] = explode(".", $month->slug())[0];
 
     $from = $month->from();
     $to = $month->to();
@@ -125,15 +106,19 @@ class MonthController extends Controller
     $hoursNorm = $month->hoursNorm();
     $bruto = $month->bruto ?? $month->last('bruto');
     $month->bruto = $bruto;
+    $data['bruto'] = $bruto;
     $perHour = round(($bruto / 100 / $hoursNorm->All), 2);
     $data['perHour'] = $perHour;
     $hoursWorkNorm = $hoursNorm->Work;
     $prijevoz = $month->prijevoz ?? $month->last('prijevoz');
     $month->prijevoz = $prijevoz;
+    $data['prijevoz'] = $prijevoz;
     $odbitak = $month->odbitak ?? $month->last('odbitak');
     $month->odbitak = $odbitak;
+    $data['odbitak'] = $odbitak;
     $prirez = $month->prirez ?? $month->last('prirez');
     $month->prirez = $prirez;
+    $data['prirez'] = $prirez;
     //dd($hoursNorm, $bruto, $perHour);
 
     // 1.1. Za redoviti rad
@@ -144,6 +129,7 @@ class MonthController extends Controller
 
     // 1.4 Za prekovremeni rad
     $h1_4 = $month->prekovremeni;
+    $data['prekovremeni'] = $month->prekovremeni;
     $overWork = $hoursNorm->min / 60 - $hoursWorkNorm;
 
     $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')';
@@ -275,8 +261,55 @@ class MonthController extends Controller
     $data['17_5a.kn'] = number_format($sindikat, 2, ',', '.');
     $data['17_5b.kn'] = number_format($kredit, 2, ',', '.');
 
+    return $data;
+  }
+
+  /**
+   * Display the specified resource.
+   *
+   * @param  \App\Models\Month  $month
+   * @return \Illuminate\Http\Response
+   */
+  //public function show(Month $month)
+  public function show($month)
+  {
+    $unslug = explode(".", $month)[0] - 1 + explode(".", $month)[1] * 12;
+    $month = Month::where('user_id', '=', Auth::user()->id)->where('month', '=', $unslug)->first();
+    $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
+    if (!$settings) {
+      $settings = new Settings();
+      $settings->start1 = '06:00';
+      $settings->end1 = '14:00';
+      $settings->start2 = '14:00';
+      $settings->end2 = '22:00';
+      $settings->start3 = '22:00';
+      $settings->end3 = '06:00';
+    }
+    $days = $month->days();
+
+    $data  = $this->lista_data($month);
+    $data['-'] = route('months.show', ['month' => $month->prev()]);
+    $data['+'] = route('months.show', ['month' => $month->next()]);
     //dd($month,$days,$data);
     return view('months.show')->with(compact('month', 'days', 'data', 'settings'));
+  }
+
+  public function platna_lista(Request $request)
+  {
+    
+    if ($request->input('month') == null) {
+      $m['x'] = Carbon::now();
+    } else {
+      $m['x'] = Carbon::parse('01.' . $request->input('month'));
+    }
+    $data['month'] = $m['x']->format('Y') * 12 + $m['x']->format('m') - 1;
+    $month = Month::orderBy('month', 'desc')->where('month', '<=', $data['month'])->where('user_id', '=', Auth::user()->id)->first();
+    //dd($m, $month);
+    $data  = $this->lista_data($month);
+    $data['-'] = route('lista', ['month' => $month->prev()]);
+    $data['+'] = route('lista', ['month' => $month->next()]);
+    //dd($m, $month, $data);
+    return view('months.platna-lista')->with(compact('month', 'data'));
   }
 
   /**
