@@ -51,6 +51,8 @@
         busd_kn = {{$eur_kn}} / message.data.k.c;
         busd = {{$balance['BUSD']->total}} * busd_kn;
         document.getElementById('BUSD').innerHTML = formatter.format(busd,2);
+        busdfree = {{$balance['BUSD']->free}} * busd_kn;
+        document.getElementById('BUSDfree').innerHTML = formatter.format(busdfree,2);
       }
       var total = 0;
       @foreach($balance as $coin => $asset)
