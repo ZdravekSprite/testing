@@ -84,3 +84,18 @@ git push
 ```bash
 php artisan make:model Lotto -a
 ```
+
+## laravel -> binance
+```php
+git add .
+git commit -am "save 2019 10 25"
+git push
+git checkout main
+git pull
+git merge laravel
+git push
+git checkout binance
+git pull
+git merge main
+git push
+```
