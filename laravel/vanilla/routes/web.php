@@ -187,4 +187,10 @@ Route::post('/binance/order/test', [Binance::class, 'testNewOrder'])->name('test
 Route::get('/binance/test', [TestBinance::class, 'test']);
 Route::get('/binance/crta', [TradeController::class, 'crta']);
 
+
+Route::get('/binance/', function () {
+  return view('binance.welcome');
+})->name('bhome');
+
+
 Route::resource('lotto', LottoController::class);
