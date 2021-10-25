@@ -88,13 +88,28 @@ php artisan make:model Lotto -a
 ## laravel -> binance
 ```php
 git add .
-git commit -am "save 2019 10 25"
+git commit -am "save laravel 2019 10 25"
 git push
 git checkout main
 git pull
 git merge laravel
 git push
 git checkout binance
+git pull
+git merge main
+git push
+```
+
+## binance -> laravel
+```php
+git add .
+git commit -am "save binance 2019 10 25"
+git push
+git checkout main
+git pull
+git merge binance
+git push
+git checkout laravel
 git pull
 git merge main
 git push
