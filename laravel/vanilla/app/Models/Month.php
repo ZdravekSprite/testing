@@ -53,6 +53,7 @@ class Month extends Model
    */
   public function last($att)
   {
+    if (!Month::orderBy('month', 'desc')->where('user_id', '=', $this->user_id)->first()) return redirect(route('months.create'))->with('warning', 'Barem jedan mjesec treba napraviti');
     $month = Month::orderBy('month', 'desc')->where('user_id', '=', $this->user_id)->where('month', '<', $this->month)->where($att, '<>', null)->first();
     if (!$month) $month = $this;
     return $month->attributes[$att];
@@ -162,6 +163,15 @@ class Month extends Model
       $minWorkNight += $day_minNight1 + $day_minNight2;
       $dayOfWeek = $d->date->dayOfWeek;
       $settings = Settings::where('user_id', '=', $this->user_id)->first();
+      if (!$settings) {
+        $settings = new Settings();
+        $settings->start1 = '06:00';
+        $settings->end1 = '14:00';
+        $settings->start2 = '14:00';
+        $settings->end2 = '22:00';
+        $settings->start3 = '22:00';
+        $settings->end3 = '06:00';
+      }
       //dd($settings);
       switch ($dayOfWeek) {
         case 0:

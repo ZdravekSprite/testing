@@ -55,13 +55,20 @@ class MonthController extends Controller
     $month = new Month;
     $last_month = Month::orderBy('month', 'desc')->where('user_id', '=', Auth::user()->id)->first();
     $month->user_id = Auth::user()->id;
-    $bruto = $month->bruto ?? $last_month->last('bruto');
+    if (!$last_month) {
+      $bruto = $month->bruto ?? 530000;
+      $prijevoz = $month->prijevoz ?? 36000;
+      $odbitak = $month->odbitak ?? 400000;
+      $prirez = $month->prirez ?? 1800;
+    } else {
+      $bruto = $month->bruto ?? $last_month->last('bruto') ?? 530000;
+      $prijevoz = $month->prijevoz ?? $last_month->last('prijevoz') ?? 36000;
+      $odbitak = $month->odbitak ?? $last_month->last('odbitak') ?? 400000;
+      $prirez = $month->prirez ?? $last_month->last('prirez') ?? 1800;
+    }
     $month->bruto = $bruto;
-    $prijevoz = $month->prijevoz ?? $last_month->last('prijevoz');
     $month->prijevoz = $prijevoz;
-    $odbitak = $month->odbitak ?? $last_month->last('odbitak');
     $month->odbitak = $odbitak;
-    $prirez = $month->prirez ?? $last_month->last('prirez');
     $month->prirez = $prirez;
     //dd($month);
     return view('months.create')->with(compact('month'));
@@ -309,8 +316,20 @@ class MonthController extends Controller
     }
     $data['month'] = $m['x']->format('Y') * 12 + $m['x']->format('m') - 1;
     $month = Month::orderBy('month', 'desc')->where('month', '<=', $data['month'])->where('user_id', '=', Auth::user()->id)->first();
+    if (!$month) {
+      return redirect(route('months.create'))->with('warning', 'Treba napraviti bar jedan mjesec');
+    }
     //dd($m, $month);
     $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
+    if (!$settings) {
+      $settings = new Settings();
+      $settings->start1 = '06:00';
+      $settings->end1 = '14:00';
+      $settings->start2 = '14:00';
+      $settings->end2 = '22:00';
+      $settings->start3 = '22:00';
+      $settings->end3 = '06:00';
+    }
     if ($settings->norm) {
       $data  = $this->lista_data1($month);
     } else {
