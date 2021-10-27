@@ -15,6 +15,7 @@ use App\Http\Controllers\LottoController;
 use App\Http\Controllers\MonthController;
 use App\Http\Controllers\Admin\ImpersonateController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\BSystem;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
@@ -168,7 +169,6 @@ Route::post('/messages', [ChatController::class, 'sendMessage']);
 Route::resource('trades', TradeController::class);
 Route::resource('symbols', SymbolController::class);
 Route::get('/binance/allMyTrades', [TradeController::class, 'allMyTrades']);
-Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo']);
 Route::get('/dust', [TradeController::class, 'dustLog']);
 Route::get('/binance/prosjek', [TradeController::class, 'prosjek']);
 Route::resource('klines', KlineController::class);
@@ -184,13 +184,15 @@ Route::get('/binance/dashboard', function () {
 })->middleware(['auth']);
 */
 Route::post('/binance/order/test', [Binance::class, 'testNewOrder'])->name('testNewOrder');
-Route::get('/binance/test', [TestBinance::class, 'test']);
+Route::get('/binance/test', [TestBinance::class, 'test'])->name('bTest');
 Route::get('/binance/crta', [TradeController::class, 'crta']);
 
 
 Route::get('/binance/', function () {
   return view('binance.welcome');
 })->name('bhome');
+Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo'])->name('bExchange');
+Route::get('/binance/exchange/info', [BSystem::class, 'exchangeInfo'])->name('bExchangeInfo');
 
 
 Route::resource('lotto', LottoController::class);

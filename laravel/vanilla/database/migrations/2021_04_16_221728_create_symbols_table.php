@@ -26,6 +26,8 @@ class CreateSymbolsTable extends Migration
       $table->boolean('ocoAllowed');
       $table->boolean('isSpotTradingAllowed');
       $table->boolean('isMarginTradingAllowed');
+      $table->tinyInteger('tickSize');
+      $table->tinyInteger('stepSize');
       $table->timestamps();
     });
   }

@@ -30,7 +30,9 @@ class Symbol extends Model
     'icebergAllowed',
     'ocoAllowed',
     'isSpotTradingAllowed',
-    'isMarginTradingAllowed'
+    'isMarginTradingAllowed',
+    'tickSize',
+    'stepSize'
   ];
 
 }

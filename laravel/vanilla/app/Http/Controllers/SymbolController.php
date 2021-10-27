@@ -28,7 +28,9 @@ class SymbolController extends Controller
           'icebergAllowed' => $symbol->icebergAllowed,
           'ocoAllowed' => $symbol->ocoAllowed,
           'isSpotTradingAllowed' => $symbol->isSpotTradingAllowed,
-          'isMarginTradingAllowed' => $symbol->isMarginTradingAllowed
+          'isMarginTradingAllowed' => $symbol->isMarginTradingAllowed,
+          'tickSize' => strpos($symbol->filters[0]->tickSize,"1")-1,
+          'stepSize' => strpos($symbol->filters[2]->stepSize,"1")-1
         ]);
       }
     }
