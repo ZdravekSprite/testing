@@ -29,12 +29,19 @@ class SymbolController extends Controller
           'ocoAllowed' => $symbol->ocoAllowed,
           'isSpotTradingAllowed' => $symbol->isSpotTradingAllowed,
           'isMarginTradingAllowed' => $symbol->isMarginTradingAllowed,
-          'tickSize' => strpos($symbol->filters[0]->tickSize,"1")-1,
-          'stepSize' => strpos($symbol->filters[2]->stepSize,"1")-1
+          'tickSize' => $this->decimal($symbol->filters[0]->tickSize),
+          'stepSize' => $this->decimal($symbol->filters[2]->stepSize)
         ]);
       }
     }
     return Symbol::where('status', '=', 'TRADING')->get();
+  }
+  public function decimal($str)
+  {
+    $no_dot = str_replace(".", "", $str);
+    $dot_pos = strpos($str,".");
+    $one_pos = strpos($no_dot,"1");
+    return $one_pos - $dot_pos;
   }
   /**
    * Display a listing of the resource.

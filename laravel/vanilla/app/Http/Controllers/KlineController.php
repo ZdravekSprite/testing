@@ -102,8 +102,12 @@ class KlineController extends Controller
     foreach ($symbols as $key => $value) {
       $symbol = Symbol::where('symbol', '=', $value)->first();
       //dd($symbol);
-      $assets[] = $symbol->baseAsset;
-      $assets[] = $symbol->quoteAsset;
+      if(is_object($symbol)) {
+        $assets[] = $symbol->baseAsset;
+        $assets[] = $symbol->quoteAsset;
+      } else {
+        //dd($key,$value,$symbol);
+      }
     }
     //dd(array_unique($assets));
     foreach (array_unique($assets) as $key => $value) {
@@ -160,49 +164,26 @@ class KlineController extends Controller
     ]));
     $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000*600000))->get();
     //dd($trades);
+    $symbols_list = ['ETH','BNB','ADA','MATIC','SOL','LUNA','FTT','MBOX'];
     $symbols = [
-      ['BTCBUSD',[],[],[],'1d',2],
-      ['BTCBUSD',[],[],[],'1h',2],
-      ['BTCBUSD',[],[],[],'1m',2],
-      ['ETHBTC',[],[],[],'1h',6],
-      ['ETHBUSD',[],[],[],'1d',2],
-      ['ETHBUSD',[],[],[],'1h',2],
-      ['ETHBUSD',[],[],[],'1m',2],
-      ['BNBBTC',[],[],[],'1h',6],
-      ['BNBBUSD',[],[],[],'1d',1],
-      ['BNBBUSD',[],[],[],'1h',1],
-      ['BNBBUSD',[],[],[],'1m',1],
-      ['ADABTC',[],[],[],'1h',8],
-      ['ADABUSD',[],[],[],'1d',3],
-      ['ADABUSD',[],[],[],'1h',3],
-      ['ADABUSD',[],[],[],'1m',3],
-      ['MATICBTC',[],[],[],'1h',8],
-      ['MATICBUSD',[],[],[],'1d',3],
-      ['MATICBUSD',[],[],[],'1h',3],
-      ['MATICBUSD',[],[],[],'1m',3],
-      ['SOLBTC',[],[],[],'1h',8],
-      ['SOLBUSD',[],[],[],'1d',2],
-      ['SOLBUSD',[],[],[],'1h',2],
-      ['SOLBUSD',[],[],[],'1m',2],
-      ['LUNABTC',[],[],[],'1h',8],
-      ['LUNABUSD',[],[],[],'1d',2],
-      ['LUNABUSD',[],[],[],'1h',2],
-      ['LUNABUSD',[],[],[],'1m',2],
-      ['FTTBTC',[],[],[],'1h',8],
-      ['FTTBUSD',[],[],[],'1d',2],
-      ['FTTBUSD',[],[],[],'1h',2],
-      ['FTTBUSD',[],[],[],'1m',2],
-      ['MBOXBTC',[],[],[],'1h',8],
-      ['MBOXBUSD',[],[],[],'1d',3],
-      ['MBOXBUSD',[],[],[],'1h',3],
-      ['MBOXBUSD',[],[],[],'1m',3],
-      ['BTCEUR',[],[],[],'1h',2],
-      ['EURBUSD',[],[],[],'1d',3],
-      ['EURBUSD',[],[],[],'1h',3],
-      ['EURBUSD',[],[],[],'1m',3],
-    ];//, ['LPTBUSD',[],[],[]], ['KSMBUSD',[],[],[]]];
+      ['BTCBUSD',[],[],[],'1d'],
+      ['BTCBUSD',[],[],[],'1h'],
+      ['BTCBUSD',[],[],[],'1m']
+    ];
+    foreach ($symbols_list as $symbol) {
+      $symbols[] = [$symbol.'BTC',[],[],[],'1h'];
+      $symbols[] = [$symbol.'BUSD',[],[],[],'1d'];
+      $symbols[] = [$symbol.'BUSD',[],[],[],'1h'];
+      $symbols[] = [$symbol.'BUSD',[],[],[],'1m'];
+    }
+    $symbols[] = ['BTCEUR',[],[],[],'1h'];
+    $symbols[] = ['EURBUSD',[],[],[],'1d'];
+    $symbols[] = ['EURBUSD',[],[],[],'1h'];
+    $symbols[] = ['EURBUSD',[],[],[],'1m'];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
+      $symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->tickSize + 1;
+      //$symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->stepSize;
       foreach ($openOrders as $order) {
         if($order->symbol == $symbol[0]) {
           if($order->side == 'BUY') {
