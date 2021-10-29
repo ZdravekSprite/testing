@@ -122,25 +122,14 @@ class BSystem extends Controller
    *   ]
    * }
    */
-  public function exchangeInfo()
+  public static function exchangeInfo($symbol = null)
   {
-    dd(strpos("0.01","1"));
     $http = new BHttp();
-    $exchangeInfo = $http->get('https://api.binance.com/api/v3/exchangeInfo');
-    $symbols = $exchangeInfo->symbols;
-    foreach ($symbols as $symbol) {
-      if ($symbol->symbol == 'SOLBUSD') {
-        //dd($symbol->filters);
-        //dd(object_get($symbol->filters, 'filterType', 'LOT_SIZE'));
-        /*foreach ($symbol->filters as $filter) {
-          if ($filter->filterType == 'PRICE_FILTER') {
-            dd($filter->tickSize);
-          }
-        }*/
-        dd($symbol->filters[0]->tickSize,$symbol->filters[2]->stepSize);
-      }
+    if ($symbol == null) {
+      $exchangeInfo = $http->get('https://api.binance.com/api/v3/exchangeInfo');
+    } else {
+      $exchangeInfo = $http->get('https://api.binance.com/api/v3/exchangeInfo?symbol='.$symbol);
     }
-    dd($exchangeInfo);
     return $exchangeInfo;
   }
 }

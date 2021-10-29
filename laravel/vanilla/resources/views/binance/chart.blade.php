@@ -142,7 +142,7 @@
       borderUpColor: 'rgba(255, 144, 0, 1)',
       wickDownColor: 'rgba(255, 144, 0, 1)',
       wickUpColor: 'rgba(255, 144, 0, 1)',
-      priceFormat: { type: 'price', minMove: 0.0001, precision: 4 },
+      priceFormat: { type: 'price', minMove: {{ $precision[$quote] ? pow(10, -$precision[$quote]) : 0  }}, precision: {{ $precision[$quote] }} },//
       scaleMargins: {
         top: 1,
         bottom: 0.05,

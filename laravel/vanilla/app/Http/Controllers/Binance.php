@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Hnb;
+use App\Models\Symbol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
@@ -286,7 +287,17 @@ class Binance extends Controller
    */
   public function chart($coin = 'BNB')
   {
-    return view('binance.chart')->with(compact('coin'));
+    //dd(Symbol::where('symbol', '=', $coin.'BUSD')->first()->tickSize);
+    $busd = Symbol::where('symbol', '=', $coin.'BUSD')->first();
+    $btc = Symbol::where('symbol', '=', $coin.'BTC')->first();
+    $eth = Symbol::where('symbol', '=', $coin.'ETH')->first();
+    
+    $precision = [
+      'BUSD' => $busd ? $busd->tickSize + 1 : 0,
+      'BTC' => $btc ? $btc->tickSize + 1 : 0,
+      'ETH' => $eth ? $eth->tickSize + 1 : 0
+    ];
+    return view('binance.chart')->with(compact('coin', 'precision'));
   }
 
   /**

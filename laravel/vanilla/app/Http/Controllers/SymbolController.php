@@ -11,7 +11,8 @@ class SymbolController extends Controller
 {
   public function exchangeInfo()
   {
-    $exchangeInfo = json_decode(Http::get('https://api.binance.com/api/v3/exchangeInfo'));
+    $exchangeInfo = BSystem::exchangeInfo();
+    //$exchangeInfo = json_decode(Http::get('https://api.binance.com/api/v3/exchangeInfo'));
     $symbols = $exchangeInfo->symbols;
     //dd('exchangeInfo', $symbols);
     foreach ($symbols as $symbol) {

@@ -174,8 +174,8 @@ Route::get('/binance/prosjek', [TradeController::class, 'prosjek']);
 Route::resource('klines', KlineController::class);
 
 Route::get('/binance/portfolio', [Binance::class, 'portfolio']);
-Route::get('/binance/chart', [Binance::class, 'chart']);
-Route::get('/binance/chart/{coin}', [Binance::class, 'chart']);
+//Route::get('/binance/chart', [Binance::class, 'chart']);
+Route::get('/binance/chart/{coin?}', [Binance::class, 'chart']);
 Route::get('/binance/orders', [Binance::class, 'orders']);
 Route::get('/binance/dashboard', [Binance::class, 'dashboard'])->middleware(['auth']);
 /*
@@ -192,7 +192,7 @@ Route::get('/binance/', function () {
   return view('binance.welcome');
 })->name('bhome');
 Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo'])->name('bExchange');
-Route::get('/binance/exchange/info', [BSystem::class, 'exchangeInfo'])->name('bExchangeInfo');
+//Route::get('/binance/exchange/info/{symbol?}', [BSystem::class, 'exchangeInfo'])->name('bExchangeInfo');
 
 
 Route::resource('lotto', LottoController::class);
