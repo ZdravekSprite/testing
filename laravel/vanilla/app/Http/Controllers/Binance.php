@@ -167,6 +167,10 @@ class Binance extends Controller
                 $data = $res->json();
                 if (isset($data['price'])) $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn / $data['price'];
               }
+              if(!isset($coin->busd)) {
+                //dd($coin);
+                $coin->busd = 0;
+              }
               $coin->price = $coin->busd;//max($coin->eur, $coin->busd, $coin->usdt);
               $coin->openOrders = (new Binance)->openOrders($coin->coin . "BUSD");
               //$coin->allOrders = (new Binance)->allOrders($coin->coin);
@@ -180,7 +184,12 @@ class Binance extends Controller
         if ($coin->coin == 'BUSD') {
           $coin->target = 1500 / $coin->price * $coin->total;
         } else {
-          $coin->target = $total / 3000 * 300 / $coin->price * $coin->total;
+          if($coin->price) {
+            $coin->target = $total / 3000 * 300 / $coin->price * $coin->total;
+          } else {
+            $coin->target = 0;
+          }
+          
         }
     }
       //dd($balance);

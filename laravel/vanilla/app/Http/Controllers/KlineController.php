@@ -180,6 +180,10 @@ class KlineController extends Controller
     $symbols[] = ['EURBUSD',[],[],[],'1d'];
     $symbols[] = ['EURBUSD',[],[],[],'1h'];
     $symbols[] = ['EURBUSD',[],[],[],'1m'];
+    $symbols[] = ['BTCDAI',[],[],[],'1h'];
+    $symbols[] = ['BUSDDAI',[],[],[],'1d'];
+    $symbols[] = ['BUSDDAI',[],[],[],'1h'];
+    $symbols[] = ['BUSDDAI',[],[],[],'1m'];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       $symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->tickSize + 1;

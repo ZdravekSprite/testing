@@ -103,7 +103,7 @@ git push
 ## binance -> laravel
 ```php
 git add .
-git commit -am "save binance 2019 10 29"
+git commit -am "save binance 2019 10 30"
 git push
 git checkout main
 git pull
