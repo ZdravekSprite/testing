@@ -92,52 +92,10 @@ class LottoController extends Controller
     return $header;
   }
 
-  public function hl()
+  public function hl(Request $request)
   {
-    $page = '/hl/rezultati/eurojackpot';
-    $server = 'https://www.lutrija.hr';
-    // Set the URL to visit
-    // $url = "https:<somesite/page";
-    $url = $server . $page;
-    // In this example we are referring to a page that handles xml
-    $headers = array("Content-Type: text/xml",);
-    // Initialise Curl
-    $curl = curl_init();
-    if ($curl === false) {
-      throw new \Exception(' cURL init failed');
-    }
-    // Configure curl for website
-    // curl_setopt($curl, CURLOPT_URL, "https://<somesite>");
-    curl_setopt($curl, CURLOPT_URL, $server);
-
-    // Set up to view correct page type
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-    // Turn on SSL certificate verfication
-    // curl_setopt($curl, CURLOPT_CAPATH, "/usr/local/www/vhosts/<yourdomainname>/httpdocs/cacert.pem");
-    //curl_setopt($curl, CURLOPT_CAPATH, "cacert.pem");
-    //curl_setopt($curl, CURLOPT_CAINFO, getcwd() . "/git/cacert.pem");
-    curl_setopt($curl, CURLOPT_CAINFO, "/git/cacert.pem");
-    //curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 1);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
-
-    // Tell the curl instance to talk to the server using HTTP POST
-    curl_setopt($curl, CURLOPT_POST, 1);
-
-    // 1 second for a connection timeout with curl
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
-
-    // Try using this instead of the php set_time_limit function call
-    curl_setopt($curl, CURLOPT_TIMEOUT, 60);
-
-    // Causes curl to return the result on success which should help us avoid using the writeback option
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-    $result = curl_exec($curl);
-    $http_get = ''; //$header;
-    dd($result);
-    return $http_get;
+    $kolo = $request->input('kolo') ?? 1;
+    return $kolo;
   }
   /**
    * Show the form for creating a new resource.

@@ -83,10 +83,16 @@ git push
 ### lotto model (+ factory + migration + seeder + controller)
 ```bash
 php artisan make:model Lotto -a
+php artisan migrate
 ```
 
+### draw model (+ factory + migration + seeder + controller)
+```bash
+php artisan make:model Draw -a
+php artisan migrate
+```
 ## laravel -> binance
-```php
+```bash
 git add .
 git commit -am "save laravel 2019 10 27"
 git push
@@ -101,7 +107,7 @@ git push
 ```
 
 ## binance -> laravel
-```php
+```bash
 git add .
 git commit -am "save binance 2019 10 31"
 git push
@@ -116,10 +122,10 @@ git push
 ```
 
 ## main -> lotto
-```php
+```bash
 git branch lotto
 git checkout lotto
 git add .
-git commit -am "save lotto 2019 10 31"
+git commit -am "save lotto models"
 git push --set-upstream origin lotto
 ```
