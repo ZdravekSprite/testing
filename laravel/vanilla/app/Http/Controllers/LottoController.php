@@ -47,14 +47,98 @@ class LottoController extends Controller
     $lotto = json_decode($http_get);
     $kombinacija = (new $this)->kombinacija($lotto);
     $ponavljanje = (new $this)->ponavljanje($kombinacija, $lotto);
-    while($ponavljanje) {
+    while ($ponavljanje) {
       $kombinacija = (new $this)->kombinacija($lotto);
       $ponavljanje = (new $this)->ponavljanje($kombinacija, $lotto);
     }
-    dd($kombinacija,$ponavljanje,$lotto);
+    dd($kombinacija, $ponavljanje, $lotto);
     return $http_get;
   }
 
+  // https://www.sazka.cz/api/draw-info/past-draws/eurojackpot
+  // https://www.sazka.cz/api/draw-info/draws/universal/eurojackpot/[DRAW_ID]
+
+
+  /**
+   * Get a web file (HTML, XHTML, XML, image, etc.) from a URL.  Return an
+   * array containing the HTTP server response header fields and content.
+   */
+  function get_web_page($url)
+  {
+    $options = array(
+      CURLOPT_RETURNTRANSFER => true,     // return web page
+      CURLOPT_HEADER         => false,    // don't return headers
+      CURLOPT_FOLLOWLOCATION => true,     // follow redirects
+      CURLOPT_ENCODING       => "",       // handle all encodings
+      CURLOPT_USERAGENT      => "spider", // who am i
+      CURLOPT_AUTOREFERER    => true,     // set referer on redirect
+      CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
+      CURLOPT_TIMEOUT        => 120,      // timeout on response
+      CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
+      CURLOPT_SSL_VERIFYPEER => false     // Disabled SSL Cert checks
+    );
+
+    $ch      = curl_init($url);
+    curl_setopt_array($ch, $options);
+    $content = curl_exec($ch);
+    $err     = curl_errno($ch);
+    $errmsg  = curl_error($ch);
+    $header  = curl_getinfo($ch);
+    curl_close($ch);
+
+    $header['errno']   = $err;
+    $header['errmsg']  = $errmsg;
+    $header['content'] = $content;
+    return $header;
+  }
+
+  public function hl()
+  {
+    $page = '/hl/rezultati/eurojackpot';
+    $server = 'https://www.lutrija.hr';
+    // Set the URL to visit
+    // $url = "https:<somesite/page";
+    $url = $server . $page;
+    // In this example we are referring to a page that handles xml
+    $headers = array("Content-Type: text/xml",);
+    // Initialise Curl
+    $curl = curl_init();
+    if ($curl === false) {
+      throw new \Exception(' cURL init failed');
+    }
+    // Configure curl for website
+    // curl_setopt($curl, CURLOPT_URL, "https://<somesite>");
+    curl_setopt($curl, CURLOPT_URL, $server);
+
+    // Set up to view correct page type
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+    // Turn on SSL certificate verfication
+    // curl_setopt($curl, CURLOPT_CAPATH, "/usr/local/www/vhosts/<yourdomainname>/httpdocs/cacert.pem");
+    //curl_setopt($curl, CURLOPT_CAPATH, "cacert.pem");
+    //curl_setopt($curl, CURLOPT_CAINFO, getcwd() . "/git/cacert.pem");
+    curl_setopt($curl, CURLOPT_CAINFO, "/git/cacert.pem");
+    //curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 1);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE);
+
+    // Tell the curl instance to talk to the server using HTTP POST
+    curl_setopt($curl, CURLOPT_POST, 1);
+
+    // 1 second for a connection timeout with curl
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+
+    // Try using this instead of the php set_time_limit function call
+    curl_setopt($curl, CURLOPT_TIMEOUT, 60);
+
+    // Causes curl to return the result on success which should help us avoid using the writeback option
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+
+    $result = curl_exec($curl);
+    $http_get = ''; //$header;
+    dd($result);
+    return $http_get;
+  }
   /**
    * Show the form for creating a new resource.
    *

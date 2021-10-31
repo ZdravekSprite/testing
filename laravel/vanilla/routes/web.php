@@ -195,4 +195,5 @@ Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo'])->name
 //Route::get('/binance/exchange/info/{symbol?}', [BSystem::class, 'exchangeInfo'])->name('bExchangeInfo');
 
 
+Route::get('/lotto/hl', [LottoController::class, 'hl']);
 Route::resource('lotto', LottoController::class);

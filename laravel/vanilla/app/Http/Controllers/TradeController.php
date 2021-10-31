@@ -22,7 +22,7 @@ class TradeController extends Controller
   {
     set_time_limit(0);
     $symbols = Symbol::where('status', '=', 'TRADING')->pluck('symbol');
-    /* kada treba provjeriti sve symbole*/
+    /* kada treba provjeriti sve symbole */
     $trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'asc')->get();
     $symbols = $trades->pluck('symbol')->unique();
     /**/
