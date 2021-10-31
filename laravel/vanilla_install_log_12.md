@@ -114,3 +114,12 @@ git pull
 git merge main
 git push
 ```
+
+## main -> lotto
+```php
+git branch lotto
+git checkout lotto
+git add .
+git commit -am "save lotto 2019 10 31"
+git push
+```
