@@ -30,8 +30,6 @@ class Day extends Model
    */
   protected $casts = [
     'date' => 'datetime:d.m.Y',
-    'duration' => 'datetime:H:i',
-    'night_duration' => 'datetime:H:i',
     'night' => 'datetime:H:i',
     'start' => 'datetime:H:i',
     'end' => 'datetime:H:i',

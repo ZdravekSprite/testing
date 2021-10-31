@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
   public function run()
   {
     $this->call(RoleSeeder::class);
-    User::factory()
+    /*User::factory()
       ->create([
         'name' => env('ADMIN_NAME', 'admin'),
         'email' => env('ADMIN_EMAIL', 'admin@admin.com'),
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
           $day->save();
           date_add($date, date_interval_create_from_date_string('-1 day'));
         }
-        /*
+        
         $days = Day::factory()->count(10)->make(['user_id' => $user->id, 'start' => '14:00']);
         foreach ($days as $day) {
           repeat:
@@ -40,12 +40,11 @@ class DatabaseSeeder extends Seeder
             $subject = Day::factory()->make(['user_id' => $user->id]);
             goto repeat;
           }
-        }*/
-      });
+        }
+      });*/
     $this->call([
       HolidaySeeder::class,
+      SymbolSeeder::class
     ]);
-    $this->call(SymbolSeeder::class);
-    $this->call(TradeSeeder::class);
   }
 }

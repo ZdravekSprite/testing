@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SymbolController extends Controller
 {
-  public function exchangeInfo()
+  public static function exchangeInfo()
   {
     $exchangeInfo = BSystem::exchangeInfo();
     //$exchangeInfo = json_decode(Http::get('https://api.binance.com/api/v3/exchangeInfo'));
@@ -30,8 +30,8 @@ class SymbolController extends Controller
           'ocoAllowed' => $symbol->ocoAllowed,
           'isSpotTradingAllowed' => $symbol->isSpotTradingAllowed,
           'isMarginTradingAllowed' => $symbol->isMarginTradingAllowed,
-          'tickSize' => $this->decimal($symbol->filters[0]->tickSize),
-          'stepSize' => $this->decimal($symbol->filters[2]->stepSize)
+          'tickSize' => (new static)->decimal($symbol->filters[0]->tickSize),
+          'stepSize' => (new static)->decimal($symbol->filters[2]->stepSize)
         ]);
       }
     }

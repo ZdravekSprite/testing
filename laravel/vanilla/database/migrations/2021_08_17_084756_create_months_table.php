@@ -18,10 +18,13 @@ class CreateMonthsTable extends Migration
       $table->smallInteger('month');
       $table->unsignedBigInteger('user_id');
       $table->mediumInteger('bruto')->nullable();
-      $table->smallInteger('prijevoz')->nullable();
+      $table->mediumInteger('prijevoz')->nullable();
       $table->mediumInteger('odbitak')->nullable();
       $table->smallInteger('prirez')->nullable();
+      $table->boolean('sindikat')->nullable();
+      $table->mediumInteger('kredit')->nullable();
       $table->tinyInteger('prekovremeni')->nullable();
+      $table->tinyInteger('nocni')->nullable();
       $table->mediumInteger('stimulacija')->nullable();
       $table->mediumInteger('regres')->nullable();
       $table->timestamps();

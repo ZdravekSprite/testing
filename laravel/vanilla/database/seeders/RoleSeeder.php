@@ -30,7 +30,7 @@ class RoleSeeder extends Seeder
     $superadminRole = Role::where('name', 'superadmin')->first();
     $adminRole = Role::where('name', 'admin')->first();
     $super_admin = User::create([
-      'name' => env('SUPER_ADMIN_NAME', 'Super admin'),
+      'name' => env('SUPER_ADMIN_NAME', 'Super Admin'),
       'email' =>  env('SUPER_ADMIN_EMAIL', 'super@admin.com'),
       'password' => Hash::make(env('SUPER_ADMIN_PASS', 'password')),
       'avatar' => 'https://upload.wikimedia.org/wikipedia/commons/5/55/User-admin-gear.svg'

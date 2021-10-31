@@ -40,13 +40,6 @@
           <form method="POST" action="{{ route('settings.update')}}">
             @csrf
             <div class="mt-4">
-              <x-label for="norm" :value="__('Računanje norme')" />
-              <select class="form-select py-1 block w-full mt-1" name="norm">
-                <option value=0 @if (0==old('norm', $settings ? $settings->norm : 0)) selected="selected" @endif>5x7+5</option>
-                <option value=1 @if (1==old('norm', $settings ? $settings->norm : '')) selected="selected" @endif>5x8</option>
-              </select>
-            </div>
-            <div class="mt-4">
               <x-label for="start1" :value="__('Početak 1. smjene')" />
               <input id="start1" type="time" name="start1" value="{{ $settings ? $settings->start1->format('H:i') : old('start1')?? '06:00'}}" required class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
               <p>Vrijeme kada započinje 1. smjena.</p>
@@ -70,20 +63,10 @@
               <input id="end3" type="time" name="end3" value="{{ $settings ? $settings->end3->format('H:i') : old('end3')?? '06:00'}}" required class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
               <p>Vrijeme kada završava 3. smjena.</p>
             </div>
-            <div class="flex items-center justify-end mt-4">
-              <x-button class="ml-4">
-                {{ __('Spremi') }}
-              </x-button>
-            </div>
-          </form>
-
-          <form method="POST" action="{{ route('lista') }}">
-            @csrf
-            @method('PUT')
             <!-- zaposlen -->
             <div class="mt-4">
               <x-label for="zaposlen" :value="__('Zaposlen od')" />
-              <input id="zaposlen" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="zaposlen" value="{{Auth::user()->zaposlen ? Auth::user()->zaposlen : old('zaposlen')}}" />
+              <input id="zaposlen" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="zaposlen" value="{{ $settings ? $settings->zaposlen : old('zaposlen')}}" />
               <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
                 Da bi se mogao točno izračunati prvi mjesec rada ako se nije zaposlilo prvog u mjesecu.
               </div>

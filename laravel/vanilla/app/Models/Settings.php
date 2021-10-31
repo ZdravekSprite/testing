@@ -26,6 +26,7 @@ class Settings extends Model
    * @var array
    */
   protected $casts = [
+    'zaposlen' => 'datetime:d.m.Y',
     'start1' => 'datetime:H:i',
     'end1' => 'datetime:H:i',
     'start2' => 'datetime:H:i',

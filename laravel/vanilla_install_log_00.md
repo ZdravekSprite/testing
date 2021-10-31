@@ -1,5 +1,5 @@
 # kad se clonira repo
-```
+```bash
 git pull
 npm install && npm run dev
 composer update

@@ -17,10 +17,10 @@ class CreateDaysTable extends Migration
       $table->id();
       $table->date('date');
       $table->unsignedBigInteger('user_id');
-      $table->boolean('sick')->default(false);
-      $table->time('start')->default('06:00:00');
-      $table->time('duration')->default('08:00:00');
-      $table->time('night_duration')->default(0);
+      $table->boolean('state')->default(0);
+      $table->time('night')->nullable();
+      $table->time('start')->nullable();
+      $table->time('end')->nullable();
       $table->timestamps();
       $table->unique(['user_id', 'date']);
       $table->foreign('user_id')->references('id')->on('users');

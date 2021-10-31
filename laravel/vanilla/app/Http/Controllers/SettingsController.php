@@ -80,13 +80,13 @@ class SettingsController extends Controller
       $settings = new Settings();
       $settings->user_id = Auth::user()->id;
     }
-    $settings->norm = $request->input('norm') ?? $settings->norm;
     $settings->start1 = $request->input('start1') ?? $settings->start1;
     $settings->end1 = $request->input('end1') ?? $settings->end1;
     $settings->start2 = $request->input('start2') ?? $settings->start2;
     $settings->end2 = $request->input('end2') ?? $settings->end2;
     $settings->start3 = $request->input('start3') ?? $settings->start3;
     $settings->end3 = $request->input('end3') ?? $settings->end3;
+    $settings->zaposlen = $request->input('zaposlen') ?? $settings->zaposlen;
     //dd($settings);
     $settings->save();
     return redirect(route('dashboard'))->with('success', 'Settings Updated');
