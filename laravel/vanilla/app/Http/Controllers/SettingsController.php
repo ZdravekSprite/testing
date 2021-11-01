@@ -87,6 +87,8 @@ class SettingsController extends Controller
     $settings->start3 = $request->input('start3') ?? $settings->start3;
     $settings->end3 = $request->input('end3') ?? $settings->end3;
     $settings->zaposlen = $request->input('zaposlen') ?? $settings->zaposlen;
+    $settings->BINANCE_API_KEY = $request->input('bkey') ?? $settings->BINANCE_API_KEY;
+    $settings->BINANCE_API_SECRET = $request->input('bsecret') ?? $settings->BINANCE_API_SECRET;
     //dd($settings);
     $settings->save();
     return redirect(route('dashboard'))->with('success', 'Settings Updated');

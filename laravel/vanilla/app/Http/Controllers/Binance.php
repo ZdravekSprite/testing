@@ -26,16 +26,16 @@ class Binance extends Controller
   public function portfolio()
   {
     if (!Auth::user()) {
-      return 'not auth';
+      return redirect(route('home'))->with('warning', 'not auth');
     } else {
-      if (!Auth::user()->BINANCE_API_KEY) {
-        return 'no key';
+      if (!Auth::user()->settings->BINANCE_API_KEY) {
+        return redirect(route('home'))->with('warning', 'no key');
       }
-      if (!Auth::user()->BINANCE_API_KEY) {
-        return 'no secret';
+      if (!Auth::user()->settings->BINANCE_API_SECRET) {
+        return redirect(route('home'))->with('warning', 'no secret');
       }
-      $apiKey = Auth::user()->BINANCE_API_KEY;
-      $apiSecret = Auth::user()->BINANCE_API_SECRET;
+      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
       $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
       $serverTime = $time->serverTime;
       $timeStamp = 'timestamp=' . $serverTime;

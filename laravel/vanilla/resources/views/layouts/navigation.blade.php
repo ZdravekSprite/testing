@@ -88,6 +88,18 @@
             {{ __('Platna lista') }}
           </x-nav-link>
         </div>
+        @hasrole('binance')
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('bHome')" :active="request()->routeIs('bHome')">
+            {{ __('Binance') }}
+          </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('bPortfolio')" :active="request()->routeIs('bPortfolio')">
+            {{ __('Portfolio') }}
+          </x-nav-link>
+        </div>
+        @endhasrole
         @endhasrole
       </div>
 

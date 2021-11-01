@@ -35,13 +35,13 @@ class KlineController extends Controller
   }
   public static function kline($symbol, $time)
   {
-    if(Symbol::where('symbol', '=', $symbol)->where('status', '=', 'DUST')->first()) return null;
+    if (Symbol::where('symbol', '=', $symbol)->where('status', '=', 'DUST')->first()) return null;
     $kline = Kline::where('symbol', '=', $symbol)->where('start_time', '=', $time)->first();
     if (!$kline) {
       $decode_kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $symbol . '&interval=1m&limit=1&startTime=' . $time));
       //dd($symbol);
-      if(!isset($decode_kline[0])) return null;
-      $kline = KlineController::add_kline($symbol,'1m',$decode_kline[0]);
+      if (!isset($decode_kline[0])) return null;
+      $kline = KlineController::add_kline($symbol, '1m', $decode_kline[0]);
     }
     //dd($kline);
     return $kline;
@@ -90,7 +90,7 @@ class KlineController extends Controller
 
     //ini_set("memory_limit","1024M");
     //$symbols = Symbol::where('status', '=', 'TRADING')->where('quoteAsset', '=', 'USDT')->get();
-    
+
     $trades = Trade::where('user_id', '=', Auth::user()->id)->get();
     $symbols = $trades->pluck('symbol')->unique();
     $times = $trades->pluck('time')->map(function ($time) {
@@ -102,7 +102,7 @@ class KlineController extends Controller
     foreach ($symbols as $key => $value) {
       $symbol = Symbol::where('symbol', '=', $value)->first();
       //dd($symbol);
-      if(is_object($symbol)) {
+      if (is_object($symbol)) {
         $assets[] = $symbol->baseAsset;
         $assets[] = $symbol->quoteAsset;
       } else {
@@ -120,7 +120,7 @@ class KlineController extends Controller
       //dd($klines_symbols);
     }
     //dd($times,$klines_symbols);
-/*    set_time_limit(0);
+    /*    set_time_limit(0);
     
     foreach ($times as $key => $time) {
       //dd($time);
@@ -148,75 +148,81 @@ class KlineController extends Controller
       $stream = 'wss://stream.binance.com:9443/stream';
       //$apiKey = env('BINANCE_API_KEY');
       //$apiSecret = env('BINANCE_API_SECRET');
-      $apiKey = Auth::user()->BINANCE_API_KEY;
-      $apiSecret = Auth::user()->BINANCE_API_SECRET;
+      $apiKey = Auth::user()->settings ? Auth::user()->settings->BINANCE_API_KEY : null;
+      $apiSecret = Auth::user()->settings ? Auth::user()->settings->BINANCE_API_SECRET : null;
     }
 
     $time = json_decode(Http::get($server . '/v3/time'));
     $serverTime = $time->serverTime;
     $timeStamp = 'timestamp=' . $serverTime; // build timestamp type url get
     $signature = hash_hmac('SHA256', $timeStamp, $apiSecret); // build firm with sha256
-    $openOrders = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get($server . '/v3/openOrders', [
-      'timestamp' => $serverTime,
-      'signature' => $signature
-    ]));
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000*600000))->get();
+    if ($apiKey) {
+      $openOrders = json_decode(Http::withHeaders([
+        'X-MBX-APIKEY' => $apiKey
+      ])->get($server . '/v3/openOrders', [
+        'timestamp' => $serverTime,
+        'signature' => $signature
+      ]));
+      $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000 * 600000))->get();
+    }
     //dd($trades);
-    $symbols_list = ['ETH','BNB','ADA','MATIC','SOL','LUNA','FTT','MBOX'];
+    $symbols_list = ['ETH', 'BNB', 'ADA', 'MATIC', 'SOL', 'LUNA', 'FTT', 'MBOX'];
     $symbols = [
-      ['BTCBUSD',[],[],[],'1d'],
-      ['BTCBUSD',[],[],[],'1h'],
-      ['BTCBUSD',[],[],[],'1m']
+      ['BTCBUSD', [], [], [], '1d'],
+      ['BTCBUSD', [], [], [], '1h'],
+      ['BTCBUSD', [], [], [], '1m']
     ];
     foreach ($symbols_list as $symbol) {
-      $symbols[] = [$symbol.'BTC',[],[],[],'1h'];
-      $symbols[] = [$symbol.'BUSD',[],[],[],'1d'];
-      $symbols[] = [$symbol.'BUSD',[],[],[],'1h'];
-      $symbols[] = [$symbol.'BUSD',[],[],[],'1m'];
+      $symbols[] = [$symbol . 'BTC', [], [], [], '1h'];
+      $symbols[] = [$symbol . 'BUSD', [], [], [], '1d'];
+      $symbols[] = [$symbol . 'BUSD', [], [], [], '1h'];
+      $symbols[] = [$symbol . 'BUSD', [], [], [], '1m'];
     }
-    $symbols[] = ['BTCEUR',[],[],[],'1h'];
-    $symbols[] = ['EURBUSD',[],[],[],'1d'];
-    $symbols[] = ['EURBUSD',[],[],[],'1h'];
-    $symbols[] = ['EURBUSD',[],[],[],'1m'];
-    $symbols[] = ['BTCDAI',[],[],[],'1h'];
-    $symbols[] = ['BUSDDAI',[],[],[],'1d'];
-    $symbols[] = ['BUSDDAI',[],[],[],'1h'];
-    $symbols[] = ['BUSDDAI',[],[],[],'1m'];
+    $symbols[] = ['BTCEUR', [], [], [], '1h'];
+    $symbols[] = ['EURBUSD', [], [], [], '1d'];
+    $symbols[] = ['EURBUSD', [], [], [], '1h'];
+    $symbols[] = ['EURBUSD', [], [], [], '1m'];
+    $symbols[] = ['BTCDAI', [], [], [], '1h'];
+    $symbols[] = ['BUSDDAI', [], [], [], '1d'];
+    $symbols[] = ['BUSDDAI', [], [], [], '1h'];
+    $symbols[] = ['BUSDDAI', [], [], [], '1m'];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
       $symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->tickSize + 1;
       //$symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->stepSize;
-      foreach ($openOrders as $order) {
-        if($order->symbol == $symbol[0]) {
-          if($order->side == 'BUY') {
-            $symbols[$key][1][$order->orderId] = $order->price;
-          }
-          if($order->side == 'SELL') {
-            $symbols[$key][2][$order->orderId] = $order->price;
+      if (isset($openOrders)) {
+        foreach ($openOrders as $order) {
+          if ($order->symbol == $symbol[0]) {
+            if ($order->side == 'BUY') {
+              $symbols[$key][1][$order->orderId] = $order->price;
+            }
+            if ($order->side == 'SELL') {
+              $symbols[$key][2][$order->orderId] = $order->price;
+            }
           }
         }
       }
-      foreach ($trades as $trade) {
-        if($trade->symbol == $symbol[0]) {
-          $marker = (object)[];
-          $marker->time = $trade->time/1000;//gmdate("Y-m-d h:i:s",$trade->time);//
-          $marker->position = $trade->isBuyer ? 'belowBar' : 'aboveBar';
-          $marker->color = $trade->isBuyer ? 'red' : 'green';
-          $marker->shape = $trade->isBuyer ? 'arrowUp' : 'arrowDown';
-          $marker->id = $trade->orderId;
-          $marker->text = $trade->price*1;
-          $marker->size = 1;
-          $symbols[$key][3][] = $marker;
+      if (isset($trades)) {
+        foreach ($trades as $trade) {
+          if ($trade->symbol == $symbol[0]) {
+            $marker = (object)[];
+            $marker->time = $trade->time / 1000; //gmdate("Y-m-d h:i:s",$trade->time);//
+            $marker->position = $trade->isBuyer ? 'belowBar' : 'aboveBar';
+            $marker->color = $trade->isBuyer ? 'red' : 'green';
+            $marker->shape = $trade->isBuyer ? 'arrowUp' : 'arrowDown';
+            $marker->id = $trade->orderId;
+            $marker->text = $trade->price * 1;
+            $marker->size = 1;
+            $symbols[$key][3][] = $marker;
+          }
         }
       }
     }
     //dd($symbols);
     //$symbols = [['BTCUSDT',53600,53200], ['ETHBTC'], ['ETHUSDT',2510,2480], ['BNBBTC'], ['BNBUSDT',540,532], ['BNBETH']];
     //$link = implode('/', array_map(fn($n) => strtolower($n[0]).'@kline_1m', $symbols));
-    $func = function($n) {
-      return strtolower($n[0]).'@kline_1m';
+    $func = function ($n) {
+      return strtolower($n[0]) . '@kline_1m';
     };
     $link = implode('/', array_map($func, $symbols));
 
@@ -239,7 +245,7 @@ class KlineController extends Controller
         $chartWidth_btc = 417;
         $chartHeight = 465;
         break;
-  }
+    }
     //dd($link);
     return view('klines.index')->with(compact('symbols', 'link', 'chartWidth', 'chartWidth_btc', 'chartHeight'));
   }
