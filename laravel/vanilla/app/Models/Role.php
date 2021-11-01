@@ -9,6 +9,17 @@ class Role extends Model
 {
   use HasFactory;
 
+    /**
+   * The attributes that should be hidden for arrays.
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'id',
+    'created_at',
+    'updated_at',
+  ];
+
   /**
    * The users that belong to the role.
    */

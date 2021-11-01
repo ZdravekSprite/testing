@@ -6,7 +6,7 @@ use App\Http\Controllers\TestBinance;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\HolidayController;
-use App\Http\Controllers\PlatnaLista;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SymbolController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TradeController;
@@ -38,6 +38,9 @@ use App\Models\Settings;
 Route::get('/', function () {
   return view('welcome');
 })->name('home');
+Route::get('/home', function () {
+  return redirect(route('home'));
+});
 
 Route::get('/dashboard', function () {
   $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
@@ -162,6 +165,7 @@ Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->na
 Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->group(function () {
   Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);
   Route::get('/impersonate/{id}', [ImpersonateController::class, 'start'])->name('impersonate.start');
+  Route::resource('/roles', RoleController::class);
 });
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
