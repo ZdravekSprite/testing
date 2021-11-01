@@ -66,7 +66,7 @@
             <!-- zaposlen -->
             <div class="mt-4">
               <x-label for="zaposlen" :value="__('Zaposlen od')" />
-              <input id="zaposlen" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="zaposlen" value="{{ $settings ? $settings->zaposlen : old('zaposlen')}}" />
+              <input id="zaposlen" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="zaposlen" value="{{ $settings ? $settings->zaposlen->format('Y-m-d') : old('zaposlen')}}" />
               <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
                 Da bi se mogao točno izračunati prvi mjesec rada ako se nije zaposlilo prvog u mjesecu.
               </div>

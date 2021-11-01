@@ -41,9 +41,11 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
   $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
-  $month = Auth::user()->month % 12 + 1;
-  $year = (Auth::user()->month - $month + 1) / 12;
-  return view('dashboard')->with(compact('settings', 'month', 'year'));
+  //dd($settings);
+  //$month = Auth::user()->month % 12 + 1;
+  //$year = (Auth::user()->month - $month + 1) / 12;
+  //return view('dashboard')->with(compact('settings', 'month', 'year'));
+  return view('dashboard')->with(compact('settings'));
 })->middleware(['auth'])->name('dashboard');
 
 require __DIR__ . '/auth.php';

@@ -31,6 +31,6 @@ php artisan make:model Settings -a
 
 ```bash
 git add .
-git commit -am "save čišćenje 2019 10 31"
+git commit -am "save čišćenje 2019 11 1"
 git push
 ```

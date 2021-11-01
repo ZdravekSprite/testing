@@ -84,7 +84,7 @@ class Month extends Model
   {
     $firstDate = '01.' . $this->slug();
     $from = CarbonImmutable::createFromFormat('d.m.Y', $firstDate)->firstOfMonth();
-    $firstFrom = $this->user->zaposlen > $from ? Carbon::parse($this->user->zaposlen) : $from;
+    $firstFrom = $this->user->settings->zaposlen > $from ? Carbon::parse($this->user->settings->zaposlen) : $from;
     return $firstFrom;
   }
 
