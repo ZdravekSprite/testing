@@ -77,8 +77,8 @@ class TradeController extends Controller
   public function myTrades($symbol)
   {
     $server = 'https://api.binance.com/api';
-    $apiKey = Auth::user()->BINANCE_API_KEY; //env('BINANCE_API_KEY');
-    $apiSecret = Auth::user()->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
+    $apiKey = Auth::user()->settings->BINANCE_API_KEY; //env('BINANCE_API_KEY');
+    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
     $time = json_decode(Http::get($server . '/v3/time'));
     $serverTime = $time->serverTime;
     $queryArray = array(
@@ -121,8 +121,8 @@ class TradeController extends Controller
   public function depositHistory()
   {
     $server = 'https://api.binance.com';
-    $apiKey = Auth::user()->BINANCE_API_KEY; //env('BINANCE_API_KEY');
-    $apiSecret = Auth::user()->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
+    $apiKey = Auth::user()->settings->BINANCE_API_KEY; //env('BINANCE_API_KEY');
+    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
     $time = json_decode(Http::get($server . '/api/v3/time'));
     $serverTime = $time->serverTime;
     $timeStamp = 'timestamp=' . $serverTime;
@@ -139,8 +139,8 @@ class TradeController extends Controller
   public function dustLog()
   {
     $server = 'https://api.binance.com';
-    $apiKey = Auth::user()->BINANCE_API_KEY; //env('BINANCE_API_KEY');
-    $apiSecret = Auth::user()->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
+    $apiKey = Auth::user()->settings->BINANCE_API_KEY; //env('BINANCE_API_KEY');
+    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
     $time = json_decode(Http::get($server . '/api/v3/time'));
     $serverTime = $time->serverTime;
     $timeStamp = 'timestamp=' . $serverTime;
@@ -214,8 +214,8 @@ class TradeController extends Controller
   public function index()
   {
     $server = 'https://api.binance.com';
-    $apiKey = Auth::user()->BINANCE_API_KEY; //env('BINANCE_API_KEY');
-    $apiSecret = Auth::user()->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
+    $apiKey = Auth::user()->settings->BINANCE_API_KEY; //env('BINANCE_API_KEY');
+    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
     $time = json_decode(Http::get($server . '/api/v3/time'));
     $serverTime = $time->serverTime;
     $timeStamp = 'timestamp=' . $serverTime;
@@ -365,6 +365,84 @@ class TradeController extends Controller
 
   public function prosjek()
   {
+    $the_asset = 'ADA';
+    $symbol_base = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', $the_asset)->get();
+    $symbol_quote = Symbol::where('status', '=', 'TRADING')->where('quoteAsset', '=', $the_asset)->get();
+    $trades = [];
+    foreach ($symbol_base as $skey => $svalue) {
+      $symbol_trades = Trade::where('symbol', '=', $svalue->symbol)->get();
+      if (!$symbol_trades->isEmpty()) {
+        foreach ($symbol_trades as $tkey => $tvalue) {
+          if (!isset($trades[$svalue->baseAsset])) $trades[$svalue->baseAsset] = 0;
+          if (!isset($trades[$svalue->quoteAsset])) $trades[$svalue->quoteAsset] = 0;
+          if (!isset($trades[$tvalue->commissionAsset])) $trades[$tvalue->commissionAsset] = 0;
+          $trades[$svalue->baseAsset] = $trades[$svalue->baseAsset] + ($tvalue->isBuyer ? 1 : -1) * $tvalue->qty;
+          $trades[$svalue->quoteAsset] = $trades[$svalue->quoteAsset] + ($tvalue->isBuyer ? -1 : 1) * $tvalue->quoteQty;
+          $trades[$tvalue->commissionAsset] = $trades[$tvalue->commissionAsset] - 1 * $tvalue->commission;
+        }
+        //dd($symbol_trades);
+      }
+    }
+    foreach ($symbol_quote as $skey => $svalue) {
+      $symbol_trades = Trade::where('symbol', '=', $svalue->symbol)->get();
+      if (!$symbol_trades->isEmpty()) {
+        foreach ($symbol_trades as $tkey => $tvalue) {
+          if (!isset($trades[$svalue->baseAsset])) $trades[$svalue->baseAsset] = 0;
+          if (!isset($trades[$svalue->quoteAsset])) $trades[$svalue->quoteAsset] = 0;
+          if (!isset($trades[$tvalue->commissionAsset])) $trades[$tvalue->commissionAsset] = 0;
+          $trades[$svalue->baseAsset] = $trades[$svalue->baseAsset] + ($tvalue->isBuyer ? -1 : 1) * $tvalue->qty;
+          $trades[$svalue->quoteAsset] = $trades[$svalue->quoteAsset] + ($tvalue->isBuyer ? 1 : -1) * $tvalue->quoteQty;
+          $trades[$tvalue->commissionAsset] = $trades[$tvalue->commissionAsset] - 1 * $tvalue->commission;
+        }
+        //dd($symbol_trades);
+      }
+    }
+    //dd($trades);
+    $asset_qty = 0;
+    $busd_qty = 0;
+    foreach ($trades as $coin => $qty) {
+      if($coin == $the_asset) {
+        $asset_qty += $qty;
+      } else {
+        if($coin == 'BUSD') {
+          $busd_qty += $qty;
+        }
+        if($coin == 'USDT') {
+          $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=BUSDUSDT');
+          $data = $res->json();
+          //dd($data);
+          $busd_qty += $qty/$data['price'];
+        }
+        if($coin == 'BNB') {
+          $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD');
+          $data = $res->json();
+          //dd($data);
+          $busd_qty += $qty*$data['price'];
+        }
+        if($coin == 'XRP') {
+          $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=XRPBUSD');
+          $data = $res->json();
+          //dd($data);
+          $busd_qty += $qty*$data['price'];
+        }
+        if($coin == 'ADA') {
+          $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=ADABUSD');
+          $data = $res->json();
+          //dd($data);
+          $busd_qty += $qty*$data['price'];
+        }
+        if($coin == 'ETH') {
+          $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=ETHBUSD');
+          $data = $res->json();
+          //dd($data);
+          $busd_qty += $qty*$data['price'];
+        }
+      }
+    }
+    dd($trades,$the_asset.': '.$asset_qty,'BUSD: '.$busd_qty,'AVRG: '.(-$busd_qty/$asset_qty));
+    //$res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $coin->coin . 'USDT');
+    //dd($asset,$symbol_base,$symbol_quote);
+    /*
     $coin = 0;
     $busd = 0;
     $trades = $this->myTrades('ETHBUSD');
@@ -380,6 +458,7 @@ class TradeController extends Controller
       //dd($coin,$busd,$trade);
     }
     dd($busd / $coin, $trades);
+    */
   }
   /**
    * Show the form for creating a new resource.
