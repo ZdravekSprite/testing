@@ -28,10 +28,10 @@ class Binance extends Controller
     if (!Auth::user()) {
       return redirect(route('home'))->with('warning', 'not auth');
     } else {
-      if (!Auth::user()->settings->BINANCE_API_KEY) {
+      if (!isset(Auth::user()->settings->BINANCE_API_KEY)) {
         return redirect(route('home'))->with('warning', 'no key');
       }
-      if (!Auth::user()->settings->BINANCE_API_SECRET) {
+      if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
         return redirect(route('home'))->with('warning', 'no secret');
       }
       $apiKey = Auth::user()->settings->BINANCE_API_KEY;

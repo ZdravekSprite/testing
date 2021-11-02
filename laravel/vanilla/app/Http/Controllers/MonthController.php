@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Month;
 use App\Models\Settings;
 use Illuminate\Http\Request;
@@ -294,7 +295,7 @@ class MonthController extends Controller
     }
     $days = $month->days();
 
-    if ($settings->norm) {
+    if (!User::where('id', '=', Auth::user()->id)->first()->hasAnyRole('panpek')) {
       $data  = $this->lista_data1($month);
     } else {
       $data  = $this->lista_data($month);

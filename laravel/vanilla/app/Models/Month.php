@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Auth;
 
 class Month extends Model
 {
@@ -163,6 +164,7 @@ class Month extends Model
       $minWorkNight += $day_minNight1 + $day_minNight2;
       $dayOfWeek = $d->date->dayOfWeek;
       $settings = Settings::where('user_id', '=', $this->user_id)->first();
+      $norm = User::where('id', '=', Auth::user()->id)->first()->hasAnyRole('panpek');
       if (!$settings) {
         $settings = new Settings();
         $settings->start1 = '06:00';
@@ -179,14 +181,14 @@ class Month extends Model
           $minWorkSunday += $day_minWork;
           break;
         case 6:
-          if (!$settings->norm) {
+          if ($norm) {
             $def_h = 5;
           } else {
             $def_h = 0;
           }
           break;
         default:
-          if (!$settings->norm) {
+          if ($norm) {
             $def_h = 7;
           } else {
             $def_h = 8;
