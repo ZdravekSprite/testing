@@ -15,8 +15,8 @@ class TestBinance extends Controller
   }
   public function http_get_withHeaders($url, $array = null)
   {
-    $apiKey = Auth::user()->BINANCE_API_KEY;
-    $apiSecret = Auth::user()->BINANCE_API_SECRET;
+    $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
     $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
     $serverTime = $time->serverTime;
     $timestampArray = array(
@@ -33,8 +33,8 @@ class TestBinance extends Controller
   }
   public function http_delete($url, $array = null)
   {
-    $apiKey = Auth::user()->BINANCE_API_KEY;
-    $apiSecret = Auth::user()->BINANCE_API_SECRET;
+    $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
     $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
     $serverTime = $time->serverTime;
     $timestampArray = array(
@@ -51,8 +51,8 @@ class TestBinance extends Controller
   }
   public function http_post($url, $array = null)
   {
-    $apiKey = Auth::user()->BINANCE_API_KEY;
-    $apiSecret = Auth::user()->BINANCE_API_SECRET;
+    $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
     $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
     $serverTime = $time->serverTime;
     $timestampArray = array(
@@ -285,8 +285,8 @@ class TestBinance extends Controller
     //$sells[] = (new $this)->sell("BTCBUSD", 0.00169, 49603.56, "sell_btc02");
     //$sells[] = (new $this)->sell("ETHBUSD", 0.0068, 4241.99, "sell_eth02");
     //$sells[] = (new $this)->sell("ETHBUSD", 0.0024, 4171.1, "sell_eth01");
-    //$sells[] = (new $this)->sell("BNBBUSD", 0.024, 598.9, "sell_bnb00");
-    //$sells[] = (new $this)->sell("BNBBUSD", 0.018, 562.3, "sell_bnb01");
+    $sells[] = (new $this)->sell("BNBBUSD", 0.015, 666.7, "sell_bnb00");
+    $sells[] = (new $this)->sell("BNBBUSD", 0.017, 588.3, "sell_bnb01");
     //$sells[] = (new $this)->sell("BNBBUSD", 0.019, 545.3, "sell_bnb02");
     //$sells[] = (new $this)->sell("ADABUSD", 7.9, 4.11, "sell_ada00");
     //$sells[] = (new $this)->sell("ADABUSD", 3.7, 2.709, "sell_ada01");

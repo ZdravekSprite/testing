@@ -229,7 +229,7 @@
         //console.log('response_binance', response)
         var objs = r.map(function(x) {
           return {
-            time: x[0] / 1000 + 60*60*2,
+            time: x[0] / 1000 + 60*60,//*2,
             open: x[1],
             high: x[2],
             low: x[3],
@@ -255,7 +255,7 @@
     candleSeries{{ $symbol[4] }}_{{ $symbol[0] }}.setMarkers([
       @foreach($symbol[3] as $marker)
       {
-        time: {{ $marker->time + 60*60*2 }},
+        time: {{ $marker->time + 60*60 }},//*2 }},
         position: '{{ $marker->position }}',
         color: '{{ $marker->color }}',
         shape: '{{ $marker->shape }}',
@@ -288,19 +288,19 @@
       if (message.stream == '{{ strtolower($symbol[0]) }}@kline_1m') {
         var candlestick = message.data.k;
         candleSeries1m_{{ $symbol[0] }}.update({
-          time: candlestick.t / 1000 + 60*60*2,
+          time: candlestick.t / 1000 + 60*60,//*2,
           open: candlestick.o,
           high: candlestick.h,
           low: candlestick.l,
           close: candlestick.c,
         });
         histogramSeries1m_{{ $symbol[0] }}.update({
-          time: candlestick.t / 1000 + 60*60*2,
+          time: candlestick.t / 1000 + 60*60,//*2,
           value: candlestick.v * candlestick.c,
           color: candlestick.o > candlestick.c ? 'rgba(255,82,82, 0.8)' : 'rgba(0, 150, 136, 0.8)'
         });
         lineSeries1m_{{ $symbol[0] }}.update({
-          time: candlestick.t / 1000 + 60*60*2,
+          time: candlestick.t / 1000 + 60*60,//*2,
           value: candlestick.v * candlestick.c * (candlestick.c - candlestick.o) * (candlestick.h - candlestick.l),
         });
       }
