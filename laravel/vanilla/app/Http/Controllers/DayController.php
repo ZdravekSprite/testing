@@ -139,7 +139,8 @@ class DayController extends Controller
         $next_day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', $day->date->addDays(1)->format('Y-m-d'))->first();
         if (!$next_day) {
           $next_day = new Day;
-          $next_day->date = $day->date->addDays(1)->format('d.m.Y');
+          $next_day->user_id = Auth::user()->id;
+          $next_day->date = $day->date->addDays(1)->format('Y-m-d');
         }
         $next_day->night = $day->end->format('H:i');
         $day->end = "24:00";
@@ -232,7 +233,8 @@ class DayController extends Controller
       if ($day->start > $day->end) {
         if (!$next_day) {
           $next_day = new Day;
-          $next_day->date = $day->date->addDays(1)->format('d.m.Y');
+          $next_day->user_id = Auth::user()->id;
+          $next_day->date = $day->date->addDays(1)->format('Y-m-d');
         }
         $next_day->night = $day->end->format('H:i');
         $day->end = "24:00";

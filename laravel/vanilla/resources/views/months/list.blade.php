@@ -19,7 +19,7 @@
                 Dopust: {{$month->hoursNorm()->Dopust}}
                 Bolovanje: {{$month->hoursNorm()->Sick}}
                 Satnica: {{ $data['perHour'] }}
-                Noćna: {{$month->hoursNorm()->minNight}}
+                Noćna: {{$month->hoursNorm()->minNight/60}} sati
               </th>
               <th class="w-32">
                 <a class="float-right" href="{{ route('months.show', ['month' => $month->next()]) }}" title="{{$month->next()}}">
@@ -40,6 +40,8 @@
                   @if($day->state == 1)
                   <div class="absolute rounded-l-md bg-indigo-500 min-h-full" style="width: {{isset($day->night) ? ($day->night->hour*60 + $day->night->minute)/1440*100 : 0}}%;"></div>
                   <div class="absolute{{(isset($day->end) && $day->end->format('H:i') == '00:00') ? ' rounded-r-md' : ''}} bg-indigo-500 min-h-full" style="margin-left: {{isset($day->start) ? ($day->start->hour*60 + $day->start->minute)/1440*100 : 0}}%; width: {{isset($day->end) ? ($day->end->diffInMinutes($day->start))/1440*100 : 0}}%;"></div>
+                  @else
+                  <div class="absolute rounded-l-md bg-indigo-500 min-h-full" style="width: {{isset($day->night) ? ($day->night->hour*60 + $day->night->minute)/1440*100 : 0}}%;"></div>
                   @endif
                 </div>
               </td>
