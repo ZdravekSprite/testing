@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class Binance extends Controller
 {
@@ -69,7 +70,7 @@ class Binance extends Controller
         }
         $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
       }
-      $eur_kn = str_replace(',', '.', $hnb_eur_kn->kupovni_tecaj)/1.01;
+      $eur_kn = str_replace(',', '.', $hnb_eur_kn->kupovni_tecaj) / 1.01;
       $total_kn = -0.8 * $eur_kn;
       //dd($total_kn);
 
@@ -86,7 +87,7 @@ class Binance extends Controller
       //dd($total_kn, $usdt_kn, $busd_usdt, $busd_kn, $busdt_kn);
 
       //dd($getall);
-/*
+      /*
       $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
       $serverTime = $time->serverTime;
       $timeStamp = 'timestamp=' . $serverTime;
@@ -167,34 +168,38 @@ class Binance extends Controller
                 $data = $res->json();
                 if (isset($data['price'])) $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn / $data['price'];
               }
-              if(!isset($coin->busd)) {
+              if (!isset($coin->busd)) {
                 //dd($coin);
                 $coin->busd = 0;
               }
-              $coin->price = $coin->busd;//max($coin->eur, $coin->busd, $coin->usdt);
+              $coin->price = $coin->busd; //max($coin->eur, $coin->busd, $coin->usdt);
               $coin->openOrders = (new Binance)->openOrders($coin->coin . "BUSD");
               //$coin->allOrders = (new Binance)->allOrders($coin->coin);
               //dd($coin);
-            }
+          }
           $balance = Arr::add($balance, $coin->coin, $coin);
           $total = $total + $coin->price;
         }
       }
+      $binanceSocket = 'wss://stream.binance.com:9443/stream?streams=';
+      //var binanceSocket = new WebSocket("wss://stream.binance.com:9443/stream?streams=adabusd@kline_1m/bnbbusd@kline_1m/ethbusd@kline_1m/maticbusd@kline_1m/btcbusd@kline_1m/eurbusd@kline_1m/solbusd@kline_1m/mboxbusd@kline_1m/lunabusd@kline_1m/fttbusd@kline_1m");
       foreach ($balance as $coin) {
         if ($coin->coin == 'BUSD') {
           $coin->target = 1500 / $coin->price * $coin->total;
         } else {
-          if($coin->price) {
+          $binanceSocket .= Str::lower($coin->coin).'busd@kline_1m/';
+          if ($coin->price) {
             $coin->target = $total / 3000 * 300 / $coin->price * $coin->total;
           } else {
             $coin->target = 0;
           }
-          
         }
-    }
-      //dd($balance);
+      }
+      $binanceSocket = Str::replaceLast('/', '', $binanceSocket);
 
-      return view('binance.portfolio')->with(compact('balance', 'total', 'eur_kn', 'busd_kn'));
+      //dd($balance,$binanceSocket);
+
+      return view('binance.portfolio')->with(compact('balance', 'binanceSocket', 'total', 'eur_kn', 'busd_kn'));
     }
   }
 
@@ -250,32 +255,32 @@ class Binance extends Controller
    */
   public function orders()
   {
-    $coins = [['ETH',5,2],['BTC',6,2],['BNB',4,2],['ADA',2,4],['MATIC',1,5]];
+    $coins = [['ETH', 5, 2], ['BTC', 6, 2], ['BNB', 4, 2], ['ADA', 2, 4], ['MATIC', 1, 5]];
     $simbols = [];
     foreach ($coins as $coin) {
-      $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol='.$coin[0].'BUSD');
+      $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $coin[0] . 'BUSD');
       $data = $res->json();
       $coin_data = [];
       $price = $data['price'];
       $coin_data = Arr::add($coin_data, 'price', $price);
-      $busd10 = 10/$price;
-      $pow1 = pow(10,$coin[1]);
-      $pow2 = pow(10,$coin[2]);
+      $busd10 = 10 / $price;
+      $pow1 = pow(10, $coin[1]);
+      $pow2 = pow(10, $coin[2]);
       $up = [];
       $busd10up = [];
       $down = [];
       $busd10down = [];
 
-      $up[0] = floor($busd10*$pow1)/$pow1;
-      $busd10up[0] = ceil(1/$up[0]*10*$pow2)/$pow2;
-      $down[0] = ceil($busd10*$pow1)/$pow1;
-      $busd10down[0] = ceil(1/$down[0]*10*$pow2)/$pow2;
+      $up[0] = floor($busd10 * $pow1) / $pow1;
+      $busd10up[0] = ceil(1 / $up[0] * 10 * $pow2) / $pow2;
+      $down[0] = ceil($busd10 * $pow1) / $pow1;
+      $busd10down[0] = ceil(1 / $down[0] * 10 * $pow2) / $pow2;
 
-      for ($i=0; $i < 10; $i++) { 
-        $up[$i+1] = $up[$i]-1/$pow1;
-        $busd10up[$i+1] = ceil(1/$up[$i+1]*10*$pow2)/$pow2;
-        $down[$i+1] = $down[$i]+1/$pow1;
-        $busd10down[$i+1] = ceil(1/$down[$i+1]*10*$pow2)/$pow2;
+      for ($i = 0; $i < 10; $i++) {
+        $up[$i + 1] = $up[$i] - 1 / $pow1;
+        $busd10up[$i + 1] = ceil(1 / $up[$i + 1] * 10 * $pow2) / $pow2;
+        $down[$i + 1] = $down[$i] + 1 / $pow1;
+        $busd10down[$i + 1] = ceil(1 / $down[$i + 1] * 10 * $pow2) / $pow2;
         # code...
       }
 
@@ -297,10 +302,10 @@ class Binance extends Controller
   public function chart($coin = 'BNB')
   {
     //dd(Symbol::where('symbol', '=', $coin.'BUSD')->first()->tickSize);
-    $busd = Symbol::where('symbol', '=', $coin.'BUSD')->first();
-    $btc = Symbol::where('symbol', '=', $coin.'BTC')->first();
-    $eth = Symbol::where('symbol', '=', $coin.'ETH')->first();
-    
+    $busd = Symbol::where('symbol', '=', $coin . 'BUSD')->first();
+    $btc = Symbol::where('symbol', '=', $coin . 'BTC')->first();
+    $eth = Symbol::where('symbol', '=', $coin . 'ETH')->first();
+
     $precision = [
       'BUSD' => $busd ? $busd->tickSize + 1 : 0,
       'BTC' => $btc ? $btc->tickSize + 1 : 0,
@@ -322,7 +327,7 @@ class Binance extends Controller
     $quote = 'BUSD';
     $dec2 = 5;
 
-    return view('binance.dashboard')->with(compact('symbol','base','dec1','quote','dec2'));
+    return view('binance.dashboard')->with(compact('symbol', 'base', 'dec1', 'quote', 'dec2'));
   }
 
   /**

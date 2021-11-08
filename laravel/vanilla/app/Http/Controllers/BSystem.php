@@ -130,6 +130,7 @@ class BSystem extends Controller
     } else {
       $exchangeInfo = $http->get('https://api.binance.com/api/v3/exchangeInfo?symbol='.$symbol);
     }
+    //dd($exchangeInfo);
     return $exchangeInfo;
   }
 }
