@@ -401,45 +401,45 @@ class TradeController extends Controller
     $asset_qty = 0;
     $busd_qty = 0;
     foreach ($trades as $coin => $qty) {
-      if($coin == $the_asset) {
+      if ($coin == $the_asset) {
         $asset_qty += $qty;
       } else {
-        if($coin == 'BUSD') {
+        if ($coin == 'BUSD') {
           $busd_qty += $qty;
         }
-        if($coin == 'USDT') {
+        if ($coin == 'USDT') {
           $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=BUSDUSDT');
           $data = $res->json();
           //dd($data);
-          $busd_qty += $qty/$data['price'];
+          $busd_qty += $qty / $data['price'];
         }
-        if($coin == 'BNB') {
+        if ($coin == 'BNB') {
           $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD');
           $data = $res->json();
           //dd($data);
-          $busd_qty += $qty*$data['price'];
+          $busd_qty += $qty * $data['price'];
         }
-        if($coin == 'XRP') {
+        if ($coin == 'XRP') {
           $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=XRPBUSD');
           $data = $res->json();
           //dd($data);
-          $busd_qty += $qty*$data['price'];
+          $busd_qty += $qty * $data['price'];
         }
-        if($coin == 'ADA') {
+        if ($coin == 'ADA') {
           $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=ADABUSD');
           $data = $res->json();
           //dd($data);
-          $busd_qty += $qty*$data['price'];
+          $busd_qty += $qty * $data['price'];
         }
-        if($coin == 'ETH') {
+        if ($coin == 'ETH') {
           $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=ETHBUSD');
           $data = $res->json();
           //dd($data);
-          $busd_qty += $qty*$data['price'];
+          $busd_qty += $qty * $data['price'];
         }
       }
     }
-    dd($trades,$the_asset.': '.$asset_qty,'BUSD: '.$busd_qty,'AVRG: '.(-$busd_qty/$asset_qty));
+    dd($trades, $the_asset . ': ' . $asset_qty, 'BUSD: ' . $busd_qty, 'AVRG: ' . (-$busd_qty / $asset_qty));
     //$res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $coin->coin . 'USDT');
     //dd($asset,$symbol_base,$symbol_quote);
     /*

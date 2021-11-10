@@ -109,7 +109,7 @@ git push
 ## binance -> laravel
 ```bash
 git add .
-git commit -am "save binance 2021 11 8"
+git commit -am "save binance 2021 11 10"
 git push
 git checkout main
 git pull
