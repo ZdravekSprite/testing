@@ -160,9 +160,11 @@ class MonthController extends Controller
     $data['1.7c.kn'] = number_format($kn1_7c, 2, ',', '.');
 
     // 1.7d Bolovanje do 42 dana
+    $kn1_7d = $month->bolovanje / 100;
     $data['1.7d.h'] = number_format($hoursNorm->Sick, 2, ',', '.');
-    $kn1_7d = round($hoursNorm->Sick * $perHour * 0.7588, 2);
-    $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.');
+    //$kn1_7d = round($hoursNorm->Sick * $perHour * 0.7588, 2);
+    $text17 = $hoursNorm->Sick ? '(' . number_format($kn1_7d / $hoursNorm->Sick / $perHour * 100, 2, ',', '.') . '%)' : '';
+    $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
 
     // 1.7e Dodatak za rad nedjeljom
     $data['1.7e.h'] = number_format($hoursNorm->minSunday / 60, 2, ',', '.');
@@ -175,7 +177,7 @@ class MonthController extends Controller
     $data['1.7f.kn'] = number_format($kn1_7f, 2, ',', '.');
 
     // 1.7g Dodatak za noćni rad
-    $h1_7g = $month->nocni/10;
+    $h1_7g = $month->nocni / 10;
     $nightWork = $hoursNorm->minNight;
 
     $data['1.7g.h'] = number_format($h1_7g, 2, ',', '.') . ' (' . number_format($nightWork, 0, ',', '.') . 'min)';
@@ -199,7 +201,7 @@ class MonthController extends Controller
 
     // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
     $prijevoz = $month->prijevoz / 100 ?? 360;
-    $prijevoz = $hoursNorm->GO ? $prijevoz * ($hoursNorm->All - $hoursNorm->GO) / $hoursNorm->All : $prijevoz;
+    $prijevoz = ($hoursNorm->GO + $hoursNorm->Sick) > 14 ? $prijevoz * ($hoursNorm->All - $hoursNorm->GO - $hoursNorm->Sick) / $hoursNorm->All : $prijevoz;
     //dd($hoursNorm);
     $prijevoz = $hoursNorm->firstAll > $hoursNorm->All ? $prijevoz : $prijevoz * $hoursNorm->firstAll / $hoursNorm->All;
     $regres = $month->regres / 100 ?? 0;
@@ -300,7 +302,7 @@ class MonthController extends Controller
     } else {
       $data  = $this->lista_data($month);
     }
-    
+
     $data['-'] = route('months.show', ['month' => $month->prev()]);
     $data['+'] = route('months.show', ['month' => $month->next()]);
     //dd($month,$days,$data);
@@ -309,7 +311,7 @@ class MonthController extends Controller
 
   public function platna_lista(Request $request)
   {
-    
+
     if ($request->input('month') == null) {
       $m['x'] = Carbon::now();
     } else {
@@ -385,6 +387,7 @@ class MonthController extends Controller
     $month->odbitak = $request->input('odbitak') ? $request->input('odbitak') * 100 : $month->odnitak;
     $month->prirez = $request->input('prirez') ? $request->input('prirez') * 100 : $month->prirez;
     $month->prekovremeni = $request->input('prekovremeni') ?? $month->prekovremeni;
+    $month->bolovanje = $request->input('bolovanje') * 100 ?? $month->bolvanje;
     $month->nocni = $request->input('nocni') * 10 ?? $month->nocni;
     $month->nagrada = $request->input('nagrada') ? $request->input('nagrada') * 100 : $month->nagrada;
     $month->regres = $request->input('regres') ? $request->input('regres') * 100 : $month->regres;

@@ -59,6 +59,12 @@
               <input id="nocni" type="number" name="nocni" value="{{$month->nocni/10?? old('nocni')?? 0}}" min="0" step="0.5" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
             </div>
 
+            <!-- bolovanje -->
+            <div class="mt-4">
+              <x-label for="bolovanje" :value="__('Bolovanje')" />
+              <input id="bolovanje" type="number" name="bolovanje" value="{{$month->bolovanje/100?? old('bolovanje')?? 0}}" min="0" step="0.01" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+            </div>
+
             <!-- stimulacija -->
             <div class="mt-4">
               <x-label for="nagrada" :value="__('Stimulacija')" />
