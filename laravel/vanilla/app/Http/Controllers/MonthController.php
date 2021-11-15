@@ -160,12 +160,35 @@ class MonthController extends Controller
     $data['1.7c.kn'] = number_format($kn1_7c, 2, ',', '.');
 
     // 1.7d Bolovanje do 42 dana
-    $kn1_7d = $month->bolovanje / 100;
     $data['1.7d.h'] = number_format($hoursNorm->Sick, 2, ',', '.');
     //$kn1_7d = round($hoursNorm->Sick * $perHour * 0.7588, 2);
-    $text17 = $hoursNorm->Sick ? '(' . number_format($kn1_7d / $hoursNorm->Sick / $perHour * 100, 2, ',', '.') . '%)' : '';
-    $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
-
+    if ($hoursNorm->Sick && !$month->bolovanje) {
+      $ms = Month::where('user_id', '=', Auth::user()->id)->where('month', '>=', $month->month - 6)->where('month', '<', $month->month)->get();
+      //dd($ms);
+      if (count($ms)) {
+        $mjeseci = [];
+        foreach ($ms as $key => $value) {
+          $mHoursNorm = $value->hoursNorm();
+          $mBruto = $value->bruto ?? $value->last('bruto');
+          $mPerHour = round(($mBruto / 100 / $mHoursNorm->All), 2);
+          $mjeseci[$key] = $mPerHour;
+        }
+        //dd(array_sum($mjeseci) / count($mjeseci) * 0.7);
+        $kn1_7d = round(array_sum($mjeseci) / count($mjeseci) * 0.7, 2) * $hoursNorm->Sick;
+        $text17 = '(' . number_format($kn1_7d / $hoursNorm->Sick / $perHour * 100, 2, ',', '.') . '%)*';
+        $data['1.7d.t'] = 'izračunato na osnovu prosjeka zadnjih 6 mjeseci';
+        $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
+      } else {
+        $kn1_7d = round($perHour * 0.7, 2) * $hoursNorm->Sick;
+        $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . '(70%)**';
+        $data['1.7d.t'] = 'izračunato na osnovu prosjeka trenutnog mjeseca';
+      }
+    } else {
+      $kn1_7d = $month->bolovanje / 100;
+      $text17 = $hoursNorm->Sick ? '(' . number_format($kn1_7d / $hoursNorm->Sick / $perHour * 100, 2, ',', '.') . '%)' : '';
+      $data['1.7d.t'] = '';
+      $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
+    }
     // 1.7e Dodatak za rad nedjeljom
     $data['1.7e.h'] = number_format($hoursNorm->minSunday / 60, 2, ',', '.');
     $kn1_7e = round($hoursNorm->minSunday / 60 * $perHour * 0.35, 2);
@@ -333,7 +356,7 @@ class MonthController extends Controller
       $settings->start3 = '22:00';
       $settings->end3 = '06:00';
     }
-    if ($settings->norm) {
+    if (!User::where('id', '=', Auth::user()->id)->first()->hasAnyRole('panpek')) {
       $data  = $this->lista_data1($month);
     } else {
       $data  = $this->lista_data($month);

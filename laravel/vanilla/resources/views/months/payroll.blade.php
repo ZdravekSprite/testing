@@ -217,7 +217,7 @@
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.7d Bolovanje do 42 dana</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.7d.h'] }}</td>
-              <td class="w-1/8 border p-2 text-right">{{ $data['1.7d.kn'] }}</td>
+              <td class="w-1/8 border p-2 text-right" title="{{ $data['1.7d.t'] }}">{{ $data['1.7d.kn'] }}</td>
             </tr>
             @endif
             @if($data['1.7e.h'] > 0)

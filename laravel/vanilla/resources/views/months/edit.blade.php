@@ -63,6 +63,7 @@
             <div class="mt-4">
               <x-label for="bolovanje" :value="__('Bolovanje')" />
               <input id="bolovanje" type="number" name="bolovanje" value="{{$month->bolovanje/100?? old('bolovanje')?? 0}}" min="0" step="0.01" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <p>Satnica za bolovanje je 70% od prosjeka prethodnih 6 mjeseci. Komplikacija za izračun, a i pitanje da li ima podataka od prošlih 6 mjeseci, pa je jednostavnije da se upiše.</p>
             </div>
 
             <!-- stimulacija -->
