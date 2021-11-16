@@ -154,6 +154,7 @@ class Month extends Model
     $minWorkSunday = 0;
 
     //dd($this->days());
+    //$night_min = [];
     foreach ($this->days() as $d) {
 
       $day_minWork = ($d->start ? ($d->end ? $d->end->diffInMinutes($d->start) : 24 * 60 - $d->start->format('H') * 60 + $d->start->format('i')) : 0) + ($d->night ? $d->night->format('H') * 60 + $d->night->format('i') : 0);
@@ -162,9 +163,11 @@ class Month extends Model
       $day_minNight1 = $d->night ? ($d->night->hour < 6 ? $d->night->hour * 60 + $d->night->minute : 360) : 0;
       $ponoc = new Carbon('00:00:00');
       $day_endMin = $d->start ? ($d->end ? $d->end->diffInMinutes($ponoc) : 1440) : 0;
+      $day_startMin = $day_endMin ? $d->start->diffInMinutes($ponoc) : 0;
       $day_minNight2 = ($day_endMin > 1320) ? $day_endMin - 1320 : 0;
-      $minWorkNight += $day_minNight1 + $day_minNight2;
-      //if($d->id == 560) dd($d,$minWorkNight,$day_minNight1,$day_minNight2);
+      $day_minNight3 = $day_startMin < 360 && $day_startMin > 0 ? 360 - $day_startMin : 0;
+      $minWorkNight += $day_minNight1 + $day_minNight2 + $day_minNight3;
+      //$night_min[] = $day_minNight1 + $day_minNight2 + $day_minNight3;
       $dayOfWeek = $d->date->dayOfWeek;
       $settings = Settings::where('user_id', '=', $this->user_id)->first();
       $norm = User::where('id', '=', Auth::user()->id)->first()->hasAnyRole('panpek');
@@ -222,6 +225,7 @@ class Month extends Model
           break;
       }
     }
+    //dd($night_min);
     $hoursNormWork = ($from > $firstFrom ? $hoursNormAll - $hoursNormHoli : $firstHoursNormAll - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO - $hoursNormDopust;
 
     $hoursNorm = (object) [
