@@ -25,6 +25,7 @@ class CreateMonthsTable extends Migration
       $table->mediumInteger('kredit')->nullable();
       $table->tinyInteger('prekovremeni')->nullable();
       $table->tinyInteger('nocni')->nullable();
+      $table->mediumInteger('bolovanje')->nullable();
       $table->mediumInteger('stimulacija')->nullable();
       $table->mediumInteger('regres')->nullable();
       $table->timestamps();

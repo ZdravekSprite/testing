@@ -58,4 +58,53 @@ class Day extends Model
     ];
     return $weekMap[$this->date->dayOfWeek];
   }
+
+  public function stateDayBefore()
+  {
+    $dayBefore = Day::where('user_id', '=', $this->user_id)->where('date', '=', $this->date->addDays(-1)->format('Y-m-d'))->first();
+    $stateDayBefore = $dayBefore ? $dayBefore->state : 0;
+    return $stateDayBefore;
+  }
+
+
+  public function minWork()
+  {
+    if ($this->stateDayBefore() == 1) {
+      $night = $this->night ? $this->night->format('H') * 60 + $this->night->format('i') : 0;
+    } else {
+      $night = 0;
+    }
+    if ($this->state == 1) {
+      $startEnd = $this->start ? ($this->end ? $this->end->diffInMinutes($this->start) : 24 * 60 - $this->start->hour * 60 + $this->start->minute) : 0;
+    } else {
+      $startEnd = 0;
+    }
+    $day_minWork = $startEnd + $night;
+    return $day_minWork;
+  }
+
+  public function minWorkNight()
+  {
+    if ($this->stateDayBefore() == 1) {
+      $night = $this->night ? ($this->night->hour > 6 ? 360 : $this->night->hour * 60 + $this->night->minute) : 0;
+    } else {
+      $night = 0;
+    }
+    if ($this->state == 1) {
+      // befor 6:00 (360 min)
+      $start = $this->start ? ($this->start->hour > 6 ? 0 : 360 - $this->start->hour * 60 + $this->start->minute) : 0;
+      // after 22:00 (1320 min)
+      $end = $this->start ? ($this->start->hour < 22 ? ($this->end ? ($this->end->hour * 60 + $this->end->minute > 1320 ? $this->end->hour * 60 + $this->end->minute - 1320 : 0) : 120) : ($this->end ? ($this->end->hour - $this->start->hour) * 60 + $this->end->minute - $this->start->minute : 1440 - $this->end->hour * 60 - $this->end->minute)) : 0;
+    } else {
+      $start = 0;
+      $end = 0;
+    }
+    /*
+    if ($this->end && $this->end->hour * 60 + $this->end->minute > 1320) {
+      dd($night, $start, $end, $this->night->format('H:i'), $this->start->format('H:i'), $this->end->format('H:i'));
+    }
+    */
+    $day_minWorkNight = $night + $start + $end;
+    return $day_minWorkNight;
+  }
 }
