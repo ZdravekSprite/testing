@@ -94,7 +94,7 @@ php artisan migrate
 ## laravel -> binance
 ```bash
 git add .
-git commit -am "save noc fix 2021 11 20"
+git commit -am "save month fix 2021 11 20"
 git push
 git checkout main
 git pull
