@@ -154,10 +154,17 @@ class Month extends Model
     $minWorkSunday = 0;
 
     //dd($this->days());
+    $days_night = [];
     foreach ($this->days() as $d) {
       $day_minWork = $d->minWork();
       $minWork += $day_minWork;
-      $minWorkNight += $d->minWorkNight();
+      $day_minWorkNight = $d->minWorkNight();
+      $minWorkNight += $day_minWorkNight;
+      $days_night[] =
+        ($d->night ? $d->night->format('H:i') : '0:00') . ' ' .
+        ($d->start ? $d->start->format('H:i') : '0:00') . ' ' .
+        ($d->end ? $d->end->format('H:i') : '0:00') . ' ' .
+        $day_minWorkNight;
 
       $dayOfWeek = $d->date->dayOfWeek;
       $norm = User::where('id', '=', Auth::user()->id)->first()->hasAnyRole('panpek');
@@ -205,6 +212,8 @@ class Month extends Model
           break;
       }
     }
+    //dd($days_night);
+
     $hoursNormWork = ($from > $firstFrom ? $hoursNormAll - $hoursNormHoli : $firstHoursNormAll - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO - $hoursNormDopust;
 
     $hoursNorm = (object) [

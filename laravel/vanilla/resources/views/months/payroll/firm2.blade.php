@@ -3,10 +3,10 @@
               <td class="border p-2">
                 <ul>
                   <li><b>I. PODACI O POSLODAVCU</b></li>
-                  <li>1. Tvrtka/ Ime i prezime: ____</li>
-                  <li>2. Sjedište / Adresa: ____</li>
-                  <li>3. Osobni identifikacijski broj: ____</li>
-                  <li>4. IBAN broj računa ____ kod ____</li>
+                  <li>1. Tvrtka/ Ime i prezime: {{ env('FIRM21') }}</li>
+                  <li>2. Sjedište / Adresa: {{ env('FIRM22') }}</li>
+                  <li>3. Osobni identifikacijski broj: {{ env('FIRM23') }}</li>
+                  <li>4. IBAN broj računa {{ env('FIRM24') }} kod {{ env('FIRM25') }}</li>
                 </ul>
               </td>
               <td class="border p-2" colspan="3">
@@ -45,6 +45,16 @@
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.7. sati redovnog rada nedeljom</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.7.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.7.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.x. praznik</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['1.x.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['1.x.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.y. dodatak rada za praznike</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['1.y.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['1.y.kn'] }}</td>
             </tr>
             <tr>
               <td class="w-3/4 border p-2" colspan="2"><b>3. Propisani ili ugovoeni dodaci na plaću radnika i novčani iznosi po toj osnovi</b></td>

@@ -91,10 +91,13 @@ class Day extends Model
       $night = 0;
     }
     if ($this->state == 1) {
+      $startMin = $this->start ? $this->start->hour * 60 + $this->start->minute : 0;
+      $endMin = $this->end ? $this->end->hour * 60 + $this->end->minute : 0;
+      if ($startMin > 0 && $endMin == 0) $endMin = 1440;
       // befor 6:00 (360 min)
-      $start = $this->start ? ($this->start->hour > 6 ? 0 : 360 - $this->start->hour * 60 + $this->start->minute) : 0;
+      $start = $this->start ? ($startMin > 360 ? 0 : 360 - $startMin) : 0;
       // after 22:00 (1320 min)
-      $end = $this->start ? ($this->start->hour < 22 ? ($this->end ? ($this->end->hour * 60 + $this->end->minute > 1320 ? $this->end->hour * 60 + $this->end->minute - 1320 : 0) : 120) : ($this->end ? ($this->end->hour - $this->start->hour) * 60 + $this->end->minute - $this->start->minute : 1440 - $this->end->hour * 60 - $this->end->minute)) : 0;
+      $end = $this->start ? ($startMin < 1320 ? ($endMin > 1320 ? $endMin - 1320 : 0) : $endMin - $startMin) : 0;
     } else {
       $start = 0;
       $end = 0;

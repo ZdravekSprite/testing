@@ -496,6 +496,16 @@ class MonthController extends Controller
     $kn1_7 = round($hoursNorm->minSunday / 60 * $perHour * 1.3, 2);
     $data['1.7.kn'] = number_format($kn1_7, 2, ',', '.');
 
+        // 1.x Praznici. Blagdani, izbori
+        $data['1.x.h'] = number_format($hoursNorm->Holiday, 2, ',', '.');
+        $kn1_x = round($hoursNorm->Holiday * $perHour, 2);
+        $data['1.x.kn'] = number_format($kn1_x, 2, ',', '.');
+        // 1.y Dodatak za rad na praznik
+        $data['1.y.h'] = number_format($hoursNorm->minHoliday / 60, 2, ',', '.');
+        $kn1_y = round($hoursNorm->minHoliday / 60 * $perHour * 0.5, 2);
+        $data['1.y.kn'] = number_format($kn1_y, 2, ',', '.');
+
+
     // 1.1. sati redovnog rada
     $h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_7 : ($hoursNorm->min - $hoursNorm->minSunday) / 60;
     $data['1.1.h'] = number_format($h1_1, 1, ',', '.');
@@ -503,7 +513,7 @@ class MonthController extends Controller
     $data['1.1.kn'] = number_format($kn1_1, 2, ',', '.');
 
     $h1 = $h1_1 + $h1_4 + $h1_7;
-    $kn1 = $kn1_1 + $kn1_4 + $kn1_7;
+    $kn1 = $kn1_1 + $kn1_4 + $kn1_7 + $kn1_y;
 
     // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
     $kn3 = round($kn1 * 0.025, 2);
