@@ -186,6 +186,13 @@ class Binance extends Controller
       foreach ($balance as $coin) {
         if ($coin->coin == 'BUSD') {
           $coin->target = 1500 / $coin->price * $coin->total;
+        } elseif ($coin->coin == 'DAI') {
+          $binanceSocket .= 'busd'.Str::lower($coin->coin).'@kline_1m/';
+          if ($coin->price) {
+            $coin->target = $total / 3000 * 300 / $coin->price * $coin->total;
+          } else {
+            $coin->target = 0;
+          }
         } else {
           $binanceSocket .= Str::lower($coin->coin).'busd@kline_1m/';
           if ($coin->price) {
@@ -426,16 +433,51 @@ class Binance extends Controller
    */
   public function dustTransfer(Request $request)
   {
-    $asset = $request->input('asset');
-    dd($asset);
+    //dd($request);
+    $assets = $request->input('assets');
+    //dd($assets);
     $url = 'https://api.binance.com/sapi/v1/asset/dust';
+    /*
     $array = array(
-      "asset" => $asset
+      "asset=".$assets[0]."&asset=".$assets[1]
     );
     //dd($array);
     $curl = new HttpCurl();
     $dustTransfer = $curl->post($url, $array, true);
     dd($dustTransfer);
     return $dustTransfer;
+    */
+    $flat_array = '';
+    foreach ($assets as $key => $value) {
+      $flat_array .= 'asset='.$value.'&';
+    }
+    //dd($flat_array);
+    $ch = curl_init();
+
+    $defaults = array(
+      CURLOPT_URL => $url,
+      CURLOPT_RETURNTRANSFER => true,
+    );
+
+    curl_setopt_array($ch, $defaults);
+
+    $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'X-MBX-APIKEY: ' . $apiKey,
+    ));
+    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+    $serverTime = $time->serverTime;
+    $queryArray = $flat_array."timestamp=".$serverTime;
+    $signature = hash_hmac('SHA256', $queryArray, $apiSecret);
+    $query = $queryArray."&signature=".$signature;
+
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+    //dd($queryArray,$query);
+    $server_output = curl_exec($ch);
+    curl_close($ch);
+    $json = json_decode($server_output, true);
+    return $json;
   }
 }

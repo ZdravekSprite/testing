@@ -18,10 +18,11 @@ class HttpCurl extends Controller
 
     curl_setopt_array($ch, $defaults);
 
+    $methodArray = [];
     //dd($hmac);
     if ($hmac) {
-      $apiKey = Auth::user()->BINANCE_API_KEY;
-      $apiSecret = Auth::user()->BINANCE_API_SECRET;
+      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
       curl_setopt($ch, CURLOPT_HTTPHEADER, array(
         'X-MBX-APIKEY: ' . $apiKey,
       ));
@@ -31,6 +32,7 @@ class HttpCurl extends Controller
         "timestamp" => $serverTime
       );
       $queryArray = $params ? $params + $timestampArray : $timestampArray;
+      dd(http_build_query($queryArray));
       $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
       $signatureArray = array("signature" => $signature);
       $methodArray = $queryArray + $signatureArray;

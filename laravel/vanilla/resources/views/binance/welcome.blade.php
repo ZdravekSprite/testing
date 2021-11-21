@@ -47,6 +47,24 @@
             </a>
           </p>
 
+            <form method="POST" action="{{ route('dustTransfer') }}">
+              @csrf
+
+              <div title="DAR">
+                <x-input class="float-left mr-1" id="DAR" type="checkbox" name="assets[]" value="DAR" />
+                <span class="block font-medium text-gray-700">DAR</span>
+              </div>
+              <div title="QI">
+                <x-input class="float-left mr-1" id="QI" type="checkbox" name="assets[]" value="QI" />
+                <span class="block font-medium text-gray-700">QI</span>
+              </div>
+              <div class="flex items-center justify-end mt-4">
+                <x-button class="ml-4">
+                  {{ __('Dust') }}
+                </x-button>
+              </div>
+            </form>
+
         </div>
       </div>
     </div>
