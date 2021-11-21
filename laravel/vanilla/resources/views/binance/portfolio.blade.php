@@ -13,7 +13,7 @@
             @if(count($balance) > 0)
             @foreach($balance as $coin => $asset)
             <p title="{{$asset->name}} {{round($asset->price,2)}}">
-              {{$asset->name}}: {{$asset->total}} {{$coin}} (<span id="{{$coin}}">{{round($asset->price,2)}}</span> kn) [Free: {{$asset->free}}(<span id="{{$coin}}free"></span> kn)]
+              <span>*</span> {{$asset->name}}: {{$asset->total}} {{$coin}} (<span id="{{$coin}}">{{round($asset->price,2)}}</span> kn) [Free: {{$asset->free}}(<span id="{{$coin}}free"></span> kn)]
             </p>
             @endforeach
             <hr>

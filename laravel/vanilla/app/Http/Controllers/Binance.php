@@ -381,4 +381,61 @@ class Binance extends Controller
     ])->get('https://api.binance.com/api/v3/order/test', $getArray));
     dd($testNewOrder);
   }
+  /*
+   * Dust Transfer (USER_DATA)
+   * Response:
+   * {
+   *     "totalServiceCharge":"0.02102542",
+   *     "totalTransfered":"1.05127099",
+   *     "transferResult":[
+   *         {
+   *             "amount":"0.03000000",
+   *             "fromAsset":"ETH",
+   *             "operateTime":1563368549307,
+   *             "serviceChargeAmount":"0.00500000",
+   *             "tranId":2970932918,
+   *             "transferedAmount":"0.25000000"
+   *         },
+   *         {
+   *             "amount":"0.09000000",
+   *             "fromAsset":"LTC",
+   *             "operateTime":1563368549404,
+   *             "serviceChargeAmount":"0.01548000",
+   *             "tranId":2970932918,
+   *             "transferedAmount":"0.77400000"
+   *         },
+   *         {
+   *             "amount":"248.61878453",
+   *             "fromAsset":"TRX",
+   *             "operateTime":1563368549489,
+   *             "serviceChargeAmount":"0.00054542",
+   *             "tranId":2970932918,
+   *             "transferedAmount":"0.02727099"
+   *         }
+   *     ]
+   * }
+
+   * POST /sapi/v1/asset/dust (HMAC SHA256)
+   * Convert dust assets to BNB.
+   * Weight(UID): 10
+   * Parameters:
+   * Name	Type	Mandatory	Description
+   * asset	ARRAY	YES	The asset being converted. For example: asset=BTC&asset=USDT
+   * recvWindow	LONG	NO	
+   * timestamp	LONG	YES
+   */
+  public function dustTransfer(Request $request)
+  {
+    $asset = $request->input('asset');
+    dd($asset);
+    $url = 'https://api.binance.com/sapi/v1/asset/dust';
+    $array = array(
+      "asset" => $asset
+    );
+    //dd($array);
+    $curl = new HttpCurl();
+    $dustTransfer = $curl->post($url, $array, true);
+    dd($dustTransfer);
+    return $dustTransfer;
+  }
 }

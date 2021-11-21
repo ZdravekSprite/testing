@@ -166,7 +166,7 @@ class KlineController extends Controller
       $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000 * 600000))->get();
     }
     //dd($trades);
-    $symbols_list = ['ETH', 'DOT', 'BNB', 'ADA', 'MATIC', 'SOL', 'LUNA', 'FTT', 'DAR'];
+    $symbols_list = ['ETH', 'DOT', 'BNB', 'ADA', 'MATIC', 'SOL', 'LUNA', 'FTT', 'DAR', 'CITY', 'QI'];
     $symbols = [
       ['BTCBUSD', [], [], [], '1d'],
       ['BTCBUSD', [], [], [], '1h'],
@@ -188,6 +188,7 @@ class KlineController extends Controller
     $symbols[] = ['BUSDDAI', [], [], [], '1m'];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
+      $symbol_info = Symbol::where('symbol', '=', $symbol)->first() ?? SymbolController::exchangeInfo($symbol);
       $symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->tickSize + 1;
       //$symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->stepSize;
       if (isset($openOrders)) {

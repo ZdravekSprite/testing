@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Auth;
 
 class SymbolController extends Controller
 {
-  public static function exchangeInfo()
+  public static function exchangeInfo($symbol = null)
   {
-    $exchangeInfo = BSystem::exchangeInfo();
+    $exchangeInfo = BSystem::exchangeInfo($symbol = null);
     //$exchangeInfo = json_decode(Http::get('https://api.binance.com/api/v3/exchangeInfo'));
     $symbols = $exchangeInfo->symbols;
     //dd('exchangeInfo', $symbols);
