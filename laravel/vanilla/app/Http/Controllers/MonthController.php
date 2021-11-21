@@ -304,10 +304,13 @@ class MonthController extends Controller
    * @return \Illuminate\Http\Response
    */
   //public function show(Month $month)
-  public function show($month)
+  public function show(String $month)
   {
     $unslug = explode(".", $month)[0] - 1 + explode(".", $month)[1] * 12;
     $month = Month::where('user_id', '=', Auth::user()->id)->where('month', '=', $unslug)->first();
+    if (!$month) {
+      return redirect(route('months.index'))->with('warning', 'Nema tog mjeseca');
+    }
     $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
     if (!$settings) {
       $settings = new Settings();
