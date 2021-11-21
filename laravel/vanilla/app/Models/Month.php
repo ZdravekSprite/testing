@@ -154,7 +154,6 @@ class Month extends Model
     $minWorkSunday = 0;
 
     //dd($this->days());
-    $night_min = [];
     foreach ($this->days() as $d) {
       $day_minWork = $d->minWork();
       $minWork += $day_minWork;
@@ -206,7 +205,6 @@ class Month extends Model
           break;
       }
     }
-    //dd($night_min);
     $hoursNormWork = ($from > $firstFrom ? $hoursNormAll - $hoursNormHoli : $firstHoursNormAll - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO - $hoursNormDopust;
 
     $hoursNorm = (object) [

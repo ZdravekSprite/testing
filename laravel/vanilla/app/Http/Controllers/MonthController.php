@@ -320,16 +320,21 @@ class MonthController extends Controller
     }
     $days = $month->days();
 
-    if (!User::where('id', '=', Auth::user()->id)->first()->hasAnyRole('panpek')) {
+    if (User::where('id', '=', Auth::user()->id)->first()->hasAnyRole(env('FIRM1'))) {
+      $firm = 'firm1';
+      $data  = $this->lista_data($month);
+    } elseif (User::where('id', '=', Auth::user()->id)->first()->hasAnyRole(env('FIRM2'))) {
+      $firm = 'firm2';
       $data  = $this->lista_data1($month);
     } else {
+      $firm = 'firm0';
       $data  = $this->lista_data($month);
     }
 
     $data['-'] = route('months.show', ['month' => $month->prev()]);
     $data['+'] = route('months.show', ['month' => $month->next()]);
     //dd($month,$days,$data);
-    return view('months.show')->with(compact('month', 'days', 'data', 'settings'));
+    return view('months.show')->with(compact('month', 'days', 'data', 'settings', 'firm'));
   }
 
   public function platna_lista(Request $request)
@@ -356,16 +361,28 @@ class MonthController extends Controller
       $settings->start3 = '22:00';
       $settings->end3 = '06:00';
     }
+    /*
     if (!User::where('id', '=', Auth::user()->id)->first()->hasAnyRole('panpek')) {
       $data  = $this->lista_data1($month);
     } else {
+      $data  = $this->lista_data($month);
+    }
+    */
+    if (User::where('id', '=', Auth::user()->id)->first()->hasAnyRole(env('FIRM1'))) {
+      $firm = 'firm1';
+      $data  = $this->lista_data($month);
+    } elseif (User::where('id', '=', Auth::user()->id)->first()->hasAnyRole(env('FIRM2'))) {
+      $firm = 'firm2';
+      $data  = $this->lista_data1($month);
+    } else {
+      $firm = 'firm0';
       $data  = $this->lista_data($month);
     }
 
     $data['-'] = route('lista', ['month' => $month->prev()]);
     $data['+'] = route('lista', ['month' => $month->next()]);
     //dd($m, $month, $data);
-    return view('months.platna-lista')->with(compact('month', 'data'));
+    return view('months.platna-lista')->with(compact('month', 'data', 'firm'));
   }
 
   /**
