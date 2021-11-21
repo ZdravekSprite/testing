@@ -38,10 +38,10 @@ class HttpCurl extends Controller
 
     // POST Method
     if ($method === "POST") {
-      //dd($params);
       $query = http_build_query($methodArray, '', '&');
       curl_setopt($ch, CURLOPT_POST, true);
       curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+      //dd($params,$queryArray,$methodArray,$query);
     }
     // PUT Method
     if ($method === "PUT") {

@@ -13,7 +13,8 @@
             @if(count($balance) > 0)
             @foreach($balance as $coin => $asset)
             <p title="{{$asset->name}} {{round($asset->price,2)}}">
-              <span>*</span> {{$asset->name}}: {{$asset->total}} {{$coin}} (<span id="{{$coin}}">{{round($asset->price,2)}}</span> kn) [Free: {{$asset->free}}(<span id="{{$coin}}free"></span> kn)]
+              <a href="{{ route('dustTransfer', ['asset' => $coin]) }}">dust</a>
+              {{$asset->name}}: {{$asset->total}} {{$coin}} (<span id="{{$coin}}">{{round($asset->price,2)}}</span> kn) [Free: {{$asset->free}}(<span id="{{$coin}}free"></span> kn)]
             </p>
             @endforeach
             <hr>

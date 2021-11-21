@@ -190,8 +190,8 @@ Route::get('/binance/dashboard', function () {
 })->middleware(['auth']);
 */
 Route::post('/binance/order/test', [Binance::class, 'testNewOrder'])->name('testNewOrder');
-Route::post('/binance/dustTransfer', [Binance::class, 'dustTransfer'])->name('dustTransfer');
 
+Route::get('/binance/dustTransfer', [Binance::class, 'dustTransfer'])->name('dustTransfer');
 Route::get('/binance/test', [TestBinance::class, 'test'])->name('bTest');
 Route::get('/binance/crta', [TradeController::class, 'crta']);
 
