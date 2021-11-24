@@ -20,8 +20,8 @@
             <!-- role -->
             @foreach ($roles as $role)
             <div class="mt-4">
-              <label for="{{ $role->name }}" class="block font-medium text-sm text-gray-700">{{ $role->name }}</label>
-              <input id="{{ $role->name }}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="checkbox" name="roles[]" value="{{ $role->id }}" {{ $user->hasAnyRole($role->name)?'checked':'' }}>
+              <x-label for="{{ $role->name }}" value="{{$role->name}}" />
+              <x-input id="{{ $role->name }}" class="block mt-1 w-full" type="checkbox" name="roles[]" value="{{ $role->id }}" :checked="$user->hasAnyRole($role->name) ? 'checked' : null" />
             </div>
             @endforeach
 
