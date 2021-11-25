@@ -17,11 +17,11 @@
             @csrf
 
             <!-- date -->
-            <div class="mt-4">
+            <x-div>
               <x-label for="date" :value="__('Dan')" />
-              <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value="{{$day->date ? $day->date->format('Y-m-d') : old('date')?? date('Y-m-d')}}" required autofocus />
-              <p>Dan za koji se određuju sati rada</p>
-            </div>
+              <x-input id="date" class="block mt-1 w-full" value="{{$day->date ? $day->date->format('Y-m-d') : old('date')?? date('Y-m-d')}}" required />
+              <x-p>Dan za koji se određuju sati rada</x-p>
+            </x-div>
 
             @include('days.form')
 

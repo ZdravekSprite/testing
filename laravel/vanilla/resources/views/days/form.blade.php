@@ -15,29 +15,29 @@
 
             </script>
             <!-- state -->
-            <div class="mt-4">
+            <x-div>
               <x-label for="state" :value="__('Vrsta dana')" />
-              <select onchange="changeFunc();" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="state" name="state">
+              <x-select onchange="changeFunc();" id="state" name="state" class="block mt-1 w-full">
                 <option value=0{{$day->state == 0 ? ' selected' : ''}}>{{ __('Nisam radio') }}</option>
                 <option value=1{{$day->state == 1 ? ' selected' : ''}}>{{ __('Radio normalno') }}</option>
                 <option value=2{{$day->state == 2 ? ' selected' : ''}}>{{ __('Godišnji') }}</option>
                 <option value=3{{$day->state == 3 ? ' selected' : ''}}>{{ __('Plaćeni dopust') }}</option>
                 <option value=4{{$day->state == 4 ? ' selected' : ''}}>{{ __('Bolovanje') }}</option>
-              </select>
-              <p>Odabrati, da li se radilo ili ne? Bolovanje? Godišnji?</p>
-              <p>Da li ste taj dan dobili plačeni dopust?</p>
-            </div>
+              </x-select>
+              <x-p>Odabrati, da li se radilo ili ne? Bolovanje? Godišnji?</x-p>
+              <x-p>Da li ste taj dan dobili plačeni dopust?</x-p>
+            </x-div>
 
             <!-- start -->
-            <div class="mt-4{{$day->state == 1 ? '' : ' hidden'}}" id="start_div">
+            <x-div :hidden="$day->state != 1" id="start_div">
               <x-label for="start" :value="__('Početak smjene')" />
               <x-input id="start" class="block mt-1 w-full" type="time" name="start" value="{{$day->start ? $day->start->format('H:i') : old('start')?? '00:00'}}" required />
-              <p>Vrijeme kada je započela smjena.</p>
-            </div>
+              <x-p>Vrijeme kada je započela smjena.</x-p>
+            </x-div>
 
             <!-- end -->
-            <div class="mt-4{{$day->state == 1 ? '' : ' hidden'}}" id="end_div">
+            <x-div :hidden="$day->state != 1" id="end_div">
               <x-label for="end" :value="__('Kraj smjene')" />
               <x-input id="end" class="block mt-1 w-full" type="time" name="end" value="{{$day->end ? $day->end->format('H:i') : old('end')?? '00:00'}}" required />
-              <p>Kada je smjena završila.</p>
-            </div>
+              <x-p>Kada je smjena završila.</x-p>
+            </x-div>

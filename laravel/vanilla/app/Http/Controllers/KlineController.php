@@ -90,8 +90,11 @@ class KlineController extends Controller
 
     //ini_set("memory_limit","1024M");
     //$symbols = Symbol::where('status', '=', 'TRADING')->where('quoteAsset', '=', 'USDT')->get();
-
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->get();
+    if (Auth::check()) {
+      $trades = Trade::where('user_id', '=', Auth::user()->id)->get();
+    } else {
+      $trades = collect([]);  
+    }
     $symbols = $trades->pluck('symbol')->unique();
     $times = $trades->pluck('time')->map(function ($time) {
       return number_format(floor($time / 60000) * 60000, 0, '.', '');
@@ -148,8 +151,13 @@ class KlineController extends Controller
       $stream = 'wss://stream.binance.com:9443/stream';
       //$apiKey = env('BINANCE_API_KEY');
       //$apiSecret = env('BINANCE_API_SECRET');
-      $apiKey = Auth::user()->settings ? Auth::user()->settings->BINANCE_API_KEY : null;
-      $apiSecret = Auth::user()->settings ? Auth::user()->settings->BINANCE_API_SECRET : null;
+      if (Auth::check()) {
+        $apiKey = Auth::user()->settings ? Auth::user()->settings->BINANCE_API_KEY : null;
+        $apiSecret = Auth::user()->settings ? Auth::user()->settings->BINANCE_API_SECRET : null;
+      } else {
+        $apiKey = null;
+        $apiSecret = null;
+      }
     }
 
     $time = json_decode(Http::get($server . '/v3/time'));
