@@ -32,7 +32,7 @@ class HttpCurl extends Controller
         "timestamp" => $serverTime
       );
       $queryArray = $params ? $params + $timestampArray : $timestampArray;
-      dd(http_build_query($queryArray));
+      //dd(http_build_query($queryArray));
       $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
       $signatureArray = array("signature" => $signature);
       $methodArray = $queryArray + $signatureArray;

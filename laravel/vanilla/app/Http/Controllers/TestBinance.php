@@ -8,29 +8,6 @@ use App\Http\Controllers\HttpCurl;
 
 class TestBinance extends Controller
 {
-  public function http_get($url)
-  {
-    $http_get = json_decode(Http::get($url));
-    return $http_get;
-  }
-  public function http_get_withHeaders($url, $array = null)
-  {
-    $apiKey = Auth::user()->settings->BINANCE_API_KEY;
-    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
-    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-    $serverTime = $time->serverTime;
-    $timestampArray = array(
-      "timestamp" => $serverTime
-    );
-    $queryArray = $array ? $array + $timestampArray : $timestampArray;
-    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-    $signatureArray = array("signature" => $signature);
-    $getArray = $queryArray + $signatureArray;
-    $http_get_withHeaders = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get($url, $getArray));
-    return $http_get_withHeaders;
-  }
   public function http_delete($url, $array = null)
   {
     $apiKey = Auth::user()->settings->BINANCE_API_KEY;
@@ -69,23 +46,6 @@ class TestBinance extends Controller
     return $http_post;
   }
   /**
-   * System Status (System)
-   * GET /sapi/v1/system/status
-   * Fetch system status.
-   * 
-   * Response
-   * { 
-   *     "status": 0,              // 0: normal，1：system maintenance
-   *     "msg": "normal"           // normal|system maintenance
-   * }
-   */
-  public function systemStatus()
-  {
-    $systemStatus = (new $this)->http_get('https://api.binance.com/sapi/v1/system/status');
-    return $systemStatus;
-  }
-
-  /**
    * All Coins' Information (USER_DATA)
    * GET /sapi/v1/capital/config/getall (HMAC SHA256)
    * Get information of coins (available for deposit and withdraw) for user.
@@ -119,7 +79,8 @@ class TestBinance extends Controller
    */
   public function capitalConfigGetall()
   {
-    $capitalConfigGetall = (new $this)->http_get_withHeaders('https://api.binance.com/sapi/v1/capital/config/getall');
+    $http = new BHttp();
+    $capitalConfigGetall = $http->get_withHeaders('https://api.binance.com/sapi/v1/capital/config/getall');
     return $capitalConfigGetall;
   }
 
@@ -167,7 +128,8 @@ class TestBinance extends Controller
     $array = array(
       "type" => "SPOT"
     );
-    $accountSnapshot = (new $this)->http_get_withHeaders('https://api.binance.com/sapi/v1/accountSnapshot', $array);
+    $http = new BHttp();
+    $accountSnapshot = $http->get_withHeaders('https://api.binance.com/sapi/v1/accountSnapshot', $array);
     return $accountSnapshot;
   }
 
@@ -212,7 +174,8 @@ class TestBinance extends Controller
     $array = array(
       "symbol" => $symbol
     );
-    $openOrders = (new $this)->http_get_withHeaders('https://api.binance.com/api/v3/openOrders', $array);
+    $http = new BHttp();
+    $openOrders = $http->get_withHeaders('https://api.binance.com/api/v3/openOrders', $array);
     return $openOrders;
   }
   /*
@@ -337,8 +300,8 @@ class TestBinance extends Controller
     //$buys[] = (new $this)->buy("DOTBUSD", 0.19, 52.64, "buy_dot01");
     //$buys[] = (new $this)->buy("DOTBUSD", 0.19, 53.00, "buy_dot02");
     //$buys[] = (new $this)->buy("EURBUSD", 8.9, 1.13, "buy_eur01");
-    //$buys[] = (new $this)->buy("EURBUSD", 8.9, 1.129, "buy_eur02");
-    //$buys[] = (new $this)->buy("EURBUSD", 8.9, 1.124, "buy_eur03");
+    //$buys[] = (new $this)->buy("EURBUSD", 8.9, 1.124, "buy_eur02");
+    //$buys[] = (new $this)->buy("EURBUSD", 9.0, 1.112, "buy_eur03");
     //$buys[] = (new $this)->buy("BUSDDAI", 10.0, 1.0000, "sell_dai01");
     //dd($buys);
     return $buys;
