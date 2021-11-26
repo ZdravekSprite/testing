@@ -19,8 +19,7 @@
             <!-- date -->
             <x-div>
               <x-label for="date" :value="__('Dan')" />
-              <x-input id="date" class="block mt-1 w-full" value="{{$day->date ? $day->date->format('Y-m-d') : old('date')?? date('Y-m-d')}}" required />
-              <input id="date" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="date" name="date" value="{{$day->date ? $day->date->format('Y-m-d') : "old('date')"}}" required autofocus />
+              <x-input id="date" type="date" name="date" :value="$day->date ? $day->date->format('Y-m-d') : old('date')" required autofocus />
               <x-p>Dan za koji se određuju sati rada</x-p>
             </x-div>
 

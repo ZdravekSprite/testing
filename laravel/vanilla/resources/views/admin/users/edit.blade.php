@@ -21,7 +21,7 @@
             @foreach ($roles as $role)
             <div class="mt-4">
               <x-label for="{{ $role->name }}" value="{{$role->name}}" />
-              <x-input id="{{ $role->name }}" class="block mt-1 w-full" type="checkbox" name="roles[]" value="{{ $role->id }}" :checked="$user->hasAnyRole($role->name) ? 'checked' : null" />
+              <x-input id="{{ $role->name }}" type="checkbox" name="roles[]" value="{{ $role->id }}" :checked="$user->hasAnyRole($role->name) ? 'checked' : null" />
             </div>
             @endforeach
 

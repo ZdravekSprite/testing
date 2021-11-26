@@ -19,7 +19,7 @@
               <!-- month -->
               <div class="mt-4">
                 <x-label for="month" :value="__('Mjesec')" />
-                <x-select id="month" name="month" class="block mt-1 w-full">
+                <x-select id="month" name="month">
                   @for($m=1; $m <= 12; $m++)
                     <option value="{{$m}}">{{$m}}</option>
                   @endfor
@@ -29,7 +29,7 @@
               <!-- year -->
               <div class="mt-4">
                 <x-label for="year" :value="__('Godina')" />
-                <x-select id="year" name="year" class="block mt-1 w-full">
+                <x-select id="year" name="year">
                   @for($y=2020; $y <= 2022; $y++)
                     <option value="{{$y}}">{{$y}}</option>
                   @endfor

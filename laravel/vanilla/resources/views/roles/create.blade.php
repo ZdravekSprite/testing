@@ -19,7 +19,7 @@
             <!-- name -->
             <div class="mt-4">
               <x-label for="name" :value="__('Ime')" />
-              <x-input id="name"  type="text" name="name" value="{{ old('name') ?? ''}}" required autofocus class="block mt-1 w-full"/>
+              <x-input id="name"  type="text" name="name" value="{{ old('name') ?? ''}}" required autofocus />
             </div>
 
             @include('roles.form')
