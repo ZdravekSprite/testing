@@ -9,18 +9,18 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
-          <table class="table-auto w-full">
+          <table class="table-auto w-full text-sm md:text-base">
             <thead>
               <tr>
                 <th>mjesec</th>
                 <th>bruto</th>
-                <th>prijevoz</th>
-                <th>odbitak</th>
-                <th>prirez</th>
-                <th>prekovremeni</th>
+                <th class="hidden md:table-cell">prijevoz</th>
+                <th class="hidden md:table-cell">odbitak</th>
+                <th class="hidden md:table-cell">prirez</th>
+                <th class="break-all md:break-normal">prekovremeni</th>
                 <th>nagrada</th>
                 <th>regres</th>
-                <th>stimulacija</th>
+                <th class="break-all md:break-normal">stimulacija</th>
                 <th></th>
               </tr>
             </thead>
@@ -29,14 +29,14 @@
               @foreach($months as $m)
               <tr>
                 <td><a href="{{ route('months.show', ['month' => $m->slug()]) }}" title="{{$m->slug()}}">{{$m->slug()}}</a></td>
-                <td>{{$m->bruto ? number_format($m->bruto/100, 2, ',', ' ') : number_format($m->last('bruto')/100, 2, ',', ' ')}}</td>
-                <td>{{$m->prijevoz ? number_format($m->prijevoz/100, 2, ',', ' ') : number_format($m->last('prijevoz')/100, 2, ',', ' ')}}</td>
-                <td>{{$m->odbitak ? number_format($m->odbitak/100, 2, ',', ' ') : number_format($m->last('odbitak')/100, 2, ',', ' ')}}</td>
-                <td>{{$m->prirez ? number_format($m->prirez/100, 2, ',', ' ') : number_format($m->last('prirez')/100, 2, ',', ' ')}}</td>
+                <td>{{$m->bruto ? number_format($m->bruto/100, 2, ',', '') : number_format($m->last('bruto')/100, 2, ',', '')}}</td>
+                <td class="hidden md:table-cell">{{$m->prijevoz ? number_format($m->prijevoz/100, 2, ',', '') : number_format($m->last('prijevoz')/100, 2, ',', '')}}</td>
+                <td class="hidden md:table-cell">{{$m->odbitak ? number_format($m->odbitak/100, 2, ',', '') : number_format($m->last('odbitak')/100, 2, ',', '')}}</td>
+                <td class="hidden md:table-cell">{{$m->prirez ? number_format($m->prirez/100, 2, ',', '') : number_format($m->last('prirez')/100, 2, ',', '')}}</td>
                 <td>{{$m->prekovremeni ?? 0}}</td>
-                <td>{{$m->nagrada ? number_format($m->nagrada/100, 2, ',', ' ') : 0}}</td>
-                <td>{{$m->regres ? number_format($m->regres/100, 2, ',', ' ') : 0}}</td>
-                <td>{{$m->stimulacija ? number_format($m->stimulacija/100, 2, ',', ' ') : 0}}</td>
+                <td>{{$m->nagrada ? number_format($m->nagrada/100, 2, ',', '') : 0}}</td>
+                <td>{{$m->regres ? number_format($m->regres/100, 2, ',', '') : 0}}</td>
+                <td>{{$m->stimulacija ? number_format($m->stimulacija/100, 2, ',', '') : 0}}</td>
                 <td><a class="float-left" href="{{ route('months.edit', ['month' => $m->slug()]) }}" title="Izmjeni">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
                       <path d="M13.498.795l.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />

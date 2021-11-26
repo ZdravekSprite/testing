@@ -37,6 +37,6 @@
               <x-div>
                 <x-label for="stimulacija" :value="__('Stimulacija Bruto')" />
                 <x-input id="stimulacija" type="number" name="stimulacija" value="{{$month->stimulacija ? $month->stimulacija/100 : old('stimulacija')?? 0}}" min="0" step="0.01" class="block mt-1 w-full" />
-                <x-p>Ako se ima više od zakonom dozvoljenih prekovremenih, višak se isplačuje kao gruto stimulacija</x-p>
+                <x-p>Ako se ima više od zakonom dozvoljenih prekovremenih, višak se isplačuje kao bruto stimulacija</x-p>
               </x-div>
             </div>
