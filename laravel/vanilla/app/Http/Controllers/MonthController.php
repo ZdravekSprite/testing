@@ -142,7 +142,8 @@ class MonthController extends Controller
 
     $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')';
     $kn1_4 = round($h1_4 * $perHour * 1.5, 2);
-    $data['1.4.kn'] = number_format($kn1_4, 2, ',', '.');
+    $kn1_4x = $overWork > 0 ? round($overWork * $perHour * 1.5, 2) : 0;
+    $data['1.4.kn'] = number_format($kn1_4, 2, ',', '.') . ($kn1_4x ? ' (' . number_format($kn1_4x, 2, ',', '.') . ')' : '');
 
     // 1.7a Praznici. Blagdani, izbori
     $data['1.7a.h'] = number_format($hoursNorm->Holiday, 2, ',', '.');
@@ -212,6 +213,8 @@ class MonthController extends Controller
     $data['1.7p.kn'] = number_format($kn1_7p, 2, ',', '.');
 
     $kn1 = $kn1_1 + $kn1_4 + $kn1_7a + $kn1_7b + $kn1_7c + $kn1_7d + $kn1_7e + $kn1_7f + $kn1_7g + $kn1_7p;
+    $kn1x = $kn1_1 + $kn1_4x + $kn1_7a + $kn1_7b + $kn1_7c + $kn1_7d + $kn1_7e + $kn1_7f + $kn1_7g + $kn1_7p;
+    $razlika = $kn1_4x;
 
     // 2. OSTALI OBLICI
     $kn2 = round($month->stimulacija / 100, 2);
@@ -237,22 +240,27 @@ class MonthController extends Controller
 
     // 4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA PO STAVKAMA 1. DO 3.
     $kn4 = $kn1 + $kn2 + $kn3;
-    $data['4.kn'] = number_format($kn4, 2, ',', '.');;
+    $kn4x = $kn1x + $kn3;
+    $data['4.kn'] = number_format($kn4, 2, ',', '.') . ($razlika ? ' (' . number_format($kn4x, 2, ',', '.') . ')' : '');
 
     // 5. OSNOVICA ZA OBRAČUN DOPRINOSA
     $kn5 = $kn1 - $kn1_7p + $kn2;
-    $data['5.kn'] = number_format($kn5, 2, ',', '.');;
+    $kn5x = $kn1x - $kn1_7p;
+    $data['5.kn'] = number_format($kn5, 2, ',', '.') . ($razlika ? ' (' . number_format($kn5x, 2, ',', '.') . ')' : '');
 
     // 6.1. za mirovinsko osiguranje na temelju generacijske solidarnosti (I. STUP)
     $kn6_1 = round($kn5 * 0.15, 2);
-    $data['6.1.kn'] = number_format($kn6_1, 2, ',', '.');
+    $kn6_1x = round($kn5x * 0.15, 2);
+    $data['6.1.kn'] = number_format($kn6_1, 2, ',', '.') . ($razlika ? ' (' . number_format($kn6_1x, 2, ',', '.') . ')' : '');
     // 6.2 za mirovinsko osiguranje na temelju individualne kapitalizirane štednje (II. STUP)
     $kn6_2 = round($kn5 * 0.05, 2);
-    $data['6.2.kn'] = number_format($kn6_2, 2, ',', '.');
+    $kn6_2x = round($kn5x * 0.05, 2);
+    $data['6.2.kn'] = number_format($kn6_2, 2, ',', '.') . ($razlika ? ' (' . number_format($kn6_2x, 2, ',', '.') . ')' : '');
 
     // 7. DOHODAK
     $kn7 = $kn5 - $kn6_1 - $kn6_2;
-    $data['7.kn'] = number_format($kn7, 2, ',', '.');
+    $kn7x = $kn5x - $kn6_1x - $kn6_2x;
+    $data['7.kn'] = number_format($kn7, 2, ',', '.') . ($razlika ? ' (' . number_format($kn7x, 2, ',', '.') . ')' : '');
 
     // 8. OSOBNI ODBITAK 1.00 / 4000.00
     $kn8 = $kn7 * 100 > $odbitak ? $odbitak / 100 : $kn7;
@@ -260,38 +268,51 @@ class MonthController extends Controller
 
     // 9. POREZNA OSNOVICA
     $kn9 = $kn7 - $kn8;
-    $data['9.kn'] = number_format($kn9, 2, ',', '.');
+    $kn9x = $kn7x - $kn8;
+    $data['9.kn'] = number_format($kn9, 2, ',', '.') . ($razlika ? ' (' . number_format($kn9x, 2, ',', '.') . ')' : '');
 
     // 10. IZNOS PREDUJMA POREZA I PRIREZA POREZU NA DOHODAK
     $kn10_20 = round($kn9 * 0.2, 2);
+    $kn10_20x = round($kn9x * 0.2, 2);
     $kn10_prirez = round($kn10_20 * $prirez / 10000, 2);
+    $kn10_prirezx = round($kn10_20x * $prirez / 10000, 2);
     $kn10 = $kn10_20 + $kn10_prirez;
-    $data['10.kn'] = number_format($kn10, 2, ',', '.');
+    $kn10x = $kn10_20x + $kn10_prirezx;
+    $data['10.kn'] = number_format($kn10, 2, ',', '.') . ($razlika ? ' (' . number_format($kn10x, 2, ',', '.') . ')' : '');
     // 20.00%
-    $data['10.20.kn'] = number_format($kn10_20, 2, ',', '.');
+    $data['10.20.kn'] = number_format($kn10_20, 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_20x, 2, ',', '.') . ')' : '');
     // Prirez
-    $data['10.prirez.kn'] = number_format($kn10_prirez, 2, ',', '.');
+    $data['10.prirez.kn'] = number_format($kn10_prirez, 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_prirezx, 2, ',', '.') . ')' : '');
 
     // 11. NETO PLAĆA
-    $data['11.kn'] = number_format($kn7 - $kn10, 2, ',', '.');
+    $kn11 = $kn7 - $kn10;
+    $kn11x = $kn7x - $kn10x;
+    $data['11.kn'] = number_format($kn11, 2, ',', '.') . ($razlika ? ' (' . number_format($kn11x, 2, ',', '.') . ')' : '');
 
     // 12. NAKNADE UKUPNO
-    $data['12.kn'] = number_format($kn3 + $kn1_7p, 2, ',', '.');
+    $kn12 = $kn3 + $kn1_7p;
+    $data['12.kn'] = number_format($kn12, 2, ',', '.');
 
     // 13. NETO + NAKNADE
-    $kn13 = $kn7 - $kn10 + $kn3 + $kn1_7p;
-    $data['13.kn'] = number_format($kn13, 2, ',', '.');
+    $kn13 = $kn11 + $kn12;
+    $kn13x = $kn11x + $kn12;
+    $data['13.kn'] = number_format($kn13, 2, ',', '.') . ($razlika ? ' (' . number_format($kn13x, 2, ',', '.') . ')' : '');
 
     // 14. OBUSTAVE UKUPNO
     $sindikat = $month->sindikat ? round($kn5 * 0.01, 2) : 0;
+    $sindikatx = $month->sindikat ? round($kn5x * 0.01, 2) : 0;
     $kredit = $month->kredit / 100 ?? 0;
-    $data['14.kn'] = number_format($sindikat + $kredit, 2, ',', '.');
+    $kn14 = $sindikat + $kredit;
+    $kn14x = $sindikatx + $kredit;
+    $data['14.kn'] = number_format($kn14, 2, ',', '.') . ($razlika ? ' (' . number_format($kn14x, 2, ',', '.') . ')' : '');
 
     // 15. IZNOS PLAĆE/NAKNADE PLAĆE ISPLAĆEN RADNIKU NA REDOVAN RAČUN
-    $data['15.kn'] = number_format($kn13 - $sindikat - $kredit, 2, ',', '.');
+    $kn15 = $kn13 - $sindikat - $kredit;
+    $kn15x = $kn13x - $sindikatx - $kredit;
+    $data['15.kn'] = number_format($kn15, 2, ',', '.') . ($razlika ? ' (' . number_format($kn15x, 2, ',', '.') . ')' : '');
 
     // 17.5. vrsta i iznos obustave
-    $data['17_5a.kn'] = number_format($sindikat, 2, ',', '.');
+    $data['17_5a.kn'] = number_format($sindikat, 2, ',', '.') . ($razlika ? ' (' . number_format($sindikatx, 2, ',', '.') . ')' : '');
     $data['17_5b.kn'] = number_format($kredit, 2, ',', '.');
 
     return $data;
