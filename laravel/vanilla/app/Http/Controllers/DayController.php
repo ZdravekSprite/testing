@@ -87,6 +87,39 @@ class DayController extends Controller
     return view('days.index')->with(compact('_month', 'days', 'settings'));
   }
 
+  public function print($month = null)
+  {
+    //dd($month);
+    if ($month == null) {
+      $_month = Carbon::now();
+    } else {
+      $_month = Carbon::parse('01.' . $month);
+      //dd($month);
+    }
+    $from = CarbonImmutable::parse($_month)->firstOfMonth();
+    $to = Carbon::parse($_month)->endOfMonth();
+
+    $daysColection = Day::whereBetween('date', [$from, $to])->where('user_id', '=', Auth::user()->id)->get();
+
+    $datesArray = array();
+    for ($i = 0; $i < $from->daysInMonth; $i++) {
+      if ($daysColection->where('date', '=', $from->addDays($i))->first() != null) {
+        $temp_date = $daysColection->where('date', '=', $from->addDays($i))->first();
+      } else {
+        $temp_date = new Day;
+        $temp_date->date = $from->addDays($i);
+        //dd($temp_date);
+      }
+      //$temp_date = $from->addDays($i);
+      $datesArray[] = $temp_date;
+    }
+    $days = $datesArray;
+    //dd($datesArray, $days);
+    //dd($month, $from, $to);
+    //dd($_month, $days);
+    return view('days.print')->with(compact('_month', 'days'));
+  }
+
   /**
    * Show the form for creating a new resource.
    *
