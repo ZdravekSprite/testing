@@ -42,43 +42,41 @@
             <div class="mt-4">
               <x-label for="start1" :value="__('Početak 1. smjene')" />
               <input id="start1" type="time" name="start1" value="{{ $settings ? $settings->start1->format('H:i') : old('start1')?? '06:00'}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-              <p>Vrijeme kada započinje 1. smjena.</p>
+              <x-p>Vrijeme kada započinje 1. smjena.</x-p>
               <x-label for="end1" :value="__('Kraj 1. smjene')" />
               <input id="end1" type="time" name="end1" value="{{ $settings ? $settings->end1->format('H:i') : old('end1')?? '14:00'}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-              <p>Vrijeme kada završava 1. smjena.</p>
+              <x-p>Vrijeme kada završava 1. smjena.</x-p>
             </div>
             <div class="mt-4">
               <x-label for="start2" :value="__('Početak 2. smjene')" />
               <input id="start2" type="time" name="start2" value="{{ $settings ? $settings->start2->format('H:i') : old('start2')?? '14:00'}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-              <p>Vrijeme kada započinje 2. smjena.</p>
+              <x-p>Vrijeme kada započinje 2. smjena.</x-p>
               <x-label for="end2" :value="__('Kraj 2. smjene')" />
               <input id="end2" type="time" name="end2" value="{{ $settings ? $settings->end2->format('H:i') : old('end2')?? '22:00'}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-              <p>Vrijeme kada završava 2. smjena.</p>
+              <x-p>Vrijeme kada završava 2. smjena.</x-p>
             </div>
             <div class="mt-4">
               <x-label for="start3" :value="__('Početak 3. smjene')" />
               <input id="start3" type="time" name="start3" value="{{ $settings ? $settings->start3->format('H:i') : old('start3')?? '22:00'}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-              <p>Vrijeme kada započinje 3. smjena.</p>
+              <x-p>Vrijeme kada započinje 3. smjena.</x-p>
               <x-label for="end2" :value="__('Kraj 3. smjene')" />
               <input id="end3" type="time" name="end3" value="{{ $settings ? $settings->end3->format('H:i') : old('end3')?? '06:00'}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-              <p>Vrijeme kada završava 3. smjena.</p>
+              <x-p>Vrijeme kada završava 3. smjena.</x-p>
             </div>
             <!-- zaposlen -->
             <div class="mt-4">
               <x-label for="zaposlen" :value="__('Zaposlen od')" />
               <input id="zaposlen" type="date" name="zaposlen" value="{{ ($settings && $settings->zaposlen) ? $settings->zaposlen->format('Y-m-d') : old('zaposlen')}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
-              <div class="ml-12 mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                Da bi se mogao točno izračunati prvi mjesec rada ako se nije zaposlilo prvog u mjesecu.
-              </div>
+              <x-p>Da bi se mogao točno izračunati prvi mjesec rada ako se nije zaposlilo prvog u mjesecu.</x-p>
             </div>
             @hasrole('binance')
             <div class="mt-4">
               <x-label for="bkey" :value="__('BINANCE_API_KEY')" />
-              <input id="bkey" type="text" name="bkey" value="{{ $settings ? $settings->BINANCE_API_KEY : old('bkey')?? null}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <x-input id="bkey" type="text" name="bkey" value="{{ $settings ? $settings->BINANCE_API_KEY : old('bkey')?? null}}" />
             </div>
             <div class="mt-4">
               <x-label for="bsecret" :value="__('BINANCE_API_SECRET')" />
-              <input id="bsecret" type="text" name="bsecret" value="{{ $settings ? $settings->BINANCE_API_SECRET : old('bsecret')?? null}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
+              <x-input id="bsecret" type="text" name="bsecret" value="{{ $settings ? $settings->BINANCE_API_SECRET : old('bsecret')?? null}}" />
             </div>
             @endhasrole
 

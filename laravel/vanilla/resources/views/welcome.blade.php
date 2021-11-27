@@ -21,7 +21,7 @@
 
             <div class="ml-12">
               <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                Program je samo moje igranje s kodom i prilagođavanje da dobijem unaprijed što bliže podatke onom što će mi biti ispisano na platnoj listi. Mnoge stvari nisu pokrivene jer se nisam s njima susreo (noćni rad, različite vrste bolovanja, GO) i vizualno je program totalni eksperiment, ali ako netko ima ideje kako ga poboljšati ili nešto dodati slobodno mi javi <a href="mailto:zdravek.sprite@gmail.com">na mail</a>.
+                Program je samo moje igranje s kodom i prilagođavanje da dobijem unaprijed što bliže podatke onom što će mi biti ispisano na platnoj listi. Vizualno je program totalni eksperiment, ali ako netko ima ideje kako ga poboljšati ili nešto dodati slobodno mi javi <a href="mailto:zdravek.sprite@gmail.com">na mail: zdravek.sprite@gmail.com</a>.
               </div>
             </div>
           </div>
