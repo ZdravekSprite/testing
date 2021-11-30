@@ -104,8 +104,9 @@ Route::get('/month', [DayController::class, 'month'])->name('month');
 Route::resource('months', MonthController::class)->middleware(['auth']);
 Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 
+Route::get('/month/print/{month?}', [MonthController::class, 'print'])->name('print');
 Route::get('/month/{month}', [DayController::class, 'month']);
-Route::get('/month/print/{month}', [DayController::class, 'print'])->name('print');
+//Route::get('/month/print/{month}', [DayController::class, 'print'])->name('print');
 Route::get('/days/create/{date}', [DayController::class, 'create']);
 //Route::get('/lista', PlatnaLista::class)->name('lista');
 Route::get('/lista', [MonthController::class, 'platna_lista'])->name('lista');

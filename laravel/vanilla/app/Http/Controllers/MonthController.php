@@ -607,4 +607,28 @@ class MonthController extends Controller
     //dd($data);
     return $data;
   }
+
+
+  public function print($month = null)
+  {
+    //dd($month);
+    if ($month == null) {
+      $_month = Carbon::now();
+    } else {
+      $_month = Carbon::parse('01.' . $month);
+    }
+    //dd($_month);
+    $unslug = $_month->format('Y') * 12 + $_month->format('m') - 1;
+    $month = Month::where('user_id', '=', Auth::user()->id)->where('month', '=', $unslug)->first();
+    if (!$month) {
+      $month = new Month;
+      $month->month = $unslug;
+      $month->user_id = Auth::user()->id;
+    }
+    $days = $month->days();
+    //dd($month);
+    return view('months.print')->with(compact('month', 'days'));
+  }
+
 }
+

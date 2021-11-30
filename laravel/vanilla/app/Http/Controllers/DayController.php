@@ -94,7 +94,6 @@ class DayController extends Controller
       $_month = Carbon::now();
     } else {
       $_month = Carbon::parse('01.' . $month);
-      //dd($month);
     }
     $from = CarbonImmutable::parse($_month)->firstOfMonth();
     $to = Carbon::parse($_month)->endOfMonth();

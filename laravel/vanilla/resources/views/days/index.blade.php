@@ -23,7 +23,7 @@
                   <a class="mx-auto" href="{{ route('month').'/'.$_month['x']->format('m.Y') }}">
                     {{$_month['x']->format('m.Y')}}
                   </a>
-                  <a class="mx-auto" href="{{ route('print', ['month' => $_month['x']->format('m.Y')]) }}">
+                  <a class="mx-auto" href="{{ route('print', ['month' => $_month['x']->format('m.Y')]) }}" target="_blank">
                     Ispis
                   </a>
                 </th>
