@@ -36,8 +36,13 @@
       </div>
 
       <div class="flex items-center justify-end mt-4">
+        @if (Route::has('register'))
+        <a class="ml-2 underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('register') }}">
+          {{ __('Register?') }}
+        </a>
+        @endif
         @if (Route::has('password.request'))
-        <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
+        <a class="ml-2 underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
           {{ __('Forgot your password?') }}
         </a>
         @endif
@@ -46,7 +51,6 @@
         </x-button>
       </div>
     </form>
-    @if (null)
     <div class="flex justify-between items-center mt-3">
       <hr class="w-full"> <span class="p-2 text-gray-400 mb-1">OR</span>
       <hr class="w-full">
@@ -108,6 +112,7 @@
         <strong>Google</strong>
       </a>
     </div>
+    @if (null)
     <div class="flex items-center justify-end">
       <a href="login/twitter" class="inline-flex items-center px-4 py-2 space-x-1 border border-transparent rounded-md text-sm text-gray-600 hover:text-gray-900">
         <svg viewBox="0 0 24 24" height="25" width="25">

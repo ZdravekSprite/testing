@@ -41,6 +41,7 @@ Route::get('/', function () {
 Route::get('/home', function () {
   return redirect(route('home'));
 });
+Route::view('/policy', 'policy')->name('policy');
 
 Route::get('/dashboard', function () {
   $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
@@ -54,9 +55,11 @@ Route::get('/dashboard', function () {
 require __DIR__ . '/auth.php';
 
 Route::get('login/{provider}', function ($provider) {
+  //dd($provider);
   return Socialite::driver($provider)->redirect();
 })->name('{provider}Login');
 Route::get('login/{provider}/callback', function ($provider) {
+  //dd($provider);
   $social_user = Socialite::driver($provider)->user();
   // $user->token
   $user = User::firstOrCreate([
@@ -69,11 +72,26 @@ Route::get('login/{provider}/callback', function ($provider) {
     $user[$provider . "_id"] = $social_user->getId();
   }
   if ($social_user->getAvatar()) {
+    if($provider == 'facebook') {
+      $url = $social_user->getAvatar() . '&access_token=' . $social_user->token;
+      $ch = curl_init();
+  
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+  
+      $res = curl_exec($ch);
+      $redirectedUrl = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+      //$avatar = ltrim($redirectedUrl,"https://");
+      $avatar = $redirectedUrl;
+    } else {
+      $avatar = $social_user->getAvatar();
+    }
     if (!$user->avatar) {
-      $user->avatar = $social_user->getAvatar();
+      $user->avatar = $avatar;
     }
     if (!$user[$provider . "_avatar"]) {
-      $user[$provider . "_avatar"] = $social_user->getAvatar();
+      $user[$provider . "_avatar"] = $avatar;
     }
   }
   if (!$user->roles->pluck('name')->contains('socialuser')) {
