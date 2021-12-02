@@ -11,7 +11,7 @@
         <div class="p-6 bg-gray-100 border-b border-gray-200">
           <div id="app">
             @if(count($balance) > 0)
-            <form method="POST" action="{{ route('dustTransfer') }}">
+            <form method="POST" action="{{ route('dustTransfer') }}" onsubmit="return confirm('Are you sure?')">
               @csrf
 
               @foreach($balance as $coin => $asset)

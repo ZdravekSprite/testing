@@ -176,6 +176,7 @@ class KlineController extends Controller
     //dd($trades);
     $symbols_list = ['ETH', 'DOT', 'BNB', 'ADA', 'MATIC', 'SOL', 'LUNA', 'FTT'];
     $symbols_bnb_list = ['DAR', 'CITY', 'QI'];
+    $symbols_usdt_list = ['SANTOS'];
     $symbols = [
       ['BTCBUSD', [], [], [], '1d'],
       ['BTCBUSD', [], [], [], '1h'],
@@ -192,6 +193,12 @@ class KlineController extends Controller
       $symbols[] = [$symbol . 'BUSD', [], [], [], '1d'];
       $symbols[] = [$symbol . 'BUSD', [], [], [], '1h'];
       $symbols[] = [$symbol . 'BUSD', [], [], [], '1m'];
+    }
+    foreach ($symbols_usdt_list as $symbol) {
+      $symbols[] = [$symbol . 'BTC', [], [], [], '1h'];
+      $symbols[] = [$symbol . 'USDT', [], [], [], '1d'];
+      $symbols[] = [$symbol . 'USDT', [], [], [], '1h'];
+      $symbols[] = [$symbol . 'USDT', [], [], [], '1m'];
     }
     $symbols[] = ['BTCEUR', [], [], [], '1h'];
     $symbols[] = ['EURBUSD', [], [], [], '1d'];
