@@ -215,7 +215,6 @@ Route::post('/binance/dustTransfer', [Binance::class, 'dustTransfer'])->name('du
 Route::get('/binance/test', [TestBinance::class, 'test'])->name('bTest');
 Route::get('/binance/crta', [TradeController::class, 'crta']);
 
-
 Route::get('/binance/', function () {
   return view('binance.welcome');
 })->name('bHome');

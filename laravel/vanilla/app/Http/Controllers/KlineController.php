@@ -175,7 +175,7 @@ class KlineController extends Controller
     }
     //dd($trades);
     $symbols_list = ['ETH', 'DOT', 'BNB', 'ADA', 'MATIC', 'SOL', 'LUNA', 'FTT'];
-    $symbols_bnb_list = ['DAR', 'CITY', 'QI'];
+    $symbols_bnb_list = ['DAR', 'QI', 'CITY'];
     $symbols_usdt_list = ['SANTOS'];
     $symbols = [
       ['BTCBUSD', [], [], [], '1d'],

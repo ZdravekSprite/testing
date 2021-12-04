@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hnb;
 use App\Models\Symbol;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
@@ -52,27 +53,40 @@ class Binance extends Controller
       $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
 
       if (!$hnb_eur_kn) {
-        $response = Http::get('https://api.hnb.hr/tecajn/v2?datum-primjene=' . $date);
-        $day = $response->json();
-        foreach ($day as $key => $valuta) {
-          $hnb = new Hnb;
-          $hnb->broj_tecajnice = $valuta['broj_tecajnice'];
-          $hnb->datum_primjene = $valuta['datum_primjene'];
-          $hnb->drzava = $valuta['drzava'];
-          $hnb->drzava_iso = $valuta['drzava_iso'];
-          $hnb->sifra_valute = $valuta['sifra_valute'];
-          $hnb->valuta = $valuta['valuta'];
-          $hnb->jedinica = $valuta['jedinica'];
-          $hnb->kupovni_tecaj = $valuta['kupovni_tecaj'];
-          $hnb->srednji_tecaj = $valuta['srednji_tecaj'];
-          $hnb->prodajni_tecaj = $valuta['prodajni_tecaj'];
-          $hnb->save();
+        
+        try
+        {
+          $response = Http::get('https://api.hnb.hr/tecajn/v2?datum-primjene=' . $date);
+          $day = $response->json();
+          foreach ($day as $key => $valuta) {
+            $hnb = new Hnb;
+            $hnb->broj_tecajnice = $valuta['broj_tecajnice'];
+            $hnb->datum_primjene = $valuta['datum_primjene'];
+            $hnb->drzava = $valuta['drzava'];
+            $hnb->drzava_iso = $valuta['drzava_iso'];
+            $hnb->sifra_valute = $valuta['sifra_valute'];
+            $hnb->valuta = $valuta['valuta'];
+            $hnb->jedinica = $valuta['jedinica'];
+            $hnb->kupovni_tecaj = $valuta['kupovni_tecaj'];
+            $hnb->srednji_tecaj = $valuta['srednji_tecaj'];
+            $hnb->prodajni_tecaj = $valuta['prodajni_tecaj'];
+            $hnb->save();
+          }
+          $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
         }
-        $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
+        catch(Exception $e)
+        {
+          logger()->error('Goutte client error ' . $e->getMessage());
+          //dd($e->getMessage());
+          $hnb_eur_kn = Hnb::orderBy('datum_primjene', 'desc')->where('valuta', '=', 'EUR')->first();
+          //dd($hnb_eur_kn);
+      }
+        //dd($response->json());
       }
       $eur_kn = str_replace(',', '.', $hnb_eur_kn->kupovni_tecaj) / 1.01;
       $total_kn = -0.8 * $eur_kn;
       //dd($total_kn);
+      //dd('test portfolio');
 
       $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=EURBUSD');
       $data = $res->json();
