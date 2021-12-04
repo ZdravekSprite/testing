@@ -18,7 +18,9 @@
         </div>
         @impersonate
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-          <a class="inline-flex items-center px-1 pt-1 border-b-2 border-indigo-400 text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out" href="{{ route('admin.impersonate.stop') }}">{{ __('Stop Impersonating') }}</a>
+          <x-nav-link :href="route('admin.impersonate.stop')" :active="true">
+            {{ __('Stop Impersonating') }}
+          </x-nav-link>
         </div>
         @endimpersonate
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
@@ -37,12 +39,13 @@
             {{ __('Menage Roles') }}
           </x-nav-link>
         </div>
-        @else
+        @endhasrole
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
             {{ __('Praznici') }}
           </x-nav-link>
         </div>
+        @hasrole('user')
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-nav-link :href="route('month')" :active="request()->routeIs('month', 'days.index', 'days.create', 'days.show', 'days.edit')">
             {{ __('ERS') }}
@@ -88,6 +91,7 @@
             {{ __('Platna lista') }}
           </x-nav-link>
         </div>
+        @endhasrole
         @hasrole('binance')
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-nav-link :href="route('bHome')" :active="request()->routeIs('bHome')">
@@ -119,7 +123,6 @@
             </x-slot>
           </x-dropdown>
         </div>
-        @endhasrole
         @endhasrole
       </div>
 
@@ -171,6 +174,13 @@
         {{ __('Dashboard') }}
       </x-responsive-nav-link>
     </div>
+    @impersonate
+    <div class="pt-4 pb-1 border-t border-gray-200">
+      <x-responsive-nav-link :href="route('admin.impersonate.stop')" :active="true">
+        {{ __('Stop Impersonating') }}
+      </x-responsive-nav-link>
+    </div>
+    @endimpersonate
     <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('chat')" :active="request()->routeIs('chat')">
         {{ __('Chat') }}
@@ -182,12 +192,18 @@
         {{ __('Menage Users') }}
       </x-responsive-nav-link>
     </div>
-    @else
+    <div class="pt-4 pb-1 border-t border-gray-200">
+      <x-responsive-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.index')">
+        {{ __('Menage Roles') }}
+      </x-responsive-nav-link>
+    </div>
+    @endhasrole
     <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
         {{ __('Praznici') }}
       </x-responsive-nav-link>
     </div>
+    @hasrole('user')
     <div class="pt-4 pb-1 border-t border-gray-200">
       <x-responsive-nav-link :href="route('month')" :active="request()->routeIs('month')">
         {{ __('ERS') }}

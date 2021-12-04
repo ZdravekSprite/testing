@@ -43,7 +43,8 @@ class RoleController extends Controller
   public function store(Request $request)
   {
     $this->validate($request, [
-      'name' => 'required'
+      'name' => 'required|string|min:3|max:255|unique:roles',
+      'description' => 'string|min:3|max:255'
     ]);
     $role = new Role;
     $role->name = $request->input('name');
@@ -84,12 +85,13 @@ class RoleController extends Controller
   public function update(Request $request, Role $role)
   {
     $this->validate($request, [
-      'name' => 'required'
+      'name' => 'required|string|min:3|max:255|unique:roles,name,' . $role->id,
+      'description' => 'string|min:3|max:255'
     ]);
     $role->name = $request->input('name');
     $role->description = $request->input('description') ?? $role->description;
     $role->save();
-    return redirect(route('admin.roles.show', $role))->with('success', 'Role Updatet');
+    return redirect(route('admin.roles.show', $role))->with('success', 'Role Updated');
   }
 
   /**
@@ -100,6 +102,7 @@ class RoleController extends Controller
    */
   public function destroy(Role $role)
   {
+    $role->users()->detach();
     $role->delete();
     return redirect(route('admin.roles.index'))->with('success', 'Role removed');
   }

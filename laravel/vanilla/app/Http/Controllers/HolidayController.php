@@ -25,7 +25,9 @@ class HolidayController extends Controller
    */
   public function create()
   {
-    //
+    $holiday = new Holiday;
+    //dd($holiday);
+    return view('holidays.create')->with(compact('holiday'));
   }
 
   /**
@@ -36,7 +38,15 @@ class HolidayController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    $this->validate($request, [
+      'date' => 'required|unique:holidays',
+      'name' => 'required|string|min:3|max:255'
+    ]);
+    $holiday = new Holiday;
+    $holiday->date = $request->input('date');
+    $holiday->name = $request->input('name');
+    $holiday->save();
+    return redirect(route('holidays.index'))->with('success', 'Holiday Created');
   }
 
   /**
@@ -47,7 +57,7 @@ class HolidayController extends Controller
    */
   public function show(Holiday $holiday)
   {
-    //
+    return view('holidays.show')->with(compact('holiday'));
   }
 
   /**
@@ -58,7 +68,7 @@ class HolidayController extends Controller
    */
   public function edit(Holiday $holiday)
   {
-    //
+    return view('holidays.edit')->with(compact('holiday'));
   }
 
   /**
@@ -70,7 +80,14 @@ class HolidayController extends Controller
    */
   public function update(Request $request, Holiday $holiday)
   {
-    //
+    $this->validate($request, [
+      'date' => 'required|unique:holidays',
+      'name' => 'required|string|min:3|max:255'
+    ]);
+    $holiday->date = $request->input('date');
+    $holiday->name = $request->input('name');
+    $holiday->save();
+    return redirect(route('holidays.index'))->with('success', 'Holiday Updated');
   }
 
   /**
@@ -81,6 +98,7 @@ class HolidayController extends Controller
    */
   public function destroy(Holiday $holiday)
   {
-    //
+    $holiday->delete();
+    return redirect(route('holidays.index'))->with('success', 'Holiday removed');
   }
 }
