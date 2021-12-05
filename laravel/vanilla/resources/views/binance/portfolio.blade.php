@@ -19,6 +19,9 @@
                 <x-input class="float-left mr-1" :width="'4'" id="{{ $coin }}" type="checkbox" name="assets[]" value="{{ $coin }}" :checked="old('$coin') ? 'checked' : null" />
                 <span class="block font-medium text-gray-700">
                 {{ $asset->name }}: {{$asset->total}} {{$coin}} (<span id="price{{$coin}}">{{round($asset->price,2)}}</span> kn) [Free: {{$asset->free}}(<span id="{{$coin}}free"></span> kn)]
+                @if($asset->ATH)
+                [ATH: {{$asset->ATH*1}} (<span id="{{$coin}}percent"></span>%)]
+                @endif
                 </span>
               </div>
               @endforeach
@@ -85,6 +88,8 @@
               document.getElementById('price{{$coin}}').innerHTML = formatter.format({{strtolower($coin)}},2);
               {{strtolower($coin)}}free = message.data.k.c * {{$asset->free}} * busd_kn;
               document.getElementById('{{$coin}}free').innerHTML = formatter.format({{strtolower($coin)}}free,2);
+              {{strtolower($coin)}}percent = message.data.k.c / {{$asset->ATH}} * 100;
+              document.getElementById('{{$coin}}percent').innerHTML = formatter.format({{strtolower($coin)}}percent,2);
             }
         @endswitch
       @endforeach

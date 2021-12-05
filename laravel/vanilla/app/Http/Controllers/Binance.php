@@ -199,26 +199,24 @@ class Binance extends Controller
       //var binanceSocket = new WebSocket("wss://stream.binance.com:9443/stream?streams=adabusd@kline_1m/bnbbusd@kline_1m/ethbusd@kline_1m/maticbusd@kline_1m/btcbusd@kline_1m/eurbusd@kline_1m/solbusd@kline_1m/mboxbusd@kline_1m/lunabusd@kline_1m/fttbusd@kline_1m");
       foreach ($balance as $coin) {
         if ($coin->coin == 'BUSD') {
-          $coin->target = 1500 / $coin->price * $coin->total;
+          $coin->ATH = null;
         } elseif ($coin->coin == 'DAI') {
           $binanceSocket .= 'busd'.Str::lower($coin->coin).'@kline_1m/';
-          if ($coin->price) {
-            $coin->target = $total / 3000 * 300 / $coin->price * $coin->total;
-          } else {
-            $coin->target = 0;
-          }
+          $coin->ATH = null;
         } else {
           $binanceSocket .= Str::lower($coin->coin).'busd@kline_1m/';
-          if ($coin->price) {
-            $coin->target = $total / 3000 * 300 / $coin->price * $coin->total;
+          if ($coin->coin == 'EUR') {
+            $coin->ATH = null;
           } else {
-            $coin->target = 0;
+            $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $coin->coin . 'BUSD&interval=1d'));
+            //dd(max(array_column($kline, 2)));
+            $coin->ATH = max(array_column($kline, 2))*1;
           }
         }
       }
       $binanceSocket = Str::replaceLast('/', '', $binanceSocket);
 
-      //dd($balance,$binanceSocket);
+      //dd($balance,$binanceSocket,$total,$eur_kn,$busd_kn);
 
       return view('binance.portfolio')->with(compact('balance', 'binanceSocket', 'total', 'eur_kn', 'busd_kn'));
     }

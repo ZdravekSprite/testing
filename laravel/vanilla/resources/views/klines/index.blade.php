@@ -9,8 +9,8 @@
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   <style>
   .floating-tooltip-2 {
-    width: 75px;
-    height: 100px;
+    width: 85px;
+    height: 110px;
     position: absolute;
     display: none;
     padding: 8px;
@@ -136,15 +136,36 @@
 
       toolTip{{ $symbol[4] }}_{{ $symbol[0] }}.style.display = 'block';
       var price{{ $symbol[4] }}_{{ $symbol[0] }} = param.seriesPrices.get(candleSeries{{ $symbol[4] }}_{{ $symbol[0] }});
+
+      function nFormatter(num, digits) {
+        const lookup = [
+          { value: 1, symbol: "" },
+          { value: 1e3, symbol: "k" },
+          { value: 1e6, symbol: "M" },
+          { value: 1e9, symbol: "G" },
+          { value: 1e12, symbol: "T" },
+          { value: 1e15, symbol: "P" },
+          { value: 1e18, symbol: "E" }
+        ];
+        const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+        var item = lookup.slice().reverse().find(function(item) {
+          return num >= item.value;
+        });
+        return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0";
+      }
+
+      var value{{ $symbol[4] }}_{{ $symbol[0] }} = param.seriesPrices.get(histogramSeries{{ $symbol[4] }}_{{ $symbol[0] }});
       //console.log(param.time);
-      var txt{{ $symbol[4] }}_{{ $symbol[0] }} = ((price{{ $symbol[4] }}_{{ $symbol[0] }}.close - price{{ $symbol[4] }}_{{ $symbol[0] }}.open ) / price{{ $symbol[4] }}_{{ $symbol[0] }}.open );
+      var txt1{{ $symbol[4] }}_{{ $symbol[0] }} = ((price{{ $symbol[4] }}_{{ $symbol[0] }}.close - price{{ $symbol[4] }}_{{ $symbol[0] }}.open ) / price{{ $symbol[4] }}_{{ $symbol[0] }}.open );
+      var txt2{{ $symbol[4] }}_{{ $symbol[0] }} = ((price{{ $symbol[4] }}_{{ $symbol[0] }}.high - price{{ $symbol[4] }}_{{ $symbol[0] }}.low ) / price{{ $symbol[4] }}_{{ $symbol[0] }}.high );
       toolTip{{ $symbol[4] }}_{{ $symbol[0] }}.innerHTML = '<div style="font-size: 10px; color: rgba(255, 70, 70, 1)">{{ $symbol[0] }}</div>' +
         //'<div style="font-size: 10px; margin: 2px 0px">' + new Date(param.time * 1000) + '%</div>' +
-        '<div style="font-size: 12px; margin: 2px 0px">' + (txt{{ $symbol[4] }}_{{ $symbol[0] }}*100).toFixed(2) + '%</div>' +
+        '<div style="font-size: 12px; margin: 2px 0px">' + (txt1{{ $symbol[4] }}_{{ $symbol[0] }}*100).toFixed(2) + '% <span style="font-size: 10px;">' + (txt2{{ $symbol[4] }}_{{ $symbol[0] }}*100).toFixed(2) + '%</span></div>' +
         '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $symbol[4] }}_{{ $symbol[0] }}.high*1 + '</div>' +
         '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $symbol[4] }}_{{ $symbol[0] }}.open*1 + '</div>' +
         '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $symbol[4] }}_{{ $symbol[0] }}.close*1 + '</div>' +
-        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $symbol[4] }}_{{ $symbol[0] }}.low*1 + '</div>';
+        '<div style="font-size: 10px; margin: 2px 0px">' + price{{ $symbol[4] }}_{{ $symbol[0] }}.low*1 + '</div>' +
+        '<div style="font-size: 10px; margin: 2px 0px">' + nFormatter(value{{ $symbol[4] }}_{{ $symbol[0] }}, 2) + '</div>';
 
       var y{{ $symbol[4] }}_{{ $symbol[0] }} = container{{ $symbol[4] }}_{{$symbol[0]}}.offsetTop + param.point.y;
       var x{{ $symbol[4] }}_{{ $symbol[0] }} = container{{ $symbol[4] }}_{{$symbol[0]}}.offsetLeft + param.point.x;
