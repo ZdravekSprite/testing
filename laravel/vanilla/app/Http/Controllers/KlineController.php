@@ -174,7 +174,7 @@ class KlineController extends Controller
       $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000 * 600000))->get();
     }
     //dd($trades);
-    $symbols_list = ['ETH', 'DOT', 'BNB', 'ADA', 'MATIC', 'SOL', 'LUNA', 'FTT'];
+    $symbols_list = ['ETH', 'DOT', 'BNB', 'ADA', 'MATIC', 'SOL', 'LUNA', 'FTT', 'MC'];
     $symbols_bnb_list = ['DAR', 'QI', 'CITY'];
     $symbols_usdt_list = ['SANTOS'];
     $symbols = [
@@ -231,7 +231,7 @@ class KlineController extends Controller
             $marker = (object)[];
             $marker->time = $trade->time / 1000; //gmdate("Y-m-d h:i:s",$trade->time);//
             $marker->position = $trade->isBuyer ? 'belowBar' : 'aboveBar';
-            $marker->color = $trade->isBuyer ? 'red' : 'green';
+            $marker->color = $trade->isBuyer ? 'yellow' : 'orange';
             $marker->shape = $trade->isBuyer ? 'arrowUp' : 'arrowDown';
             $marker->id = $trade->orderId;
             $marker->text = $trade->price * 1;
