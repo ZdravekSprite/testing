@@ -203,6 +203,10 @@ class Binance extends Controller
         } elseif ($coin->coin == 'DAI') {
           $binanceSocket .= 'busd'.Str::lower($coin->coin).'@kline_1m/';
           $coin->ATH = null;
+        } elseif ($coin->coin == 'SANTOS') {
+          $binanceSocket .= Str::lower($coin->coin).'usdt@kline_1m/';
+          $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $coin->coin . 'USDT&interval=1d'));
+          $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2))*1;
         } else {
           $binanceSocket .= Str::lower($coin->coin).'busd@kline_1m/';
           if ($coin->coin == 'EUR') {
@@ -210,7 +214,7 @@ class Binance extends Controller
           } else {
             $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $coin->coin . 'BUSD&interval=1d'));
             //dd(max(array_column($kline, 2)));
-            $coin->ATH = max(array_column($kline, 2))*1;
+            $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2))*1;
           }
         }
       }
@@ -218,7 +222,7 @@ class Binance extends Controller
 
       //dd($balance,$binanceSocket,$total,$eur_kn,$busd_kn);
 
-      return view('binance.portfolio')->with(compact('balance', 'binanceSocket', 'total', 'eur_kn', 'busd_kn'));
+      return view('binance.portfolio')->with(compact('balance', 'binanceSocket', 'total', 'eur_kn', 'busd_kn', 'usdt_kn'));
     }
   }
 

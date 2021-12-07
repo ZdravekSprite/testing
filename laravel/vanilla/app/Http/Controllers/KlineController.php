@@ -174,9 +174,9 @@ class KlineController extends Controller
       $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000 * 600000))->get();
     }
     //dd($trades);
-    $symbols_list = ['ETH', 'BNB', 'SOL', 'MATIC', 'LUNA', 'ADA', 'DOT', 'FTT', 'MC'];
-    $symbols_bnb_list = ['DAR', 'QI', 'CITY'];
-    $symbols_usdt_list = ['SANTOS'];
+    $symbols_list = ['ETH', 'BNB', 'SOL', 'MATIC', 'LUNA', 'ADA', 'DOT', 'FTT'];
+    //$symbols_bnb_list = ['DAR', 'QI', 'CITY'];
+    //$symbols_usdt_list = ['SANTOS'];
     $symbols = [
       ['BTCBUSD', [], [], [], '1d'],
       ['BTCBUSD', [], [], [], '1h'],
@@ -188,6 +188,7 @@ class KlineController extends Controller
       $symbols[] = [$symbol . 'BUSD', [], [], [], '1h'];
       $symbols[] = [$symbol . 'BUSD', [], [], [], '1m'];
     }
+    /*
     foreach ($symbols_bnb_list as $symbol) {
       $symbols[] = [$symbol . 'BNB', [], [], [], '1h'];
       $symbols[] = [$symbol . 'BUSD', [], [], [], '1d'];
@@ -200,6 +201,7 @@ class KlineController extends Controller
       $symbols[] = [$symbol . 'USDT', [], [], [], '1h'];
       $symbols[] = [$symbol . 'USDT', [], [], [], '1m'];
     }
+    */
     $symbols[] = ['BTCEUR', [], [], [], '1h'];
     $symbols[] = ['EURBUSD', [], [], [], '1d'];
     $symbols[] = ['EURBUSD', [], [], [], '1h'];
