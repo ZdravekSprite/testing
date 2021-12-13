@@ -28,7 +28,7 @@
             </tr>
             <tr>
               <td class="w-3/4 border p-2" colspan="2"><b>1. OSTVARENI SATI PO VREMENU</b></td>
-              <td class="w-1/8 border p-2 text-center"><b>sati rad/postotak</b></td>
+              <td class="w-1/8 border p-2 text-center"><b>sati rada/postotak</b></td>
               <td class="w-1/8 border p-2 text-right"><b>IZNOS</b></td>
             </tr>
             <tr>
@@ -37,9 +37,14 @@
               <td class="w-1/8 border p-2 text-right">{{ $data['1.1.kn'] }}</td>
             </tr>
             <tr>
-              <td class="w-3/4 border p-2 pl-6" colspan="2">1.4 Za prekovremeni rad</td>
-              <td class="w-1/8 border p-2 text-center">{{ $data['1.4.h'] }}</td>
-              <td class="w-1/8 border p-2 text-right">{{ $data['1.4.kn'] }}</td>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.2 redovnog rada noću</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['1.2.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['1.2.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.3. sati redovnog rada u dane državnog praznika/ blagdana</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['1.3.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['1.3.kn'] }}</td>
             </tr>
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.7. sati redovnog rada nedeljom</td>
@@ -47,14 +52,9 @@
               <td class="w-1/8 border p-2 text-right">{{ $data['1.7.kn'] }}</td>
             </tr>
             <tr>
-              <td class="w-3/4 border p-2 pl-6" colspan="2">1.x. praznik</td>
-              <td class="w-1/8 border p-2 text-center">{{ $data['1.x.h'] }}</td>
-              <td class="w-1/8 border p-2 text-right">{{ $data['1.x.kn'] }}</td>
-            </tr>
-            <tr>
-              <td class="w-3/4 border p-2 pl-6" colspan="2">1.y. dodatak rada za praznike</td>
-              <td class="w-1/8 border p-2 text-center">{{ $data['1.y.h'] }}</td>
-              <td class="w-1/8 border p-2 text-right">{{ $data['1.y.kn'] }}</td>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.8. sati redovnog rada nedjeljom + noću</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['1.8.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['1.8.kn'] }}</td>
             </tr>
             <tr>
               <td class="w-3/4 border p-2" colspan="2"><b>3. Propisani ili ugovoeni dodaci na plaću radnika i novčani iznosi po toj osnovi</b></td>
@@ -147,9 +147,19 @@
               <td class="w-1/8 border p-2 text-right">{{ $data['12.a.kn'] }}</td>
             </tr>
             <tr>
-              <td class="w-3/4 border p-2 pl-6" colspan="2">Nagrada i Prehrana</td>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">!Nagrada</td>
               <td class="w-1/8 border p-2 text-center"></td>
               <td class="w-1/8 border p-2 text-right">{{ $data['12.b.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">!Prehrana</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['12.c.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">!Prigodna</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['12.d.kn'] }}</td>
             </tr>
             <tr>
               <td class="w-3/4 border p-2" colspan="2"><b>15. ZA ISPLATU</b></td>

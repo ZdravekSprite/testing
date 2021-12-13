@@ -10,7 +10,13 @@
                 <x-label for="prijevoz" :value="__('Prijevoz')" />
                 <x-input id="prijevoz" type="number" name="prijevoz" value="{{$month->prijevoz ? $month->prijevoz/100 : old('prijevoz')?? 300}}" min="0" step="10" />
               </x-div>
-
+              @hasrole(env('FIRM2'))
+              <!-- prehrana -->
+              <x-div>
+                <x-label for="prehrana" :value="__('Prehrana')" />
+                <x-input id="prehrana" type="number" name="prehrana" value="{{$month->prehrana/100?? old('prehrana')?? 0}}" min="0" step="0.01" />
+              </x-div>
+              @endhasrole
               <!-- odbitak -->
               <x-div>
                 <x-label for="odbitak" :value="__('Odbitak')" />
@@ -22,7 +28,7 @@
                 <x-label for="prirez" :value="__('Prirez')" />
                 <x-input id="prirez" type="number" name="prirez" value="{{$month->prirez ? $month->prirez/100 : old('prirez')?? 0}}" min="0" step="0.1" />
               </x-div>
-
+              @hasrole(env('FIRM1'))
               <!-- sindikat -->
               <x-div>
                 <x-label for="sindikat" :value="__('Sindikat')" />
@@ -36,4 +42,5 @@
                 <x-label for="kredit" :value="__('Kredit')" />
                 <x-input id="kredit" type="number" name="kredit" value="{{$month->kredit/100?? old('kredit')?? 0}}" min="0" step="0.01" />
               </x-div>
+              @endhasrole
             </div>

@@ -151,7 +151,9 @@ class Month extends Model
     $minWork = 0;
     $minWorkNight = 0;
     $minWorkHoli = 0;
+    $minWorkHoliNight = 0;
     $minWorkSunday = 0;
+    $minWorkSundayNight = 0;
 
     //dd($this->days());
     $days_night = [];
@@ -167,11 +169,12 @@ class Month extends Model
         $day_minWorkNight;
 
       $dayOfWeek = $d->date->dayOfWeek;
-      $norm = User::where('id', '=', Auth::user()->id)->first()->hasAnyRole('panpek');
+      $norm = User::where('id', '=', Auth::user()->id)->first()->hasAnyRole(env('FIRM1'));
       switch ($dayOfWeek) {
         case 0:
           $def_h = 0;
           $minWorkSunday += $day_minWork;
+          $minWorkSundayNight += $day_minWorkNight;
           break;
         case 6:
           if ($norm) {
@@ -196,6 +199,7 @@ class Month extends Model
         $hoursNormHoli += $def_h;
         $firstHoursNormHoli += $firstFrom > $d->date ? 0 : $def_h;
         $minWorkHoli += $day_minWork;
+        $minWorkHoliNight += $day_minWorkNight;
       }
 
       switch ($d->state) {
@@ -228,7 +232,9 @@ class Month extends Model
       'min' => $minWork,
       'minNight' => $minWorkNight,
       'minSunday' => $minWorkSunday,
-      'minHoliday' => $minWorkHoli
+      'minSundayNight' => $minWorkSundayNight,
+      'minHoliday' => $minWorkHoli,
+      'minHolidayNight' => $minWorkHoliNight,
     ];
     return $hoursNorm;
   }

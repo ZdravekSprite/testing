@@ -5,14 +5,14 @@
                 <x-input id="prekovremeni" type="number" name="prekovremeni" value="{{$month->prekovremeni?? old('prekovremeni')?? 0}}" min="0" step="1" />
                 <x-p>nikad nije sigurno koliko će prekovremenih platiti, pa se točan broj koliko su ih platitili za precizniji izračun može dodati</x-p>
               </x-div>
-
+              @hasrole(env('FIRM1'))
               <!-- nocni -->
               <x-div>
                 <x-label for="nocni" :value="__('Nocni sati')" />
                 <x-input id="nocni" type="number" name="nocni" value="{{$month->nocni/10?? old('nocni')?? 0}}" min="0" step="0.5" />
                 <x-p>5 min tu, 5 min tamo i može se skupiti i pola sata ili više, pa za precizniji izračun dodaje se točno koliko je na platnoj listi</x-p>
               </x-div>
-
+              @endhasrole
               <!-- bolovanje -->
               <x-div>
                 <x-label for="bolovanje" :value="__('Bolovanje')" />
@@ -32,7 +32,13 @@
                 <x-label for="regres" :value="__('Regres')" />
                 <x-input id="regres" type="number" name="regres" value="{{$month->regres/100?? old('regres')?? 0}}" min="0" step="100" />
               </x-div>
-
+              @hasrole(env('FIRM2'))
+              <!-- prigodna -->
+              <x-div>
+                <x-label for="prigodna" :value="__('Prigodna')" />
+                <x-input id="prigodna" type="number" name="prigodna" value="{{$month->prigodna/100?? old('prigodna')?? 0}}" min="0" step="0.01" />
+              </x-div>
+              @endhasrole
               <!-- stimulacija Bruto-->
               <x-div>
                 <x-label for="stimulacija" :value="__('Stimulacija Bruto')" />
