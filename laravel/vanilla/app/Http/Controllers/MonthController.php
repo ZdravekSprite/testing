@@ -666,8 +666,21 @@ class MonthController extends Controller
     // Prirez
     $data['10.prirez.kn'] = number_format($kn10_prirez, 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_prirezx, 2, ',', '.') . ')' : '');
 
+    // 10.1. KOREKCIJA POREZA I PRIREZA
+    $kn10_1_20 = $kn9 * 0.2 - $kn10_20;
+    $kn10_1_20x = $kn9x * 0.2 - $kn10_20x;
+    $kn10_1_prirez = $kn10_20 * $prirez / 10000 - $kn10_prirez;
+    $kn10_1_prirezx = $kn10_20x * $prirez / 10000 - $kn10_prirezx;
+    $kn10_1 = ($kn10_1_20 > 0) ? round($kn10_1_20 + $kn10_1_prirez, 2) : 0;
+    $kn10_1x = ($kn10_1_20x > 0) ? round($kn10_1_20x + $kn10_1_prirezx, 2) : 0;
+    $data['10.1.kn'] = number_format($kn10_1, 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_1x, 2, ',', '.') . ')' : '');
+    // 20.00%
+    $data['10.1.20.kn'] = number_format($kn10_1-round($kn10_1_prirez, 2), 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_1_20x, 2, ',', '.') . ')' : '');
+    // Prirez
+    $data['10.1.prirez.kn'] = number_format($kn10_1_prirez, 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_1_prirezx, 2, ',', '.') . ')' : '');
+
     // 11. NETO PLAĆA
-    $kn11 = $kn7 - $kn10;
+    $kn11 = $kn7 - $kn10 - $kn10_1;
     $kn11x = $kn7x - $kn10x;
     $data['11.kn'] = number_format($kn11, 2, ',', '.') . ($razlika ? ' (' . number_format($kn11x, 2, ',', '.') . ')' : '');
 

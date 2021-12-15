@@ -192,6 +192,23 @@
               <td class="w-1/8 border p-2 text-center"></td>
               <td class="w-1/8 border p-2 text-right">{{ $data['10.prirez.kn'] }}</td>
             </tr>
+            @if($data['10.1.kn'] != '0,00 (0,00)')
+            <tr>
+              <td class="w-3/4 border p-2" colspan="2">10.1. KOREKCIJA POREZA I PRIREZA</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['10.1.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">Korekcija poreza:</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['10.1.20.kn'] }}</td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">Korekcija prireza:</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['10.1.prirez.kn'] }}</td>
+            </tr>
+            @endif
 
             <tr>
               <td class="w-3/4 border p-2" colspan="2"><b>11. NETO PLAĆA</b></td>
