@@ -242,6 +242,7 @@ class MonthController extends Controller
     $month->nocni = $request->input('nocni') * 10 ?? $month->nocni;
     $month->nagrada = $request->input('nagrada') ? $request->input('nagrada') * 100 : $month->nagrada;
     $month->regres = $request->input('regres') ? $request->input('regres') * 100 : $month->regres;
+    $month->bozicnica = $request->input('bozicnica') ? $request->input('bozicnica') * 100 : $month->bozicnica;
     $month->prigodna = $request->input('prigodna') ? $request->input('prigodna') * 100 : $month->prigodna;
     $month->stimulacija = $request->input('stimulacija') ? $request->input('stimulacija') * 100 : $month->stimulacija;
     if ($request->input('sindikat') == true) $month->sindikat = true;
@@ -612,12 +613,18 @@ class MonthController extends Controller
     //dd($hoursNorm);
     $prijevoz = $hoursNorm->firstAll > $hoursNorm->All ? $prijevoz : $prijevoz * $hoursNorm->firstAll / $hoursNorm->All;
     $regres = $month->regres / 100 ?? 0;
-    $kn3 = round($prijevoz + $regres, 2);
+    $bozicnica = $month->bozicnica / 100 ?? 0;
+    $prehrana = $month->prehrana / 100 ?? 0;
+    $kn3 = round($prijevoz + $regres + $bozicnica + $prehrana, 2);
     $data['3.kn'] = number_format($kn3, 2, ',', '.');
     // 3.1. Prijevoz
     $data['3.1.kn'] = number_format($prijevoz, 2, ',', '.');
+    // 3.2. Bozicnica
+    $data['3.2.kn'] = number_format($bozicnica, 2, ',', '.');
     // 3.7. Regres za godišnji odmor
     $data['3.7.kn'] = number_format($regres, 2, ',', '.');
+    // 3.10. Topli obrok
+    $data['3.10.kn'] = number_format($prehrana, 2, ',', '.');
 
     // 4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA PO STAVKAMA 1. DO 3.
     $kn4 = $kn1 + $kn2 + $kn3;

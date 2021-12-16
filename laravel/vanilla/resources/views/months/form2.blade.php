@@ -32,6 +32,18 @@
                 <x-label for="regres" :value="__('Regres')" />
                 <x-input id="regres" type="number" name="regres" value="{{$month->regres/100?? old('regres')?? 0}}" min="0" step="100" />
               </x-div>
+              <!-- bozicnica -->
+              <x-div>
+                <x-label for="bozicnica" :value="__('Bozicnica')" />
+                <x-input id="bozicnica" type="number" name="bozicnica" value="{{$month->bozicnica/100?? old('bozicnica')?? 0}}" min="0" step="100" />
+              </x-div>
+              @hasrole(env('FIRM1'))
+              <!-- prehrana -->
+              <x-div>
+                <x-label for="prehrana" :value="__('Topli obrok')" />
+                <x-input id="prehrana" type="number" name="prehrana" value="{{$month->prehrana/100?? old('prehrana')?? 0}}" min="0" step="0.01" />
+              </x-div>
+              @endhasrole
               @hasrole(env('FIRM2'))
               <!-- prigodna -->
               <x-div>

@@ -125,11 +125,25 @@
               <td class="w-1/8 border p-2 text-center"></td>
               <td class="w-1/8 border p-2 text-right">{{ $data['3.1.kn'] }}</td>
             </tr>
+            @if($data['3.2.kn'] != '0,00')
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">3.2. Božićnica</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['3.2.kn'] }}</td>
+            </tr>
+            @endif
             @if($data['3.7.kn'] != '0,00')
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">3.7. Regres za godišnji odmor</td>
               <td class="w-1/8 border p-2 text-center"></td>
               <td class="w-1/8 border p-2 text-right">{{ $data['3.7.kn'] }}</td>
+            </tr>
+            @endif
+            @if($data['3.10.kn'] != '0,00')
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">3.10. Topli obrok</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['3.10.kn'] }}</td>
             </tr>
             @endif
 
