@@ -56,21 +56,45 @@ class MonthController extends Controller
     $month = new Month;
     $last_month = Month::orderBy('month', 'desc')->where('user_id', '=', Auth::user()->id)->first();
     $month->user_id = Auth::user()->id;
+    /*
     if (!$last_month) {
       $bruto = $month->bruto ?? 530000;
       $prijevoz = $month->prijevoz ?? 36000;
+      $prehrana = $month->prehrana ?? 0;
+      $minuli = $month->minuli ?? 0;
       $odbitak = $month->odbitak ?? 400000;
       $prirez = $month->prirez ?? 1800;
+      $sindikat = $month->sindikat;
+      $month->kredit = $month->kredit ?? 0;
     } else {
       $bruto = $month->bruto ?? $last_month->last('bruto') ?? 530000;
       $prijevoz = $month->prijevoz ?? $last_month->last('prijevoz') ?? 36000;
+      $prehrana = $month->prehrana ?? $last_month->last('prehrana') ?? 0;
+      $minuli = $month->minuli ?? $last_month->last('minuli') ?? 0;
       $odbitak = $month->odbitak ?? $last_month->last('odbitak') ?? 400000;
       $prirez = $month->prirez ?? $last_month->last('prirez') ?? 1800;
+      $sindikat = $month->sindikat ?? $last_month->last('sindikat') ?? false;
+      $kredit = $month->kredit ?? $last_month->last('kredit') ?? 0;
     }
     $month->bruto = $bruto;
     $month->prijevoz = $prijevoz;
+    $month->prehrana = $prehrana;
+    $month->minuli = $minuli;
     $month->odbitak = $odbitak;
     $month->prirez = $prirez;
+    $month->sindikat = $sindikat;
+    $month->kredit = $kredit;
+    */
+
+    $month->bruto = $last_month ? $last_month->last('bruto') : 530000;
+    $month->prijevoz = $last_month ? $last_month->last('prijevoz') : 36000;
+    $month->prehrana = $last_month ? $last_month->last('prehrana') : 0;
+    $month->minuli = $last_month ? $last_month->last('minuli') : 0;
+    $month->odbitak = $last_month ? $last_month->last('odbitak') : 400000;
+    $month->prirez = $last_month ? $last_month->last('prirez') : 1800;
+    $month->sindikat = $last_month ? $last_month->last('sindikat') : false;
+    $month->kredit = $last_month ? $last_month->last('kredit') : 0;
+
     //dd($month);
     return view('months.create')->with(compact('month'));
   }
@@ -92,8 +116,13 @@ class MonthController extends Controller
     $month->user_id = Auth::user()->id;
     $month->bruto = $request->input('bruto') ? $request->input('bruto') * 100 : null;
     $month->prijevoz = $request->input('prijevoz') ? $request->input('prijevoz') * 100 : null;
+    $month->prehrana = $request->input('prehrana') ? $request->input('prehrana') * 100 : null;
+    $month->minuli = $request->input('minuli') ? $request->input('minuli') * 10 : null;
     $month->odbitak = $request->input('odbitak') ? $request->input('odbitak') * 100 : null;
     $month->prirez = $request->input('prirez') ? $request->input('prirez') * 100 : null;
+    if ($request->input('sindikat') == true) $month->sindikat = true;
+    //$month->sindikat = $request->input('sindikat') ? $request->input('sindikat') : null;
+    $month->kredit = $request->input('kredit') ? $request->input('kredit') : null;
     $old_month = Month::where('user_id', '=', Auth::user()->id)->where('month', '=', $month->month)->first();
     if ($old_month) return redirect(route('months.edit', ['month' => $month->slug()]))->with('new_month', $month)->with('warning', 'Day already exist');
     //dd($request,$month,$old_month);
@@ -210,6 +239,7 @@ class MonthController extends Controller
     $month->bruto = $month->bruto ?? $month->last('bruto');
     $month->prijevoz = $month->prijevoz ?? $month->last('prijevoz');
     $month->prehrana = $month->prehrana ?? $month->last('prehrana');
+    $month->minuli = $month->minuli ?? $month->last('minuli');
     $month->odbitak = $month->odbitak ?? $month->last('odbitak');
     $month->prirez = $month->prirez ?? $month->last('prirez');
     $month->sindikat = $month->sindikat ?? $month->last('sindikat');
@@ -235,8 +265,12 @@ class MonthController extends Controller
     $month->bruto = $request->input('bruto') ? $request->input('bruto') * 100 : $month->bruto;
     $month->prijevoz = $request->input('prijevoz') ? $request->input('prijevoz') * 100 : $month->prijevoz;
     $month->prehrana = $request->input('prehrana') ? $request->input('prehrana') * 100 : $month->prehrana;
-    $month->odbitak = $request->input('odbitak') ? $request->input('odbitak') * 100 : $month->odnitak;
+    $month->minuli = $request->input('minuli') ? $request->input('minuli') * 10 : $month->minuli;
+    $month->odbitak = $request->input('odbitak') ? $request->input('odbitak') * 100 : $month->odbitak;
     $month->prirez = $request->input('prirez') ? $request->input('prirez') * 100 : $month->prirez;
+    $month->sindikat = $request->input('sindikat') ? $request->input('sindikat') : $month->sindikat;
+    $month->kredit = $request->input('kredit') ? $request->input('kredit') : $month->kredit;
+
     $month->prekovremeni = $request->input('prekovremeni') ?? $month->prekovremeni;
     $month->bolovanje = $request->input('bolovanje') * 100 ?? $month->bolvanje;
     $month->nocni = $request->input('nocni') * 10 ?? $month->nocni;
@@ -245,6 +279,7 @@ class MonthController extends Controller
     $month->bozicnica = $request->input('bozicnica') ? $request->input('bozicnica') * 100 : $month->bozicnica;
     $month->prigodna = $request->input('prigodna') ? $request->input('prigodna') * 100 : $month->prigodna;
     $month->stimulacija = $request->input('stimulacija') ? $request->input('stimulacija') * 100 : $month->stimulacija;
+    $month->stari = $request->input('starih') ? ($request->input('starih') * 60 + $request->input('starim')) : $month->stari;
     if ($request->input('sindikat') == true) $month->sindikat = true;
     $month->kredit = $request->input('kredit') * 100 ?? $month->kredit;
     $month->save();
@@ -682,7 +717,7 @@ class MonthController extends Controller
     $kn10_1x = ($kn10_1_20x > 0) ? round($kn10_1_20x + $kn10_1_prirezx, 2) : 0;
     $data['10.1.kn'] = number_format($kn10_1, 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_1x, 2, ',', '.') . ')' : '');
     // 20.00%
-    $data['10.1.20.kn'] = number_format($kn10_1-round($kn10_1_prirez, 2), 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_1_20x, 2, ',', '.') . ')' : '');
+    $data['10.1.20.kn'] = number_format($kn10_1 - round($kn10_1_prirez, 2), 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_1_20x, 2, ',', '.') . ')' : '');
     // Prirez
     $data['10.1.prirez.kn'] = number_format($kn10_1_prirez, 2, ',', '.') . ($razlika ? ' (' . number_format($kn10_1_prirezx, 2, ',', '.') . ')' : '');
 
@@ -756,11 +791,14 @@ class MonthController extends Controller
     $prirez = $month->prirez ?? $month->last('prirez');
     $month->prirez = $prirez;
     $data['prirez'] = $prirez;
+    $minuli = $month->minuli ?? $month->last('minuli');
+    $month->minuli = $minuli;
+    $data['minuli'] = $minuli;
     //dd($hoursNorm, $bruto, $perHour);
 
     // 1.3 sati redovitog rada u dane državnog praznika/ blagdana
     $h1_3 = round(($hoursNorm->minHoliday - $hoursNorm->minHolidayNight) / 60, 2);
-    $data['1.3.h'] = number_format($h1_3, 2, ',', '.');
+    $data['1.3.h'] = number_format($h1_3, 1, ',', '.');
     $kn1_3 = round($h1_3 * $perHour * 1.5, 2);
     $data['1.3.kn'] = number_format($kn1_3, 2, ',', '.');
 
@@ -789,11 +827,14 @@ class MonthController extends Controller
     $data['1.1.kn'] = number_format($kn1_1, 2, ',', '.');
 
     $h1 = $h1_1 + $h1_2 + $h1_3 + $h1_7 + $h1_8;
-    $kn1 = $kn1_1 + $kn1_2 + $kn1_3 + $kn1_7+ $kn1_8;
+    $kn1 = $kn1_1 + $kn1_2 + $kn1_3 + $kn1_7 + $kn1_8;
+
+    $overWork = $hoursNorm->min / 60 - $hoursWorkNorm;
+    $data['1.4.h'] = number_format($overWork, 2, ',', '.');
 
     // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
-    $kn3 = round($kn1 * 0.025, 2);
-    $data['3.h'] = '2,5%';
+    $kn3 = round($kn1 * $minuli / 1000, 2);
+    $data['3.h'] = number_format($minuli / 10, 1, ',', '.') . '%';
     $data['3.kn'] = number_format($kn3, 2, ',', '.');
 
     // 4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA PO STAVKAMA 1. DO 3.
@@ -845,11 +886,11 @@ class MonthController extends Controller
     $data['11.kn'] = number_format($kn11, 2, ',', '.');
 
     // 12. NAKNADE UKUPNO
-    $kn12 = ($prijevoz + $nagrada + $prehrana + $prigodna)/100;
-    $data['12.a.kn'] = number_format($prijevoz/100, 2, ',', '.');
-    $data['12.b.kn'] = number_format($nagrada/100, 2, ',', '.');
-    $data['12.c.kn'] = number_format($prehrana/100, 2, ',', '.');
-    $data['12.d.kn'] = number_format($prigodna/100, 2, ',', '.');
+    $kn12 = ($prijevoz + $nagrada + $prehrana + $prigodna) / 100;
+    $data['12.a.kn'] = number_format($prijevoz / 100, 2, ',', '.');
+    $data['12.b.kn'] = number_format($nagrada / 100, 2, ',', '.');
+    $data['12.c.kn'] = number_format($prehrana / 100, 2, ',', '.');
+    $data['12.d.kn'] = number_format($prigodna / 100, 2, ',', '.');
 
     // 15. IZNOS PLAĆE/NAKNADE PLAĆE ISPLAĆEN RADNIKU NA REDOVAN RAČUN
     $data['15.kn'] = number_format($kn11 + $kn12, 2, ',', '.');
@@ -878,6 +919,4 @@ class MonthController extends Controller
     //dd($month);
     return view('months.print')->with(compact('month', 'days'));
   }
-
 }
-

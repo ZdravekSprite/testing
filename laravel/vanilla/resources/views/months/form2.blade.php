@@ -1,7 +1,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3">
               <!-- prekovremeni -->
               <x-div>
-                <x-label for="prekovremeni" :value="__('Prekovremeni')" />
+                <x-label for="prekovremeni" :value="__('Plaćeni prekovremeni')" />
                 <x-input id="prekovremeni" type="number" name="prekovremeni" value="{{$month->prekovremeni?? old('prekovremeni')?? 0}}" min="0" step="1" />
                 <x-p>nikad nije sigurno koliko će prekovremenih platiti, pa se točan broj koliko su ih platitili za precizniji izračun može dodati</x-p>
               </x-div>
@@ -35,13 +35,19 @@
               <!-- bozicnica -->
               <x-div>
                 <x-label for="bozicnica" :value="__('Bozicnica')" />
-                <x-input id="bozicnica" type="number" name="bozicnica" value="{{$month->bozicnica/100?? old('bozicnica')?? 0}}" min="0" step="100" />
+                <x-input id="bozicnica" type="number" name="bozicnica" value="{{$month->bozicnica/100?? old('bozicnica')?? 0}}" min="0" step="50" />
               </x-div>
               @hasrole(env('FIRM1'))
               <!-- prehrana -->
               <x-div>
                 <x-label for="prehrana" :value="__('Topli obrok')" />
                 <x-input id="prehrana" type="number" name="prehrana" value="{{$month->prehrana/100?? old('prehrana')?? 0}}" min="0" step="0.01" />
+              </x-div>
+              <!-- stimulacija Bruto-->
+              <x-div>
+                <x-label for="stimulacija" :value="__('Stimulacija Bruto')" />
+                <x-input id="stimulacija" type="number" name="stimulacija" value="{{$month->stimulacija ? $month->stimulacija/100 : old('stimulacija')?? 0}}" min="0" step="0.01" />
+                <x-p>Ako se ima više od zakonom dozvoljenih prekovremenih, višak se isplačuje kao bruto stimulacija</x-p>
               </x-div>
               @endhasrole
               @hasrole(env('FIRM2'))
@@ -51,10 +57,14 @@
                 <x-input id="prigodna" type="number" name="prigodna" value="{{$month->prigodna/100?? old('prigodna')?? 0}}" min="0" step="0.01" />
               </x-div>
               @endhasrole
-              <!-- stimulacija Bruto-->
+              <!-- stari prekovremeni -->
               <x-div>
-                <x-label for="stimulacija" :value="__('Stimulacija Bruto')" />
-                <x-input id="stimulacija" type="number" name="stimulacija" value="{{$month->stimulacija ? $month->stimulacija/100 : old('stimulacija')?? 0}}" min="0" step="0.01" />
-                <x-p>Ako se ima više od zakonom dozvoljenih prekovremenih, višak se isplačuje kao bruto stimulacija</x-p>
+                <x-label for="stari" :value="__('Stari prekovremeni')" />
+              <x-div id="stari" class="grid grid-cols-4">
+                <x-input id="starih" type="number" name="starih" value="{{$month->stari ? ($month->stari - $month->stari % 60) / 60 : old('stari')?? 0}}" min="0" step="1" />
+                <x-div>sati</x-div>
+                <x-input id="starim" type="number" name="starim" value="{{$month->stari ? $month->stari % 60 : old('stari')?? 0}}" min="0" max="59" step="1" />
+                <x-div>minuta</x-div>
+              </x-div>
               </x-div>
             </div>

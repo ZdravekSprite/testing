@@ -195,7 +195,7 @@ class Month extends Model
       //dd($firstFrom,$d->date);
       $firstHoursNormAll += $firstFrom > $d->date ? 0 : $def_h;
 
-      if ($d->holiday) {
+      if ($d->holiday && $d->state != 4) {
         $hoursNormHoli += $def_h;
         $firstHoursNormHoli += $firstFrom > $d->date ? 0 : $def_h;
         $minWorkHoli += $day_minWork;

@@ -36,26 +36,34 @@
               <td class="w-1/8 border p-2 text-center">{{ $data['1.1.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.1.kn'] }}</td>
             </tr>
+            @if($data['1.2.kn'] != '0,00')
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.2 redovnog rada noću</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.2.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.2.kn'] }}</td>
             </tr>
+            @endif
+            @if($data['1.3.kn'] != '0,00')
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.3. sati redovnog rada u dane državnog praznika/ blagdana</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.3.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.3.kn'] }}</td>
             </tr>
+            @endif
+            @if($data['1.7.kn'] != '0,00')
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.7. sati redovnog rada nedeljom</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.7.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.7.kn'] }}</td>
             </tr>
+            @endif
+            @if($data['1.8.kn'] != '0,00')
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.8. sati redovnog rada nedjeljom + noću</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.8.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.8.kn'] }}</td>
             </tr>
+            @endif
             <tr>
               <td class="w-3/4 border p-2" colspan="2"><b>3. Propisani ili ugovoeni dodaci na plaću radnika i novčani iznosi po toj osnovi</b></td>
               <td class="w-1/8 border p-2 text-center"></td>

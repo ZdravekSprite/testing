@@ -16,6 +16,11 @@
                 <x-label for="prehrana" :value="__('Prehrana')" />
                 <x-input id="prehrana" type="number" name="prehrana" value="{{$month->prehrana/100?? old('prehrana')?? 0}}" min="0" step="0.01" />
               </x-div>
+              <!-- minuli -->
+              <x-div>
+                <x-label for="minuli" :value="__('Minuli rad')" />
+                <x-input id="minuli" type="number" name="minuli" value="{{$month->minuli/10?? old('minuli')?? 0}}" min="0" step="0.1" />
+              </x-div>
               @endhasrole
               <!-- odbitak -->
               <x-div>
