@@ -206,7 +206,7 @@
               <td class="w-1/8 border p-2 text-center"></td>
               <td class="w-1/8 border p-2 text-right">{{ $data['10.prirez.kn'] }}</td>
             </tr>
-            @if($data['10.1.kn'] != '0,00 (0,00)')
+            @if($data['10.1.kn'] != '0,00 (0,00)' && $data['10.1.kn'] != '0,00')
             <tr>
               <td class="w-3/4 border p-2" colspan="2">10.1. KOREKCIJA POREZA I PRIREZA</td>
               <td class="w-1/8 border p-2 text-center"></td>
@@ -264,9 +264,11 @@
               <td class="w-1/8 border p-2 text-center"></td>
               <td class="w-1/8 border p-2 text-right">{{ $data['17_5a.kn'] }}</td>
             </tr>
+            @if($data['17_5b.kn'] != '0,00')
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">Kredit</td>
               <td class="w-1/8 border p-2 text-center"></td>
               <td class="w-1/8 border p-2 text-right">{{ $data['17_5b.kn'] }}</td>
             </tr>
+            @endif
           </tbody>

@@ -17,12 +17,9 @@
                 Praznik: {{$month->hoursNorm()->Holiday}}
                 GO: {{$month->hoursNorm()->GO}}
                 Dopust: {{$month->hoursNorm()->Dopust}}
-              @hasrole(env('FIRM2'))
-                Prekovremeni: {{$data['1.4.h']}}
-              @endhasrole
                 Bolovanje: {{$month->hoursNorm()->Sick}}
                 Satnica: {{ $data['perHour'] }}
-                Noćna: {{$month->hoursNorm()->minNight/60}} sati
+                Noćna: {{ number_format($month->hoursNorm()->minNight/60, 2, ',', '.') }} sati
               </th>
               <th class="w-32">
                 <a class="float-right" href="{{ route('months.show', ['month' => $month->next()]) }}" title="{{$month->next()}}">

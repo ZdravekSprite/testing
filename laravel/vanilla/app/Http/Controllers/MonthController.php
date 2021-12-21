@@ -608,7 +608,7 @@ class MonthController extends Controller
       $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
     }
     // 1.7e Dodatak za rad nedjeljom
-    $data['1.7e.h'] = number_format($hoursNorm->minSunday / 60, 2, ',', '.');
+    $data['1.7e.h'] = number_format(round($hoursNorm->minSunday / 30)/2, 2, ',', '.');
     $kn1_7e = round($hoursNorm->minSunday / 60 * $perHour * 0.35, 2);
     $data['1.7e.kn'] = number_format($kn1_7e, 2, ',', '.');
 
