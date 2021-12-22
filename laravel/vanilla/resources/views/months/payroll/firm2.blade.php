@@ -65,6 +65,16 @@
             </tr>
             @endif
             <tr>
+              <td class="w-3/4 border p-2" colspan="2"><b>2. SATI ZA KOJE SE OSTVARUJE PRAVO NA NAKNADU</b></td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"></td>
+            </tr>
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">2.2. sati privremene spriječenosti za rad zbog bolesti</td>
+              <td class="w-1/8 border p-2 text-center"></td>
+              <td class="w-1/8 border p-2 text-right"></td>
+            </tr>
+            <tr>
               <td class="w-3/4 border p-2" colspan="2"><b>3. Propisani ili ugovoeni dodaci na plaću radnika i novčani iznosi po toj osnovi</b></td>
               <td class="w-1/8 border p-2 text-center"></td>
               <td class="w-1/8 border p-2 text-right"></td>
@@ -95,7 +105,7 @@
               <td class="w-1/8 border p-2 text-right">{{ $data['6.1.kn'] }}</td>
             </tr>
             <tr>
-              <td class="w-3/4 border p-2 pl-6" colspan="2">6.2 MIO II</td>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">6.2. MIO II</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['6.2.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['6.2.kn'] }}</td>
             </tr>

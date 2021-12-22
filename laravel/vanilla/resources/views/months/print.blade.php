@@ -65,7 +65,7 @@
               ne znam
               @endswitch
             </td>
-            <td>{{ date('H:i', mktime(0,$day->minWork())) }}</td>
+            <td style="text-align: center;">{{ date('H:i', mktime(0,$day->minWork())) }}</td>
           </tr>
           @endforeach
         </tbody>
@@ -74,7 +74,7 @@
             <th></th>
             <th></th>
             <th></th>
-            <th>{{ $month->hoursNorm()->min/60 }}</th>
+            <th>{{ number_format($month->hoursNorm()->min/60, 2, ',', '.') }}</th>
           </tr>
         </thead>
       </table>
