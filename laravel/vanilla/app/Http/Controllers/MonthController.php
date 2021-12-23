@@ -608,20 +608,27 @@ class MonthController extends Controller
       $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
     }
     // 1.7e Dodatak za rad nedjeljom
-    $data['1.7e.h'] = number_format(round($hoursNorm->minSunday / 30)/2, 2, ',', '.');
+    $sundayWorkM = $hoursNorm->minSunday % 60;
+    $sundayWorkH = ($hoursNorm->minSunday - $sundayWorkM) / 60;
+    $h1_7e = round($hoursNorm->minSunday / 30, 0) / 2;
+    $data['1.7e.h'] = number_format($h1_7e, 2, ',', '.') . ' (' . ($sundayWorkH ? $sundayWorkH . 'sati i ' : '') . $sundayWorkM . 'min)';
     $kn1_7e = round($hoursNorm->minSunday / 60 * $perHour * 0.35, 2);
     $data['1.7e.kn'] = number_format($kn1_7e, 2, ',', '.');
 
     // 1.7f Dodatak za rad na praznik
-    $data['1.7f.h'] = number_format($hoursNorm->minHoliday / 60, 2, ',', '.');
-    $kn1_7f = round($hoursNorm->minHoliday / 60 * $perHour * 0.5, 2);
+    $holidayWorkM = $hoursNorm->minHoliday % 60;
+    $holidayWorkH = ($hoursNorm->minHoliday - $holidayWorkM) / 60;
+    $h1_7f = round($hoursNorm->minHoliday / 30, 0) / 2;
+    $data['1.7f.h'] = number_format($h1_7f, 2, ',', '.') . ' (' . ($holidayWorkH ? $holidayWorkH . 'sati i ' : '') . $holidayWorkM . 'min)';
+    $kn1_7f = round($h1_7f * $perHour * 0.5, 2);
     $data['1.7f.kn'] = number_format($kn1_7f, 2, ',', '.');
 
     // 1.7g Dodatak za noćni rad
     $h1_7g = $month->nocni / 10;
-    $nightWork = $hoursNorm->minNight;
+    $nightWorkM = $hoursNorm->minNight % 60;
+    $nightWorkH = ($hoursNorm->minNight - $nightWorkM) / 60;
 
-    $data['1.7g.h'] = number_format($h1_7g, 2, ',', '.') . ' (' . number_format($nightWork, 0, ',', '.') . 'min)';
+    $data['1.7g.h'] = number_format($h1_7g, 2, ',', '.') . ' (' . ($nightWorkH ? $nightWorkH . 'sati i ' : '') . $nightWorkM . 'min)';
     $kn1_7g = round($h1_7g * $perHour * 0.3, 2);
     $data['1.7g.kn'] = number_format($kn1_7g, 2, ',', '.');
 
