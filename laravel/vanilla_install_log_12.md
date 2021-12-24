@@ -126,6 +126,6 @@ git push
 git branch lotto
 git checkout lotto
 git add .
-git commit -am "save lotto 2019 10 31"
+git commit -am "lotto 2021 12 24"
 git push --set-upstream origin lotto
 ```

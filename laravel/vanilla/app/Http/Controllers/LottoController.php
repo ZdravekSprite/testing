@@ -94,6 +94,7 @@ class LottoController extends Controller
 
   public function hl(Request $request)
   {
+    dd($request);
     $kolo = $request->input('kolo') ?? 1;
     return $kolo;
   }
