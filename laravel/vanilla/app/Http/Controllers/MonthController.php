@@ -827,8 +827,43 @@ class MonthController extends Controller
     $kn1_2 = round($h1_2 * $perHour * 1.35, 2);
     $data['1.2.kn'] = number_format($kn1_2, 2, ',', '.');
 
+    // 2.2. sati privremene spriječenosti za rad zbog bolesti
+    $h2_2 = $hoursNorm->Sick;
+    $data['2.2.h'] = number_format($h2_2, 2, ',', '.');
+    if ($hoursNorm->Sick && !$month->bolovanje) {
+      $ms = Month::where('user_id', '=', Auth::user()->id)->where('month', '>=', $month->month - 6)->where('month', '<', $month->month)->get();
+      //dd($ms);
+      if (count($ms)) {
+        $mjeseci = [];
+        foreach ($ms as $key => $value) {
+          $mHoursNorm = $value->hoursNorm();
+          $mBruto = $value->bruto ?? $value->last('bruto');
+          $mPerHour = round(($mBruto / 100 / $mHoursNorm->All), 2);
+          $mjeseci[$key] = $mPerHour;
+        }
+        //dd(array_sum($mjeseci) / count($mjeseci) * 0.7);
+        $kn2_2 = round(array_sum($mjeseci) / count($mjeseci), 2) * 0.7 * $hoursNorm->Sick;
+        $text22 = '(' . number_format($kn2_2 / $hoursNorm->Sick / $perHour * 100, 2, ',', '.') . '%)*';
+        $data['2.2.t'] = 'izračunato na osnovu prosjeka zadnjih 6 mjeseci';
+        $data['2.2.kn'] = number_format($kn2_2, 2, ',', '.') . $text22;
+      } else {
+        $kn2_2 = round($perHour * 0.7, 2) * $hoursNorm->Sick;
+        $data['2.2.kn'] = number_format($kn2_2, 2, ',', '.') . '(70%)**';
+        $data['2.2.t'] = 'izračunato na osnovu prosjeka trenutnog mjeseca';
+      }
+    } else {
+      $kn2_2 = $month->bolovanje / 100;
+      $text22 = $hoursNorm->Sick ? '(' . number_format($kn2_2 / $hoursNorm->Sick / $perHour * 100, 2, ',', '.') . '%)' : '';
+      $data['2.2.t'] = '';
+      $data['2.2.kn'] = number_format($kn2_2, 2, ',', '.') . $text22;
+    }
+    
+    $h2 = $h2_2;
+    $kn2 = $kn2_2;
+
     // 1.1. sati redovnog rada
-    $h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 : ($hoursNorm->min - $hoursNorm->minNight - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;
+    //$h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 : ($hoursNorm->min - $hoursNorm->minNight - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;
+    $h1_1 = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2;
     $data['1.1.h'] = number_format($h1_1, 1, ',', '.');
     $kn1_1 = round($h1_1 * $perHour, 2);
     $data['1.1.kn'] = number_format($kn1_1, 2, ',', '.');
@@ -845,8 +880,9 @@ class MonthController extends Controller
     $data['3.kn'] = number_format($kn3, 2, ',', '.');
 
     // 4. ZBROJENI IZNOSI PRIMITAKA PO SVIM OSNOVAMA PO STAVKAMA 1. DO 3.
-    $kn4 = $kn1 + $kn3;
-    $data['4.h'] = number_format($h1, 1, ',', '.');;
+    $kn4 = $kn1 + $kn2 + $kn3;
+    $h4 = $h1 + $h2;
+    $data['4.h'] = number_format($h4, 1, ',', '.');;
     $data['4.kn'] = number_format($kn4, 2, ',', '.');;
 
     // 5. OSNOVICA ZA OBRAČUN DOPRINOSA

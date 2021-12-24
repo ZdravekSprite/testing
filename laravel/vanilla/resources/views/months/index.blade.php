@@ -40,8 +40,10 @@
                 <td class="hidden md:table-cell">{{$m->prirez ? number_format($m->prirez/100, 2, ',', '') : number_format($m->last('prirez')/100, 2, ',', '')}}</td>
                 @hasrole(env('FIRM2'))
                 <td class="hidden md:table-cell">{{$m->minuli ? number_format($m->minuli/10, 2, ',', '') : number_format($m->last('minuli')/10, 2, ',', '')}}%</td>
-                @endhasrole
+                <td>{{$m->prekovremeni ?? 0}} ( {{number_format($m->hoursNorm()->min / 60 - $m->hoursNorm()->Work - $m->hoursNorm()->Holiday ?? 0, 2, ',', '')}} )</td>
+                @else
                 <td>{{$m->prekovremeni ?? 0}} ( {{number_format($m->hoursNorm()->min / 60 - $m->hoursNorm()->Work ?? 0, 2, ',', '')}} )</td>
+                @endhasrole
                 <td>{{$m->stimulacija ? number_format($m->stimulacija/100, 2, ',', '') : 0}} ( {{ number_format($m->stimulacija / 100 / round((($m->bruto ?? $m->last('bruto')) / 100 / $m->hoursNorm()->All), 2) / 1.5, 2, ',', '') }} )</td>
                 <td>{{$m->stari ? number_format($m->stari/60, 2, ',', '.') : 0}}</td>
                 <td>{{$m->nagrada ? number_format($m->nagrada/100, 2, ',', '') : 0}}</td>
