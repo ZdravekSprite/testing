@@ -91,7 +91,7 @@ php artisan migrate
 php artisan make:model Draw -a
 php artisan migrate
 ```
-## laravel -> binance
+## laravel -> main
 ```bash
 git add .
 git commit -am "laravel 2021 12 24"
@@ -100,32 +100,55 @@ git checkout main
 git pull
 git merge laravel
 git push
-git checkout binance
-git pull
-git merge main
-git push
 ```
-
-## binance -> laravel
+## main -> laravel
 ```bash
-git add .
-git commit -am "save 2021 12 05"
-git push
-git checkout main
-git pull
-git merge binance
-git push
 git checkout laravel
 git pull
 git merge main
 git push
 ```
-
+## binance -> main
+```bash
+git add .
+git commit -am "binance 2021 12 05"
+git push
+git checkout main
+git pull
+git merge binance
+git push
+```
+## main -> binance
+```bash
+git checkout binance
+git pull
+git merge main
+git push
+```
+## lotto -> main
+```bash
+git add .
+git commit -am "lotto 2021 12 25"
+git push
+git checkout main
+git pull
+git merge lotto
+git push
+```
 ## main -> lotto
 ```bash
-git branch lotto
 git checkout lotto
-git add .
-git commit -am "lotto 2021 12 24"
-git push --set-upstream origin lotto
+git pull
+git merge main
+git push
 ```
+
+## main -> new
+```bash
+git branch new
+git checkout new
+git add .
+git commit -am "new"
+git push --set-upstream origin new
+```
+

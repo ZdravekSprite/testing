@@ -5,6 +5,7 @@ use App\Http\Controllers\Binance;
 use App\Http\Controllers\TestBinance;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DayController;
+use App\Http\Controllers\DrawController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SymbolController;
@@ -223,5 +224,5 @@ Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo'])->name
 
 
 Route::get('/lotto/hl', [LottoController::class, 'hl']);
-Route::post('/lotto/hl', [LottoController::class, 'hl']);
-//Route::resource('lotto', LottoController::class);
+Route::get('/lotto/eurojackpot', [LottoController::class, 'eurojackpot'])->name('eurojackpot');
+Route::resource('draws', DrawController::class);

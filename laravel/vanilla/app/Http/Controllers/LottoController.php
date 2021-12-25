@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lotto;
+use App\Models\Draw;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -94,9 +95,48 @@ class LottoController extends Controller
 
   public function hl(Request $request)
   {
-    dd($request);
-    $kolo = $request->input('kolo') ?? 1;
-    return $kolo;
+    $this->validate($request, [
+      'datum' => 'required',
+      'brojevi' => 'required'
+    ]);
+    //dd($request);
+    $datum = $request->input('datum');
+    $brojevi = $request->input('brojevi');
+    $no = explode( ',', explode( ';', $brojevi )[0] );
+    $bo = explode( ',', explode( ';', $brojevi )[1] );
+    $draw_exist = Draw::where('date', '=', $datum)->first();
+    if ($draw_exist) {
+      $draw_txt = $draw_exist->date . ": ";
+      $draw_txt .= $draw_exist->no01 . ",";
+      $draw_txt .= $draw_exist->no02 . ",";
+      $draw_txt .= $draw_exist->no03 . ",";
+      $draw_txt .= $draw_exist->no04 . ",";
+      $draw_txt .= $draw_exist->no05 . ";";
+      $draw_txt .= $draw_exist->bo01 . ",";
+      $draw_txt .= $draw_exist->bo02;
+      return "več postoji: " . $draw_txt . "(" . $datum . ":" . $brojevi . ")";
+    } else {
+      $draw = new Draw;
+      //$draw->date = date("Y-m-d H:i:s", strtotime($datum));
+      $draw->date = $datum;
+      $draw->name = 'eurojackpot';
+      $draw->no01 = $no[0];
+      $draw->no02 = $no[1];
+      $draw->no03 = $no[2];
+      $draw->no04 = $no[3];
+      $draw->no05 = $no[4];
+      $draw->bo01 = $bo[0];
+      $draw->bo02 = $bo[1];
+      $draw->save();
+    }
+    return $datum . ":" . $brojevi;
+  }
+  public function eurojackpot()
+  {
+    $title = "eurojackpot";
+    $draws = Draw::where('name', '=', 'eurojackpot')->orderBy('date', 'desc')->get();
+    //dd($eurojackpot);
+    return view('lotto.draws.index')->with(compact('title', 'draws'));
   }
   /**
    * Show the form for creating a new resource.

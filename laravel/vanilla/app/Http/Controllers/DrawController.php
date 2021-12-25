@@ -24,7 +24,9 @@ class DrawController extends Controller
    */
   public function create()
   {
-    //
+    $draw = new Draw;
+    //dd($draw);
+    return view('lotto.draws.create')->with(compact('draw'));
   }
 
   /**
@@ -35,7 +37,21 @@ class DrawController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    $this->validate($request, [
+      'date' => 'required'
+    ]);
+    //dd($request);
+    $draw = new Draw;
+    $draw->date = $request->input('date');
+    $draw->no01 = $request->input('no01');
+    $draw->no02 = $request->input('no02');
+    $draw->no03 = $request->input('no03');
+    $draw->no04 = $request->input('no04');
+    $draw->no05 = $request->input('no05');
+    $draw->bo01 = $request->input('bo01');
+    $draw->bo02 = $request->input('bo02');
+    $draw->save();
+    return redirect(route('lotto.draws.index'))->with('success', 'Day Created');
   }
 
   /**
@@ -57,7 +73,7 @@ class DrawController extends Controller
    */
   public function edit(Draw $draw)
   {
-    //
+    return view('lotto.draws.edit')->with('draw', $draw);
   }
 
   /**
@@ -69,7 +85,15 @@ class DrawController extends Controller
    */
   public function update(Request $request, Draw $draw)
   {
-    //
+    $draw->no01 = $request->input('no01');
+    $draw->no02 = $request->input('no02');
+    $draw->no03 = $request->input('no03');
+    $draw->no04 = $request->input('no04');
+    $draw->no05 = $request->input('no05');
+    $draw->bo01 = $request->input('bo01');
+    $draw->bo02 = $request->input('bo02');
+    $draw->save();
+    return redirect(route('eurojackpot'))->with('success', 'Draw Updated');
   }
 
   /**

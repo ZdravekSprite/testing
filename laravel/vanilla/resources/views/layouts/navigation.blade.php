@@ -123,6 +123,11 @@
             </x-slot>
           </x-dropdown>
         </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('eurojackpot')" :active="request()->routeIs('eurojackpot')">
+            {{ __('EuroJackPot') }}
+          </x-nav-link>
+        </div>
         @endhasrole
       </div>
 
