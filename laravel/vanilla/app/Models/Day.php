@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Day extends Model
 {
@@ -21,7 +22,7 @@ class Day extends Model
     'updated_at',
   ];
 
-  protected $fillable = ['state', 'night', 'start', 'end'];
+  protected $fillable = ['user_id', 'date', 'state', 'night', 'start', 'end'];
 
   /**
    * The attributes that should be cast to native types.

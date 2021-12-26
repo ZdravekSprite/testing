@@ -228,7 +228,13 @@ class DayController extends Controller
     } else {
       $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->first();
     }
-    if (!$day) return redirect(route('day.create', ['date' => $day->date->format('d.m.Y')]))->with('warning', 'Day not exist');
+    if (!$day) return redirect(route('day.create', ['date' => date('d.m.Y', strtotime($date))]))->with('warning', 'Day not exist');
+    if ($day->end->format('H:i') == "00:00") {
+      $next_day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', $day->date->addDays(1)->format('Y-m-d'))->first();
+      if ($next_day) {
+        $day->end = $next_day->night->format('H:i');
+      }
+    }
     //dd($day);
     return view('days.edit')->with('day', $day);
   }
@@ -244,36 +250,26 @@ class DayController extends Controller
   public function update(Request $request, $date)
   {
     //dd($request);
-    /*
-    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->get();
-    if (null != $request->input('sick')) $day[0]->sick = $request->input('sick') == 'on' ? true : false;
-    if (null != $request->input('go')) $day[0]->go = $request->input('go') == 'on' ? true : false;
-    if (null != $request->input('dopust')) $day[0]->dopust = $request->input('dopust') == 'dopust' ? true : false;
-    $day[0]->night_duration = $request->input('night_duration') ? $request->input('night_duration') : $day[0]->night_duration;
-    $day[0]->start = $request->input('start');
-    $day[0]->duration = $request->input('duration');
-    $day[0]->save();
-    return redirect(route('days.show', ['day' => $day[0]->date->format('d.m.Y')]))->with('success', 'Day Updated');
-    */
-
-    $day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($date)))->first();
-    $day->state = $request->input('state') ? $request->input('state') : 0;
+    $day = Day::where('user_id', '=', Auth::user()->id)->firstOrNew(
+      ['date' => date('Y-m-d', strtotime($date))],
+      ['user_id' => Auth::user()->id]
+    );
+    $day->state = $request->input('state') ?? 0;
     if ($request->input('state') == 1) {
       $day->start = $request->input('start');
       $day->end = $request->input('end');
-      $next_day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', $day->date->addDays(1)->format('Y-m-d'))->first();
+      $next_day = Day::where('user_id', '=', Auth::user()->id)->firstOrNew(
+        ['date' => $day->date->addDays(1)->format('Y-m-d')],
+        ['user_id' => Auth::user()->id]
+      );
+      //dd($day,$next_day);
       if ($day->start > $day->end) {
-        if (!$next_day) {
-          $next_day = new Day;
-          $next_day->user_id = Auth::user()->id;
-          $next_day->date = $day->date->addDays(1)->format('Y-m-d');
-        }
         $next_day->night = $day->end->format('H:i');
         $day->end = "24:00";
         //dd($day,$next_day);
         $next_day->save();
       } else {
-        if ($next_day) {
+        if ($next_day->night) {
           $next_day->night = "00:00";
           $next_day->save();
         }

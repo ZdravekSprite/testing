@@ -94,7 +94,7 @@ php artisan migrate
 ## laravel -> main
 ```bash
 git add .
-git commit -am "laravel 2021 12 24"
+git commit -am "laravel 2021 12 26"
 git push
 git checkout main
 git pull
