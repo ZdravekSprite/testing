@@ -520,6 +520,7 @@ class MonthController extends Controller
 
   public function lista_data1(Month $month)
   {
+    //dd($month->hoursNorm(),$month->data());
     $data['III.godina'] = explode(".", $month->slug())[1];
     $data['III.mjesec'] = explode(".", $month->slug())[0];
 
@@ -535,6 +536,8 @@ class MonthController extends Controller
     $perHour = round(($bruto / 100 / $hoursNorm->All), 2);
     $data['perHour'] = $perHour;
     $hoursWorkNorm = $hoursNorm->Work;
+    $hoursWork575 = $month->data()->Work_575;
+    $hoursWork580 = $month->data()->Work_580;
     $prijevoz = $month->prijevoz ?? $month->last('prijevoz');
     $month->prijevoz = $prijevoz;
     $data['prijevoz'] = $prijevoz;
@@ -556,8 +559,9 @@ class MonthController extends Controller
     $h1_4 = $month->prekovremeni;
     $data['prekovremeni'] = $month->prekovremeni;
     $overWork = $hoursNorm->min / 60 - $hoursWorkNorm;
+    $overWork_x = $hoursNorm->min / 60 - $hoursWork580;
 
-    $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')';
+    $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')' . ' [' . number_format($overWork_x, 2, ',', '.') . ']';
     $kn1_4 = round($h1_4 * $perHour * 1.5, 2);
     $kn1_4x = $overWork > 0 ? round($overWork * $perHour * 1.5, 2) : 0;
     $data['1.4.kn'] = number_format($kn1_4, 2, ',', '.') . ($kn1_4x ? ' (' . number_format($kn1_4x, 2, ',', '.') . ')' : '');

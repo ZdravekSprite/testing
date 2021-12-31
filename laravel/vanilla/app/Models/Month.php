@@ -238,4 +238,166 @@ class Month extends Model
     ];
     return $hoursNorm;
   }
+
+  /**
+   * Get the hours Norm of month.
+   */
+  public function data()
+  {
+    $firstDate = '01.' . $this->slug();
+    $from = CarbonImmutable::createFromFormat('d.m.Y', $firstDate)->firstOfMonth();
+    $firstFrom = $this->user->zaposlen > $from ? Carbon::parse($this->user->zaposlen) : $from;
+    $hoursNormAll = 0;
+    $hours575All = 0;
+    $hours580All = 0;
+    $firstHoursNormAll = 0;
+    $firstHours575All = 0;
+    $firstHours580All = 0;
+    $hoursNormHoli = 0;
+    $hours575Holi = 0;
+    $hours580Holi = 0;
+    $firstHoursNormHoli = 0;
+    $firstHours575Holi = 0;
+    $firstHours580Holi = 0;
+
+    $hoursNormGO = 0;
+    $hours575GO = 0;
+    $hours580GO = 0;
+    $hoursNormDopust = 0;
+    $hours575Dopust = 0;
+    $hours580Dopust = 0;
+    $hoursNormSick = 0;
+    $hours575Sick = 0;
+    $hours580Sick = 0;
+
+    $minWork = 0;
+    $minWorkNight = 0;
+    $minWorkHoli = 0;
+    $minWorkHoliNight = 0;
+    $minWorkSunday = 0;
+    $minWorkSundayNight = 0;
+
+    //dd($this->days());
+    foreach ($this->days() as $d) {
+      $day_minWork = $d->minWork();
+      $minWork += $day_minWork;
+      $day_minWorkNight = $d->minWorkNight();
+      $minWorkNight += $day_minWorkNight;
+      $dayOfWeek = $d->date->dayOfWeek;
+      $norm = User::where('id', '=', Auth::user()->id)->first()->hasAnyRole(env('FIRM1'));
+      switch ($dayOfWeek) {
+        case 0:
+          $def_h = 0;
+          $def_575_h = 0;
+          $def_580_h = 0;
+          $minWorkSunday += $day_minWork;
+          $minWorkSundayNight += $day_minWorkNight;
+          break;
+        case 6:
+          if ($norm) {
+            $def_h = 5;
+          } else {
+            $def_h = 0;
+          }
+          $def_575_h = 5;
+          $def_580_h = 0;
+          break;
+        default:
+          if ($norm) {
+            $def_h = 7;
+          } else {
+            $def_h = 8;
+          }
+          $def_575_h = 7;
+          $def_580_h = 8;
+          break;
+      }
+      $hoursNormAll += $def_h;
+      $hours575All += $def_575_h;
+      $hours580All += $def_580_h;
+      //dd($firstFrom,$d->date);
+      if ($firstFrom <= $d->date) {
+        $firstHoursNormAll += $def_h;
+        $firstHours575All += $def_575_h;
+        $firstHours580All += $def_580_h;
+      }
+
+      if ($d->holiday && $d->state != 4) {
+        $hoursNormHoli += $def_h;
+        $hours575Holi += $def_575_h;
+        $hours580Holi += $def_580_h;
+
+        if ($firstFrom <= $d->date) {
+          $firstHoursNormHoli += $def_h;
+          $firstHours575Holi += $def_575_h;
+          $firstHours580Holi += $def_580_h;
+        }
+
+        $minWorkHoli += $day_minWork;
+        $minWorkHoliNight += $day_minWorkNight;
+      }
+
+      switch ($d->state) {
+        case 2:
+          if (!$d->holiday) {
+            $hoursNormGO += $def_h;
+            $hours575GO += $def_575_h;
+            $hours580GO += $def_580_h;
+          }
+          break;
+        case 3:
+          if (!$d->holiday) {
+            $hoursNormDopust += $def_h;
+            $hours575Dopust += $def_575_h;
+            $hours580Dopust += $def_580_h;
+          }
+          break;
+        case 4:
+          $hoursNormSick += $def_h;
+          $hours575Sick += $def_575_h;
+          $hours580Sick += $def_580_h;
+          break;
+        default:
+          break;
+      }
+    }
+
+    $hoursNormWork = ($from > $firstFrom ? $hoursNormAll - $hoursNormHoli : $firstHoursNormAll - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO - $hoursNormDopust;
+    $hours575Work = ($from > $firstFrom ? $hours575All - $hours575Holi : $firstHours575All - $firstHours575Holi) - $hours575Sick - $hours575GO - $hours575Dopust;
+    $hours580Work = ($from > $firstFrom ? $hours580All - $hours580Holi : $firstHours580All - $firstHours580Holi) - $hours580Sick - $hours580GO - $hours580Dopust;
+
+    $data = (object) [
+      'All' => $hoursNormAll,
+      'Holiday' => $hoursNormHoli,
+      'firstAll' => $firstHoursNormAll,
+      'firstHoliday' => $firstHoursNormHoli,
+      'GO' => $hoursNormGO,
+      'Dopust' => $hoursNormDopust,
+      'Sick' => $hoursNormSick,
+      'Work' => $hoursNormWork,
+      'All_575' => $hours575All,
+      'Holiday_575' => $hours575Holi,
+      'firstAll_575' => $firstHours575All,
+      'firstHoliday_575' => $firstHours575Holi,
+      'GO_575' => $hours575GO,
+      'Dopust_575' => $hours575Dopust,
+      'Sick_575' => $hours575Sick,
+      'Work_575' => $hours575Work,
+      'All_580' => $hours580All,
+      'Holiday_580' => $hours580Holi,
+      'firstAll_580' => $firstHours580All,
+      'firstHoliday_580' => $firstHours580Holi,
+      'GO_580' => $hours580GO,
+      'Dopust_580' => $hours580Dopust,
+      'Sick_580' => $hours580Sick,
+      'Work_580' => $hours580Work,
+      'min' => $minWork,
+      'minNight' => $minWorkNight,
+      'minSunday' => $minWorkSunday,
+      'minSundayNight' => $minWorkSundayNight,
+      'minHoliday' => $minWorkHoli,
+      'minHolidayNight' => $minWorkHoliNight,
+    ];
+    return $data;
+  }
 }
