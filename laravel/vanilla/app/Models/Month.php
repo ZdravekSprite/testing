@@ -271,6 +271,7 @@ class Month extends Model
     $hours580Sick = 0;
 
     $minWork = 0;
+    $minWorkX = 0;
     $minWorkNight = 0;
     $minWorkHoli = 0;
     $minWorkHoliNight = 0;
@@ -280,7 +281,9 @@ class Month extends Model
     //dd($this->days());
     foreach ($this->days() as $d) {
       $day_minWork = $d->minWork();
+      $day_minWorkX = $d->minWorkX();
       $minWork += $day_minWork;
+      $minWorkX += $day_minWorkX;
       $day_minWorkNight = $d->minWorkNight();
       $minWorkNight += $day_minWorkNight;
       $dayOfWeek = $d->date->dayOfWeek;
@@ -392,6 +395,7 @@ class Month extends Model
       'Sick_580' => $hours580Sick,
       'Work_580' => $hours580Work,
       'min' => $minWork,
+      'minX' => $minWorkX,
       'minNight' => $minWorkNight,
       'minSunday' => $minWorkSunday,
       'minSundayNight' => $minWorkSundayNight,

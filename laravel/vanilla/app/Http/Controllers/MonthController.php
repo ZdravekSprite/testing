@@ -559,7 +559,7 @@ class MonthController extends Controller
     $h1_4 = $month->prekovremeni;
     $data['prekovremeni'] = $month->prekovremeni;
     $overWork = $hoursNorm->min / 60 - $hoursWorkNorm;
-    $overWork_x = $hoursNorm->min / 60 - $hoursWork580;
+    $overWork_x = $month->data()->minX / 60 - $hoursWork580;
 
     $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')' . ' [' . number_format($overWork_x, 2, ',', '.') . ']';
     $kn1_4 = round($h1_4 * $perHour * 1.5, 2);

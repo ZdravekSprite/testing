@@ -67,16 +67,57 @@ class Day extends Model
     return $stateDayBefore;
   }
 
+  public function minutes($time)
+  {
+    //$minutes = $time->format('H') * 60 + $time->format('i');
+    $minutes = $time->hour * 60 + $time->minute;
+    return $minutes;
+  }
+
+  public function minutesX($time)
+  {
+    switch (true) {
+      case $time->minute > 15 && $time->minute < 30:
+        $minutes = $time->hour * 60 + 30;
+        break;
+      
+        case $time->minute > 45:
+          $minutes = $time->hour * 60 + 60;
+          break;
+        
+        default:
+        $minutes = $time->hour * 60 + $time->minute;
+        # code...
+        break;
+    }
+    return $minutes;
+  }
 
   public function minWork()
   {
     if ($this->stateDayBefore() == 1) {
-      $night = $this->night ? $this->night->format('H') * 60 + $this->night->format('i') : 0;
+      $night = $this->night ? $this->minutes($this->night) : 0;
     } else {
       $night = 0;
     }
     if ($this->state == 1) {
-      $startEnd = $this->start ? ($this->end ? $this->end->diffInMinutes($this->start) : 24 * 60 - $this->start->hour * 60 + $this->start->minute) : 0;
+      $startEnd = $this->start ? ($this->end ? $this->end->diffInMinutes($this->start) : 24 * 60 - $this->minutes($this->start)) : 0;
+    } else {
+      $startEnd = 0;
+    }
+    $day_minWork = $startEnd + $night;
+    return $day_minWork;
+  }
+
+  public function minWorkX()
+  {
+    if ($this->stateDayBefore() == 1) {
+      $night = $this->night ? $this->minutes($this->night) : 0;
+    } else {
+      $night = 0;
+    }
+    if ($this->state == 1) {
+      $startEnd = $this->start ? ($this->end ? $this->minutes($this->end) - $this->minutesX($this->start) : 24 * 60 - $this->minutesX($this->start)) : 0;
     } else {
       $startEnd = 0;
     }
@@ -87,13 +128,13 @@ class Day extends Model
   public function minWorkNight()
   {
     if ($this->stateDayBefore() == 1) {
-      $night = $this->night ? ($this->night->hour > 6 ? 360 : $this->night->hour * 60 + $this->night->minute) : 0;
+      $night = $this->night ? ($this->night->hour > 6 ? 360 : $this->minutes($this->night)) : 0;
     } else {
       $night = 0;
     }
     if ($this->state == 1) {
-      $startMin = $this->start ? $this->start->hour * 60 + $this->start->minute : 0;
-      $endMin = $this->end ? $this->end->hour * 60 + $this->end->minute : 0;
+      $startMin = $this->start ? $this->minutes($this->start) : 0;
+      $endMin = $this->end ? $this->minutes($this->end) : 0;
       if ($startMin > 0 && $endMin == 0) $endMin = 1440;
       // befor 6:00 (360 min)
       $start = $this->start ? ($startMin > 360 ? 0 : 360 - $startMin) : 0;
