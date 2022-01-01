@@ -38,7 +38,7 @@
             </tr>
             @if($data['1.2.kn'] != '0,00')
             <tr>
-              <td class="w-3/4 border p-2 pl-6" colspan="2">1.2 redovnog rada noću</td>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.2. sati redovnog rada noću</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.2.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.2.kn'] }}</td>
             </tr>
@@ -48,6 +48,13 @@
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.3. sati redovnog rada u dane državnog praznika/ blagdana</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.3.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.3.kn'] }}</td>
+            </tr>
+            @endif
+            @if($data['1.4.kn'] != '0,00')
+            <tr>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.4. sati redovnog rada u dane državnog praznika/ blagdana + noć</td>
+              <td class="w-1/8 border p-2 text-center">{{ $data['1.4.h'] }}</td>
+              <td class="w-1/8 border p-2 text-right">{{ $data['1.4.kn'] }}</td>
             </tr>
             @endif
             @if($data['1.7.kn'] != '0,00')

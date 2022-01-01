@@ -768,7 +768,7 @@ class MonthController extends Controller
 
   public function lista_data2(Month $month)
   {
-    //dd($month->hoursNorm());
+    //dd($month->hoursNorm(),$month->data());
     $data['III.godina'] = explode(".", $month->slug())[1];
     $data['III.mjesec'] = explode(".", $month->slug())[0];
 
@@ -813,6 +813,12 @@ class MonthController extends Controller
     $kn1_3 = round($h1_3 * $perHour * 1.5, 2);
     $data['1.3.kn'] = number_format($kn1_3, 2, ',', '.');
 
+    // 1.4 sati redovitog rada u dane državnog praznika/ blagdana + noć
+    $h1_4 = round($hoursNorm->minHolidayNight / 60, 2);
+    $data['1.4.h'] = number_format($h1_4, 1, ',', '.');
+    $kn1_4 = round($h1_4 * $perHour * 1.85, 2);
+    $data['1.4.kn'] = number_format($kn1_4, 2, ',', '.');
+
     // 1.7 sati redovnog rada nedeljom
     $h1_7 = ($hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;
     $data['1.7.h'] = number_format($h1_7, 1, ',', '.');
@@ -826,7 +832,7 @@ class MonthController extends Controller
     $data['1.8.kn'] = number_format($kn1_8, 2, ',', '.');
 
     // 1.2. sati redovnog rada noću
-    $h1_2 = ($hoursNorm->minNight / 60) - $h1_8;
+    $h1_2 = ($hoursNorm->minNight / 60) - $h1_4 - $h1_8;
     $data['1.2.h'] = number_format($h1_2, 1, ',', '.');
     $kn1_2 = round($h1_2 * $perHour * 1.35, 2);
     $data['1.2.kn'] = number_format($kn1_2, 2, ',', '.');
@@ -866,17 +872,21 @@ class MonthController extends Controller
     $kn2 = $kn2_2;
 
     // 1.1. sati redovnog rada
-    //$h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 : ($hoursNorm->min - $hoursNorm->minNight - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;
-    $h1_1 = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2;
+    $plan = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2;
+    $redovni = ($hoursNorm->min - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minNight + $hoursNorm->minHolidayNight + $hoursNorm->minSundayNight)/60;
+    //dd($month->hoursNorm(),$month->data(),$plan,$redovni);
+    //$h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2 : ($hoursNorm->min - $hoursNorm->minNight - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;
+    //$h1_1 = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2;
+    $h1_1 = $redovni > $plan ? $plan : $redovni;
     $data['1.1.h'] = number_format($h1_1, 1, ',', '.');
     $kn1_1 = round($h1_1 * $perHour, 2);
     $data['1.1.kn'] = number_format($kn1_1, 2, ',', '.');
 
-    $h1 = $h1_1 + $h1_2 + $h1_3 + $h1_7 + $h1_8;
-    $kn1 = $kn1_1 + $kn1_2 + $kn1_3 + $kn1_7 + $kn1_8;
+    $h1 = $h1_1 + $h1_2 + $h1_3 + $h1_4 + $h1_7 + $h1_8;
+    $kn1 = $kn1_1 + $kn1_2 + $kn1_3 + $kn1_4 + $kn1_7 + $kn1_8;
 
     $overWork = $hoursNorm->min / 60 - $hoursWorkNorm;
-    $data['1.4.h'] = number_format($overWork, 2, ',', '.');
+    $data['overWork'] = number_format($overWork, 2, ',', '.');
 
     // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
     $kn3 = round($kn1 * $minuli / 1000, 2);
