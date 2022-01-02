@@ -13,27 +13,27 @@
 
           @switch($day->state)
           @case(0)
-          <p>Nisam radio</p>
+          <p>Nisam radio/la</p>
           @break
 
           @case(1)
           @if($day->night->hour > 0)
-          <p>od ponoći sam radio do {{ $day->night->format('H:i') }}</p>
+          <p>od ponoći sam radio/la do {{ $day->night->format('H:i') }}</p>
           @endif
           <p>smjena je započela u {{ $day->start->format('H:i') }}</p>
           <p>smjena je završila u {{ $day->end->format('H:i') }}</p>
           @break
 
           @case(2)
-          <p>Bio sam na godišnjem</p>
+          <p>Bio/la sam na godišnjem</p>
           @break
 
           @case(3)
-          <p>Bio sam na plaćenom dopustu</p>
+          <p>Bio/la sam na plaćenom dopustu</p>
           @break
 
           @case(4)
-          <p>Bio sam na bolovanju</p>
+          <p>Bio/la sam na bolovanju</p>
           @break
           @default
           <p>Ne definirano</p>

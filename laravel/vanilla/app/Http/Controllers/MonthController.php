@@ -770,7 +770,7 @@ class MonthController extends Controller
     $data['III.od'] = $from->format('d');
     $data['III.do'] = $to->format('d');
 
-    $hoursNorm = $month->hoursNorm();
+    $hoursNorm = $month->data();
     $bruto = $month->bruto ?? $month->last('bruto');
     $month->bruto = $bruto;
     $data['bruto'] = $bruto;
@@ -865,7 +865,7 @@ class MonthController extends Controller
     $kn2 = $kn2_2;
 
     // 1.1. sati redovnog rada
-    $plan = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2;
+    $plan = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_4 - $h1_7 - $h1_8 - $h2_2;
     $redovni = ($hoursNorm->min - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minNight + $hoursNorm->minHolidayNight + $hoursNorm->minSundayNight) / 60;
     //dd($month->hoursNorm(),$month->data(),$plan,$redovni);
     //$h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2 : ($hoursNorm->min - $hoursNorm->minNight - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;

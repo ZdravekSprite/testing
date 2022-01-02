@@ -166,6 +166,9 @@ class DayController extends Controller
     if ($request->input('state') == 1) {
       $day->start = $request->input('start');
       $day->end = $request->input('end');
+      $old_day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', date('Y-m-d', strtotime($request->input('date'))))->first();
+      //dd($day,$old_day);
+      if ($old_day) return redirect(route('day.edit', ['date' => $day->date->format('d.m.Y')]))->with('new_day', $day)->with('warning', 'Day Exist');
       if ($day->start > $day->end) {
         //dd($day->start,$day->end);
         $next_day = Day::where('user_id', '=', Auth::user()->id)->where('date', '=', $day->date->addDays(1)->format('Y-m-d'))->first();

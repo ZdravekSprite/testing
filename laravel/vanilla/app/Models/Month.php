@@ -279,22 +279,29 @@ class Month extends Model
     $minWorkSundayNight = 0;
 
     //dd($this->days());
+    $day_list = [];
     foreach ($this->days() as $d) {
+      //$day_list[] = ($d->night ? $d->night->format('H:i') : '0:00') . ' ' . ($d->start ? $d->start->format('H:i') : '0:00') . ' ' . ($d->end ? $d->end->format('H:i') : '0:00');
       $day_minWork = $d->minWork();
       $day_minWorkX = $d->minWorkX();
       $minWork += $day_minWork;
       $minWorkX += $day_minWorkX;
       $day_minWorkNight = $d->minWorkNight();
       $minWorkNight += $day_minWorkNight;
+      //$day_list[] = $day_minWork/60 . ' ' . $day_minWorkNight/60 . ' ' . ($d->night ? $d->night->format('H:i') : '0:00') . ' ' . ($d->start ? $d->start->format('H:i') : '0:00') . ' ' . ($d->end ? $d->end->format('H:i') : '0:00');
       $dayOfWeek = $d->date->dayOfWeek;
       $norm = User::where('id', '=', Auth::user()->id)->first()->hasAnyRole(env('FIRM1'));
+      $day_minWorkSunday = 0;
+      $day_minWorkSundayNight = 0;
       switch ($dayOfWeek) {
         case 0:
           $def_h = 0;
           $def_575_h = 0;
           $def_580_h = 0;
-          $minWorkSunday += $day_minWork;
-          $minWorkSundayNight += $day_minWorkNight;
+          $day_minWorkSunday = $day_minWork;
+          $day_minWorkSundayNight = $day_minWorkNight;
+          $minWorkSunday += $day_minWorkSunday;
+          $minWorkSundayNight += $day_minWorkSundayNight;
           break;
         case 6:
           if ($norm) {
@@ -325,7 +332,9 @@ class Month extends Model
         $firstHours580All += $def_580_h;
       }
 
-      if ($d->holiday && $d->state != 4) {
+      $day_minWorkHoli = 0;
+      $day_minWorkHoliNight = 0;
+    if ($d->holiday && $d->state != 4) {
         $hoursNormHoli += $def_h;
         $hours575Holi += $def_575_h;
         $hours580Holi += $def_580_h;
@@ -336,9 +345,16 @@ class Month extends Model
           $firstHours580Holi += $def_580_h;
         }
 
-        $minWorkHoli += $day_minWork;
-        $minWorkHoliNight += $day_minWorkNight;
+        $day_minWorkHoli = $day_minWork;
+        $day_minWorkHoliNight = $day_minWorkNight;
+        $minWorkHoli += $day_minWorkHoli;
+        $minWorkHoliNight += $day_minWorkHoliNight;
       }
+
+      $day_list[] = (($day_minWork - $day_minWorkNight - $day_minWorkSunday + $day_minWorkSundayNight - $day_minWorkHoli + $day_minWorkHoliNight) / 60) . ' ' . (($day_minWorkNight - $day_minWorkSundayNight - $day_minWorkHoliNight) / 60)
+        . ' ' . (($day_minWorkSunday - $day_minWorkSundayNight) / 60) . ' ' . ($day_minWorkSundayNight / 60)
+        . ' ' . (($day_minWorkHoli - $day_minWorkHoliNight) / 60) . ' ' . ($day_minWorkHoliNight / 60)
+        . ' ' . ($d->night ? $d->night->format('H:i') : '0:00') . ' ' . ($d->start ? $d->start->format('H:i') : '0:00') . ' ' . ($d->end ? $d->end->format('H:i') : '0:00');
 
       switch ($d->state) {
         case 2:
@@ -365,6 +381,10 @@ class Month extends Model
       }
     }
 
+    $day_list[] = (($minWork - $minWorkNight - $minWorkSunday + $minWorkSundayNight - $minWorkHoli + $minWorkHoliNight) / 60) . ' ' . (($minWorkNight - $minWorkSundayNight - $minWorkHoliNight) / 60)
+    . ' ' . (($minWorkSunday - $minWorkSundayNight) / 60) . ' ' . ($minWorkSundayNight / 60)
+    . ' ' . (($minWorkHoli - $minWorkHoliNight) / 60) . ' ' . ($minWorkHoliNight / 60);
+    //dd($day_list);
     $hoursNormWork = ($from > $firstFrom ? $hoursNormAll - $hoursNormHoli : $firstHoursNormAll - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO - $hoursNormDopust;
     $hours575Work = ($from > $firstFrom ? $hours575All - $hours575Holi : $firstHours575All - $firstHours575Holi) - $hours575Sick - $hours575GO - $hours575Dopust;
     $hours580Work = ($from > $firstFrom ? $hours580All - $hours580Holi : $firstHours580All - $firstHours580Holi) - $hours580Sick - $hours580GO - $hours580Dopust;
