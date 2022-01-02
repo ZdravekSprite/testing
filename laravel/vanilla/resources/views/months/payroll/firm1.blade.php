@@ -69,21 +69,21 @@
               <td class="w-1/8 border p-2 text-right" title="{{ $data['1.7d.t'] }}">{{ $data['1.7d.kn'] }}</td>
             </tr>
             @endif
-            @if($data['1.7e.h'] != '0,00 (0min)')
+            @if($data['1.7e.h'] != '0,00 ()')
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.7e Dodatak za rad nedjeljom</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.7e.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.7e.kn'] }}</td>
             </tr>
             @endif
-            @if($data['1.7f.h'] != '0,00 (0min)')
+            @if($data['1.7f.h'] != '0,00 ()')
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.7f Dodatak za rad na praznik</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.7f.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.7f.kn'] }}</td>
             </tr>
             @endif
-            @if($data['1.7g.h'] != '0,00 (0min)')
+            @if($data['1.7g.h'] != '0,00 ()')
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.7g Dodatak za noćni rad</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.7g.h'] }}</td>

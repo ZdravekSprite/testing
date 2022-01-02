@@ -612,27 +612,20 @@ class MonthController extends Controller
       $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
     }
     // 1.7e Dodatak za rad nedjeljom
-    $sundayWorkM = $hoursNorm->minSunday % 60;
-    $sundayWorkH = ($hoursNorm->minSunday - $sundayWorkM) / 60;
     $h1_7e = round($hoursNorm->minSunday / 30, 0) / 2;
-    $data['1.7e.h'] = number_format($h1_7e, 2, ',', '.') . ' (' . ($sundayWorkH ? $sundayWorkH . 'sati i ' : '') . $sundayWorkM . 'min)';
+    $data['1.7e.h'] = number_format($h1_7e, 2, ',', '.') . ' (' . $this->satiMinute($hoursNorm->minSunday) . ')';
     $kn1_7e = round($hoursNorm->minSunday / 60 * $perHour * 0.35, 2);
     $data['1.7e.kn'] = number_format($kn1_7e, 2, ',', '.');
 
     // 1.7f Dodatak za rad na praznik
-    $holidayWorkM = $hoursNorm->minHoliday % 60;
-    $holidayWorkH = ($hoursNorm->minHoliday - $holidayWorkM) / 60;
     $h1_7f = round($hoursNorm->minHoliday / 30, 0) / 2;
-    $data['1.7f.h'] = number_format($h1_7f, 2, ',', '.') . ' (' . ($holidayWorkH ? $holidayWorkH . 'sati i ' : '') . $holidayWorkM . 'min)';
+    $data['1.7f.h'] = number_format($h1_7f, 2, ',', '.') . ' (' . $this->satiMinute($hoursNorm->minHoliday) . ')';
     $kn1_7f = round($h1_7f * $perHour * 0.5, 2);
     $data['1.7f.kn'] = number_format($kn1_7f, 2, ',', '.');
 
     // 1.7g Dodatak za noćni rad
     $h1_7g = $month->nocni / 10;
-    $nightWorkM = $hoursNorm->minNight % 60;
-    $nightWorkH = ($hoursNorm->minNight - $nightWorkM) / 60;
-
-    $data['1.7g.h'] = number_format($h1_7g, 2, ',', '.') . ' (' . ($nightWorkH ? $nightWorkH . 'sati i ' : '') . $nightWorkM . 'min)';
+    $data['1.7g.h'] = number_format($h1_7g, 2, ',', '.') . ' (' . $this->satiMinute($hoursNorm->minNight) . ')';
     $kn1_7g = round($h1_7g * $perHour * 0.3, 2);
     $data['1.7g.kn'] = number_format($kn1_7g, 2, ',', '.');
 
@@ -867,13 +860,13 @@ class MonthController extends Controller
       $data['2.2.t'] = '';
       $data['2.2.kn'] = number_format($kn2_2, 2, ',', '.') . $text22;
     }
-    
+
     $h2 = $h2_2;
     $kn2 = $kn2_2;
 
     // 1.1. sati redovnog rada
     $plan = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2;
-    $redovni = ($hoursNorm->min - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minNight + $hoursNorm->minHolidayNight + $hoursNorm->minSundayNight)/60;
+    $redovni = ($hoursNorm->min - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minNight + $hoursNorm->minHolidayNight + $hoursNorm->minSundayNight) / 60;
     //dd($month->hoursNorm(),$month->data(),$plan,$redovni);
     //$h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2 : ($hoursNorm->min - $hoursNorm->minNight - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;
     //$h1_1 = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2;
@@ -954,6 +947,60 @@ class MonthController extends Controller
 
     //dd($data);
     return $data;
+  }
+
+  public function satiMinute($min)
+  {
+    $timeM = $min % 60;
+    $timeH = ($min - $timeM) / 60;
+    switch ($timeH % 10) {
+      case 0:
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+        $txtH = 'sati';
+        break;
+
+      case 1:
+        $txtH = $timeH == 11 ? 'sati' : 'sat';
+        break;
+
+      case 2:
+      case 3:
+      case 4:
+        $txtH = in_array($timeH, [12, 13, 14]) ? 'sati' : 'sata';
+        break;
+
+      default:
+        $txtH = 'h';
+        break;
+    }
+    $txt = $timeH ? $timeH . $txtH . ($timeM ? ' i ' : '') : '';
+    switch ($timeM % 10) {
+      case 0:
+      case 1:
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+      case 9:
+        $txtM = 'minuta';
+        break;
+
+      case 2:
+      case 3:
+      case 4:
+        $txtM = in_array($timeM, [12, 13, 14]) ? 'minuta' : 'minute';
+        break;
+
+      default:
+        $txtM = 'min';
+        break;
+    }
+    $txt .= $timeM ? $timeM . $txtM : '';
+    return $txt;
   }
 
   public function print($month = null)
