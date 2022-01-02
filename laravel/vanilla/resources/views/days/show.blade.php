@@ -2,6 +2,11 @@
   <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 leading-tight">
       {{ __('Dan') }}
+      {{ $day->date->format('d.m.Y') }}
+      <a class="float-right" href="{{ route('months.show', ['month' => $day->date->format('m.Y')]) }}" title="{{$day->date->format('m.Y')}}">
+      {{ __('Mjesec') }}
+      {{ $day->date->format('m.Y') }}
+      </a>
     </h2>
   </x-slot>
 
