@@ -73,14 +73,14 @@ Route::get('login/{provider}/callback', function ($provider) {
     $user[$provider . "_id"] = $social_user->getId();
   }
   if ($social_user->getAvatar()) {
-    if($provider == 'facebook') {
+    if ($provider == 'facebook') {
       $url = $social_user->getAvatar() . '&access_token=' . $social_user->token;
       $ch = curl_init();
-  
+
       curl_setopt($ch, CURLOPT_URL, $url);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
       curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-  
+
       $res = curl_exec($ch);
       $redirectedUrl = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
       //$avatar = ltrim($redirectedUrl,"https://");
@@ -221,7 +221,6 @@ Route::get('/binance/', function () {
 })->name('bHome');
 Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo'])->name('bExchange');
 //Route::get('/binance/exchange/info/{symbol?}', [BSystem::class, 'exchangeInfo'])->name('bExchangeInfo');
-
 
 Route::get('/lotto/hl', [LottoController::class, 'hl']);
 Route::get('/lotto/eurojackpot', [LottoController::class, 'eurojackpot'])->name('eurojackpot');
