@@ -390,14 +390,14 @@ class Month extends Model
     $hours580Work = ($from > $firstFrom ? $hours580All - $hours580Holi : $firstHours580All - $firstHours580Holi) - $hours580Sick - $hours580GO - $hours580Dopust;
 
     $data = (object) [
-      'All' => $hoursNormAll,
+/*      'All' => $hoursNormAll,
       'Holiday' => $hoursNormHoli,
       'firstAll' => $firstHoursNormAll,
       'firstHoliday' => $firstHoursNormHoli,
       'GO' => $hoursNormGO,
       'Dopust' => $hoursNormDopust,
       'Sick' => $hoursNormSick,
-      'Work' => $hoursNormWork,
+      'Work' => $hoursNormWork,*/
       'All_575' => $hours575All,
       'Holiday_575' => $hours575Holi,
       'firstAll_575' => $firstHours575All,

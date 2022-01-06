@@ -155,7 +155,6 @@ class MonthController extends Controller
       $settings->end3 = '06:00';
     }
     $days = $month->days();
-
     if (User::where('id', '=', Auth::user()->id)->first()->hasAnyRole(env('FIRM1'))) {
       $firm = 'firm1';
       $data  = $this->lista_data1($month);
@@ -529,15 +528,15 @@ class MonthController extends Controller
     $data['III.od'] = $from->format('d');
     $data['III.do'] = $to->format('d');
 
-    $hoursNorm = $month->hoursNorm();
+    $hoursNorm = $month->data();
     $bruto = $month->bruto ?? $month->last('bruto');
     $month->bruto = $bruto;
     $data['bruto'] = $bruto;
-    $perHour = round(($bruto / 100 / $hoursNorm->All), 2);
+    $perHour = round(($bruto / 100 / $hoursNorm->All_575), 2);
     $data['perHour'] = $perHour;
-    $hoursWorkNorm = $hoursNorm->Work;
-    $hoursWork575 = $month->data()->Work_575;
-    $hoursWork580 = $month->data()->Work_580;
+    //$hoursWorkNorm = $hoursNorm->Work;
+    $hoursWork575 = $hoursNorm->Work_575;
+    $hoursWork580 = $hoursNorm->Work_580;
     $prijevoz = $month->prijevoz ?? $month->last('prijevoz');
     $month->prijevoz = $prijevoz;
     $data['prijevoz'] = $prijevoz;
@@ -550,7 +549,7 @@ class MonthController extends Controller
     //dd($hoursNorm, $bruto, $perHour);
 
     // 1.1. Za redoviti rad
-    $h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm : $hoursNorm->min / 60;
+    $h1_1 = $hoursNorm->min / 60 > $hoursWork575 ? $hoursWork575 : $hoursNorm->min / 60;
     $data['1.1.h'] = number_format($h1_1, 2, ',', '.');
     $kn1_1 = round($h1_1 * $perHour, 2);
     $data['1.1.kn'] = number_format($kn1_1, 2, ',', '.');
@@ -558,7 +557,7 @@ class MonthController extends Controller
     // 1.4 Za prekovremeni rad
     $h1_4 = $month->prekovremeni;
     $data['prekovremeni'] = $month->prekovremeni;
-    $overWork = $hoursNorm->min / 60 - $hoursWorkNorm;
+    $overWork = $hoursNorm->min / 60 - $hoursWork575;
     $overWork_x = $month->data()->minX / 60 - $hoursWork580;
 
     $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')' . ' [' . number_format($overWork_x, 2, ',', '.') . ']';
@@ -567,47 +566,47 @@ class MonthController extends Controller
     $data['1.4.kn'] = number_format($kn1_4, 2, ',', '.') . ($kn1_4x ? ' (' . number_format($kn1_4x, 2, ',', '.') . ')' : '');
 
     // 1.7a Praznici. Blagdani, izbori
-    $data['1.7a.h'] = number_format($hoursNorm->Holiday, 2, ',', '.');
-    $kn1_7a = round($hoursNorm->Holiday * $perHour, 2);
+    $data['1.7a.h'] = number_format($hoursNorm->Holiday_575, 2, ',', '.');
+    $kn1_7a = round($hoursNorm->Holiday_575 * $perHour, 2);
     $data['1.7a.kn'] = number_format($kn1_7a, 2, ',', '.');
 
     // 1.7b Godišnji odmor
-    $data['1.7b.h'] = number_format($hoursNorm->GO, 2, ',', '.');
-    $kn1_7b = round($hoursNorm->GO * $perHour, 2);
+    $data['1.7b.h'] = number_format($hoursNorm->GO_575, 2, ',', '.');
+    $kn1_7b = round($hoursNorm->GO_575 * $perHour, 2);
     $data['1.7b.kn'] = number_format($kn1_7b, 2, ',', '.');
 
     // 1.7c Plaćeni dopust
-    $data['1.7c.h'] = number_format($hoursNorm->Dopust, 2, ',', '.');
-    $kn1_7c = round($hoursNorm->Dopust * $perHour, 2);
+    $data['1.7c.h'] = number_format($hoursNorm->Dopust_575, 2, ',', '.');
+    $kn1_7c = round($hoursNorm->Dopust_575 * $perHour, 2);
     $data['1.7c.kn'] = number_format($kn1_7c, 2, ',', '.');
 
     // 1.7d Bolovanje do 42 dana
-    $data['1.7d.h'] = number_format($hoursNorm->Sick, 2, ',', '.');
+    $data['1.7d.h'] = number_format($hoursNorm->Sick_575, 2, ',', '.');
     //$kn1_7d = round($hoursNorm->Sick * $perHour * 0.7588, 2);
-    if ($hoursNorm->Sick && !$month->bolovanje) {
+    if ($hoursNorm->Sick_575 && !$month->bolovanje) {
       $ms = Month::where('user_id', '=', Auth::user()->id)->where('month', '>=', $month->month - 6)->where('month', '<', $month->month)->get();
       //dd($ms);
       if (count($ms)) {
         $mjeseci = [];
         foreach ($ms as $key => $value) {
-          $mHoursNorm = $value->hoursNorm();
+          $mHoursNorm = $value->data();
           $mBruto = $value->bruto ?? $value->last('bruto');
-          $mPerHour = round(($mBruto / 100 / $mHoursNorm->All), 2);
+          $mPerHour = round(($mBruto / 100 / $mHoursNorm->All_575), 2);
           $mjeseci[$key] = $mPerHour;
         }
         //dd(array_sum($mjeseci) / count($mjeseci) * 0.7);
-        $kn1_7d = round(array_sum($mjeseci) / count($mjeseci), 2) * 0.7 * $hoursNorm->Sick;
-        $text17 = '(' . number_format($kn1_7d / $hoursNorm->Sick / $perHour * 100, 2, ',', '.') . '%)*';
+        $kn1_7d = round(array_sum($mjeseci) / count($mjeseci), 2) * 0.7 * $hoursNorm->Sick_575;
+        $text17 = '(' . number_format($kn1_7d / $hoursNorm->Sick_575 / $perHour * 100, 2, ',', '.') . '%)*';
         $data['1.7d.t'] = 'izračunato na osnovu prosjeka zadnjih 6 mjeseci';
         $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
       } else {
-        $kn1_7d = round($perHour * 0.7, 2) * $hoursNorm->Sick;
+        $kn1_7d = round($perHour * 0.7, 2) * $hoursNorm->Sick_575;
         $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . '(70%)**';
         $data['1.7d.t'] = 'izračunato na osnovu prosjeka trenutnog mjeseca';
       }
     } else {
       $kn1_7d = $month->bolovanje / 100;
-      $text17 = $hoursNorm->Sick ? '(' . number_format($kn1_7d / $hoursNorm->Sick / $perHour * 100, 2, ',', '.') . '%)' : '';
+      $text17 = $hoursNorm->Sick_575 ? '(' . number_format($kn1_7d / $hoursNorm->Sick_575 / $perHour * 100, 2, ',', '.') . '%)' : '';
       $data['1.7d.t'] = '';
       $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
     }
@@ -648,9 +647,9 @@ class MonthController extends Controller
 
     // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
     $prijevoz = $month->prijevoz / 100 ?? 360;
-    $prijevoz = ($hoursNorm->GO + $hoursNorm->Sick) > 14 ? $prijevoz * ($hoursNorm->All - $hoursNorm->GO - $hoursNorm->Sick) / $hoursNorm->All : $prijevoz;
+    $prijevoz = ($hoursNorm->GO_575 + $hoursNorm->Sick_575) > 14 ? $prijevoz * ($hoursNorm->All_575 - $hoursNorm->GO_575 - $hoursNorm->Sick_575) / $hoursNorm->All_575 : $prijevoz;
     //dd($hoursNorm);
-    $prijevoz = $hoursNorm->firstAll > $hoursNorm->All ? $prijevoz : $prijevoz * $hoursNorm->firstAll / $hoursNorm->All;
+    $prijevoz = $hoursNorm->firstAll_575 > $hoursNorm->All_575 ? $prijevoz : $prijevoz * $hoursNorm->firstAll_575 / $hoursNorm->All_575;
     $regres = $month->regres / 100 ?? 0;
     $bozicnica = $month->bozicnica / 100 ?? 0;
     $prehrana = $month->prehrana / 100 ?? 0;
