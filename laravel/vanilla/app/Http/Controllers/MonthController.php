@@ -573,7 +573,27 @@ class MonthController extends Controller
     // 1.7b Godišnji odmor
     $data['1.7b.h'] = number_format($hoursNorm->GO_575, 2, ',', '.');
     $kn1_7b = round($hoursNorm->GO_575 * $perHour, 2);
-    $data['1.7b.kn'] = number_format($kn1_7b, 2, ',', '.');
+
+    if ($hoursNorm->GO_575) {
+      $ms = Month::where('user_id', '=', Auth::user()->id)->where('month', '>=', $month->month - 3)->where('month', '<', $month->month)->get();
+      //dd($ms);
+      if (count($ms)) {
+        $mjeseci = [];
+        foreach ($ms as $key => $value) {
+          $mHoursNorm = $value->data();
+          $mBruto = $value->bruto ?? $value->last('bruto');
+          $mPerHour = round(($mBruto / 100 / $mHoursNorm->All_575), 2);
+          $mjeseci[$key] = $mPerHour;
+        }
+        //dd(array_sum($mjeseci) / count($mjeseci) * 0.7);
+        $kn1_7bx = round(array_sum($mjeseci) / count($mjeseci), 2) * $hoursNorm->GO_575;
+        $data['1.7b.t'] = 'u zagradi je izračunato na osnovu prosjeka zadnjih 3 mjeseca';
+        $data['1.7b.kn'] = number_format($kn1_7b, 2, ',', '.') . ' (' . number_format($kn1_7bx, 2, ',', '.') . ')*';
+      } else {
+        $data['1.7b.t'] = '';
+        $data['1.7b.kn'] = number_format($kn1_7b, 2, ',', '.');
+      }
+    }
 
     // 1.7c Plaćeni dopust
     $data['1.7c.h'] = number_format($hoursNorm->Dopust_575, 2, ',', '.');
@@ -641,7 +661,7 @@ class MonthController extends Controller
     $data['2.kn'] = number_format($kn2, 2, ',', '.');
     // 2.8. Stimulacija bruto
     $data['2.8.kn'] = number_format($month->stimulacija / 100, 2, ',', '.');
-    $extra_prekovremeni = $month->stimulacija / 100 / $perHour / 1.5;
+    $extra_prekovremeni = $month->stimulacija / $bruto * $hoursNorm->All_575 / 1.5;
     $data['2.8.kn'] = number_format($month->stimulacija / 100, 2, ',', '.');
     $data['extra'] = floor($extra_prekovremeni) . 'h ' . (floor($extra_prekovremeni * 60) % 60) . 'm ' . floor($extra_prekovremeni * 3600) % 60 . 's';
 

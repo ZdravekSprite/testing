@@ -52,7 +52,7 @@
             <tr>
               <td class="w-3/4 border p-2 pl-6" colspan="2">1.7b Godišnji odmor</td>
               <td class="w-1/8 border p-2 text-center">{{ $data['1.7b.h'] }}</td>
-              <td class="w-1/8 border p-2 text-right">{{ $data['1.7b.kn'] }}</td>
+              <td class="w-1/8 border p-2 text-right" title="{{ $data['1.7b.t'] }}">{{ $data['1.7b.kn'] }}</td>
             </tr>
             @endif
             @if($data['1.7c.h'] != '0,00')
