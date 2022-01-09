@@ -257,18 +257,18 @@ class MonthController extends Controller
   //public function update(Request $request, Month $month)
   public function update(Request $request, $month)
   {
+    //dd($request, $month);
     $this->validate($request, [
       'month' => 'required',
     ]);
     $month = Month::where('user_id', '=', Auth::user()->id)->where('month', '=', $request->input('month'))->first();
     $month->bruto = $request->input('bruto') ? $request->input('bruto') * 100 : $month->bruto;
-    $month->prijevoz = $request->input('prijevoz') ? $request->input('prijevoz') * 100 : $month->prijevoz;
-    $month->prehrana = $request->input('prehrana') ? $request->input('prehrana') * 100 : $month->prehrana;
-    $month->minuli = $request->input('minuli') ? $request->input('minuli') * 10 : $month->minuli;
-    $month->odbitak = $request->input('odbitak') ? $request->input('odbitak') * 100 : $month->odbitak;
-    $month->prirez = $request->input('prirez') ? $request->input('prirez') * 100 : $month->prirez;
-    $month->sindikat = $request->input('sindikat') ? $request->input('sindikat') : $month->sindikat;
-    $month->kredit = $request->input('kredit') ? $request->input('kredit') : $month->kredit;
+    $month->prijevoz = $request->input('prijevoz') * 100 ?? $month->prijevoz;
+    $month->prehrana = $request->input('prehrana') * 100 ?? $month->prehrana;
+    $month->minuli = $request->input('minuli') * 10 ?? $month->minuli;
+    $month->odbitak = $request->input('odbitak') * 100 ?? $month->odbitak;
+    $month->prirez = $request->input('prirez') * 100 ?? $month->prirez;
+    $month->sindikat = $request->input('sindikat') == true ? true : false;
 
     $month->prekovremeni = $request->input('prekovremeni') ?? $month->prekovremeni;
     $month->bolovanje = $request->input('bolovanje') * 100 ?? $month->bolvanje;
@@ -279,9 +279,9 @@ class MonthController extends Controller
     $month->prigodna = $request->input('prigodna') ? $request->input('prigodna') * 100 : $month->prigodna;
     $month->stimulacija = $request->input('stimulacija') ? $request->input('stimulacija') * 100 : $month->stimulacija;
     $month->stari = $request->input('starih') ? ($request->input('starih') * 60 + $request->input('starim')) : $month->stari;
-    if ($request->input('sindikat') == true) $month->sindikat = true;
     $month->kredit = $request->input('kredit') * 100 ?? $month->kredit;
     $month->save();
+    //return redirect(route('months.edit', ['month' => $month->slug()]))->with('success', 'Month Updated');
     return redirect(route('months.show', ['month' => $month->slug()]))->with('success', 'Month Updated');
   }
 
