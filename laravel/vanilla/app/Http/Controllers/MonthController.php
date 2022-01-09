@@ -548,6 +548,9 @@ class MonthController extends Controller
     $data['prirez'] = $prirez;
     //dd($hoursNorm, $bruto, $perHour);
 
+    $fusnote = [];
+    $asterix = '';
+
     // 1.1. Za redoviti rad
     $h1_1 = $hoursNorm->min / 60 > $hoursWork575 ? $hoursWork575 : $hoursNorm->min / 60;
     $data['1.1.h'] = number_format($h1_1, 2, ',', '.');
@@ -560,10 +563,15 @@ class MonthController extends Controller
     $overWork = $hoursNorm->min / 60 - $hoursWork575;
     $overWork_x = $month->data()->minX / 60 - $hoursWork580;
 
-    $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')' . ' [' . number_format($overWork_x, 2, ',', '.') . ']';
+    $data['1.4.h'] = number_format($h1_4, 2, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')' . $asterix . '* [' . number_format($overWork_x, 2, ',', '.') . ']' . $asterix . '**';
+    $asterix .= '*';
+    $fusnote[$asterix] = 'Koliko bi trebalo biti prekovremenih izračunato na temelju unešenih dana';
+    $asterix .= '*';
+    $fusnote[$asterix] = 'Koliko će vjerojatno firma krivo izračunati prekovremenih na temelju unešenih dana';
     $kn1_4 = round($h1_4 * $perHour * 1.5, 2);
     $kn1_4x = $overWork > 0 ? round($overWork * $perHour * 1.5, 2) : 0;
     $data['1.4.kn'] = number_format($kn1_4, 2, ',', '.') . ($kn1_4x ? ' (' . number_format($kn1_4x, 2, ',', '.') . ')' : '');
+    $data['1.4.t'] = 'u normalnim zagradama je kako bi se trbalo računati, a u uglatim je kako firma krivo računa';
 
     // 1.7a Praznici. Blagdani, izbori
     $data['1.7a.h'] = number_format($hoursNorm->Holiday_575, 2, ',', '.');
@@ -588,7 +596,9 @@ class MonthController extends Controller
         //dd(array_sum($mjeseci) / count($mjeseci) * 0.7);
         $kn1_7bx = round(array_sum($mjeseci) / count($mjeseci), 2) * $hoursNorm->GO_575;
         $data['1.7b.t'] = 'u zagradi je izračunato na osnovu prosjeka zadnjih 3 mjeseca';
-        $data['1.7b.kn'] = number_format($kn1_7b, 2, ',', '.') . ' (' . number_format($kn1_7bx, 2, ',', '.') . ')*';
+        $asterix .= '*';
+        $fusnote[$asterix] = 'Godišnji izračunat na osnovu prosjek zadnjih 3 mjeseca kako piše u ugovoru';
+        $data['1.7b.kn'] = number_format($kn1_7b, 2, ',', '.') . ' (' . number_format($kn1_7bx, 2, ',', '.') . ')' . $asterix;
       } else {
         $data['1.7b.t'] = '';
         $data['1.7b.kn'] = number_format($kn1_7b, 2, ',', '.');
@@ -616,13 +626,17 @@ class MonthController extends Controller
         }
         //dd(array_sum($mjeseci) / count($mjeseci) * 0.7);
         $kn1_7d = round(array_sum($mjeseci) / count($mjeseci), 2) * 0.7 * $hoursNorm->Sick_575;
-        $text17 = '(' . number_format($kn1_7d / $hoursNorm->Sick_575 / $perHour * 100, 2, ',', '.') . '%)*';
+        $asterix .= '*';
+        $fusnote[$asterix] = 'Bolovanje izračunato na osnovu prosjeka zadnjih 6 mjeseci';
+        $text17 = '(' . number_format($kn1_7d / $hoursNorm->Sick_575 / $perHour * 100, 2, ',', '.') . '%)' . $asterix;
         $data['1.7d.t'] = 'izračunato na osnovu prosjeka zadnjih 6 mjeseci';
         $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . $text17;
       } else {
         $kn1_7d = round($perHour * 0.7, 2) * $hoursNorm->Sick_575;
-        $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . '(70%)**';
-        $data['1.7d.t'] = 'izračunato na osnovu prosjeka trenutnog mjeseca';
+        $asterix .= '*';
+        $fusnote[$asterix] = 'Bolovanje izračunato na osnovu trenutnog mjeseca';
+        $data['1.7d.kn'] = number_format($kn1_7d, 2, ',', '.') . '(70%)' . $asterix;
+        $data['1.7d.t'] = 'izračunato na osnovu trenutnog mjeseca';
       }
     } else {
       $kn1_7d = $month->bolovanje / 100;
@@ -775,6 +789,8 @@ class MonthController extends Controller
     $data['17_5a.kn'] = number_format($sindikat, 2, ',', '.') . ($razlika ? ' (' . number_format($sindikatx, 2, ',', '.') . ')' : '');
     $data['17_5b.kn'] = number_format($kredit, 2, ',', '.');
 
+    $data['fusnote'] = $fusnote;
+    //dd($data);
     return $data;
   }
 

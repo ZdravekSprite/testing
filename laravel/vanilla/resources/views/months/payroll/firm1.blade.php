@@ -37,8 +37,8 @@
               <td class="w-1/8 border p-2 text-right">{{ $data['1.1.kn'] }}</td>
             </tr>
             <tr>
-              <td class="w-3/4 border p-2 pl-6" colspan="2">1.4 Za prekovremeni rad</td>
-              <td class="w-1/8 border p-2 text-center" title="u normalnim zagradama je kako bi se trbalo računati. a u uglatim je kako firma krivo računa">{{ $data['1.4.h'] }}</td>
+              <td class="w-3/4 border p-2 pl-6" colspan="2">1.4. Za prekovremeni rad</td>
+              <td class="w-1/8 border p-2 text-center" title="{{ $data['1.4.t'] }}">{{ $data['1.4.h'] }}</td>
               <td class="w-1/8 border p-2 text-right">{{ $data['1.4.kn'] }}</td>
             </tr>
             @if($data['1.7a.h'] != '0,00')
@@ -276,3 +276,12 @@
             @endif
             @endif
           </tbody>
+          <tfoot>
+            @foreach($data['fusnote'] as $key => $value)
+            <tr>
+              <td colspan="3">
+                {{$key . ' - ' . $value}}
+              </td>
+            </tr>
+            @endforeach
+          </tfoot>
