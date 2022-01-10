@@ -647,7 +647,7 @@ class MonthController extends Controller
     // 1.7e Dodatak za rad nedjeljom
     $h1_7e = round($hoursNorm->minSunday / 30, 0) / 2;
     $data['1.7e.h'] = number_format($h1_7e, 2, ',', '.') . ' (' . $this->satiMinute($hoursNorm->minSunday) . ')';
-    $kn1_7e = round($hoursNorm->minSunday / 60 * $perHour * 0.35, 2);
+    $kn1_7e = round($h1_7e * $perHour * 0.35, 2);
     $data['1.7e.kn'] = number_format($kn1_7e, 2, ',', '.');
 
     // 1.7f Dodatak za rad na praznik
