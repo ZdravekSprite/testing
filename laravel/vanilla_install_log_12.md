@@ -94,7 +94,7 @@ php artisan migrate
 ## laravel -> main
 ```bash
 git add .
-git commit -am "laravel - 2022 1 10"
+git commit -am "laravel - 2022 1 13"
 git push
 git checkout main
 git pull
@@ -151,4 +151,3 @@ git add .
 git commit -am "new"
 git push --set-upstream origin new
 ```
-
