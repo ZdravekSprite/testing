@@ -3866,6 +3866,72 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -3878,6 +3944,23 @@ __webpack_require__.r(__webpack_exports__);
         iznos: 0
       }
     };
+  },
+  methods: {
+    calcSati: function calcSati() {
+      if (this.redovni.sati == 0) {
+        return;
+      }
+
+      if (this.redovni.iznos == 0) {
+        return;
+      }
+
+      if (this.bs.iznos == 0) {
+        return;
+      }
+
+      this.bs.sati = Math.round(this.bs.iznos / 1.5 / this.redovni.iznos * this.redovni.sati * 100) / 100;
+    }
   },
   mounted: function mounted() {
     console.log("Component mounted.");
@@ -28146,127 +28229,138 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "brutoStimulacijaComponent" }, [
-    _vm._m(0),
+  return _c("div", [
+    _c("h2", [_vm._v("Koliko prekovremenih sati je u Bruto stimulaciji.")]),
     _vm._v(" "),
-    _c("div", { staticClass: "mt-4" }, [
-      _c(
-        "label",
-        {
-          staticClass: "block font-medium trxt-sm text-gray-700",
-          attrs: { for: "iznos" }
-        },
-        [_vm._v("Iznos 2.8. Stimulacija bruto")]
-      ),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
+    _c("div", { staticClass: "grid grid-cols-1 md:grid-cols-3" }, [
+      _c("div", { staticClass: "mt-4" }, [
+        _c(
+          "label",
           {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.bs.iznos,
-            expression: "bs.iznos"
-          }
-        ],
-        staticClass:
-          "block mt-1 w-32 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50",
-        attrs: {
-          id: "iznos",
-          type: "number",
-          name: "iznos",
-          min: "0",
-          step: "0.01"
-        },
-        domProps: { value: _vm.bs.iznos },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+            staticClass: "block font-medium trxt-sm text-gray-700",
+            attrs: { for: "iznos" }
+          },
+          [_vm._v("Iznos 2.8. Stimulacija bruto")]
+        ),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.bs.iznos,
+              expression: "bs.iznos"
             }
-            _vm.$set(_vm.bs, "iznos", $event.target.value)
+          ],
+          staticClass:
+            "\n          block\n          mt-1\n          w-32\n          rounded-md\n          shadow-sm\n          border-gray-300\n          focus:border-indigo-300\n          focus:ring\n          focus:ring-indigo-200\n          focus:ring-opacity-50\n        ",
+          attrs: {
+            id: "iznos",
+            type: "number",
+            name: "iznos",
+            min: "0",
+            step: "0.01"
+          },
+          domProps: { value: _vm.bs.iznos },
+          on: {
+            change: function($event) {
+              return _vm.calcSati()
+            },
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.bs, "iznos", $event.target.value)
+            }
           }
-        }
-      })
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "mt-4" }, [
-      _c(
-        "label",
-        {
-          staticClass: "block font-medium trxt-sm text-gray-700",
-          attrs: { for: "riznos" }
-        },
-        [_vm._v("Iznos 1.1. Za redovni rad")]
-      ),
+        })
+      ]),
       _vm._v(" "),
-      _c("input", {
-        directives: [
+      _c("div", { staticClass: "mt-4" }, [
+        _c(
+          "label",
           {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.redovni.iznos,
-            expression: "redovni.iznos"
-          }
-        ],
-        staticClass:
-          "block mt-1 w-32 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50",
-        attrs: {
-          id: "riznos",
-          type: "number",
-          name: "riznos",
-          min: "0",
-          step: "0.01"
-        },
-        domProps: { value: _vm.redovni.iznos },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+            staticClass: "block font-medium trxt-sm text-gray-700",
+            attrs: { for: "riznos" }
+          },
+          [_vm._v("Iznos 1.1. Za redovni rad")]
+        ),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.redovni.iznos,
+              expression: "redovni.iznos"
             }
-            _vm.$set(_vm.redovni, "iznos", $event.target.value)
+          ],
+          staticClass:
+            "\n          block\n          mt-1\n          w-32\n          rounded-md\n          shadow-sm\n          border-gray-300\n          focus:border-indigo-300\n          focus:ring\n          focus:ring-indigo-200\n          focus:ring-opacity-50\n        ",
+          attrs: {
+            id: "riznos",
+            type: "number",
+            name: "riznos",
+            min: "0",
+            step: "0.01"
+          },
+          domProps: { value: _vm.redovni.iznos },
+          on: {
+            change: function($event) {
+              return _vm.calcSati()
+            },
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.redovni, "iznos", $event.target.value)
+            }
           }
-        }
-      })
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "mt-4" }, [
-      _c(
-        "label",
-        {
-          staticClass: "block font-medium trxt-sm text-gray-700",
-          attrs: { for: "rsati" }
-        },
-        [_vm._v("Sati 1.1. Za redovni rad")]
-      ),
+        })
+      ]),
       _vm._v(" "),
-      _c("input", {
-        directives: [
+      _c("div", { staticClass: "mt-4" }, [
+        _c(
+          "label",
           {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.redovni.sati,
-            expression: "redovni.sati"
-          }
-        ],
-        staticClass:
-          "block mt-1 w-32 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50",
-        attrs: {
-          id: "rsati",
-          type: "number",
-          name: "rsati",
-          min: "0",
-          step: "1"
-        },
-        domProps: { value: _vm.redovni.sati },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+            staticClass: "block font-medium trxt-sm text-gray-700",
+            attrs: { for: "rsati" }
+          },
+          [_vm._v("Sati 1.1. Za redovni rad")]
+        ),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.redovni.sati,
+              expression: "redovni.sati"
             }
-            _vm.$set(_vm.redovni, "sati", $event.target.value)
+          ],
+          staticClass:
+            "\n          block\n          mt-1\n          w-32\n          rounded-md\n          shadow-sm\n          border-gray-300\n          focus:border-indigo-300\n          focus:ring\n          focus:ring-indigo-200\n          focus:ring-opacity-50\n        ",
+          attrs: {
+            id: "rsati",
+            type: "number",
+            name: "rsati",
+            min: "0",
+            step: "1"
+          },
+          domProps: { value: _vm.redovni.sati },
+          on: {
+            change: function($event) {
+              return _vm.calcSati()
+            },
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.redovni, "sati", $event.target.value)
+            }
           }
-        }
-      })
+        })
+      ])
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "mt-4" }, [
@@ -28289,8 +28383,13 @@ var render = function() {
           }
         ],
         staticClass:
-          "block mt-1 w-32 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50",
-        attrs: { id: "sati", type: "time", name: "sati" },
+          "\n        block\n        mt-1\n        w-32\n        rounded-md\n        shadow-sm\n        border-gray-300\n        focus:border-indigo-300\n        focus:ring\n        focus:ring-indigo-200\n        focus:ring-opacity-50\n      ",
+        attrs: {
+          id: "sati",
+          type: "number",
+          name: "sati",
+          disabled: "disabled"
+        },
         domProps: { value: _vm.bs.sati },
         on: {
           input: function($event) {
@@ -28304,18 +28403,7 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "heading" }, [
-      _c("h2", { attrs: { id: "title" } }, [
-        _vm._v("I'm an bruto stimulacija component.")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

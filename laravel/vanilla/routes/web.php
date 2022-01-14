@@ -47,9 +47,6 @@ Route::view('/policy', 'policy')->name('policy');
 Route::get('/dashboard', function () {
   $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
   //dd($settings);
-  //$month = Auth::user()->month % 12 + 1;
-  //$year = (Auth::user()->month - $month + 1) / 12;
-  //return view('dashboard')->with(compact('settings', 'month', 'year'));
   return view('dashboard')->with(compact('settings'));
 })->middleware(['auth'])->name('dashboard');
 
@@ -225,3 +222,7 @@ Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo'])->name
 Route::get('/lotto/hl', [LottoController::class, 'hl']);
 Route::get('/lotto/eurojackpot', [LottoController::class, 'eurojackpot'])->name('eurojackpot');
 Route::resource('draws', DrawController::class);
+
+Route::get('/help/bruto', function () {
+  return view('help.bruto');
+});

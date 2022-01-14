@@ -31,7 +31,6 @@
           <p>You're super admin!</p>
           <div id="app">
             <example-component></example-component>
-            <bruto-stimulacija></bruto-stimulacija>
           </div>
           @else
           <p>You're logged in!</p>
