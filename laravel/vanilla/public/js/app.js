@@ -3822,6 +3822,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _form_InputWithLabel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./form/InputWithLabel */ "./resources/js/components/form/InputWithLabel.vue");
 //
 //
 //
@@ -3857,82 +3858,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    InputWithLabel: _form_InputWithLabel__WEBPACK_IMPORTED_MODULE_0__.default
+  },
   data: function data() {
     return {
       bs: {
@@ -4226,6 +4156,40 @@ vue__WEBPACK_IMPORTED_MODULE_1__.default.component('apexchart', (apexcharts__WEB
   mounted: function mounted() {
     console.log("Component mounted.");
   }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/form/InputWithLabel.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/form/InputWithLabel.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['labelText', 'inputID', 'inputStep', 'disabled', 'value']
 });
 
 /***/ }),
@@ -28081,6 +28045,45 @@ component.options.__file = "resources/js/components/KlinesComponent.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/form/InputWithLabel.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/form/InputWithLabel.vue ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _InputWithLabel_vue_vue_type_template_id_e42a2718___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./InputWithLabel.vue?vue&type=template&id=e42a2718& */ "./resources/js/components/form/InputWithLabel.vue?vue&type=template&id=e42a2718&");
+/* harmony import */ var _InputWithLabel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./InputWithLabel.vue?vue&type=script&lang=js& */ "./resources/js/components/form/InputWithLabel.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _InputWithLabel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _InputWithLabel_vue_vue_type_template_id_e42a2718___WEBPACK_IMPORTED_MODULE_0__.render,
+  _InputWithLabel_vue_vue_type_template_id_e42a2718___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/form/InputWithLabel.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/BrutoStimulacija.vue?vue&type=script&lang=js&":
 /*!*******************************************************************************!*\
   !*** ./resources/js/components/BrutoStimulacija.vue?vue&type=script&lang=js& ***!
@@ -28142,6 +28145,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_KlinesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./KlinesComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/KlinesComponent.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_KlinesComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/form/InputWithLabel.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/form/InputWithLabel.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_InputWithLabel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./InputWithLabel.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/form/InputWithLabel.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_InputWithLabel_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
 
 /***/ }),
 
@@ -28213,6 +28232,23 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/form/InputWithLabel.vue?vue&type=template&id=e42a2718&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/form/InputWithLabel.vue?vue&type=template&id=e42a2718& ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InputWithLabel_vue_vue_type_template_id_e42a2718___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InputWithLabel_vue_vue_type_template_id_e42a2718___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InputWithLabel_vue_vue_type_template_id_e42a2718___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./InputWithLabel.vue?vue&type=template&id=e42a2718& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/form/InputWithLabel.vue?vue&type=template&id=e42a2718&");
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/BrutoStimulacija.vue?vue&type=template&id=2c22eecd&":
 /*!****************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/BrutoStimulacija.vue?vue&type=template&id=2c22eecd& ***!
@@ -28229,179 +28265,95 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("h2", [_vm._v("Koliko prekovremenih sati je u Bruto stimulaciji.")]),
-    _vm._v(" "),
-    _c("div", { staticClass: "grid grid-cols-1 md:grid-cols-3" }, [
-      _c("div", { staticClass: "mt-4" }, [
-        _c(
-          "label",
-          {
-            staticClass: "block font-medium trxt-sm text-gray-700",
-            attrs: { for: "iznos" }
-          },
-          [_vm._v("Iznos 2.8. Stimulacija bruto")]
-        ),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
+  return _c(
+    "div",
+    [
+      _c("h2", [_vm._v("Koliko prekovremenih sati je u Bruto stimulaciji.")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "grid grid-cols-1 md:grid-cols-3" },
+        [
+          _c("InputWithLabel", {
+            attrs: {
+              labelText: "Iznos 2.8. Stimulacija bruto",
+              inputID: "brutoIznos",
+              inputStep: "0.01"
+            },
+            on: {
+              input: function($event) {
+                return _vm.calcSati()
+              }
+            },
+            model: {
               value: _vm.bs.iznos,
+              callback: function($$v) {
+                _vm.$set(_vm.bs, "iznos", $$v)
+              },
               expression: "bs.iznos"
             }
-          ],
-          staticClass:
-            "\n          block\n          mt-1\n          w-32\n          rounded-md\n          shadow-sm\n          border-gray-300\n          focus:border-indigo-300\n          focus:ring\n          focus:ring-indigo-200\n          focus:ring-opacity-50\n        ",
-          attrs: {
-            id: "iznos",
-            type: "number",
-            name: "iznos",
-            min: "0",
-            step: "0.01"
-          },
-          domProps: { value: _vm.bs.iznos },
-          on: {
-            change: function($event) {
-              return _vm.calcSati()
+          }),
+          _vm._v(" "),
+          _c("InputWithLabel", {
+            attrs: {
+              labelText: "Iznos 1.1. Za redovni rad",
+              inputID: "redovniIznos",
+              inputStep: "0.01"
             },
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+            on: {
+              input: function($event) {
+                return _vm.calcSati()
               }
-              _vm.$set(_vm.bs, "iznos", $event.target.value)
-            }
-          }
-        })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "mt-4" }, [
-        _c(
-          "label",
-          {
-            staticClass: "block font-medium trxt-sm text-gray-700",
-            attrs: { for: "riznos" }
-          },
-          [_vm._v("Iznos 1.1. Za redovni rad")]
-        ),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
+            },
+            model: {
               value: _vm.redovni.iznos,
+              callback: function($$v) {
+                _vm.$set(_vm.redovni, "iznos", $$v)
+              },
               expression: "redovni.iznos"
             }
-          ],
-          staticClass:
-            "\n          block\n          mt-1\n          w-32\n          rounded-md\n          shadow-sm\n          border-gray-300\n          focus:border-indigo-300\n          focus:ring\n          focus:ring-indigo-200\n          focus:ring-opacity-50\n        ",
-          attrs: {
-            id: "riznos",
-            type: "number",
-            name: "riznos",
-            min: "0",
-            step: "0.01"
-          },
-          domProps: { value: _vm.redovni.iznos },
-          on: {
-            change: function($event) {
-              return _vm.calcSati()
+          }),
+          _vm._v(" "),
+          _c("InputWithLabel", {
+            attrs: {
+              labelText: "Sati 1.1. Za redovni rad",
+              inputID: "redovniSati",
+              inputStep: "1"
             },
-            input: function($event) {
-              if ($event.target.composing) {
-                return
+            on: {
+              input: function($event) {
+                return _vm.calcSati()
               }
-              _vm.$set(_vm.redovni, "iznos", $event.target.value)
-            }
-          }
-        })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "mt-4" }, [
-        _c(
-          "label",
-          {
-            staticClass: "block font-medium trxt-sm text-gray-700",
-            attrs: { for: "rsati" }
-          },
-          [_vm._v("Sati 1.1. Za redovni rad")]
-        ),
-        _vm._v(" "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
+            },
+            model: {
               value: _vm.redovni.sati,
+              callback: function($$v) {
+                _vm.$set(_vm.redovni, "sati", $$v)
+              },
               expression: "redovni.sati"
             }
-          ],
-          staticClass:
-            "\n          block\n          mt-1\n          w-32\n          rounded-md\n          shadow-sm\n          border-gray-300\n          focus:border-indigo-300\n          focus:ring\n          focus:ring-indigo-200\n          focus:ring-opacity-50\n        ",
-          attrs: {
-            id: "rsati",
-            type: "number",
-            name: "rsati",
-            min: "0",
-            step: "1"
-          },
-          domProps: { value: _vm.redovni.sati },
-          on: {
-            change: function($event) {
-              return _vm.calcSati()
-            },
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.$set(_vm.redovni, "sati", $event.target.value)
-            }
-          }
-        })
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "mt-4" }, [
-      _c(
-        "label",
-        {
-          staticClass: "block font-medium trxt-sm text-gray-700",
-          attrs: { for: "sati" }
-        },
-        [_vm._v("Sati 2.8. Stimulacija bruto")]
+          })
+        ],
+        1
       ),
       _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.bs.sati,
-            expression: "bs.sati"
-          }
-        ],
-        staticClass:
-          "\n        block\n        mt-1\n        w-32\n        rounded-md\n        shadow-sm\n        border-gray-300\n        focus:border-indigo-300\n        focus:ring\n        focus:ring-indigo-200\n        focus:ring-opacity-50\n      ",
+      _c("InputWithLabel", {
         attrs: {
-          id: "sati",
-          type: "number",
-          name: "sati",
-          disabled: "disabled"
+          labelText: "Sati 2.8. Stimulacija bruto",
+          inputID: "brutoSati",
+          disabled: ""
         },
-        domProps: { value: _vm.bs.sati },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.$set(_vm.bs, "sati", $event.target.value)
-          }
+        model: {
+          value: _vm.bs.sati,
+          callback: function($$v) {
+            _vm.$set(_vm.bs, "sati", $$v)
+          },
+          expression: "bs.sati"
         }
       })
-    ])
-  ])
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -28703,6 +28655,59 @@ var render = function() {
       ],
       1
     )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/form/InputWithLabel.vue?vue&type=template&id=e42a2718&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/form/InputWithLabel.vue?vue&type=template&id=e42a2718& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "mt-4" }, [
+    _c(
+      "label",
+      {
+        staticClass: "block font-medium trxt-sm text-gray-700",
+        attrs: { for: _vm.inputID }
+      },
+      [_vm._v(_vm._s(_vm.labelText))]
+    ),
+    _vm._v(" "),
+    _c("input", {
+      staticClass:
+        "block mt-1 w-32 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50",
+      attrs: {
+        id: _vm.inputID,
+        type: "number",
+        name: _vm.inputID,
+        min: "0",
+        step: _vm.inputStep,
+        disabled: _vm.disabled
+      },
+      domProps: { value: _vm.value },
+      on: {
+        input: function($event) {
+          return _vm.$emit("input", $event.target.value)
+        }
+      }
+    })
   ])
 }
 var staticRenderFns = []
@@ -40830,7 +40835,8 @@ var map = {
 	"./components/BrutoStimulacija.vue": "./resources/js/components/BrutoStimulacija.vue",
 	"./components/ChatComponent.vue": "./resources/js/components/ChatComponent.vue",
 	"./components/ExampleComponent.vue": "./resources/js/components/ExampleComponent.vue",
-	"./components/KlinesComponent.vue": "./resources/js/components/KlinesComponent.vue"
+	"./components/KlinesComponent.vue": "./resources/js/components/KlinesComponent.vue",
+	"./components/form/InputWithLabel.vue": "./resources/js/components/form/InputWithLabel.vue"
 };
 
 
