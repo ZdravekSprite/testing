@@ -69,8 +69,5 @@ export default {
         ) / 100;
     },
   },
-  mounted() {
-    console.log("Component mounted.");
-  },
 };
 </script>

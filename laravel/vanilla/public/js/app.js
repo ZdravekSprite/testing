@@ -3891,9 +3891,6 @@ __webpack_require__.r(__webpack_exports__);
 
       this.bs.sati = Math.round(this.bs.iznos / 1.5 / this.redovni.iznos * this.redovni.sati * 100) / 100;
     }
-  },
-  mounted: function mounted() {
-    console.log("Component mounted.");
   }
 });
 
@@ -4116,6 +4113,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -4126,6 +4134,11 @@ __webpack_require__.r(__webpack_exports__);
       mjeseci: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
       godine: [2020, 2021, 2022, 2023]
     };
+  },
+  methods: {
+    onChange: function onChange(event) {
+      console.log(event.target.value);
+    }
   }
 });
 
@@ -4254,8 +4267,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['labelText', 'selectID', 'value']
+  props: ['labelText', 'selectID', 'value', 'options'],
+  computed: {
+    model: {
+      get: function get() {
+        return this.value;
+      },
+      set: function set(value) {
+        this.$emit('input', value);
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -28855,29 +28879,41 @@ var render = function() {
       { staticClass: "grid grid-cols-1 md:grid-cols-2" },
       [
         _c("SelectWithLabel", {
-          attrs: { labelText: "mjesec", selectID: "mjeseci" },
+          attrs: {
+            labelText: "mjesec",
+            selectID: "mjeseci",
+            options: _vm.mjeseci
+          },
           model: {
-            value: _vm.mjeseci,
+            value: _vm.mjesec.mjesec,
             callback: function($$v) {
-              _vm.mjeseci = $$v
+              _vm.$set(_vm.mjesec, "mjesec", $$v)
             },
-            expression: "mjeseci"
+            expression: "mjesec.mjesec"
           }
         }),
         _vm._v(" "),
         _c("SelectWithLabel", {
-          attrs: { labelText: "godina", selectID: "godine" },
+          attrs: {
+            labelText: "godina",
+            selectID: "godine",
+            options: _vm.godine
+          },
           model: {
-            value: _vm.godine,
+            value: _vm.mjesec.godina,
             callback: function($$v) {
-              _vm.godine = $$v
+              _vm.$set(_vm.mjesec, "godina", $$v)
             },
-            expression: "godine"
+            expression: "mjesec.godina"
           }
         })
       ],
       1
-    )
+    ),
+    _vm._v(" "),
+    _c("div", [
+      _vm._v(_vm._s(_vm.mjesec.godina) + " " + _vm._s(_vm.mjesec.mjesec))
+    ])
   ])
 }
 var staticRenderFns = []
@@ -29012,11 +29048,34 @@ var render = function() {
     _c(
       "select",
       {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.model,
+            expression: "model"
+          }
+        ],
         staticClass:
           "block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50",
-        attrs: { id: _vm.selectID, name: _vm.selectID }
+        attrs: { id: _vm.selectID, name: _vm.selectID },
+        on: {
+          change: function($event) {
+            var $$selectedVal = Array.prototype.filter
+              .call($event.target.options, function(o) {
+                return o.selected
+              })
+              .map(function(o) {
+                var val = "_value" in o ? o._value : o.value
+                return val
+              })
+            _vm.model = $event.target.multiple
+              ? $$selectedVal
+              : $$selectedVal[0]
+          }
+        }
       },
-      _vm._l(_vm.value, function(option) {
+      _vm._l(_vm.options, function(option) {
         return _c("option", { key: option, domProps: { value: option } }, [
           _vm._v(_vm._s(option))
         ])
