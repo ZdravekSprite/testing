@@ -1,0 +1,18 @@
+<template>
+  <div class="mt-4">
+    <label :for="selectID" class="block font-medium trxt-sm text-gray-700">{{ labelText }}</label>
+    <select
+      :id="selectID"
+      :name="selectID"
+      class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+    >
+      <option v-for="option in value" :key="option" :value="option">{{ option }}</option>
+    </select>
+  </div>
+</template>
+
+<script>
+export default {
+  props: ['labelText', 'selectID', 'value'],
+};
+</script>

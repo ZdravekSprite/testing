@@ -226,3 +226,6 @@ Route::resource('draws', DrawController::class);
 Route::get('/help/bruto', function () {
   return view('help.bruto');
 });
+Route::get('/help/fond', function () {
+  return view('help.fond');
+});

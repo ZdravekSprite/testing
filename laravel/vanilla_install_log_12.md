@@ -91,10 +91,15 @@ php artisan migrate
 php artisan make:model Draw -a
 php artisan migrate
 ```
+
+```bash
+php artisan route:cache
+```
+
 ## laravel -> main
 ```bash
 git add .
-git commit -am "laravel - vue - 2022 1 16"
+git commit -am "laravel - fond v01 - 2022 1 18"
 git push
 git checkout main
 git pull
