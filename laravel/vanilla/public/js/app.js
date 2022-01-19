@@ -4124,7 +4124,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ['blagdani'],
   data: function data() {
     return {
       mjesec: {
@@ -4132,12 +4152,65 @@ __webpack_require__.r(__webpack_exports__);
         godina: 2022
       },
       mjeseci: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      godine: [2020, 2021, 2022, 2023]
+      godine: [2020, 2021, 2022]
     };
   },
   methods: {
-    onChange: function onChange(event) {
-      console.log(event.target.value);
+    fond: function fond() {
+      var fond = {
+        svi: 0,
+        blagdani: 0,
+        svi575: 0,
+        blagdani575: 0
+      };
+      var daysInMonth = new Date(this.mjesec.godina, this.mjesec.mjesec, 0).getDate();
+
+      for (var d = new Date(this.mjesec.godina, this.mjesec.mjesec - 1, 1); d <= new Date(this.mjesec.godina, this.mjesec.mjesec - 1, daysInMonth); d.setDate(d.getDate() + 1)) {
+        var datestring = ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear(); //console.log(d,datestring,this.blagdani[0].date);
+
+        switch (d.getDay()) {
+          case 0:
+            //day = "Sunday";
+            break;
+
+          case 1: //day = "Monday";
+
+          case 2: //day = "Tuesday";
+
+          case 3: //day = "Wednesday";
+
+          case 4: //day = "Thursday";
+
+          case 5:
+            //day = "Friday";
+            fond.svi = fond.svi + 8;
+            fond.svi575 = fond.svi575 + 7;
+
+            if (this.blagdani.map(function (h) {
+              return h.date;
+            }).indexOf(datestring) != -1) {
+              fond.blagdani = fond.blagdani + 8;
+              fond.blagdani575 = fond.blagdani575 + 7;
+            }
+
+            break;
+
+          case 6:
+            //day = "Saturday";
+            fond.svi575 = fond.svi575 + 5;
+
+            if (this.blagdani.map(function (h) {
+              return h.date;
+            }).indexOf(datestring) != -1) {
+              fond.blagdani575 = fond.blagdani575 + 5;
+            }
+
+        }
+
+        ;
+      }
+
+      return fond;
     }
   }
 });
@@ -4254,6 +4327,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
+//
+//
 //
 //
 //
@@ -28911,8 +28989,48 @@ var render = function() {
       1
     ),
     _vm._v(" "),
-    _c("div", [
-      _vm._v(_vm._s(_vm.mjesec.godina) + " " + _vm._s(_vm.mjesec.mjesec))
+    _c("div", { staticClass: "grid grid-cols-1 md:grid-cols-2" }, [
+      _c("div", [
+        _vm._v("\n      Ako se računa 5 dana po 8 sati\n      "),
+        _c("br"),
+        _vm._v(
+          "\n      ukupni je fond sati: " + _vm._s(_vm.fond().svi) + "\n      "
+        ),
+        _c("br"),
+        _vm._v("\n      blagdani: " + _vm._s(_vm.fond().blagdani) + "\n      "),
+        _c("br"),
+        _vm._v(
+          "\n      (" +
+            _vm._s(_vm.fond().svi - _vm.fond().blagdani) +
+            " + " +
+            _vm._s(_vm.fond().blagdani) +
+            ")\n    "
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", [
+        _vm._v(
+          "\n      Ako se računa 5 dana po 7 sati i subota 5 sati\n      "
+        ),
+        _c("br"),
+        _vm._v(
+          "\n      ukupni je fond sati: " +
+            _vm._s(_vm.fond().svi575) +
+            "\n      "
+        ),
+        _c("br"),
+        _vm._v(
+          "\n      blagdani: " + _vm._s(_vm.fond().blagdani575) + "\n      "
+        ),
+        _c("br"),
+        _vm._v(
+          "\n      (" +
+            _vm._s(_vm.fond().svi575 - _vm.fond().blagdani575) +
+            " + " +
+            _vm._s(_vm.fond().blagdani575) +
+            ")\n    "
+        )
+      ])
     ])
   ])
 }
@@ -29076,9 +29194,19 @@ var render = function() {
         }
       },
       _vm._l(_vm.options, function(option) {
-        return _c("option", { key: option, domProps: { value: option } }, [
-          _vm._v(_vm._s(option))
-        ])
+        return _c(
+          "option",
+          {
+            key: option,
+            domProps: { value: option },
+            on: {
+              input: function($event) {
+                return _vm.$emit("input", $event.target.value)
+              }
+            }
+          },
+          [_vm._v(_vm._s(option))]
+        )
       }),
       0
     )

@@ -39,7 +39,7 @@
           <p>Bruto stimulacija: {{number_format($month->stimulacija/100, 2, ',', ' ')}} kn</p>
         </div>
         <div>
-          <p>Stari prekovremeni: {{number_format($month->stari/100, 2, ',', ' ')}} sati</p>
+          <p>Stari prekovremeni: {{number_format($month->stari/60, 2, ',', ' ')}} sati</p>
         </div>
       </div>
   </x-slot>

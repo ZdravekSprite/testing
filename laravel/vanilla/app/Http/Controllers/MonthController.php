@@ -809,9 +809,9 @@ class MonthController extends Controller
     $bruto = $month->bruto ?? $month->last('bruto');
     $month->bruto = $bruto;
     $data['bruto'] = $bruto;
-    $perHour = $bruto / 100 / $hoursNorm->All;
+    $perHour = $bruto / 100 / $hoursNorm->All_580;
     $data['perHour'] = $perHour;
-    $hoursWorkNorm = $hoursNorm->All;
+    $hoursWorkNorm = $hoursNorm->All_580;
     $prijevoz = $month->prijevoz ?? $month->last('prijevoz');
     $month->prijevoz = $prijevoz;
     $data['prijevoz'] = $prijevoz;
@@ -866,9 +866,9 @@ class MonthController extends Controller
     $data['1.2.kn'] = number_format($kn1_2, 2, ',', '.');
 
     // 2.2. sati privremene spriječenosti za rad zbog bolesti
-    $h2_2 = $hoursNorm->Sick;
+    $h2_2 = $hoursNorm->Sick_580;
     $data['2.2.h'] = number_format($h2_2, 2, ',', '.');
-    if ($hoursNorm->Sick && !$month->bolovanje) {
+    if ($hoursNorm->Sick_580 && !$month->bolovanje) {
       $ms = Month::where('user_id', '=', Auth::user()->id)->where('month', '>=', $month->month - 6)->where('month', '<', $month->month)->get();
       //dd($ms);
       if (count($ms)) {
@@ -891,7 +891,7 @@ class MonthController extends Controller
       }
     } else {
       $kn2_2 = $month->bolovanje / 100;
-      $text22 = $hoursNorm->Sick ? '(' . number_format($kn2_2 / $hoursNorm->Sick / $perHour * 100, 2, ',', '.') . '%)' : '';
+      $text22 = $hoursNorm->Sick_580 ? '(' . number_format($kn2_2 / $hoursNorm->Sick_580 / $perHour * 100, 2, ',', '.') . '%)' : '';
       $data['2.2.t'] = '';
       $data['2.2.kn'] = number_format($kn2_2, 2, ',', '.') . $text22;
     }

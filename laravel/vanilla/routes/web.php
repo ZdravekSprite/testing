@@ -22,7 +22,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Day;
+use App\Models\Holiday;
 use App\Models\Settings;
 
 /*
@@ -142,6 +142,10 @@ Route::get('seed', function () {
   Artisan::call('db:seed --class=RoleSeeder');
   return 'php artisan db:seed --class=RoleSeeder success.';
 })->middleware(['auth'])->name('seed');
+Route::get('reset', function () {
+  Artisan::call('php artisan route:cache');
+  return 'php artisan db:seed --class=RoleSeeder success.';
+})->middleware(['auth'])->name('seed');
 
 Route::get('convert', function () {
   /*
@@ -227,5 +231,6 @@ Route::get('/help/bruto', function () {
   return view('help.bruto');
 });
 Route::get('/help/fond', function () {
-  return view('help.fond');
+  $holidays = Holiday::orderBy('date', 'desc')->get();
+  return view('help.fond')->with('blagdani', $holidays);
 });
