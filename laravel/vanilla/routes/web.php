@@ -143,9 +143,9 @@ Route::get('seed', function () {
   return 'php artisan db:seed --class=RoleSeeder success.';
 })->middleware(['auth'])->name('seed');
 Route::get('reset', function () {
-  Artisan::call('php artisan route:cache');
-  return 'php artisan db:seed --class=RoleSeeder success.';
-})->middleware(['auth'])->name('seed');
+  Artisan::call('route:cache');
+  return 'reset success.';
+})->middleware(['auth'])->name('reset');
 
 Route::get('convert', function () {
   /*
@@ -227,10 +227,13 @@ Route::get('/lotto/hl', [LottoController::class, 'hl']);
 Route::get('/lotto/eurojackpot', [LottoController::class, 'eurojackpot'])->name('eurojackpot');
 Route::resource('draws', DrawController::class);
 
+Route::get('/help', function () {
+  return view('help.index');
+})->name('help');
 Route::get('/help/bruto', function () {
   return view('help.bruto');
-});
+})->name('bruto');
 Route::get('/help/fond', function () {
   $holidays = Holiday::orderBy('date', 'desc')->get();
   return view('help.fond')->with('blagdani', $holidays);
-});
+})->name('fond');
