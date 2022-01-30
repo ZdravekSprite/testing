@@ -298,6 +298,9 @@ class TestBinance extends Controller
     //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.0108, "buy_matic02");
     //$buys[] = (new $this)->buy("SOLBUSD", 0.15, 70.28, "buy_sol01");
     //$buys[] = (new $this)->buy("SOLBUSD", 0.316, 31.687, "buy_sol02");
+    //$buys[] = (new $this)->buy("LUNABUSD", 0.19, 52.64, "buy_luna01");
+    //$buys[] = (new $this)->buy("LUNABUSD", 0.3, 50.00, "buy_luna02");
+    //$buys[] = (new $this)->buy("LUNABUSD", 0.41, 48.79, "buy_luna03");
     //$buys[] = (new $this)->buy("DOTBUSD", 0.19, 52.64, "buy_dot01");
     //$buys[] = (new $this)->buy("DOTBUSD", 0.19, 53.00, "buy_dot02");
     //$buys[] = (new $this)->buy("EURBUSD", 8.9, 1.124, "buy_eur01");
