@@ -48,7 +48,11 @@
                 <td>{{$m->stari ? number_format($m->stari/60, 2, ',', '.') : 0}}</td>
                 <td>{{$m->nagrada ? number_format($m->nagrada/100, 2, ',', '') : 0}}</td>
                 <td class="hidden md:table-cell">{{$m->prijevoz ? number_format($m->prijevoz/100, 2, ',', '') : number_format($m->last('prijevoz')/100, 2, ',', '')}}</td>
+                @hasrole(env('FIRM2'))
                 <td class="hidden md:table-cell">{{$m->prehrana ? number_format($m->prehrana/100, 2, ',', '') : number_format($m->last('prehrana')/100, 2, ',', '')}}</td>
+                @else
+                <td class="hidden md:table-cell">{{$m->prehrana ? number_format($m->prehrana/100, 2, ',', '') : 0}}</td>
+                @endhasrole
                 <td>{{$m->regres ? number_format($m->regres/100, 2, ',', '') : 0}}</td>
                 <td>{{$m->bozicnica ? number_format($m->bozicnica/100, 2, ',', '') : 0}}</td>
                 <td><a class="float-left" href="{{ route('months.edit', ['month' => $m->slug()]) }}" title="Izmjeni">
