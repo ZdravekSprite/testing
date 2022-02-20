@@ -120,6 +120,11 @@
                   {{ __('allMyTrades') }}
                 </x-nav-link>
               </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('bExchange')" :active="request()->routeIs('bExchange')">
+                  {{ __('bExchange') }}
+                </x-nav-link>
+              </div>
             </x-slot>
           </x-dropdown>
         </div>
