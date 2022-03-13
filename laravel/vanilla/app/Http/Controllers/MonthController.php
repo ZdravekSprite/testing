@@ -841,11 +841,11 @@ class MonthController extends Controller
     $kn1_3 = round($h1_3 * $perHour * 1.5, 2);
     $data['1.3.kn'] = number_format($kn1_3, 2, ',', '.');
 
-    // 1.4 sati redovitog rada u dane državnog praznika/ blagdana + noć
-    $h1_4 = round($hoursNorm->minHolidayNight / 60, 2);
-    $data['1.4.h'] = number_format($h1_4, 1, ',', '.');
-    $kn1_4 = round($h1_4 * $perHour * 1.85, 2);
-    $data['1.4.kn'] = number_format($kn1_4, 2, ',', '.');
+    // 1.10 sati redovitog rada drž.praznikom/blagdanom + noć
+    $h1_10 = round($hoursNorm->minHolidayNight / 60, 2);
+    $data['1.10.h'] = number_format($h1_10, 1, ',', '.');
+    $kn1_10 = round($h1_10 * $perHour * 1.8, 2);
+    $data['1.10.kn'] = number_format($kn1_10, 2, ',', '.');
 
     // 1.7 sati redovnog rada nedeljom
     $h1_7 = ($hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;
@@ -860,7 +860,7 @@ class MonthController extends Controller
     $data['1.8.kn'] = number_format($kn1_8, 2, ',', '.');
 
     // 1.2. sati redovnog rada noću
-    $h1_2 = ($hoursNorm->minNight / 60) - $h1_4 - $h1_8;
+    $h1_2 = ($hoursNorm->minNight / 60) - $h1_10 - $h1_8;
     $data['1.2.h'] = number_format($h1_2, 1, ',', '.');
     $kn1_2 = round($h1_2 * $perHour * 1.35, 2);
     $data['1.2.kn'] = number_format($kn1_2, 2, ',', '.');
@@ -900,7 +900,7 @@ class MonthController extends Controller
     $kn2 = $kn2_2;
 
     // 1.1. sati redovnog rada
-    $plan = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_4 - $h1_7 - $h1_8 - $h2_2;
+    $plan = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_10 - $h1_7 - $h1_8 - $h2_2;
     $redovni = ($hoursNorm->min - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minNight + $hoursNorm->minHolidayNight + $hoursNorm->minSundayNight) / 60;
     //dd($month->hoursNorm(),$month->data(),$plan,$redovni);
     //$h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2 : ($hoursNorm->min - $hoursNorm->minNight - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;
@@ -910,8 +910,8 @@ class MonthController extends Controller
     $kn1_1 = round($h1_1 * $perHour, 2);
     $data['1.1.kn'] = number_format($kn1_1, 2, ',', '.');
 
-    $h1 = $h1_1 + $h1_2 + $h1_3 + $h1_4 + $h1_7 + $h1_8;
-    $kn1 = $kn1_1 + $kn1_2 + $kn1_3 + $kn1_4 + $kn1_7 + $kn1_8;
+    $h1 = $h1_1 + $h1_2 + $h1_3 + $h1_10 + $h1_7 + $h1_8;
+    $kn1 = $kn1_1 + $kn1_2 + $kn1_3 + $kn1_10 + $kn1_7 + $kn1_8;
 
     $overWork = $hoursNorm->min / 60 - $hoursWorkNorm;
     $data['overWork'] = number_format($overWork, 2, ',', '.');
