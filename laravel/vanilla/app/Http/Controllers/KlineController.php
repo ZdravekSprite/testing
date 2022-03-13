@@ -174,7 +174,7 @@ class KlineController extends Controller
       $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000 * 600000))->get();
     }
     //dd($trades);
-    $symbols_list = ['ETH', 'BNB', 'SOL', 'MATIC', 'LUNA', 'ADA', 'DOT', 'FTT'];
+    $symbols_list = ['ETH', 'BNB', 'SOL', 'MATIC', 'LUNA', 'ADA', 'DOT', 'FTT', 'XMR'];
     //$symbols_bnb_list = ['DAR', 'QI', 'CITY'];
     //$symbols_usdt_list = ['SANTOS'];
     $symbols = [
