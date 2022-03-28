@@ -116,7 +116,7 @@ git push
 ## binance -> main
 ```bash
 git add .
-git commit -am "binance 2022 03 13"
+git commit -am "binance 2022 03 28"
 git push
 git checkout main
 git pull

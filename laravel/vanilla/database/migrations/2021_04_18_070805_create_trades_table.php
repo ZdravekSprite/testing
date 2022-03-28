@@ -15,7 +15,7 @@ class CreateTradesTable extends Migration
   {
     Schema::create('trades', function (Blueprint $table) {
       $table->id();
-      $table->unsignedBigInteger('user_id');
+      $table->foreignId('user_id')->constrained();
       $table->string('symbol');
       $table->bigInteger('binanceId');
       $table->bigInteger('orderId');
@@ -30,7 +30,6 @@ class CreateTradesTable extends Migration
       $table->boolean('isMaker');
       $table->boolean('isBestMatch');
       $table->timestamps();
-      $table->foreign('user_id')->references('id')->on('users');
     });
   }
 
