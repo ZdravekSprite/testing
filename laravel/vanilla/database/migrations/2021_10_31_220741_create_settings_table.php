@@ -15,7 +15,7 @@ class CreateSettingsTable extends Migration
   {
     Schema::create('settings', function (Blueprint $table) {
       $table->id();
-      $table->unsignedBigInteger('user_id');
+      $table->foreignId('user_id')->constrained();
       $table->time('start1')->nullable();
       $table->time('end1')->nullable();
       $table->time('start2')->nullable();
@@ -26,7 +26,6 @@ class CreateSettingsTable extends Migration
       $table->string('BINANCE_API_KEY')->nullable();
       $table->string('BINANCE_API_SECRET')->nullable();
       $table->timestamps();
-      $table->foreign('user_id')->references('id')->on('users');
     });
   }
 

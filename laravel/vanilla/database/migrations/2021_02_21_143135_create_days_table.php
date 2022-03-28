@@ -16,14 +16,13 @@ class CreateDaysTable extends Migration
     Schema::create('days', function (Blueprint $table) {
       $table->id();
       $table->date('date');
-      $table->unsignedBigInteger('user_id');
+      $table->foreignId('user_id')->constrained();
       $table->boolean('state')->default(0);
       $table->time('night')->nullable();
       $table->time('start')->nullable();
       $table->time('end')->nullable();
       $table->timestamps();
       $table->unique(['user_id', 'date']);
-      $table->foreign('user_id')->references('id')->on('users');
     });
   }
 

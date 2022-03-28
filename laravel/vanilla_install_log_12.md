@@ -99,7 +99,7 @@ php artisan route:cache
 ## laravel -> main
 ```bash
 git add .
-git commit -am "laravel - 2022 03 13"
+git commit -am "laravel - 2022 03 28"
 git push
 git checkout main
 git pull
