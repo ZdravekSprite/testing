@@ -16,7 +16,7 @@ class CreateMonthsTable extends Migration
     Schema::create('months', function (Blueprint $table) {
       $table->id();
       $table->smallInteger('month');
-      $table->unsignedBigInteger('user_id');
+      $table->foreignId('user_id')->constrained();
       $table->mediumInteger('bruto')->nullable();
       $table->tinyInteger('minuli')->nullable();
       $table->mediumInteger('odbitak')->nullable();
@@ -36,7 +36,6 @@ class CreateMonthsTable extends Migration
       $table->mediumInteger('kredit')->nullable();
       $table->timestamps();
       $table->unique(['user_id', 'month']);
-      $table->foreign('user_id')->references('id')->on('users');
     });
   }
 
