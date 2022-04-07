@@ -74,7 +74,7 @@
             <th></th>
             <th></th>
             <th></th>
-            <th>{{ number_format($month->hoursNorm()->min/60, 2, ',', '.') }}</th>
+            <th>{{ number_format($month->data()->min/60, 2, ',', '.') }}</th>
           </tr>
         </thead>
       </table>

@@ -27,7 +27,7 @@ class MonthController extends Controller
     if (!$month) {
       return redirect(route('months.create'))->with('warning', 'Treba napraviti bar jedan mjesec');
     }
-    $hoursNorm = $month->hoursNorm();
+    $hoursNorm = $month->data();
     $bruto = $month->bruto ?? $month->last('bruto');
     $perHour = round(($bruto / 100 / $hoursNorm->All), 2);
     $data['perHour'] = $perHour;
@@ -43,7 +43,7 @@ class MonthController extends Controller
       $settings->end3 = '06:00';
     }
 
-    return view('months.index')->with(compact('months', 'month', 'data', 'days', 'settings'));
+    return view('months.index')->with(compact('months', 'month', 'data', 'days', 'settings', 'hoursNorm'));
   }
 
   /**
@@ -56,35 +56,6 @@ class MonthController extends Controller
     $month = new Month;
     $last_month = Month::orderBy('month', 'desc')->where('user_id', '=', Auth::user()->id)->first();
     $month->user_id = Auth::user()->id;
-    /*
-    if (!$last_month) {
-      $bruto = $month->bruto ?? 530000;
-      $prijevoz = $month->prijevoz ?? 36000;
-      $prehrana = $month->prehrana ?? 0;
-      $minuli = $month->minuli ?? 0;
-      $odbitak = $month->odbitak ?? 400000;
-      $prirez = $month->prirez ?? 1800;
-      $sindikat = $month->sindikat;
-      $month->kredit = $month->kredit ?? 0;
-    } else {
-      $bruto = $month->bruto ?? $last_month->last('bruto') ?? 530000;
-      $prijevoz = $month->prijevoz ?? $last_month->last('prijevoz') ?? 36000;
-      $prehrana = $month->prehrana ?? $last_month->last('prehrana') ?? 0;
-      $minuli = $month->minuli ?? $last_month->last('minuli') ?? 0;
-      $odbitak = $month->odbitak ?? $last_month->last('odbitak') ?? 400000;
-      $prirez = $month->prirez ?? $last_month->last('prirez') ?? 1800;
-      $sindikat = $month->sindikat ?? $last_month->last('sindikat') ?? false;
-      $kredit = $month->kredit ?? $last_month->last('kredit') ?? 0;
-    }
-    $month->bruto = $bruto;
-    $month->prijevoz = $prijevoz;
-    $month->prehrana = $prehrana;
-    $month->minuli = $minuli;
-    $month->odbitak = $odbitak;
-    $month->prirez = $prirez;
-    $month->sindikat = $sindikat;
-    $month->kredit = $kredit;
-    */
 
     $month->bruto = $last_month ? $last_month->last('bruto') : 530000;
     $month->prijevoz = $last_month ? $last_month->last('prijevoz') : 36000;
@@ -144,6 +115,7 @@ class MonthController extends Controller
     if (!$month) {
       return redirect(route('months.index'))->with('warning', 'Nema tog mjeseca');
     }
+    $hoursNorm = $month->data();
     $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
     if (!$settings) {
       $settings = new Settings();
@@ -169,7 +141,7 @@ class MonthController extends Controller
     $data['-'] = route('months.show', ['month' => $month->prev()]);
     $data['+'] = route('months.show', ['month' => $month->next()]);
     //dd($month,$days,$data);
-    return view('months.show')->with(compact('month', 'days', 'data', 'settings', 'firm'));
+    return view('months.show')->with(compact('month', 'days', 'data', 'settings', 'firm', 'hoursNorm'));
   }
 
   public function platna_lista(Request $request)
@@ -310,7 +282,7 @@ class MonthController extends Controller
     $data['III.od'] = $from->format('d');
     $data['III.do'] = $to->format('d');
 
-    $hoursNorm = $month->hoursNorm();
+    $hoursNorm = $month->data();
     $bruto = $month->bruto ?? $month->last('bruto');
     $month->bruto = $bruto;
     $data['bruto'] = $bruto;
@@ -368,7 +340,7 @@ class MonthController extends Controller
       if (count($ms)) {
         $mjeseci = [];
         foreach ($ms as $key => $value) {
-          $mHoursNorm = $value->hoursNorm();
+          $mHoursNorm = $value->data();
           $mBruto = $value->bruto ?? $value->last('bruto');
           $mPerHour = round(($mBruto / 100 / $mHoursNorm->All), 2);
           $mjeseci[$key] = $mPerHour;
@@ -881,7 +853,7 @@ class MonthController extends Controller
       if (count($ms)) {
         $mjeseci = [];
         foreach ($ms as $key => $value) {
-          $mHoursNorm = $value->hoursNorm();
+          $mHoursNorm = $value->data();
           $mBruto = $value->bruto ?? $value->last('bruto');
           $mPerHour = round(($mBruto / 100 / $mHoursNorm->All), 2);
           $mjeseci[$key] = $mPerHour;
@@ -906,22 +878,25 @@ class MonthController extends Controller
     $h2 = $h2_2;
     $kn2 = $kn2_2;
 
+    $overWork = $hoursNorm->min / 60 - $hoursWorkNorm + $hoursNorm->Sick_580;
+    $data['overWork'] = number_format($overWork, 2, ',', '.');
+
     // 1.1. sati redovnog rada
-    $plan = $hoursWorkNorm - $hoursHoliNorm - $h1_2 - $h1_3 - $h1_10 - $h1_7 - $h1_8 - $h1_x - $h2_2;
+    // bi trebao biti
+    $plan_pravo = $hoursWorkNorm - $hoursHoliNorm - $h1_2 - $h1_3 - $h1_10 - $h1_7 - $h1_8 - $h1_x - $h2_2;
+    // krivo racunaje
+    $plan_krivo = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_10 - $h1_7 - $h1_8 - $h1_x - $h2_2;
     $redovni = ($hoursNorm->min - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minSundayHoliday - $hoursNorm->minNight + $hoursNorm->minHolidayNight + $hoursNorm->minSundayNight + $hoursNorm->minSundayHolidayNight) / 60;
     //dd($month->hoursNorm(),$month->data(),$plan,$redovni);
     //$h1_1 = $hoursNorm->min / 60 > $hoursWorkNorm ? $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2 : ($hoursNorm->min - $hoursNorm->minNight - $hoursNorm->minHoliday - $hoursNorm->minSunday - $hoursNorm->minSundayNight) / 60;
     //$h1_1 = $hoursWorkNorm - $h1_2 - $h1_3 - $h1_7 - $h1_8 - $h2_2;
-    $h1_1 = $redovni > $plan ? $plan : $redovni;
-    $data['1.1.h'] = number_format($h1_1, 1, ',', '.');
+    $h1_1 = $redovni > $plan_krivo ? $plan_krivo : $redovni;
+    $data['1.1.h'] = number_format($h1_1, 1, ',', '.') . ' (' . number_format($overWork, 2, ',', '.') . ')';
     $kn1_1 = round($h1_1 * $perHour, 2);
     $data['1.1.kn'] = number_format($kn1_1, 2, ',', '.');
 
     $h1 = $h1_1 + $h1_2 + $h1_3 + $h1_10 + $h1_7 + $h1_8 + $h1_x;
     $kn1 = $kn1_1 + $kn1_2 + $kn1_3 + $kn1_10 + $kn1_7 + $kn1_8 + $kn1_x;
-
-    $overWork = $hoursNorm->min / 60 - $hoursWorkNorm;
-    $data['overWork'] = number_format($overWork, 2, ',', '.');
 
     // 3. PROPISANI ILI UGOVORENI DODACI NA PLAĆU RADNIKA I NOVČANI IZNOSI PO TOJ OSNOVI
     $kn3 = round($kn1 * $minuli / 1000, 2);

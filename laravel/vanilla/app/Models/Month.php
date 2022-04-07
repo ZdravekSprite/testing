@@ -134,114 +134,6 @@ class Month extends Model
   /**
    * Get the hours Norm of month.
    */
-  public function hoursNorm()
-  {
-    $firstDate = '01.' . $this->slug();
-    $from = CarbonImmutable::createFromFormat('d.m.Y', $firstDate)->firstOfMonth();
-    $firstFrom = $this->user->zaposlen > $from ? Carbon::parse($this->user->zaposlen) : $from;
-    $hoursNormAll = 0;
-    $firstHoursNormAll = 0;
-    $hoursNormHoli = 0;
-    $firstHoursNormHoli = 0;
-
-    $hoursNormGO = 0;
-    $hoursNormDopust = 0;
-    $hoursNormSick = 0;
-
-    $minWork = 0;
-    $minWorkNight = 0;
-    $minWorkHoli = 0;
-    $minWorkHoliNight = 0;
-    $minWorkSunday = 0;
-    $minWorkSundayNight = 0;
-
-    //dd($this->days());
-    $days_night = [];
-    foreach ($this->days() as $d) {
-      $day_minWork = $d->minWork();
-      $minWork += $day_minWork;
-      $day_minWorkNight = $d->minWorkNight();
-      $minWorkNight += $day_minWorkNight;
-      $days_night[] =
-        ($d->night ? $d->night->format('H:i') : '0:00') . ' ' .
-        ($d->start ? $d->start->format('H:i') : '0:00') . ' ' .
-        ($d->end ? $d->end->format('H:i') : '0:00') . ' ' .
-        $day_minWorkNight;
-
-      $dayOfWeek = $d->date->dayOfWeek;
-      $norm = User::where('id', '=', Auth::user()->id)->first()->hasAnyRole(env('FIRM1'));
-      switch ($dayOfWeek) {
-        case 0:
-          $def_h = 0;
-          $minWorkSunday += $day_minWork;
-          $minWorkSundayNight += $day_minWorkNight;
-          break;
-        case 6:
-          if ($norm) {
-            $def_h = 5;
-          } else {
-            $def_h = 0;
-          }
-          break;
-        default:
-          if ($norm) {
-            $def_h = 7;
-          } else {
-            $def_h = 8;
-          }
-          break;
-      }
-      $hoursNormAll += $def_h;
-      //dd($firstFrom,$d->date);
-      $firstHoursNormAll += $firstFrom > $d->date ? 0 : $def_h;
-
-      if ($d->holiday && $d->state != 4) {
-        $hoursNormHoli += $def_h;
-        $firstHoursNormHoli += $firstFrom > $d->date ? 0 : $def_h;
-        $minWorkHoli += $day_minWork;
-        $minWorkHoliNight += $day_minWorkNight;
-      }
-
-      switch ($d->state) {
-        case 2:
-          $hoursNormGO += $def_h;
-          break;
-        case 3:
-          $hoursNormDopust += $def_h;
-          break;
-        case 4:
-          $hoursNormSick += $def_h;
-          break;
-        default:
-          break;
-      }
-    }
-    //dd($days_night);
-
-    $hoursNormWork = ($from > $firstFrom ? $hoursNormAll - $hoursNormHoli : $firstHoursNormAll - $firstHoursNormHoli) - $hoursNormSick - $hoursNormGO - $hoursNormDopust;
-
-    $hoursNorm = (object) [
-      'All' => $hoursNormAll,
-      'Holiday' => $hoursNormHoli,
-      'firstAll' => $firstHoursNormAll,
-      'firstHoliday' => $firstHoursNormHoli,
-      'GO' => $hoursNormGO,
-      'Dopust' => $hoursNormDopust,
-      'Sick' => $hoursNormSick,
-      'Work' => $hoursNormWork,
-      'min' => $minWork,
-      'minNight' => $minWorkNight,
-      'minSunday' => $minWorkSunday,
-      'minSundayNight' => $minWorkSundayNight,
-      'minHoliday' => $minWorkHoli,
-      'minHolidayNight' => $minWorkHoliNight,
-    ];
-    return $hoursNorm;
-  }
-
-  /**
-   * Get the hours Norm of month.
-   */
   public function data()
   {
     $firstDate = '01.' . $this->slug();
@@ -410,14 +302,14 @@ class Month extends Model
     $hours580Work = ($from > $firstFrom ? $hours580All - $hours580Holi : $firstHours580All - $firstHours580Holi) - $hours580Sick - $hours580GO - $hours580Dopust;
 
     $data = (object) [
-/*      'All' => $hoursNormAll,
+      'All' => $hoursNormAll,
       'Holiday' => $hoursNormHoli,
       'firstAll' => $firstHoursNormAll,
       'firstHoliday' => $firstHoursNormHoli,
       'GO' => $hoursNormGO,
       'Dopust' => $hoursNormDopust,
       'Sick' => $hoursNormSick,
-      'Work' => $hoursNormWork,*/
+      'Work' => $hoursNormWork,
       'All_575' => $hours575All,
       'Holiday_575' => $hours575Holi,
       'firstAll_575' => $firstHours575All,

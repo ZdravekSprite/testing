@@ -13,13 +13,13 @@
                 </a>
               </th>
               <th>
-                All: {{$month->hoursNorm()->All}}
-                Praznik: {{$month->hoursNorm()->Holiday}}
-                GO: {{$month->hoursNorm()->GO}}
-                Dopust: {{$month->hoursNorm()->Dopust}}
-                Bolovanje: {{$month->hoursNorm()->Sick}}
+                All: {{$hoursNorm->All}}
+                Praznik: {{$hoursNorm->Holiday}}
+                GO: {{$hoursNorm->GO}}
+                Dopust: {{$hoursNorm->Dopust}}
+                Bolovanje: {{$hoursNorm->Sick}}
                 Satnica: {{ $data['perHour'] }}
-                Noćna: {{ number_format($month->hoursNorm()->minNight/60, 2, ',', '.') }} sati
+                Noćna: {{ number_format($hoursNorm->minNight/60, 2, ',', '.') }} sati
               </th>
               <th class="w-32">
                 <a class="float-right" href="{{ route('months.show', ['month' => $month->next()]) }}" title="{{$month->next()}}">
