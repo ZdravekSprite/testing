@@ -16,6 +16,7 @@ class CreateDrawsTable extends Migration
     Schema::create('draws', function (Blueprint $table) {
       $table->id();
       $table->string('name');
+      $table->date('date');
       $table->tinyInteger('no01');
       $table->tinyInteger('no02');
       $table->tinyInteger('no03');

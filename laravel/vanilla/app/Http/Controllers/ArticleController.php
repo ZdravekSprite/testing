@@ -15,7 +15,8 @@ class ArticleController extends Controller
    */
   public function index()
   {
-    //
+    $articles = Article::orderBy('name', 'desc')->get();
+    return view('articles.index')->with('articles', $articles);
   }
 
   /**
@@ -25,7 +26,9 @@ class ArticleController extends Controller
    */
   public function create()
   {
-    //
+    $article = new Article();
+    //dd($article);
+    return view('articles.create')->with(compact('article'));
   }
 
   /**
@@ -36,7 +39,12 @@ class ArticleController extends Controller
    */
   public function store(StoreArticleRequest $request)
   {
-    //
+    $article = new Article;
+    $article->name = $request->input('name');
+    $article->data = json_encode($request->input('data')) ?? '[]';
+    //dd($request,$article);
+    $article->save();
+    return redirect(route('articles.show'))->with('success', 'Article Created');
   }
 
   /**
@@ -47,7 +55,8 @@ class ArticleController extends Controller
    */
   public function show(Article $article)
   {
-    //
+    $article->data = json_decode($article->data);
+    return view('articles.show')->with(compact('article'));
   }
 
   /**
@@ -58,7 +67,9 @@ class ArticleController extends Controller
    */
   public function edit(Article $article)
   {
-    //
+    $article->data = json_decode($article->data);
+    //dd($article->data);
+    return view('articles.edit')->with(compact('article'));
   }
 
   /**
@@ -70,7 +81,14 @@ class ArticleController extends Controller
    */
   public function update(UpdateArticleRequest $request, Article $article)
   {
-    //
+    $data = $request->input('data');
+    $last = $data[array_key_last($data)];
+    //dd($last);
+    if (!$last['link'] && !$last['price']) array_pop($data);
+    $article->data = json_encode($data) ?? '[]';
+    //dd($article,$request);
+    $article->save();
+    return redirect(route('articles.show'))->with('success', 'Article Updated');
   }
 
   /**
@@ -81,6 +99,7 @@ class ArticleController extends Controller
    */
   public function destroy(Article $article)
   {
-    //
+    $article->delete();
+    return redirect(route('articles.index'))->with('success', 'Article removed');
   }
 }
