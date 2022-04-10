@@ -4,7 +4,7 @@
 
 ```bash
 git add .
-git commit -am "route - 2022 04 07"
+git commit -am "make:model Article - 2022 04 10"
 git push
 git checkout main
 git pull

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\Binance;
 use App\Http\Controllers\TestBinance;
 use App\Http\Controllers\ChatController;
@@ -237,3 +238,5 @@ Route::get('/help/fond', function () {
   $holidays = Holiday::orderBy('date', 'desc')->get();
   return view('help.fond')->with('blagdani', $holidays);
 })->name('fond');
+
+Route::resource('articles', ArticleController::class);
