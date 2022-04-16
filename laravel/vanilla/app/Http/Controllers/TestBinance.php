@@ -262,14 +262,18 @@ class TestBinance extends Controller
     //$sells[] = (new $this)->sell("SOLBUSD", 0.04, 250.00, "sell_sol01");
     //$sells[] = (new $this)->sell("SOLBUSD", 0.05, 240.00, "sell_sol02");
     //$sells[] = (new $this)->sell("LUNABUSD", 0.09, 111.12, "sell_luna01");
-    $sells[] = (new $this)->sell("LUNABUSD", 0.08, 125.00, "sell_luna02");
+    //$sells[] = (new $this)->sell("LUNABUSD", 0.08, 125.00, "sell_luna02");
     //$sells[] = (new $this)->sell("LUNABUSD", 0.07, 142.86, "sell_luna03");
     //$sells[] = (new $this)->sell("FTTBUSD", 0.13, 76.93, "sell_ftt01");
     //$sells[] = (new $this)->sell("FTTBUSD", 0.12, 83.34, "sell_ftt02");
     //$sells[] = (new $this)->sell("FTTBUSD", 0.11, 90.91, "sell_ftt03");
-    //$sells[] = (new $this)->sell("EURBUSD", 8.9, 1.135, "sell_eur01");
-    //$sells[] = (new $this)->sell("EURBUSD", 8.8, 1.137, "sell_eur02");
-    //$sells[] = (new $this)->sell("EURBUSD", 8.7, 1.15, "sell_eur03");
+    //$sells[] = (new $this)->sell("EURBUSD", 9.3, 1.076, "sell_eur00");
+    //$sells[] = (new $this)->sell("EURBUSD", 9.2, 1.087, "sell_eur01");
+    //$sells[] = (new $this)->sell("EURBUSD", 9.1, 1.099, "sell_eur02");
+    //$sells[] = (new $this)->sell("EURBUSD", 9.0, 1.112, "sell_eur03");
+    //$sells[] = (new $this)->sell("EURBUSD", 8.9, 1.124, "sell_eur04");
+    //$sells[] = (new $this)->sell("EURBUSD", 8.8, 1.137, "sell_eur05");
+    //$sells[] = (new $this)->sell("EURBUSD", 8.7, 1.15, "sell_eur06");
     //$sells[] = (new $this)->sell("BUSDDAI", 10.0, 1.0005, "buy_dai00");
     //$sells[] = (new $this)->sell("BUSDDAI", 10.0, 1.0010, "buy_dai01");
     //$sells[] = (new $this)->sell("BUSDDAI", 10.0, 1.0020, "buy_dai02");
@@ -307,7 +311,11 @@ class TestBinance extends Controller
     //$buys[] = (new $this)->buy("EURBUSD", 8.9, 1.124, "buy_eur01");
     //$buys[] = (new $this)->buy("EURBUSD", 9.0, 1.112, "buy_eur02");
     //$buys[] = (new $this)->buy("EURBUSD", 9.1, 1.099, "buy_eur03");
-    //$buys[] = (new $this)->buy("BUSDDAI", 10.0, 1.0000, "sell_dai01");
+    //$buys[] = (new $this)->buy("BUSDDAI", 20.0, 1.0002, "sell_dai00");
+    //$buys[] = (new $this)->buy("BUSDDAI", 20.0, 1.0002, "sell_dai01");
+    //$buys[] = (new $this)->buy("BUSDDAI", 20.0, 1.0002, "sell_dai02x");
+    //$buys[] = (new $this)->buy("BUSDDAI", 20.0, 1.0003, "sell_dai03");
+    //$buys[] = (new $this)->buy("BUSDDAI", 20.0, 1.0004, "sell_dai04");
     //dd($buys);
     return $buys;
   }

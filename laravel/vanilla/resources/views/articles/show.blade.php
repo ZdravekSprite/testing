@@ -32,7 +32,7 @@
           @foreach($article->data as $data)
           <div class="mb-12">
             <a href="{{ $data->link }}" title="{{ $data->price }}">
-              {{ $data->price }}kn {{ $data->link }}
+              {{ $data->price }} {{ $data->link }}
             </a>
             <pre>{{ $data->description }}</pre>
           </div>

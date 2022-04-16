@@ -8,13 +8,14 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DayController;
 use App\Http\Controllers\DrawController;
 use App\Http\Controllers\HolidayController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\SymbolController;
-use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\TradeController;
 use App\Http\Controllers\KlineController;
 use App\Http\Controllers\LottoController;
 use App\Http\Controllers\MonthController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RouteController;
+use App\Http\Controllers\SymbolController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TradeController;
 use App\Http\Controllers\Admin\ImpersonateController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BSystem;
@@ -145,7 +146,7 @@ Route::get('seed', function () {
 })->middleware(['auth'])->name('seed');
 Route::get('reset', function () {
   Artisan::call('route:cache');
-  return 'reset success.';
+  return redirect(route('dashboard'))->with('success', 'reset success');
 })->middleware(['auth'])->name('reset');
 
 Route::get('convert', function () {
@@ -240,3 +241,4 @@ Route::get('/help/fond', function () {
 })->name('fond');
 
 Route::resource('articles', ArticleController::class);
+Route::resource('routes', RouteController::class);

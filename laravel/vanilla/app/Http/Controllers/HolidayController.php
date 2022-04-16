@@ -10,12 +10,19 @@ class HolidayController extends Controller
   /**
    * Display a listing of the resource.
    *
+   * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
     $holidays = Holiday::orderBy('date', 'desc')->get();
-    return view('holidays.index')->with('holidays', $holidays);
+    if ($request->wantsJson()) {
+      // I'm from API
+      return $holidays;
+    } else {
+      // I'm from HTTP
+      return view('holidays.index')->with('holidays', $holidays);
+    }
   }
 
   /**
@@ -46,18 +53,31 @@ class HolidayController extends Controller
     $holiday->date = $request->input('date');
     $holiday->name = $request->input('name');
     $holiday->save();
-    return redirect(route('holidays.index'))->with('success', 'Holiday Created');
+    if ($request->wantsJson()) {
+      // I'm from API
+      return $holiday;
+    } else {
+      // I'm from HTTP
+      return redirect(route('holidays.index'))->with('success', 'Holiday Created');
+    }
   }
 
   /**
    * Display the specified resource.
    *
    * @param  \App\Models\Holiday  $holiday
+   * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function show(Holiday $holiday)
+  public function show(Request $request, Holiday $holiday)
   {
-    return view('holidays.show')->with(compact('holiday'));
+    if ($request->wantsJson()) {
+      // I'm from API
+      return $holiday;
+    } else {
+      // I'm from HTTP
+      return view('holidays.show')->with(compact('holiday'));
+    }
   }
 
   /**
@@ -96,9 +116,15 @@ class HolidayController extends Controller
    * @param  \App\Models\Holiday  $holiday
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Holiday $holiday)
+  public function destroy(Request $request, Holiday $holiday)
   {
-    $holiday->delete();
-    return redirect(route('holidays.index'))->with('success', 'Holiday removed');
+    if ($request->wantsJson()) {
+      // I'm from API
+      return $holiday->delete();
+    } else {
+      // I'm from HTTP
+      $holiday->delete();
+      return redirect(route('holidays.index'))->with('success', 'Holiday removed');
+    }
   }
 }
