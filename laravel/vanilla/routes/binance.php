@@ -39,5 +39,13 @@ Route::middleware('auth')->group(function () {
   Route::get('/binance/test', [TestBinance::class, 'test'])
     ->name('bTest');
 
+  Route::get('/binance/getInterestHistory', [Binance::class, 'getInterestHistory'])
+    ->name('bInterestHistory');
+  Route::get('/binance/getPurchaseRecord', [Binance::class, 'getPurchaseRecord'])
+    ->name('bPurchaseRecord');
+  Route::get('/binance/getFixedAndActivityProjectList', [Binance::class, 'getFixedAndActivityProjectList'])
+    ->name('bFixedAndActivityProjectList');
+    Route::get('/binance/getProjectPosition', [Binance::class, 'getProjectPosition'])
+    ->name('bProjectPosition');
   //Route::get('/binance/exchange/info/{symbol?}', [BSystem::class, 'exchangeInfo'])->name('bExchangeInfo');
 });

@@ -53,9 +53,8 @@ class Binance extends Controller
       $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
 
       if (!$hnb_eur_kn) {
-        
-        try
-        {
+
+        try {
           $response = Http::get('https://api.hnb.hr/tecajn/v2?datum-primjene=' . $date);
           $day = $response->json();
           foreach ($day as $key => $valuta) {
@@ -73,14 +72,12 @@ class Binance extends Controller
             $hnb->save();
           }
           $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
           logger()->error('Goutte client error ' . $e->getMessage());
           //dd($e->getMessage());
           $hnb_eur_kn = Hnb::orderBy('datum_primjene', 'desc')->where('valuta', '=', 'EUR')->first();
           //dd($hnb_eur_kn);
-      }
+        }
         //dd($response->json());
       }
       $eur_kn = str_replace(',', '.', $hnb_eur_kn->kupovni_tecaj) / 1.01;
@@ -201,20 +198,20 @@ class Binance extends Controller
         if ($coin->coin == 'BUSD') {
           $coin->ATH = null;
         } elseif ($coin->coin == 'DAI') {
-          $binanceSocket .= 'busd'.Str::lower($coin->coin).'@kline_1m/';
+          $binanceSocket .= 'busd' . Str::lower($coin->coin) . '@kline_1m/';
           $coin->ATH = null;
         } elseif ($coin->coin == 'SANTOS') {
-          $binanceSocket .= Str::lower($coin->coin).'usdt@kline_1m/';
+          $binanceSocket .= Str::lower($coin->coin) . 'usdt@kline_1m/';
           $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $coin->coin . 'USDT&interval=1d'));
-          $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2))*1;
+          $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2)) * 1;
         } else {
-          $binanceSocket .= Str::lower($coin->coin).'busd@kline_1m/';
+          $binanceSocket .= Str::lower($coin->coin) . 'busd@kline_1m/';
           if ($coin->coin == 'EUR') {
             $coin->ATH = null;
           } else {
             $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $coin->coin . 'BUSD&interval=1d'));
             //dd(max(array_column($kline, 2)));
-            $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2))*1;
+            $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2)) * 1;
           }
         }
       }
@@ -269,6 +266,125 @@ class Binance extends Controller
     ])->get('https://api.binance.com/api/v3/allOrders', $getArray));
 
     return $allOrders;
+  }
+
+  public function getInterestHistory()
+  {
+    if (!Auth::user()) {
+      return redirect(route('home'))->with('warning', 'not auth');
+    } else {
+      if (!isset(Auth::user()->settings->BINANCE_API_KEY)) {
+        return redirect(route('home'))->with('warning', 'no key');
+      }
+      if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
+        return redirect(route('home'))->with('warning', 'no secret');
+      }
+      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
+      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+      $serverTime = $time->serverTime;
+      $queryArray = array(
+        "lendingType" => "DAILY",
+        "timestamp" => $serverTime
+      );
+      $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+      $signatureArray = array("signature" => $signature);
+      $getArray = $queryArray + $signatureArray;
+      $interestHistory = json_decode(Http::withHeaders([
+        'X-MBX-APIKEY' => $apiKey
+      ])->get('https://api.binance.com/sapi/v1/lending/union/interestHistory', $getArray));
+
+      return $interestHistory;
+    }
+  }
+
+  public function getPurchaseRecord()
+  {
+    if (!Auth::user()) {
+      return redirect(route('home'))->with('warning', 'not auth');
+    } else {
+      if (!isset(Auth::user()->settings->BINANCE_API_KEY)) {
+        return redirect(route('home'))->with('warning', 'no key');
+      }
+      if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
+        return redirect(route('home'))->with('warning', 'no secret');
+      }
+      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
+      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+      $serverTime = $time->serverTime;
+      $queryArray = array(
+        "lendingType" => "CUSTOMIZED_FIXED",
+        "timestamp" => $serverTime
+      );
+      $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+      $signatureArray = array("signature" => $signature);
+      $getArray = $queryArray + $signatureArray;
+      $purchaseRecord = json_decode(Http::withHeaders([
+        'X-MBX-APIKEY' => $apiKey
+      ])->get('https://api.binance.com/sapi/v1/lending/union/purchaseRecord', $getArray));
+
+      return $purchaseRecord;
+    }
+  }
+
+  public function getFixedAndActivityProjectList()
+  {
+    if (!Auth::user()) {
+      return redirect(route('home'))->with('warning', 'not auth');
+    } else {
+      if (!isset(Auth::user()->settings->BINANCE_API_KEY)) {
+        return redirect(route('home'))->with('warning', 'no key');
+      }
+      if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
+        return redirect(route('home'))->with('warning', 'no secret');
+      }
+      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
+      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+      $serverTime = $time->serverTime;
+      $queryArray = array(
+        "type" => "CUSTOMIZED_FIXED",
+        "timestamp" => $serverTime
+      );
+      $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+      $signatureArray = array("signature" => $signature);
+      $getArray = $queryArray + $signatureArray;
+      $list = json_decode(Http::withHeaders([
+        'X-MBX-APIKEY' => $apiKey
+      ])->get('https://api.binance.com/sapi/v1/lending/project/list', $getArray));
+
+      return $list;
+    }
+  }
+
+  public function getProjectPosition()
+  {
+    if (!Auth::user()) {
+      return redirect(route('home'))->with('warning', 'not auth');
+    } else {
+      if (!isset(Auth::user()->settings->BINANCE_API_KEY)) {
+        return redirect(route('home'))->with('warning', 'no key');
+      }
+      if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
+        return redirect(route('home'))->with('warning', 'no secret');
+      }
+      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
+      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
+      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+      $serverTime = $time->serverTime;
+      $queryArray = array(
+        "timestamp" => $serverTime
+      );
+      $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
+      $signatureArray = array("signature" => $signature);
+      $getArray = $queryArray + $signatureArray;
+      $list = json_decode(Http::withHeaders([
+        'X-MBX-APIKEY' => $apiKey
+      ])->get('https://api.binance.com/sapi/v1/lending/project/position/list', $getArray));
+
+      return $list;
+    }
   }
 
   /**
@@ -465,7 +581,7 @@ class Binance extends Controller
     */
     $flat_array = '';
     foreach ($assets as $key => $value) {
-      $flat_array .= 'asset='.$value.'&';
+      $flat_array .= 'asset=' . $value . '&';
     }
     //dd($flat_array);
     $ch = curl_init();
@@ -484,9 +600,9 @@ class Binance extends Controller
     ));
     $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
     $serverTime = $time->serverTime;
-    $queryArray = $flat_array."timestamp=".$serverTime;
+    $queryArray = $flat_array . "timestamp=" . $serverTime;
     $signature = hash_hmac('SHA256', $queryArray, $apiSecret);
-    $query = $queryArray."&signature=".$signature;
+    $query = $queryArray . "&signature=" . $signature;
 
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
