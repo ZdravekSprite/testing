@@ -26,9 +26,151 @@ class RouteController extends Controller
       return $routes;
     } else {
       // I'm from HTTP
-      return view('routes.index')->with('routes', $routes);
-    }
 
+      $lookAtLng = 0;
+      $lookAtLat = 0;
+      $paths = '';
+      $signs = '';
+
+      foreach ($routes as $route) {
+
+        $speedLimit = null;
+        $cooedinates = '';
+        if (isset(json_decode($route->data)->path)) {
+          foreach (json_decode($route->data)->path as $key => $value) {
+            $cooedinates .= '
+            ' . $value->location->coords->longitude . ',' . $value->location->coords->latitude . ',0';
+          }
+          $lookAtLng = json_decode($route->data)->path[0]->location->coords->longitude;
+          $lookAtLat = json_decode($route->data)->path[0]->location->coords->latitude;
+        } else {
+          foreach (json_decode($route->data)->data as $key => $value) {
+            $cooedinates .= '
+            ' . $value->coords->longitude . ',' . $value->coords->latitude . ',0';
+            if ($speedLimit != $value->speedLimit) {
+              $signs .= '
+    <Placemark>
+      <name>Oznaka ' . $key . '</name>
+      <description>' . $value->speedLimit . '</description>
+      <styleUrl>#' . ($value->speedLimit ? 'b30-' . $value->speedLimit : 'c14') . '</styleUrl>
+      <Point>
+        <coordinates>' . $value->coords->longitude . ',' . $value->coords->latitude . ',0</coordinates>
+      </Point>
+    </Placemark>';
+              $speedLimit = $value->speedLimit;
+            }
+          }
+          $lookAtLng = json_decode($route->data)->data[0]->coords->longitude;
+          $lookAtLat = json_decode($route->data)->data[0]->coords->latitude;
+        }
+        $paths .= '
+    <Placemark>
+      <name>Path ' . json_decode($route->data)->title . '</name>
+      <description>' . json_decode($route->data)->route . '</description>
+      <LookAt>
+        <longitude>' . $lookAtLng . '</longitude>
+        <latitude>' . $lookAtLat . '</latitude>
+        <altitude>0</altitude>
+        <heading>-50</heading>
+        <tilt>60</tilt>
+        <range>80</range>
+        <altitudeMode>relativeToGround</altitudeMode>
+      </LookAt>
+      <styleUrl>#testExample</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>' . $cooedinates . '
+        </coordinates>
+      </LineString>
+    </Placemark>
+        ';
+        if (isset(json_decode($route->data)->signs)) {
+          foreach (json_decode($route->data)->signs as $key => $value) {
+            $signs .= '
+    <Placemark>
+      <name>Oznaka ' . $key . '</name>
+      <description>' . $value->type . '</description>
+      <styleUrl>#' . $value->type . '</styleUrl>
+      <Point>
+        <coordinates>' . $value->coords->longitude . ',' . $value->coords->latitude . ',0</coordinates>
+      </Point>
+    </Placemark>';
+          }
+        }
+      }
+      $kml_string = '<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Paths.kml</name>
+    <description>All path</description>
+    <Style id="testExample">
+      <IconStyle>
+        <scale>1</scale>
+          <Icon>
+            <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+          </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <color>00ffffff</color>
+      </LabelStyle>
+      <LineStyle>
+        <color>ffff00aa</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color>
+      </PolyStyle>
+    </Style>
+    <Style id="c14">
+      <IconStyle>
+        <scale>1</scale>
+          <Icon>
+            <href>'.url('/').'/img/c14.gif</href>
+          </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      </IconStyle>
+    </Style>
+    <Style id="40">
+      <IconStyle>
+        <scale>1</scale>
+          <Icon>
+            <href>'.url('/').'/img/b30/40.gif</href>
+          </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      </IconStyle>
+    </Style>';
+      for ($i = 1; $i < 14; $i++) {
+        $kml_string .= '
+    <Style id="b30-'.$i.'0">
+      <IconStyle>
+        <scale>1</scale>
+          <Icon>
+            <href>'.url('/').'/img/b30/'.$i.'0.gif</href>
+          </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      </IconStyle>
+    </Style>';
+      }
+      for ($i = 1; $i < 14; $i++) {
+        $kml_string .= '
+    <Style id="b31-'.$i.'0">
+      <IconStyle>
+        <scale>1</scale>
+          <Icon>
+            <href>'.url('/').'/img/b30/'.$i.'0.gif</href>
+          </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      </IconStyle>
+    </Style>';
+      }
+      $kml_string .= $paths . $signs . '
+  </Document>
+</kml>';
+      return view('routes.index')->with(compact('routes', 'kml_string'));
+    }
   }
 
   /**
@@ -41,7 +183,6 @@ class RouteController extends Controller
     $route = new Route;
     //dd($route);
     return view('routes.create')->with(compact('route'));
-
   }
 
   /**
@@ -71,7 +212,7 @@ class RouteController extends Controller
     $this->validate($request, [
       'data' => ['required', 'json'],
     ]);
-/*
+    /*
     $data = json_decode($request->post('data'), true, JSON_THROW_ON_ERROR); // Needs to be decoded
 
     // validate $data is correct
@@ -116,7 +257,98 @@ class RouteController extends Controller
       return $route;
     } else {
       // I'm from HTTP
-      return view('routes.show')->with(compact('route'));
+      $cooedinates = '';
+      $lookAtLng = 0;
+      $lookAtLat = 0;
+      $signs = '';
+      $speedLimit = null;
+      if (isset(json_decode($route->data)->path)) {
+        foreach (json_decode($route->data)->path as $key => $value) {
+          $cooedinates .= '
+          ' . $value->location->coords->longitude . ',' . $value->location->coords->latitude . ',0';
+        }
+        $lookAtLng = json_decode($route->data)->path[0]->location->coords->longitude;
+        $lookAtLat = json_decode($route->data)->path[0]->location->coords->latitude;
+      } else {
+        foreach (json_decode($route->data)->data as $key => $value) {
+          $cooedinates .= '
+          ' . $value->coords->longitude . ',' . $value->coords->latitude . ',0';
+          if ($speedLimit != $value->speedLimit) {
+            $signs .= '
+    <Placemark>
+      <name>Oznaka ' . $key . ' ' . $value->speedLimit . '</name>
+      <styleUrl>#testExample</styleUrl>
+      <Point>
+        <coordinates>' . $value->coords->longitude . ',' . $value->coords->latitude . ',0</coordinates>
+      </Point>
+    </Placemark>';
+            $speedLimit = $value->speedLimit;
+          }
+        }
+        $lookAtLng = json_decode($route->data)->data[0]->coords->longitude;
+        $lookAtLat = json_decode($route->data)->data[0]->coords->latitude;
+      }
+      if (isset(json_decode($route->data)->signs)) {
+        foreach (json_decode($route->data)->signs as $key => $value) {
+          $signs .= '
+    <Placemark>
+      <name>Oznaka ' . $key . ' ' . $value->type . '</name>
+      <styleUrl>#testExample</styleUrl>
+      <Point>
+        <coordinates>' . $value->coords->longitude . ',' . $value->coords->latitude . ',0</coordinates>
+      </Point>
+    </Placemark>';
+        }
+      }
+      $kml_string = '<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Path.kml</name>
+    <description>Example</description>
+    <Style id="testExample">
+      <IconStyle>
+        <scale>1.1</scale>
+          <Icon>
+            <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+          </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <color>00ffffff</color>
+      </LabelStyle>
+      <LineStyle>
+        <color>ffff00aa</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color>
+      </PolyStyle>
+    </Style>
+    <Placemark>
+      <name>Path ' . json_decode($route->data)->title . '</name>
+      <description>' . json_decode($route->data)->route . '</description>
+      <LookAt>
+        <longitude>' . $lookAtLng . '</longitude>
+        <latitude>' . $lookAtLat . '</latitude>
+        <altitude>0</altitude>
+        <heading>-50</heading>
+        <tilt>60</tilt>
+        <range>80</range>
+        <altitudeMode>relativeToGround</altitudeMode>
+      </LookAt>
+      <styleUrl>#testExample</styleUrl>
+      <LineString>
+        <extrude>1</extrude>
+        <tessellate>1</tessellate>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>' . $cooedinates . '
+        </coordinates>
+      </LineString>
+    </Placemark>' . $signs . '
+  </Document>
+</kml>';
+      //dd(json_decode($route->data)->data,$kml_string);
+      return view('routes.show')->with(compact('route', 'kml_string'));
     }
   }
   /*
@@ -160,7 +392,6 @@ class RouteController extends Controller
       // I'm from HTTP
       return redirect(route('routes.index'))->with('success', 'Route Updated');
     }
-
   }
 
   /**
