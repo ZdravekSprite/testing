@@ -7,6 +7,7 @@ use App\Http\Controllers\DrawController;
 use App\Http\Controllers\LottoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\SignController;
 use App\Http\Controllers\Admin\ImpersonateController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Artisan;
@@ -113,6 +114,9 @@ Route::get('reset', function () {
   Artisan::call('route:cache');
   return redirect(route('dashboard'))->with('success', 'reset success');
 })->middleware(['auth'])->name('reset');
+Route::get('phpinfo', function () {
+  return phpinfo();
+})->middleware(['auth'])->name('phpinfo');
 
 require __DIR__ . '/ers.php';
 
@@ -146,3 +150,4 @@ Route::get('/help/fond', function () {
 
 Route::resource('articles', ArticleController::class);
 Route::resource('routes', RouteController::class);
+Route::resource('signs', SignController::class);

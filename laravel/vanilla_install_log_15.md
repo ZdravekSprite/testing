@@ -1,12 +1,14 @@
-# Route
+# Traffic
 
-## route model (+ factory + migration + seeder + controller)
+## Route
+
+### route model (+ factory + migration + seeder + controller)
 
 ```bash
 php artisan make:model Route -a
 ```
 
-### database\migrations\2021_02_21_143135_create_days_table.php
+#### database\migrations\2021_02_21_143135_create_days_table.php
 
 ```php
   public function up()
@@ -23,39 +25,60 @@ php artisan make:model Route -a
 php artisan migrate
 ```
 
+## Signs
+
+### sign model (+ factory + migration + seeder + controller)
+
+```bash
+php artisan make:model Sign -a
+```
+
+### database\migrations\2022_05_06_162433_create_signs_table.php
+
+```php
+  public function up()
+  {
+    Schema::create('signs', function (Blueprint $table) {
+      $table->id();
+      $table->string('name')->unique();
+      $table->string('description')->nullable();
+      $table->string('svg',1000);
+      $table->timestamps();
+    });
+  }
+```
+
+```bash
+php artisan migrate
+```
+
 ### routes\web.php
 
 ```php
-use App\Http\Controllers\ArticleController;
-Route::resource('articles', ArticleController::class);
+use App\Http\Controllers\SignController;
+Route::resource('signs', SignController::class);
 ```
 
-### resources\views\articles
+### resources\views\signs
 
-- resources\views\articles\create.blade.php
-- resources\views\articles\edit.blade.php
-- resources\views\articles\form.blade.php
-- resources\views\articles\index.blade.php
-- resources\views\articles\show.blade.php
+- resources\views\signs\create.blade.php
+- resources\views\signs\edit.blade.php
+- resources\views\signs\form.blade.php
+- resources\views\signs\index.blade.php
+- resources\views\signs\show.blade.php
 
 ### app\Http\Requests
 
-- app\Http\Requests\StoreArticleRequest.php
-- app\Http\Requests\UpdateArticleRequest.php
+- app\Http\Requests\StoreSignRequest.php
+- app\Http\Requests\UpdateSignRequest.php
 
 ```php
   public function authorize()
   {
     return true;
   }
-  public function rules()
-  {
-    return [
-      'name' => 'required|string|min:3|max:255|unique:articles'
-    ];
-  }
 ```
 
 ### app\Http\Controllers
 
-- app\Http\Controllers\ArticleController.php
+- app\Http\Controllers\SignController.php

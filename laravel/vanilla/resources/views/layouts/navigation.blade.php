@@ -44,6 +44,11 @@
             {{ __('Rute') }}
           </x-nav-link>
         </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('signs.index')" :active="request()->routeIs('routes.index')">
+            {{ __('Znakovi') }}
+          </x-nav-link>
+        </div>
         @endhasrole
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">

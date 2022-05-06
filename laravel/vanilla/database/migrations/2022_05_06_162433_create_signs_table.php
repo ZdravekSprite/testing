@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateArticlesTable extends Migration
+class CreateSignsTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,11 +13,12 @@ class CreateArticlesTable extends Migration
    */
   public function up()
   {
-    if (Schema::hasTable('articles')) { return; }
-    Schema::create('articles', function (Blueprint $table) {
+    if (Schema::hasTable('signs')) { return; }
+    Schema::create('signs', function (Blueprint $table) {
       $table->id();
       $table->string('name')->unique();
-      $table->json('data');
+      $table->string('description')->nullable();
+      $table->string('svg', 1000);
       $table->timestamps();
     });
   }
@@ -29,6 +30,6 @@ class CreateArticlesTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('articles');
+    Schema::dropIfExists('signs');
   }
 }

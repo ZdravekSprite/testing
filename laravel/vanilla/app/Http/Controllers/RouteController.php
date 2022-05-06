@@ -26,11 +26,11 @@ class RouteController extends Controller
       return $routes;
     } else {
       // I'm from HTTP
-
       $lookAtLng = 0;
       $lookAtLat = 0;
       $paths = '';
       $signs = '';
+      $types = [];
 
       foreach ($routes as $route) {
 
@@ -48,6 +48,7 @@ class RouteController extends Controller
             $cooedinates .= '
             ' . $value->coords->longitude . ',' . $value->coords->latitude . ',0';
             if ($speedLimit != $value->speedLimit) {
+              $types[] = $value->speedLimit ? 'b30-' . $value->speedLimit : 'c14';
               $signs .= '
     <Placemark>
       <name>Oznaka ' . $key . '</name>
@@ -88,6 +89,7 @@ class RouteController extends Controller
         ';
         if (isset(json_decode($route->data)->signs)) {
           foreach (json_decode($route->data)->signs as $key => $value) {
+            $types[] = $value->type;
             $signs .= '
     <Placemark>
       <name>Oznaka ' . $key . '</name>
@@ -100,6 +102,34 @@ class RouteController extends Controller
           }
         }
       }
+      //dd(array_unique($types));
+      $styles = '';
+      foreach (array_unique($types) as $type) {
+        $gif = $type;
+        if ($type == null) $gif = 'c14';
+        if ($type == 'semafor') $gif = 'c14';
+        if ($type == 40) $gif = 'b30/40';
+        if (substr($type, 0, 3) == 'b30') $gif = 'b30/' . substr($type, 4);
+        if (substr($type, 0, 4) == 'b31-') $gif = 'b30/' . substr($type, 4);
+        if (substr($type, 0, 3) == 'b38') $gif = 'b38/' . substr($type, 4);
+        if (substr($type, 0, 3) == 'c11') $gif = 'c11/' . substr($type, 4);
+        if (substr($type, 0, 3) == 'c12') $gif = 'c12/' . substr($type, 4);
+        if (substr($type, 0, 3) == 'c22') $gif = 'c22/' . substr($type, 4);
+        if (substr($type, 0, 3) == 'c23') $gif = 'c23/' . substr($type, 4);
+        if (substr($type, 0, 3) == 'c33') $gif = 'c33/' . substr($type, 4);
+        if (substr($type, 0, 3) == 'c34') $gif = 'c34/' . substr($type, 4);
+        $styles .= '
+    <Style id="' . $type . '">
+      <IconStyle>
+        <scale>1</scale>
+          <Icon>
+            <href>' . url('/') . '/img/' . $gif . '.gif</href>
+          </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      </IconStyle>
+    </Style>';
+      };
+
       $kml_string = '<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
@@ -123,50 +153,8 @@ class RouteController extends Controller
       <PolyStyle>
         <color>7f00ff00</color>
       </PolyStyle>
-    </Style>
-    <Style id="c14">
-      <IconStyle>
-        <scale>1</scale>
-          <Icon>
-            <href>'.url('/').'/img/c14.gif</href>
-          </Icon>
-        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-      </IconStyle>
-    </Style>
-    <Style id="40">
-      <IconStyle>
-        <scale>1</scale>
-          <Icon>
-            <href>'.url('/').'/img/b30/40.gif</href>
-          </Icon>
-        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-      </IconStyle>
     </Style>';
-      for ($i = 1; $i < 14; $i++) {
-        $kml_string .= '
-    <Style id="b30-'.$i.'0">
-      <IconStyle>
-        <scale>1</scale>
-          <Icon>
-            <href>'.url('/').'/img/b30/'.$i.'0.gif</href>
-          </Icon>
-        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-      </IconStyle>
-    </Style>';
-      }
-      for ($i = 1; $i < 14; $i++) {
-        $kml_string .= '
-    <Style id="b31-'.$i.'0">
-      <IconStyle>
-        <scale>1</scale>
-          <Icon>
-            <href>'.url('/').'/img/b30/'.$i.'0.gif</href>
-          </Icon>
-        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-      </IconStyle>
-    </Style>';
-      }
-      $kml_string .= $paths . $signs . '
+      $kml_string .= $styles . $paths . $signs . '
   </Document>
 </kml>';
       return view('routes.index')->with(compact('routes', 'kml_string'));
