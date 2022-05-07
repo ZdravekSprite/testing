@@ -107,7 +107,6 @@ class RouteController extends Controller
       foreach (array_unique($types) as $type) {
         $gif = $type;
         if ($type == null) $gif = 'c14';
-        if ($type == 'semafor') $gif = 'c14';
         if ($type == 40) $gif = 'b30-40';
         if (substr($type, 0, 4) == 'b31-') $gif = 'b30-' . substr($type, 4);
         $styles .= '
@@ -319,7 +318,6 @@ class RouteController extends Controller
       foreach (array_unique($types) as $type) {
         $gif = $type;
         if ($type == null) $gif = 'c14';
-        if ($type == 'semafor') $gif = 'c14';
         if ($type == 40) $gif = 'b30-40';
         if (substr($type, 0, 4) == 'b31-') $gif = 'b30-' . substr($type, 4);
         $styles .= '

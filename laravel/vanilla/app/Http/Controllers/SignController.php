@@ -15,7 +15,7 @@ class SignController extends Controller
    */
   public function index()
   {
-    $signs = Sign::all();
+    $signs = Sign::orderBy('name')->paginate(25);
     return view('signs.index')->with(compact('signs'));
   }
 

@@ -68,6 +68,7 @@
               @endif
             </tbody>
           </table>
+          {{ $signs->links() }}
         </div>
       </div>
     </div>
