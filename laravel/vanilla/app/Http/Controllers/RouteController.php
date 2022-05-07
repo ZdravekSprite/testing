@@ -39,14 +39,14 @@ class RouteController extends Controller
         if (isset(json_decode($route->data)->path)) {
           foreach (json_decode($route->data)->path as $key => $value) {
             $cooedinates .= '
-            ' . $value->location->coords->longitude . ',' . $value->location->coords->latitude . ',0';
+          ' . $value->location->coords->longitude . ',' . $value->location->coords->latitude . ',0';
           }
           $lookAtLng = json_decode($route->data)->path[0]->location->coords->longitude;
           $lookAtLat = json_decode($route->data)->path[0]->location->coords->latitude;
         } else {
           foreach (json_decode($route->data)->data as $key => $value) {
             $cooedinates .= '
-            ' . $value->coords->longitude . ',' . $value->coords->latitude . ',0';
+          ' . $value->coords->longitude . ',' . $value->coords->latitude . ',0';
             if ($speedLimit != $value->speedLimit) {
               $types[] = $value->speedLimit ? 'b30-' . $value->speedLimit : 'c14';
               $signs .= '
@@ -108,25 +108,20 @@ class RouteController extends Controller
         $gif = $type;
         if ($type == null) $gif = 'c14';
         if ($type == 'semafor') $gif = 'c14';
-        if ($type == 40) $gif = 'b30/40';
-        if (substr($type, 0, 3) == 'b30') $gif = 'b30/' . substr($type, 4);
-        if (substr($type, 0, 4) == 'b31-') $gif = 'b30/' . substr($type, 4);
-        if (substr($type, 0, 3) == 'b38') $gif = 'b38/' . substr($type, 4);
-        if (substr($type, 0, 3) == 'c11') $gif = 'c11/' . substr($type, 4);
-        if (substr($type, 0, 3) == 'c12') $gif = 'c12/' . substr($type, 4);
-        if (substr($type, 0, 3) == 'c22') $gif = 'c22/' . substr($type, 4);
-        if (substr($type, 0, 3) == 'c23') $gif = 'c23/' . substr($type, 4);
-        if (substr($type, 0, 3) == 'c33') $gif = 'c33/' . substr($type, 4);
-        if (substr($type, 0, 3) == 'c34') $gif = 'c34/' . substr($type, 4);
+        if ($type == 40) $gif = 'b30-40';
+        if (substr($type, 0, 4) == 'b31-') $gif = 'b30-' . substr($type, 4);
         $styles .= '
     <Style id="' . $type . '">
       <IconStyle>
         <scale>1</scale>
-          <Icon>
-            <href>' . url('/') . '/img/' . $gif . '.gif</href>
-          </Icon>
-        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+        <Icon>
+          <href>' . url('/') . '/gif/' . $gif . '</href>
+        </Icon>
       </IconStyle>
+      <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      <LabelStyle>
+        <color>00ffffff</color>
+      </LabelStyle>
     </Style>';
       };
 
@@ -245,27 +240,32 @@ class RouteController extends Controller
       return $route;
     } else {
       // I'm from HTTP
-      $cooedinates = '';
       $lookAtLng = 0;
       $lookAtLat = 0;
+      $paths = '';
       $signs = '';
+      $types = [];
+
       $speedLimit = null;
+      $cooedinates = '';
       if (isset(json_decode($route->data)->path)) {
         foreach (json_decode($route->data)->path as $key => $value) {
           $cooedinates .= '
-          ' . $value->location->coords->longitude . ',' . $value->location->coords->latitude . ',0';
+        ' . $value->location->coords->longitude . ',' . $value->location->coords->latitude . ',0';
         }
         $lookAtLng = json_decode($route->data)->path[0]->location->coords->longitude;
         $lookAtLat = json_decode($route->data)->path[0]->location->coords->latitude;
       } else {
         foreach (json_decode($route->data)->data as $key => $value) {
           $cooedinates .= '
-          ' . $value->coords->longitude . ',' . $value->coords->latitude . ',0';
+        ' . $value->coords->longitude . ',' . $value->coords->latitude . ',0';
           if ($speedLimit != $value->speedLimit) {
+            $types[] = $value->speedLimit ? 'b30-' . $value->speedLimit : 'c14';
             $signs .= '
     <Placemark>
-      <name>Oznaka ' . $key . ' ' . $value->speedLimit . '</name>
-      <styleUrl>#testExample</styleUrl>
+      <name>Oznaka ' . $key . '</name>
+      <description>' . $value->speedLimit . '</description>
+      <styleUrl>#' . ($value->speedLimit ? 'b30-' . $value->speedLimit : 'c14') . '</styleUrl>
       <Point>
         <coordinates>' . $value->coords->longitude . ',' . $value->coords->latitude . ',0</coordinates>
       </Point>
@@ -276,42 +276,7 @@ class RouteController extends Controller
         $lookAtLng = json_decode($route->data)->data[0]->coords->longitude;
         $lookAtLat = json_decode($route->data)->data[0]->coords->latitude;
       }
-      if (isset(json_decode($route->data)->signs)) {
-        foreach (json_decode($route->data)->signs as $key => $value) {
-          $signs .= '
-    <Placemark>
-      <name>Oznaka ' . $key . ' ' . $value->type . '</name>
-      <styleUrl>#testExample</styleUrl>
-      <Point>
-        <coordinates>' . $value->coords->longitude . ',' . $value->coords->latitude . ',0</coordinates>
-      </Point>
-    </Placemark>';
-        }
-      }
-      $kml_string = '<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-  <Document>
-    <name>Path.kml</name>
-    <description>Example</description>
-    <Style id="testExample">
-      <IconStyle>
-        <scale>1.1</scale>
-          <Icon>
-            <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
-          </Icon>
-        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-      </IconStyle>
-      <LabelStyle>
-        <color>00ffffff</color>
-      </LabelStyle>
-      <LineStyle>
-        <color>ffff00aa</color>
-        <width>2</width>
-      </LineStyle>
-      <PolyStyle>
-        <color>7f00ff00</color>
-      </PolyStyle>
-    </Style>
+      $paths .= '
     <Placemark>
       <name>Path ' . json_decode($route->data)->title . '</name>
       <description>' . json_decode($route->data)->route . '</description>
@@ -332,10 +297,73 @@ class RouteController extends Controller
         <coordinates>' . $cooedinates . '
         </coordinates>
       </LineString>
-    </Placemark>' . $signs . '
+    </Placemark>
+    ';
+      if (isset(json_decode($route->data)->signs)) {
+        foreach (json_decode($route->data)->signs as $key => $value) {
+          $types[] = $value->type;
+          $signs .= '
+    <Placemark>
+      <name>Oznaka ' . $key . '</name>
+      <description>' . $value->type . '</description>
+      <styleUrl>#' . $value->type . '</styleUrl>
+      <Point>
+        <coordinates>' . $value->coords->longitude . ',' . $value->coords->latitude . ',0</coordinates>
+      </Point>
+    </Placemark>';
+        }
+      }
+      
+      //dd(array_unique($types));
+      $styles = '';
+      foreach (array_unique($types) as $type) {
+        $gif = $type;
+        if ($type == null) $gif = 'c14';
+        if ($type == 'semafor') $gif = 'c14';
+        if ($type == 40) $gif = 'b30-40';
+        if (substr($type, 0, 4) == 'b31-') $gif = 'b30-' . substr($type, 4);
+        $styles .= '
+    <Style id="' . $type . '">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>' . url('/') . '/gif/' . $gif . '</href>
+        </Icon>
+      </IconStyle>
+      <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      <LabelStyle>
+        <color>00ffffff</color>
+      </LabelStyle>
+    </Style>';
+      };
+
+      $kml_string = '<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Paths.kml</name>
+    <description>All path</description>
+    <Style id="testExample">
+      <IconStyle>
+        <scale>1</scale>
+          <Icon>
+            <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+          </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <color>00ffffff</color>
+      </LabelStyle>
+      <LineStyle>
+        <color>ffff00aa</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color>
+      </PolyStyle>
+    </Style>';
+      $kml_string .= $styles . $paths . $signs . '
   </Document>
 </kml>';
-      //dd(json_decode($route->data)->data,$kml_string);
       return view('routes.show')->with(compact('route', 'kml_string'));
     }
   }

@@ -32,7 +32,9 @@
               @foreach($signs as $sign)
               <tr>
                 <td>
-
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 720 720">
+                  {!! $sign->svg !!}
+                </svg>
                 </td>
                 <td>
                   <a class="float-left" href="{{ route('signs.show', $sign) }}" title="Prikaži">

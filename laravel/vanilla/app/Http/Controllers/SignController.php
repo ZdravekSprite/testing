@@ -56,17 +56,52 @@ class SignController extends Controller
    */
   public function show(Sign $sign)
   {
-    $im = new Imagick();
-    // Create a new image instance
+    return view('signs.show')->with(compact('sign'));
+  }
+
+  /**
+   * Display the specified resource.
+   *
+   * @param  $sign
+   * @return \Illuminate\Http\Response
+   */
+  public function gif($sign)
+  {
+    $svg = '';
+    $sign = Sign::where('name', '=', $sign)->first();
+    if (!$sign){
+      $svg ='<text text-anchor="middle" x="360" y="500" font-size="500" >?</text>';
+    } else {
+      $svg = $sign->svg;
+    }
+    $im = new \Imagick();
     $svg = '<?xml version="1.0" standalone="no"?>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="720px" height="720px" viewBox="0 0 720 720">
-    '.$sign->svg.'
+    '.$svg.'
     </svg>';
+    $im->setBackgroundColor(new \ImagickPixel('transparent'));
     $im->readImageBlob($svg);
+    $im->resizeImage(100, 100, \Imagick::FILTER_LANCZOS, 1, true);
     $im->setImageFormat("gif");
     $type = 'image/gif';
     header("Content-Type: ".$type);
     return response($im->getImageBlob())->header('Content-Type', $type);
+  }
+
+  public function svg($sign)
+  {
+    $svg = '';
+    $sign = Sign::where('name', '=', $sign)->first();
+    if (!$sign){
+      $svg ='<text text-anchor="middle" x="360" y="500" font-size="500" >?</text>';
+    } else {
+      $svg = $sign->svg;
+    }
+    $svg = '<?xml version="1.0" standalone="no"?>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="720px" height="720px" viewBox="0 0 720 720">
+    '.$svg.'
+    </svg>';
+    return response($svg);
   }
 
   /**

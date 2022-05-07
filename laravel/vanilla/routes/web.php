@@ -151,3 +151,5 @@ Route::get('/help/fond', function () {
 Route::resource('articles', ArticleController::class);
 Route::resource('routes', RouteController::class);
 Route::resource('signs', SignController::class);
+Route::get('/gif/{sign}', [SignController::class, 'gif']);
+Route::get('/svg/{sign}', [SignController::class, 'svg']);

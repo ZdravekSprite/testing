@@ -31,6 +31,10 @@
           <div class="mb-12">
             <p>{{ $sign->description }}</p>
             <pre>{{ $sign->svg }}</pre>
+            <img src="{{ url('/') . '/gif/' . $sign->name }}" alt="{{ $sign->description }}" width="100" height="100">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="720px" height="720px" viewBox="0 0 720 720">
+            {!! $sign->svg !!}
+            </svg>
           </div>
         </div>
       </div>
