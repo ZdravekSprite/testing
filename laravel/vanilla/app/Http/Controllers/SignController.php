@@ -47,8 +47,10 @@ class SignController extends Controller
     $sign->b2 = $request->post('b2');
     $sign->c = $request->post('c');
     $sign->svg_type = $request->post('svg_type');
+    $sign->svg_start_transform = $request->post('svg_start_transform');
     $sign->svg_start = $request->post('svg_start');
     $sign->svg = $request->post('svg');
+    $sign->svg_end_transform = $request->post('svg_end_transform');
     $sign->svg_end = $request->post('svg_end');
     $sign->save();
 
@@ -138,8 +140,10 @@ class SignController extends Controller
     $sign->b2 = $request->post('b2');
     $sign->c = $request->post('c');
     $sign->svg_type = $request->post('svg_type');
+    $sign->svg_start_transform = $request->post('svg_start_transform');
     $sign->svg_start = $request->post('svg_start');
     $sign->svg = $request->post('svg');
+    $sign->svg_end_transform = $request->post('svg_end_transform');
     $sign->svg_end = $request->post('svg_end');
     $sign->save();
 

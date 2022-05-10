@@ -29,15 +29,18 @@
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
           <div class="mb-12">
-            <p>{{ $sign->description }}</p>
-            <p>{{ $sign->a }}</p>
-            <p>{{ $sign->b1 }}</p>
-            <p>{{ $sign->b2 }}</p>
-            <p>{{ $sign->c }}</p>
-            <p>{{ $sign->svg_type }}</p>
-            <p>{{ $sign->svg_start }}</p>
+            <p>description: {{ $sign->description }}</p>
+            <p>a: {{ $sign->a }}</p>
+            <p>b1: {{ $sign->b1 }}</p>
+            <p>b2: {{ $sign->b2 }}</p>
+            <p>c: {{ $sign->c }}</p>
+            <p>svg_type: {{ $sign->svg_type }}</p>
+            <p>svg_start_transfrm: {{ $sign->svg_start_transfrm }}</p>
+            <p>svg_start: {{ $sign->svg_start }}</p>
+            <p>sign->svg:</p>
             <pre>{{ $sign->svg }}</pre>
-            <p>{{ $sign->svg_end }}</p>
+            <p>svg_end_transfrm {{ $sign->svg_end_transfrm }}</p>
+            <p>svg_end {{ $sign->svg_end }}</p>
             <img src="{{ url('/') . '/gif/' . $sign->name }}" alt="{{ $sign->description }}" width="100" height="100">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="720px" height="720px" viewBox="0 0 720 720">
             {!! $sign->svg_all() !!}
