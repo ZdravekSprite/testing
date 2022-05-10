@@ -30,10 +30,17 @@
         <div class="p-6 bg-white border-b border-gray-200">
           <div class="mb-12">
             <p>{{ $sign->description }}</p>
+            <p>{{ $sign->a }}</p>
+            <p>{{ $sign->b1 }}</p>
+            <p>{{ $sign->b2 }}</p>
+            <p>{{ $sign->c }}</p>
+            <p>{{ $sign->svg_type }}</p>
+            <p>{{ $sign->svg_start }}</p>
             <pre>{{ $sign->svg }}</pre>
+            <p>{{ $sign->svg_end }}</p>
             <img src="{{ url('/') . '/gif/' . $sign->name }}" alt="{{ $sign->description }}" width="100" height="100">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="720px" height="720px" viewBox="0 0 720 720">
-            {!! $sign->svg !!}
+            {!! $sign->svg_all() !!}
             </svg>
           </div>
         </div>

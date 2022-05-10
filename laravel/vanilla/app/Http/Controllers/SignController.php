@@ -42,7 +42,14 @@ class SignController extends Controller
     $sign = new Sign();
     $sign->name = $request->post('name');
     $sign->description = $request->post('description');
+    $sign->a = $request->post('a');
+    $sign->b1 = $request->post('b1');
+    $sign->b2 = $request->post('b2');
+    $sign->c = $request->post('c');
+    $sign->svg_type = $request->post('svg_type');
+    $sign->svg_start = $request->post('svg_start');
     $sign->svg = $request->post('svg');
+    $sign->svg_end = $request->post('svg_end');
     $sign->save();
 
     return redirect(route('signs.index'))->with('success', 'Sign created');
@@ -69,22 +76,22 @@ class SignController extends Controller
   {
     $svg = '';
     $sign = Sign::where('name', '=', $sign)->first();
-    if (!$sign){
-      $svg ='<text text-anchor="middle" x="360" y="500" font-size="500" >?</text>';
+    if (!$sign) {
+      $svg = '<text text-anchor="middle" x="360" y="500" font-size="500" >?</text>';
     } else {
-      $svg = $sign->svg;
+      $svg = $sign->svg_all();
     }
     $im = new \Imagick();
     $svg = '<?xml version="1.0" standalone="no"?>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="720px" height="720px" viewBox="0 0 720 720">
-    '.$svg.'
+    ' . $svg . '
     </svg>';
     $im->setBackgroundColor(new \ImagickPixel('transparent'));
     $im->readImageBlob($svg);
     $im->resizeImage(100, 100, \Imagick::FILTER_LANCZOS, 1, true);
     $im->setImageFormat("gif");
     $type = 'image/gif';
-    header("Content-Type: ".$type);
+    header("Content-Type: " . $type);
     return response($im->getImageBlob())->header('Content-Type', $type);
   }
 
@@ -92,14 +99,14 @@ class SignController extends Controller
   {
     $svg = '';
     $sign = Sign::where('name', '=', $sign)->first();
-    if (!$sign){
-      $svg ='<text text-anchor="middle" x="360" y="500" font-size="500" >?</text>';
+    if (!$sign) {
+      $svg = '<text text-anchor="middle" x="360" y="500" font-size="500" >?</text>';
     } else {
-      $svg = $sign->svg;
+      $svg = $sign->svg_all();
     }
     $svg = '<?xml version="1.0" standalone="no"?>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="720px" height="720px" viewBox="0 0 720 720">
-    '.$svg.'
+    ' . $svg . '
     </svg>';
     return response($svg);
   }
@@ -126,10 +133,17 @@ class SignController extends Controller
   {
     $sign->name = $request->post('name');
     $sign->description = $request->post('description');
+    $sign->a = $request->post('a');
+    $sign->b1 = $request->post('b1');
+    $sign->b2 = $request->post('b2');
+    $sign->c = $request->post('c');
+    $sign->svg_type = $request->post('svg_type');
+    $sign->svg_start = $request->post('svg_start');
     $sign->svg = $request->post('svg');
+    $sign->svg_end = $request->post('svg_end');
     $sign->save();
 
-    return redirect(route('signs.index'))->with('success', 'Sign updated');
+    return redirect(route('signs.index'))->with('success', 'Sign ' . $sign->name . ' updated');
   }
 
   /**
