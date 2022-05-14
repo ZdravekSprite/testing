@@ -212,8 +212,10 @@ class KlineController extends Controller
     $symbols[] = ['BUSDDAI', [], [], [], '1m'];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
-      $symbol_info = Symbol::where('symbol', '=', $symbol)->first() ?? SymbolController::exchangeInfo($symbol);
+      $symbol_info = Symbol::where('symbol', '=', $symbol)->first() ?? SymbolController::exchangeInfo($symbol);      
       $symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->tickSize + 1;
+      if ($symbol_info->symbol == 'LUNABUSD') $symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->tickSize + 5;
+      //dd($symbol_info);
       //$symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->stepSize;
       if (isset($openOrders)) {
         foreach ($openOrders as $order) {
