@@ -77,3 +77,26 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 git add .
 git commit -am "Laravel Sanctum, Api Auth Routes [api]"
 ```
+
+## Expo
+
+```bash
+expo init expoAuth
+```
+
+### .gitignore
+
+```txt
+yarn.lock
+package-lock.json
+```
+
+```bash
+cd expoAuth
+yarn android
+```
+
+```bash
+git add .
+git commit -am "Expo [api]"
+```
