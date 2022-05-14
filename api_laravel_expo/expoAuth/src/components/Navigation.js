@@ -18,12 +18,12 @@ export default function Navigation() {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ title: 'Login Screen' }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
-          options={{ title: 'Register Screen' }}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

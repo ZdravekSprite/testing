@@ -102,5 +102,5 @@ yarn android
 
 ```bash
 git add .
-git commit -am "Expo [api]"
+git commit -am "Expo LoginScreen [api]"
 ```
