@@ -93,6 +93,10 @@ package-lock.json
 
 ```bash
 cd expoAuth
+yarn add @react-navigation/native
+yarn add react-native-screens react-native-safe-area-context
+yarn add @react-navigation/native-stack
+expo doctor --fix-dependencies
 yarn android
 ```
 
