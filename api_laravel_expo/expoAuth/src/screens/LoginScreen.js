@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-export default function LoginScreen({navigation}) {
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   return (
@@ -22,7 +22,7 @@ export default function LoginScreen({navigation}) {
         />
         <Button title='Login' />
         <View style={{ flexDirection: 'row', marginTop: 20 }}>
-          <Text>Don't have an acount? </Text>
+          <Text>Don't have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={styles.link}>Register</Text>
           </TouchableOpacity>

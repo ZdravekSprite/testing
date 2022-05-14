@@ -6,7 +6,7 @@
 composer create-project --prefer-dist laravel/laravel laravel
 ```
 
-### .gitignore
+### .gitignore for laravel
 
 ```txt
 composer.lock
@@ -84,7 +84,7 @@ git commit -am "Laravel Sanctum, Api Auth Routes [api]"
 expo init expoAuth
 ```
 
-### .gitignore
+### .gitignore for expo
 
 ```txt
 yarn.lock
@@ -102,5 +102,5 @@ yarn android
 
 ```bash
 git add .
-git commit -am "Expo LoginScreen [api]"
+git commit -am "Expo RegisterScreen [api]"
 ```
