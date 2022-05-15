@@ -65,6 +65,7 @@ php artisan make:controller AuthController
 ### laravel\routes\api.php
 
 ```php
+use App\Http\Controllers\AuthController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -89,6 +90,7 @@ expo init expoAuth
 ```txt
 yarn.lock
 package-lock.json
+src/config.js
 ```
 
 ```bash
@@ -96,11 +98,18 @@ cd expoAuth
 yarn add @react-navigation/native
 yarn add react-native-screens react-native-safe-area-context
 yarn add @react-navigation/native-stack
+yarn add axios
 expo doctor --fix-dependencies
 yarn android
 ```
 
+### expoAuth\src\config.js
+
+```ts
+export const BASE_URL = 'http://127.0.0.1:8000/api';
+```
+
 ```bash
 git add .
-git commit -am "Expo AuthContext [api]"
+git commit -am "Expo AuthContext register [api]"
 ```

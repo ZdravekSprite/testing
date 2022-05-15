@@ -11,11 +11,6 @@ export default function Navigation() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="Register"
           component={RegisterScreen}
           options={{ headerShown: false }}
@@ -24,6 +19,11 @@ export default function Navigation() {
           name="Home"
           component={HomeScreen}
           options={{ title: 'Home Screen' }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

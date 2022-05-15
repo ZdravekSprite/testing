@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\RouteController;
 use Illuminate\Http\Request;
@@ -23,6 +24,13 @@ use Illuminate\Validation\ValidationException;
 //Route::middleware('auth:api')->get('holidays', function () {
 // Only authenticated users may enter...
 //})->middleware('auth');
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+  Route::post('/logout', [AuthController::class, 'logout']);
+});
 
 Route::get('/holidays', [HolidayController::class, 'index']);
 Route::get('/holidays/{holiday}', [HolidayController::class, 'show']);

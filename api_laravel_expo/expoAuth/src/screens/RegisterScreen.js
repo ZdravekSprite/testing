@@ -13,15 +13,15 @@ export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const val = useContext(AuthContext)
+  const [password_confirmation, setPassword_confirmation] = useState(null);
+  const { register } = useContext(AuthContext)
 
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
-      <Text>{val}</Text>
-      <TextInput
+        <TextInput
           style={styles.input}
-          value={email}
+          value={name}
           placeholder='Enter name'
           onChangeText={text => setName(text)}
         />
@@ -38,7 +38,19 @@ export default function RegisterScreen({ navigation }) {
           onChangeText={text => setPassword(text)}
           secureTextEntry
         />
-        <Button title='Login' />
+        <TextInput
+          style={styles.input}
+          value={password_confirmation}
+          placeholder='Confirm password'
+          onChangeText={text => setPassword_confirmation(text)}
+          secureTextEntry
+        />
+        <Button
+          title='Register'
+          onPress={() => {
+            console.log('register');
+            register(name, email, password, password_confirmation);
+          }} />
         <View style={{ flexDirection: 'row', marginTop: 20 }}>
           <Text>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
