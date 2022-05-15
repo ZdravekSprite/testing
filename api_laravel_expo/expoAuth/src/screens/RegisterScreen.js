@@ -14,7 +14,7 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [password_confirmation, setPassword_confirmation] = useState(null);
-  const { isLoading, register } = useContext(AuthContext)
+  const { register } = useContext(AuthContext)
 
   return (
     <View style={styles.container}>

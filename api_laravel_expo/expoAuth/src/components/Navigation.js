@@ -1,21 +1,28 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { AuthContext } from '../context/AuthContext';
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-
-import { AuthContext } from '../context/AuthContext';
+import SplashScreen from '../screens/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
-  const { userInfo } = useContext(AuthContext)
+  const { splashLoading, isLoading, userInfo } = useContext(AuthContext)
 
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {userInfo.token ? (
+        {splashLoading || isLoading ? (
+          <Stack.Screen
+          name="Splash"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
+        ) : userInfo.token ? (
           <Stack.Screen
             name="Home"
             component={HomeScreen}

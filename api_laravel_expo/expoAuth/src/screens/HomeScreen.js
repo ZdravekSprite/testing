@@ -3,7 +3,7 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 
 export default function HomeScreen() {
-  const { userInfo, isLoading, logout } = useContext(AuthContext)
+  const { userInfo, logout } = useContext(AuthContext)
 
   return (
     <View style={styles.container}>

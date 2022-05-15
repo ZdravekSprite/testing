@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { BASE_URL } from "../config";
 
 export const AuthContext = createContext();
@@ -8,6 +8,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [splashLoading, setSplashLoading] = useState(false);
+
 
   const register = (name, email, password, password_confirmation) => {
     setIsLoading(true);
@@ -61,7 +63,7 @@ export const AuthProvider = ({ children }) => {
         `${BASE_URL}/logout`,
         {},
         {
-          headers: {Authorization: `Bearer ${userInfo.token}`},
+          headers: { Authorization: `Bearer ${userInfo.token}` },
         })
       .then(res => {
         console.log(res.data);
@@ -75,11 +77,32 @@ export const AuthProvider = ({ children }) => {
       });
   }
 
+  const isLoggedIn = async () => {
+    try {
+      setSplashLoading(true);
+      let userInfo = await AsyncStorage.getItem('userInfo');
+      userInfo = JSON.parse(userInfo);
+
+      if (userInfo) {
+        setUserInfo(userInfo);
+      }
+      setSplashLoading(false);
+    } catch (e) {
+      setSplashLoading(false);
+      console.log(`is logged error ${e}`);
+    }
+  }
+
+  useEffect(() => {
+    isLoggedIn()
+  }, [])
+
   return (
     <AuthContext.Provider
       value={{
         isLoading,
         userInfo,
+        splashLoading,
         register,
         login,
         logout,

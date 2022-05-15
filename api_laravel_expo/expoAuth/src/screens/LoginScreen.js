@@ -12,7 +12,7 @@ import { AuthContext } from '../context/AuthContext';
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const { isLoading, login } = useContext(AuthContext)
+  const { login } = useContext(AuthContext)
 
   return (
     <View style={styles.container}>

@@ -113,5 +113,5 @@ export const BASE_URL = 'http://127.0.0.1:8000/api';
 
 ```bash
 git add .
-git commit -am "Expo AuthContext logout [api]"
+git commit -am "Expo AuthContext is logged in [api]"
 ```
