@@ -99,6 +99,8 @@ yarn add @react-navigation/native
 yarn add react-native-screens react-native-safe-area-context
 yarn add @react-navigation/native-stack
 yarn add axios
+yarn add @react-native-async-storage/async-storage
+yarn add react-native-loading-spinner-overlay
 expo doctor --fix-dependencies
 yarn android
 ```
@@ -111,5 +113,5 @@ export const BASE_URL = 'http://127.0.0.1:8000/api';
 
 ```bash
 git add .
-git commit -am "Expo AuthContext register [api]"
+git commit -am "Expo AuthContext login [api]"
 ```

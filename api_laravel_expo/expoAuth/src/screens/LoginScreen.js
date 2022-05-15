@@ -7,14 +7,17 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../context/AuthContext';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+  const { isLoading, login } = useContext(AuthContext)
 
   return (
     <View style={styles.container}>
+      <Spinner visible={isLoading} />
       <View style={styles.wrapper}>
         <TextInput
           style={styles.input}
@@ -29,7 +32,12 @@ export default function LoginScreen({ navigation }) {
           onChangeText={text => setPassword(text)}
           secureTextEntry
         />
-        <Button title='Login' />
+        <Button
+          title='Login'
+          onPress={() => {
+            console.log('login');
+            login(email, password);
+          }} />
         <View style={{ flexDirection: 'row', marginTop: 20 }}>
           <Text>Don't have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Register')}>

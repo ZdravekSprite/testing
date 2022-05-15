@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../context/AuthContext';
 
 export default function RegisterScreen({ navigation }) {
@@ -14,10 +15,11 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [password_confirmation, setPassword_confirmation] = useState(null);
-  const { register } = useContext(AuthContext)
+  const { isLoading, register } = useContext(AuthContext)
 
   return (
     <View style={styles.container}>
+      <Spinner visible={isLoading} />
       <View style={styles.wrapper}>
         <TextInput
           style={styles.input}
