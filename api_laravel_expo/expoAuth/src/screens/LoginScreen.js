@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { AuthContext } from '../context/AuthContext';
 
 export default function LoginScreen({ navigation }) {
@@ -17,7 +16,6 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Spinner visible={isLoading} />
       <View style={styles.wrapper}>
         <TextInput
           style={styles.input}
