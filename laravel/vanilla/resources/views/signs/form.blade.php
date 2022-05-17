@@ -33,6 +33,11 @@
               <x-label for="svg_type" :value="__('svg_type')" />
               <x-input id="svg_type" type="text" name="svg_type" :value="$sign->svg_type ?? old('svg_type') ?? ''" />
             </x-div>
+            <!-- svg_start_fill -->
+            <x-div>
+              <x-label for="svg_start_fill" :value="__('svg_start_fill')" />
+              <x-input id="svg_start_fill" type="text" name="svg_start_fill" :value="$sign->svg_start_fill ?? old('svg_start_fill') ?? ''" />
+            </x-div>
             <!-- svg_start_transform -->
             <x-div>
               <x-label for="svg_start_transform" :value="__('svg_start_transform')" />
@@ -47,6 +52,11 @@
             <x-div>
               <x-label for="svg" :value="__('Svg')" />
               <x-textarea id="svg" type="text" name="svg">{{$sign->svg}}</x-textarea>
+            </x-div>
+            <!-- svg_end_fill -->
+            <x-div>
+              <x-label for="svg_end_fill" :value="__('svg_end_fill')" />
+              <x-input id="svg_end_fill" type="text" name="svg_end_fill" :value="$sign->svg_end_fill ?? old('svg_end_fill') ?? ''" />
             </x-div>
             <!-- svg_end_transform -->
             <x-div>

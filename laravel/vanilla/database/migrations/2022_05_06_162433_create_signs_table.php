@@ -23,9 +23,11 @@ class CreateSignsTable extends Migration
       $table->string('b2', 500)->nullable();
       $table->string('c', 500)->nullable();
       $table->string('svg_type')->nullable();
+      $table->string('svg_start_fill')->nullable();
       $table->string('svg_start_transform')->nullable();
       $table->string('svg_start')->nullable();
       $table->string('svg', 5000)->nullable();
+      $table->string('svg_end_fill')->nullable();
       $table->string('svg_end_transform')->nullable();
       $table->string('svg_end')->nullable();
       $table->timestamps();

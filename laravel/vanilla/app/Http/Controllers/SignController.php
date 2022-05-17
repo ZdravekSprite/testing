@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sign;
 use App\Http\Requests\StoreSignRequest;
 use App\Http\Requests\UpdateSignRequest;
+use Illuminate\Support\Facades\Auth;
 
 class SignController extends Controller
 {
@@ -15,7 +16,11 @@ class SignController extends Controller
    */
   public function index()
   {
-    $signs = Sign::orderBy('name')->paginate(25);
+    if (Auth::id()) {
+      $signs = Sign::orderBy('name')->paginate(25);  
+    } else {
+      $signs = Sign::orderBy('name')->where('svg_type', '!=', 'help')->where('svg_type', '!=', 'broj')->paginate(25);
+    }
     return view('signs.index')->with(compact('signs'));
   }
 
@@ -47,9 +52,11 @@ class SignController extends Controller
     $sign->b2 = $request->post('b2');
     $sign->c = $request->post('c');
     $sign->svg_type = $request->post('svg_type');
+    $sign->svg_start_fill = $request->post('svg_start_fill');
     $sign->svg_start_transform = $request->post('svg_start_transform');
     $sign->svg_start = $request->post('svg_start');
     $sign->svg = $request->post('svg');
+    $sign->svg_end_fill = $request->post('svg_end_fill');
     $sign->svg_end_transform = $request->post('svg_end_transform');
     $sign->svg_end = $request->post('svg_end');
     $sign->save();
@@ -65,6 +72,7 @@ class SignController extends Controller
    */
   public function show(Sign $sign)
   {
+    //dd($sign->svg_all());
     return view('signs.show')->with(compact('sign'));
   }
 
@@ -88,6 +96,7 @@ class SignController extends Controller
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="720px" height="720px" viewBox="0 0 720 720">
     ' . $svg . '
     </svg>';
+    //dd($svg);
     $im->setBackgroundColor(new \ImagickPixel('transparent'));
     $im->readImageBlob($svg);
     $im->resizeImage(100, 100, \Imagick::FILTER_LANCZOS, 1, true);
@@ -140,9 +149,11 @@ class SignController extends Controller
     $sign->b2 = $request->post('b2');
     $sign->c = $request->post('c');
     $sign->svg_type = $request->post('svg_type');
+    $sign->svg_start_fill = $request->post('svg_start_fill');
     $sign->svg_start_transform = $request->post('svg_start_transform');
     $sign->svg_start = $request->post('svg_start');
     $sign->svg = $request->post('svg');
+    $sign->svg_end_fill = $request->post('svg_end_fill');
     $sign->svg_end_transform = $request->post('svg_end_transform');
     $sign->svg_end = $request->post('svg_end');
     $sign->save();

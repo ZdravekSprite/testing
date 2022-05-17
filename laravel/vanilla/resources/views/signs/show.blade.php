@@ -34,13 +34,17 @@
             <p>b1: {{ $sign->b1 }}</p>
             <p>b2: {{ $sign->b2 }}</p>
             <p>c: {{ $sign->c }}</p>
+            @hasrole('user')
             <p>svg_type: {{ $sign->svg_type }}</p>
+            <p>svg_start_fill: {{ $sign->svg_start_fill }}</p>
             <p>svg_start_transfrm: {{ $sign->svg_start_transfrm }}</p>
             <p>svg_start: {{ $sign->svg_start }}</p>
             <p>sign->svg:</p>
             <pre>{{ $sign->svg }}</pre>
+            <p>svg_end_fill: {{ $sign->svg_end_fill }}</p>
             <p>svg_end_transfrm {{ $sign->svg_end_transfrm }}</p>
             <p>svg_end {{ $sign->svg_end }}</p>
+            @endhasrole
             <img src="{{ url('/') . '/gif/' . $sign->name }}" alt="{{ $sign->description }}" width="100" height="100">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="720px" height="720px" viewBox="0 0 720 720">
             {!! $sign->svg_all() !!}
