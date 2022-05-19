@@ -40,11 +40,19 @@ composer require laravel/breeze --dev
 php artisan breeze:install
 ```
 
+## Binance
+
+### Binance model (+ factory + migration + seeder + controller)
+
+```bash
+php artisan make:model Binance -a
+```
+
 ```bash
 npm install && npm run dev
 php artisan migrate:fresh
 php artisan route:cache
 php artisan serve
 git add .
-git commit -am "Laravel Breeze Installed [laravel]"
+git commit -am "make:model Binance -a [laravel]"
 ```
