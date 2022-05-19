@@ -33,10 +33,18 @@ APP_NAME="Binance Laravel"
 DB_DATABASE=laravel_binance
 ```
 
+## Laravel Breeze
+
+```bash
+composer require laravel/breeze --dev
+php artisan breeze:install
+```
+
 ```bash
 npm install && npm run dev
 php artisan migrate:fresh
+php artisan route:cache
 php artisan serve
 git add .
-git commit -am "Initial Commit - Laravel Framework Installed [laravel]"
+git commit -am "Laravel Breeze Installed [laravel]"
 ```
