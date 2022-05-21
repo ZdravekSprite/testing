@@ -181,6 +181,8 @@ class TradeController extends Controller
   public function index()
   {
     $getall = (new BHttp)->get_withHeaders('https://api.binance.com/sapi/v1/capital/config/getall');
+    $getsave = (new BHttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/daily/token/position');
+    $getstake = (new BHttp)->get_withHeaders('https://api.binance.com/sapi/v1/staking/position', array("product" => "STAKING"));
     $serverTime = (new BSystem)->serverTime();
     //dd($getall);
 
@@ -197,10 +199,28 @@ class TradeController extends Controller
       }
       $all_assets[$coin->coin]->total = number_format($total, 8, '.', '');
     }
-    //dd($balance,$all_assets);
-
+    //dd($balance, $my_assets, $getsave, $getstake);
+    foreach ($getsave as $key => $value) {
+      if (!isset($balance[$value->asset])) {
+        $balance = Arr::add($balance, $value->asset, $value->totalAmount * 1);
+        $my_assets = Arr::add($my_assets, $value->asset, $all_assets[$value->asset]);
+      } else {
+        $balance[$value->asset] += $value->totalAmount;
+      }
+      $my_assets[$value->asset]->save = $value->totalAmount;
+    }
+    foreach ($getstake as $key => $value) {
+      if (!isset($balance[$value->asset])) {
+        $balance = Arr::add($balance, $value->asset, $value->amount * 1);
+        $my_assets = Arr::add($my_assets, $value->asset, $all_assets[$value->asset]);
+      } else {
+        $balance[$value->asset] += $value->amount;
+      }
+      $my_assets[$value->asset]->stake = $value->amount;
+    }
+    //dd($balance, $my_assets);
     //$trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'desc')->get();
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 200 * 24 * 60 * 60 * 1000))->orderBy('time', 'desc')->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 600 * 24 * 60 * 60 * 1000))->orderBy('time', 'desc')->paginate(25);
     $symbols = $trades->pluck('symbol')->unique();
     //dd($balance,$all_assets,$trades,$symbols);
 
@@ -220,7 +240,7 @@ class TradeController extends Controller
       if (!$symbol) $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', 'USDT')->where('quoteAsset', '=', $key)->first();
       if (!$symbol) {
         $exchangeInfo = SymbolController::exchangeInfo();
-        dd($key,$coin,$exchangeInfo);
+        dd($key, $coin, $exchangeInfo);
       }
       $coin->symbol = $symbol->symbol;
       $coin->isBase = $symbol->baseAsset == $key;
@@ -278,6 +298,7 @@ class TradeController extends Controller
 
       $trade->kline = KlineController::kline($trade->symbol, $time);
       $trade->assets = [];
+      //dd($my_assets);
       foreach ($my_assets as $key => $coin) {
         $kline = KlineController::kline($coin->symbol, $time);
         if ($kline) {
@@ -286,7 +307,7 @@ class TradeController extends Controller
           //dd($key, $coin);
           $fiat_price = 0;
         }
-        $trade->assets = Arr::add($trade->assets, $key, (object) array('total' => $my_assets[$key]->total, 'name' => $my_assets[$key]->name));
+        $trade->assets = Arr::add($trade->assets, $key, (object) array('total' => ($my_assets[$key]->total + (isset($my_assets[$key]->save) ? $my_assets[$key]->save : 0) + (isset($my_assets[$key]->stake) ? $my_assets[$key]->stake : 0)), 'name' => $my_assets[$key]->name));
         switch ($coin->fiat) {
           case 'EUR':
             $coin->price = $fiat_price * $eur_kn;
@@ -298,7 +319,7 @@ class TradeController extends Controller
             $coin->price = (1 - 0.0075) * $fiat_price * $eur_usdt * $eur_kn;
             break;
         }
-        $total_kn = $total_kn + $coin->price * $coin->total;
+        $total_kn = $total_kn + $coin->price * (isset($balance[$key]) ? $balance[$key] : 0);
       }
       $trade->total_kn = $total_kn * (1 - 0.00075);
       //dd($eur_kn,$trade,$my_assets, $eur_usdt, $eur_busd);
@@ -319,9 +340,10 @@ class TradeController extends Controller
       //if ($trade_key > 246) break;
     }
 
-    $trades = $trades->sortByDesc('time');
+    //$trades = $trades->sortByDesc('time');
 
     //$trades->values()->all()->paginate(25);
+    //dd($trades,$symbols,$balance);
     $trades->values()->all();
     //dd($trades,$symbols,$balance);
     //dd($trades[0]->assets,$trades[1]->assets,$symbols,$balance);

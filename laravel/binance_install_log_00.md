@@ -48,11 +48,23 @@ php artisan breeze:install
 php artisan make:model Binance -a
 ```
 
+### Binance api controller
+
+```bash
+php artisan make:controller BApi
+```
+
+### Binance http controller
+
+```bash
+php artisan make:controller BHttp
+```
+
 ```bash
 npm install && npm run dev
 php artisan migrate:fresh
 php artisan route:cache
 php artisan serve
 git add .
-git commit -am "make:model Binance -a [laravel]"
+git commit -am "make:controller BApi + BHttp [laravel]"
 ```
