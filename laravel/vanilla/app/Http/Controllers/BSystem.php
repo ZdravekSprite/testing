@@ -18,8 +18,7 @@ class BSystem extends Controller
    */
   public function status()
   {
-    $http = new BHttp();
-    $status = $http->get('https://api.binance.com/sapi/v1/system/status');
+    $status = (new BHttp)->get('https://api.binance.com/sapi/v1/system/status');
     return $status;
   }
 
@@ -36,8 +35,7 @@ class BSystem extends Controller
    */
   public function ping()
   {
-    $http = new BHttp();
-    $ping = $http->get('https://api.binance.com/api/v3/ping');
+    $ping = (new BHttp)->get('https://api.binance.com/api/v3/ping');
     return $ping;
   }
 
@@ -56,9 +54,13 @@ class BSystem extends Controller
    */
   public function time()
   {
-    $http = new BHttp();
-    $time = $http->get('https://api.binance.com/api/v3/time');
+    $time = (new BHttp)->get('https://api.binance.com/api/v3/time');
     return $time;
+  }
+  public function serverTime()
+  {
+    $time = (new BHttp)->get('https://api.binance.com/api/v3/time');
+    return $time->serverTime;
   }
 
   /**

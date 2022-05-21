@@ -16,4 +16,25 @@ class Binance extends Model
   {
     return $this->belongsTo(User::class);
   }
+
+  /**
+   * Get the apiKey.
+   */
+  public function apiKey()
+  {
+    $apiKey = $this->BINANCE_API_KEY;
+    if (!$apiKey) return redirect(route('binance.create'));
+    return $apiKey;
+  }
+
+  /**
+   * Get the apiKey.
+   */
+  public function apiSecret()
+  {
+    $apiSecret = $this->BINANCE_API_SECRET;
+    if (!$apiSecret) return redirect(route('binance.create'));
+    return $apiSecret;
+  }
+
 }

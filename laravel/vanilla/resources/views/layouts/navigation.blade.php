@@ -135,6 +135,26 @@
                   {{ __('bExchange') }}
                 </x-nav-link>
               </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('bTest')" :active="request()->routeIs('bTest')">
+                  {{ __('test') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('klines.index')" :active="request()->routeIs('klines.index')">
+                  {{ __('klines') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('dustLog')" :active="request()->routeIs('dustLog')">
+                  {{ __('dustLog') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('trades.index')" :active="request()->routeIs('trades.index')">
+                  {{ __('trades') }}
+                </x-nav-link>
+              </div>
             </x-slot>
           </x-dropdown>
         </div>

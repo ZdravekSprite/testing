@@ -22,7 +22,7 @@ class TradeController extends Controller
   {
     set_time_limit(0);
     $symbols = Symbol::where('status', '=', 'TRADING')->pluck('symbol');
-    /* kada treba provjeriti sve symbole */
+    /* kada treba provjeriti sve symbole*/
     $trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'asc')->get();
     $symbols = $trades->pluck('symbol')->unique();
     /**/
@@ -76,21 +76,10 @@ class TradeController extends Controller
   }
   public function myTrades($symbol)
   {
-    $server = 'https://api.binance.com/api';
-    $apiKey = Auth::user()->settings->BINANCE_API_KEY; //env('BINANCE_API_KEY');
-    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
-    $time = json_decode(Http::get($server . '/v3/time'));
-    $serverTime = $time->serverTime;
-    $queryArray = array(
-      "symbol" => $symbol,
-      "timestamp" => $serverTime
+    $array = array(
+      "symbol" => $symbol
     );
-    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-    $signatureArray = array("signature" => $signature);
-    $getArray = $queryArray + $signatureArray;
-    $myTrades = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get($server . '/v3/myTrades', $getArray));
+    $myTrades = (new Bhttp)->get_withHeaders('https://api.binance.com/api/v3/myTrades', $array);
     //dd($myTrades);
     foreach ($myTrades as $key => $myTrade) {
       //dd($myTrade);
@@ -120,37 +109,13 @@ class TradeController extends Controller
   }
   public function depositHistory()
   {
-    $server = 'https://api.binance.com';
-    $apiKey = Auth::user()->settings->BINANCE_API_KEY; //env('BINANCE_API_KEY');
-    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
-    $time = json_decode(Http::get($server . '/api/v3/time'));
-    $serverTime = $time->serverTime;
-    $timeStamp = 'timestamp=' . $serverTime;
-    $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-    $depositHistory = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get($server . '/wapi/v3/depositHistory.html', [
-      'timestamp' => $serverTime,
-      'signature' => $signature
-    ]));
+    $depositHistory = (new Bhttp)->get_withHeaders('https://api.binance.com/wapi/v3/depositHistory.html');
     dd($depositHistory);
     return $depositHistory;
   }
   public function dustLog()
   {
-    $server = 'https://api.binance.com';
-    $apiKey = Auth::user()->settings->BINANCE_API_KEY; //env('BINANCE_API_KEY');
-    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
-    $time = json_decode(Http::get($server . '/api/v3/time'));
-    $serverTime = $time->serverTime;
-    $timeStamp = 'timestamp=' . $serverTime;
-    $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-    $dustLog = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get($server . '/sapi/v1/asset/dribblet', [
-      'timestamp' => $serverTime,
-      'signature' => $signature
-    ]));
+    $dustLog = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/asset/dribblet');
     //dd($dustLog->userAssetDribblets);
     foreach ($dustLog->userAssetDribblets as $key => $myDusts) {
       //dd($myDusts);
@@ -172,7 +137,9 @@ class TradeController extends Controller
             'icebergAllowed' => false,
             'ocoAllowed' => false,
             'isSpotTradingAllowed' => false,
-            'isMarginTradingAllowed' => false
+            'isMarginTradingAllowed' => false,
+            'tickSize' => 7,
+            'stepSize' => -1
           ]);
           //dd($symbol);
         }
@@ -213,19 +180,8 @@ class TradeController extends Controller
    */
   public function index()
   {
-    $server = 'https://api.binance.com';
-    $apiKey = Auth::user()->settings->BINANCE_API_KEY; //env('BINANCE_API_KEY');
-    $apiSecret = Auth::user()->settings->BINANCE_API_SECRET; //env('BINANCE_API_SECRET');
-    $time = json_decode(Http::get($server . '/api/v3/time'));
-    $serverTime = $time->serverTime;
-    $timeStamp = 'timestamp=' . $serverTime;
-    $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-    $getall = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get($server . '/sapi/v1/capital/config/getall', [
-      'timestamp' => $serverTime,
-      'signature' => $signature
-    ]));
+    $getall = (new BHttp)->get_withHeaders('https://api.binance.com/sapi/v1/capital/config/getall');
+    $serverTime = (new BSystem)->serverTime();
     //dd($getall);
 
     $all_assets = [];
@@ -244,7 +200,7 @@ class TradeController extends Controller
     //dd($balance,$all_assets);
 
     //$trades = Trade::where('user_id', '=', Auth::user()->id)->orderBy('time', 'desc')->get();
-    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 60 * 24 * 60 * 60 * 1000))->orderBy('time', 'desc')->get();
+    $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 200 * 24 * 60 * 60 * 1000))->orderBy('time', 'desc')->get();
     $symbols = $trades->pluck('symbol')->unique();
     //dd($balance,$all_assets,$trades,$symbols);
 
@@ -262,7 +218,10 @@ class TradeController extends Controller
       if (!$symbol) $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', 'BUSD')->where('quoteAsset', '=', $key)->first();
       if (!$symbol) $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', $key)->where('quoteAsset', '=', 'USDT')->first();
       if (!$symbol) $symbol = Symbol::where('status', '=', 'TRADING')->where('baseAsset', '=', 'USDT')->where('quoteAsset', '=', $key)->first();
-      //dd($symbol);
+      if (!$symbol) {
+        $exchangeInfo = SymbolController::exchangeInfo();
+        dd($key,$coin,$exchangeInfo);
+      }
       $coin->symbol = $symbol->symbol;
       $coin->isBase = $symbol->baseAsset == $key;
       $coin->fiat = $coin->isBase ? $symbol->quoteAsset : $symbol->baseAsset;
@@ -321,7 +280,12 @@ class TradeController extends Controller
       $trade->assets = [];
       foreach ($my_assets as $key => $coin) {
         $kline = KlineController::kline($coin->symbol, $time);
-        $fiat_price = $coin->isBase ? ($kline->o + $kline->c) / 2 : 2 / ($kline->o + $kline->c);
+        if ($kline) {
+          $fiat_price = $coin->isBase ? ($kline->o + $kline->c) / 2 : 2 / ($kline->o + $kline->c);
+        } else {
+          //dd($key, $coin);
+          $fiat_price = 0;
+        }
         $trade->assets = Arr::add($trade->assets, $key, (object) array('total' => $my_assets[$key]->total, 'name' => $my_assets[$key]->name));
         switch ($coin->fiat) {
           case 'EUR':
@@ -357,7 +321,9 @@ class TradeController extends Controller
 
     $trades = $trades->sortByDesc('time');
 
+    //$trades->values()->all()->paginate(25);
     $trades->values()->all();
+    //dd($trades,$symbols,$balance);
     //dd($trades[0]->assets,$trades[1]->assets,$symbols,$balance);
     //return view('trades.index')->with('trades', $trades);
     return view('trades.index')->with(compact('trades', 'symbols', 'balance'));

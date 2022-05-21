@@ -290,17 +290,22 @@ class TestBinance extends Controller
   public function buy_targets()
   {
     $buys = [];
+    //$buys[] = (new $this)->buy("BTCBUSD", 0.00035, 28571.43, "buy_btc00");
     //$buys[] = (new $this)->buy("BTCBUSD", 0.000329, 30454.74, "buy_btc01");
     //$buys[] = (new $this)->buy("BTCBUSD", 0.000303, 33024.03, "buy_btc02");
+    //$buys[] = (new $this)->buy("ETHBUSD", 0.0053, 1886.80, "buy_eth00");
     //$buys[] = (new $this)->buy("ETHBUSD", 0.00577, 1734.58, "buy_eth01");
     //$buys[] = (new $this)->buy("ETHBUSD", 0.00491, 2038.18, "buy_eth02");
+    //$buys[] = (new $this)->buy("BNBBUSD", 0.036, 277.8, "buy_bnb00");
     //$buys[] = (new $this)->buy("BNBBUSD", 0.0374, 267.96, "buy_bnb01");
     //$buys[] = (new $this)->buy("BNBBUSD", 0.0359, 279.25, "buy_bnb02");
+    //$buys[] = (new $this)->buy("ADABUSD", 20.1, 0.4976, "buy_ada00");
     //$buys[] = (new $this)->buy("ADABUSD", 8.28, 1.2078, "buy_ada01");
     //$buys[] = (new $this)->buy("ADABUSD", 7.71, 1.2979, "buy_ada02");
-    //$buys[] = (new $this)->buy("ADABUSD", 7.19, 1.3926, "buy_ada_quick");
+    //$buys[] = (new $this)->buy("MATICBUSD", 16.3, 0.614, "buy_matic00");
     //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.01583, "buy_matic01");
     //$buys[] = (new $this)->buy("MATICBUSD", 9.9, 1.0108, "buy_matic02");
+    //$buys[] = (new $this)->buy("SOLBUSD", 0.21, 47.62, "buy_sol00");
     //$buys[] = (new $this)->buy("SOLBUSD", 0.15, 70.28, "buy_sol01");
     //$buys[] = (new $this)->buy("SOLBUSD", 0.316, 31.687, "buy_sol02");
     //$buys[] = (new $this)->buy("LUNABUSD", 0.19, 52.64, "buy_luna01");

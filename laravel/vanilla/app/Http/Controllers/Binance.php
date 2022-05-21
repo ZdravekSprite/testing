@@ -38,17 +38,12 @@ class Binance extends Controller
       }
       $apiKey = Auth::user()->settings->BINANCE_API_KEY;
       $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
+
+      $http = new BHttp();
+      $getall = $http->get_withHeaders('https://api.binance.com/sapi/v1/capital/config/getall');
+
       $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
       $serverTime = $time->serverTime;
-      $timeStamp = 'timestamp=' . $serverTime;
-      $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-      $getall = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/capital/config/getall', [
-        'timestamp' => $serverTime,
-        'signature' => $signature
-      ]));
-
       $date = gmdate("Y-m-d", $serverTime / 1000);
       $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
 
@@ -111,30 +106,32 @@ class Binance extends Controller
       ]));
       dd($lendingList);
       */
-      /* */
-      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
-      $timeStamp = 'timestamp=' . $serverTime;
-      $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-      $lendingAccount = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/lending/union/account', [
-        'timestamp' => $serverTime,
-        'signature' => $signature
-      ]));
+
+      $lendingAccount = $http->get_withHeaders('https://api.binance.com/sapi/v1/lending/union/account');
       //dd($lendingAccount->positionAmountVos);
-      /* */
+
+      $array = array(
+        "product" => "STAKING"
+      );
+      $getStakingProductPosition = $http->get_withHeaders('https://api.binance.com/sapi/v1/staking/position', $array);
+      //dd($getStakingProductPosition);
 
       $balance = [];
       $total = 0;
       foreach ($getall as $coin) {
         $coin->lending = 0;
+        $coin->staking = 0;
         foreach ($lendingAccount->positionAmountVos as $lending) {
           if ($lending->asset == $coin->coin) {
             $coin->lending = $lending->amount;
           }
         }
-        $coin->total = $coin->free + $coin->locked + $coin->freeze + $coin->withdrawing + $coin->ipoing + $coin->ipoable + $coin->storage + $coin->lending;
+        foreach ($getStakingProductPosition as $staking) {
+          if ($staking->asset == $coin->coin) {
+            $coin->staking += $staking->amount;
+          }
+        }
+        $coin->total = $coin->free + $coin->locked + $coin->freeze + $coin->withdrawing + $coin->ipoing + $coin->ipoable + $coin->storage + $coin->lending + $coin->staking;
         if ($coin->total > 0) {
           $coin->price = 0;
           switch ($coin->coin) {
@@ -227,21 +224,10 @@ class Binance extends Controller
    */
   public function openOrders($symbol = 'BNBBUSD')
   {
-    $apiKey = Auth::user()->BINANCE_API_KEY;
-    $apiSecret = Auth::user()->BINANCE_API_SECRET;
-    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-    $serverTime = $time->serverTime;
-    $queryArray = array(
-      "symbol" => $symbol,
-      "timestamp" => $serverTime
+    $array = array(
+      "symbol" => $symbol
     );
-    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-    $signatureArray = array("signature" => $signature);
-    $getArray = $queryArray + $signatureArray;
-    $openOrders = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get('https://api.binance.com/api/v3/openOrders', $getArray));
-
+    $openOrders = (new Bhttp)->get_withHeaders('https://api.binance.com/api/v3/openOrders', $array);
     return $openOrders;
   }
 
@@ -249,22 +235,10 @@ class Binance extends Controller
    */
   public function allOrders($symbol = 'BNBBUSD')
   {
-
-    $apiKey = Auth::user()->BINANCE_API_KEY;
-    $apiSecret = Auth::user()->BINANCE_API_SECRET;
-    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-    $serverTime = $time->serverTime;
-    $queryArray = array(
-      "symbol" => $symbol,
-      "timestamp" => $serverTime
+    $array = array(
+      "symbol" => $symbol
     );
-    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-    $signatureArray = array("signature" => $signature);
-    $getArray = $queryArray + $signatureArray;
-    $allOrders = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get('https://api.binance.com/api/v3/allOrders', $getArray));
-
+    $allOrders = (new Bhttp)->get_withHeaders('https://api.binance.com/api/v3/allOrders', $array);
     return $allOrders;
   }
 
@@ -279,21 +253,10 @@ class Binance extends Controller
       if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
         return redirect(route('home'))->with('warning', 'no secret');
       }
-      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
-      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
-      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
-      $queryArray = array(
-        "lendingType" => "DAILY",
-        "timestamp" => $serverTime
+      $array = array(
+        "lendingType" => "DAILY"
       );
-      $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-      $signatureArray = array("signature" => $signature);
-      $getArray = $queryArray + $signatureArray;
-      $interestHistory = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/lending/union/interestHistory', $getArray));
-
+      $interestHistory = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/union/interestHistory', $array);
       return $interestHistory;
     }
   }
@@ -309,21 +272,10 @@ class Binance extends Controller
       if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
         return redirect(route('home'))->with('warning', 'no secret');
       }
-      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
-      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
-      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
-      $queryArray = array(
-        "lendingType" => "CUSTOMIZED_FIXED",
-        "timestamp" => $serverTime
+      $array = array(
+        "lendingType" => "CUSTOMIZED_FIXED"
       );
-      $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-      $signatureArray = array("signature" => $signature);
-      $getArray = $queryArray + $signatureArray;
-      $purchaseRecord = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/lending/union/purchaseRecord', $getArray));
-
+      $purchaseRecord = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/union/purchaseRecord', $array);
       return $purchaseRecord;
     }
   }
@@ -339,21 +291,10 @@ class Binance extends Controller
       if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
         return redirect(route('home'))->with('warning', 'no secret');
       }
-      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
-      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
-      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
-      $queryArray = array(
-        "type" => "CUSTOMIZED_FIXED",
-        "timestamp" => $serverTime
+      $array = array(
+        "lendingType" => "CUSTOMIZED_FIXED"
       );
-      $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-      $signatureArray = array("signature" => $signature);
-      $getArray = $queryArray + $signatureArray;
-      $list = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/lending/project/list', $getArray));
-
+      $list = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/project/list', $array);
       return $list;
     }
   }
@@ -369,20 +310,7 @@ class Binance extends Controller
       if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
         return redirect(route('home'))->with('warning', 'no secret');
       }
-      $apiKey = Auth::user()->settings->BINANCE_API_KEY;
-      $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
-      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
-      $queryArray = array(
-        "timestamp" => $serverTime
-      );
-      $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-      $signatureArray = array("signature" => $signature);
-      $getArray = $queryArray + $signatureArray;
-      $list = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/lending/project/position/list', $getArray));
-
+      $list = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/project/position/list');
       return $list;
     }
   }
