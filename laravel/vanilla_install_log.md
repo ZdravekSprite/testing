@@ -4,7 +4,7 @@
 
 ```bash
 git add .
-git commit -am "laravel 2022 05 21"
+git commit -am "laravel 2022 05 22"
 git push
 git checkout main
 git pull
