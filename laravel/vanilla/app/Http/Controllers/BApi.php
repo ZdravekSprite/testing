@@ -29,7 +29,6 @@ class BApi extends Controller
         $params = '?symbol=' . $symbol;
       }
     }
-    //dd($params);
     return (new BHttp)->get('https://api.binance.com/api/v3/ticker/price' . $params);
   }
 
@@ -66,6 +65,10 @@ class BApi extends Controller
   public function getFlexibleProductPosition()
   {
     return (new BHttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/daily/token/position');
+  }
+  public function lendingAccount()
+  {
+    return (new BHttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/union/account');
   }
   public function getStakingProductPosition()
   {

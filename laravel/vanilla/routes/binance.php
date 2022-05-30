@@ -21,7 +21,7 @@ Route::middleware('auth')->group(function () {
   Route::get('/binance/allMyTrades', [TradeController::class, 'allMyTrades'])
     ->name('allMyTrades');
   Route::get('/binance/dust', [TradeController::class, 'dustLog'])
-    ->name('dustLog');
+    ->name('bDust');
   Route::get('/binance/prosjek', [TradeController::class, 'prosjek']);
   Route::get('/binance/crta', [TradeController::class, 'crta']);
 

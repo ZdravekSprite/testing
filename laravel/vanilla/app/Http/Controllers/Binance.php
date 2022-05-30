@@ -44,6 +44,7 @@ class Binance extends Controller
       $http = new BHttp();
 
       $getall = (new BApi)->allCoinsInformation();
+      //dd($getall);
 
       $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
       $serverTime = (new BApi)->serverTime();
@@ -92,28 +93,10 @@ class Binance extends Controller
       $busdt_kn =  $busd_kn / $busd_usdt;
       //dd($total_kn, $usdt_kn, $busd_usdt, $busd_kn, $busdt_kn);
 
-      //dd($getall);
-      /*
-      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
-      $timeStamp = 'timestamp=' . $serverTime;
-      $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-      $lendingList = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/lending/daily/product/list', [
-        'timestamp' => $serverTime,
-        'signature' => $signature
-      ]));
-      dd($lendingList);
-      */
-
-      $lendingAccount = $http->get_withHeaders('https://api.binance.com/sapi/v1/lending/union/account');
+      $lendingAccount = (new BApi)->lendingAccount();
       //dd($lendingAccount->positionAmountVos);
 
-      $array = array(
-        "product" => "STAKING"
-      );
-      $getStakingProductPosition = $http->get_withHeaders('https://api.binance.com/sapi/v1/staking/position', $array);
+      $getStakingProductPosition = (new BApi)->getStakingProductPosition();
       //dd($getStakingProductPosition);
 
       $balance = [];
@@ -148,33 +131,21 @@ class Binance extends Controller
               $coin->price = $coin->total * $busdt_kn;
               break;
             default:
-              $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $coin->coin . 'EUR');
-              $data = $res->json();
-              if (isset($data['price'])) {
-                $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn * $data['price'];
+              if ($collection->firstWhere('symbol', $coin->coin . 'EUR')) {
+                $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn * $collection->firstWhere('symbol', $coin->coin . 'EUR')->price;
               } else {
                 //dd('test',$coin,$data);
-                $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=EUR' . $coin->coin);
-                $data = $res->json();
-                if (isset($data['price'])) $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn / $data['price'];
+                if ($collection->firstWhere('symbol', 'EUR' . $coin->coin)) $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn / $collection->firstWhere('symbol', 'EUR' . $coin->coin)->price;
               }
-              $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $coin->coin . 'BUSD');
-              $data = $res->json();
-              if (isset($data['price'])) {
-                $coin->busd = $coin->total * $busd_kn * $data['price'];
+              if ($collection->firstWhere('symbol', $coin->coin . 'BUSD')) {
+                $coin->busd = $coin->total * $busd_kn * $collection->firstWhere('symbol', $coin->coin . 'BUSD')->price;
               } else {
-                $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=BUSD' . $coin->coin);
-                $data = $res->json();
-                if (isset($data['price'])) $coin->busd = $coin->total * $busd_kn / $data['price'];
+                if ($collection->firstWhere('symbol', 'BUSD' . $coin->coin)) $coin->busd = $coin->total * $busd_kn / $collection->firstWhere('symbol', 'BUSD' . $coin->coin)->price;
               }
-              $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $coin->coin . 'USDT');
-              $data = $res->json();
-              if (isset($data['price'])) {
-                $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn * $data['price'];
+              if ($collection->firstWhere('symbol', $coin->coin . 'USDT')) {
+                $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn * $collection->firstWhere('symbol', $coin->coin . 'USDT')->price;
               } else {
-                $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=USDT' . $coin->coin);
-                $data = $res->json();
-                if (isset($data['price'])) $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn / $data['price'];
+                if ($collection->firstWhere('symbol', 'USDT' . $coin->coin)) $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn / $collection->firstWhere('symbol', 'USDT' . $coin->coin)->price;
               }
               if (!isset($coin->busd)) {
                 //dd($coin);

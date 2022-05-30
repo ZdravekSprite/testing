@@ -146,7 +146,7 @@
                 </x-nav-link>
               </div>
               <div class="pt-2 pb-1 border-t border-gray-200">
-                <x-nav-link :href="route('dustLog')" :active="request()->routeIs('dustLog')">
+                <x-nav-link :href="route('bDust')" :active="request()->routeIs('bDust')">
                   {{ __('dustLog') }}
                 </x-nav-link>
               </div>
