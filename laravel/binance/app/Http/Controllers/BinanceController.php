@@ -127,8 +127,10 @@ class BinanceController extends Controller
   public function test()
   {
     $systemStatus = (new BApi)->systemStatus();
+    //dd($systemStatus);
     if ($systemStatus->status) return $systemStatus->msg;
     $getAPIKeyPermission = (new BApi)->getAPIKeyPermission();
+    //dd($getAPIKeyPermission);
 
     $coins = [];
 
@@ -140,18 +142,26 @@ class BinanceController extends Controller
     }
     $getFlexibleProductPosition = (new BApi)->getFlexibleProductPosition();
     //dd($getFlexibleProductPosition);
+    /*
     foreach ($getFlexibleProductPosition as $key => $value) {
       $coins[$value->asset] = isset($coins[$value->asset]) ? [...$coins[$value->asset], 'save' => $value->totalAmount] : ['save' => $value->totalAmount];
     }
+    */
+    $lendingAccount = (new BApi)->lendingAccount();
+    //dd($getFlexibleProductPosition, $lendingAccount);
+    foreach ($lendingAccount->positionAmountVos as $key => $value) {
+      $coins[$value->asset] = isset($coins[$value->asset]) ? [...$coins[$value->asset], 'save' => $value->amount] : ['save' => $value->amount];
+    }
 
     $getStakingProductPosition = (new BApi)->getStakingProductPosition();
+    //dd($getStakingProductPosition);
     foreach ($getStakingProductPosition as $key => $value) {
       $coins[$value->asset] = isset($coins[$value->asset]) ? [...$coins[$value->asset], 'stake' => (isset($coins[$value->asset]['stake']) ? $coins[$value->asset]['stake'] + $value->amount : $value->amount)] : ['stake' => $value->amount];
     }
 
-
-    $url = 'https://api.binance.com/api/v3/ticker/price';
-    $symbolPriceTicker = $this->get($url);
+    $symbolPriceTicker = (new BApi)->symbolPriceTicker();
+    //$symbolPriceTicker = (new BApi)->symbolPriceTicker(['EURBUSD','BUSDUSDT']);
+    //dd($symbolPriceTicker);
     $collection = collect($symbolPriceTicker);
     $busdTotal = 0;
     foreach ($coins as $coin => $amount) {
@@ -170,15 +180,9 @@ class BinanceController extends Controller
       $coins[$coin] = [...$coins[$coin], 'busd' => $busd];
       $busdTotal += $busd;
     }
-/*
-    $url = 'https://api.binance.com/sapi/v1/lending/daily/redeem';
-    $array = array(
-      "productId" => "DAI",
-      "amount" => 1.95240903,
-      "type" => "FAST",
-    );
-    $redeemFlexibleProduct = $this->post_withHeaders($url, $array);
-*/
+
+    //$redeemFlexibleProduct = (new BApi)->redeemFlexibleProduct("DAI",1.95240903,"FAST");
+
     dd($getAPIKeyPermission, $getStakingProductPosition, $coins, $busdTotal);
   }
 }

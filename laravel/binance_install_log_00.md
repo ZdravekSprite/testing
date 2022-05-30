@@ -66,5 +66,5 @@ php artisan migrate:fresh
 php artisan route:cache
 php artisan serve
 git add .
-git commit -am "make:controller BApi + BHttp [laravel]"
+git commit -am "binance 2022 05 30"
 ```

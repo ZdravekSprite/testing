@@ -67,10 +67,6 @@ class BApi extends Controller
   {
     return (new BHttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/daily/token/position');
   }
-  public function lendingAccount()
-  {
-    return (new BHttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/union/account');
-  }
   public function getStakingProductPosition()
   {
     $array = array(

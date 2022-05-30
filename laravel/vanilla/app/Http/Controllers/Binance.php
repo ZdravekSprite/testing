@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Hnb;
 use App\Models\Symbol;
+use App\Http\Controllers\BHttp;
+use App\Http\Controllers\BApi;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -40,10 +42,11 @@ class Binance extends Controller
       $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
 
       $http = new BHttp();
-      $getall = $http->get_withHeaders('https://api.binance.com/sapi/v1/capital/config/getall');
+
+      $getall = (new BApi)->allCoinsInformation();
 
       $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
+      $serverTime = (new BApi)->serverTime();
       $date = gmdate("Y-m-d", $serverTime / 1000);
       $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
 
@@ -80,15 +83,12 @@ class Binance extends Controller
       //dd($total_kn);
       //dd('test portfolio');
 
-      $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=EURBUSD');
-      $data = $res->json();
-      $busd_kn = $eur_kn / $data['price'];
-      $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=BUSDUSDT');
-      $data = $res->json();
-      $busd_usdt = $data['price'];
-      $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
-      $data = $res->json();
-      $usdt_kn = (1 - 0.0075) * $eur_kn / $data['price'];
+      $symbolPriceTicker = (new BApi)->symbolPriceTicker();
+      $collection = collect($symbolPriceTicker);
+      //dd($symbolPriceTicker);
+      $busd_kn = $eur_kn / $collection->firstWhere('symbol', 'EURBUSD')->price;
+      $busd_usdt = $collection->firstWhere('symbol', 'BUSDUSDT')->price;
+      $usdt_kn = (1 - 0.0075) * $eur_kn / $collection->firstWhere('symbol', 'EURUSDT')->price;
       $busdt_kn =  $busd_kn / $busd_usdt;
       //dd($total_kn, $usdt_kn, $busd_usdt, $busd_kn, $busdt_kn);
 
