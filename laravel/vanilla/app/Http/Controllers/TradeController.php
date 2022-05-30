@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Arr;
 use App\Http\Controllers\HnbController;
+use App\Http\Controllers\BHttp;
 use App\Models\Kline;
+use DateTime;
 
 class TradeController extends Controller
 {
@@ -32,7 +34,8 @@ class TradeController extends Controller
       //$myTrades = $this->myTrades($symbol->symbol);
       $myTrades = $this->myTrades($symbol);
       if ($myTrades) {
-        //dd($myTrades);
+        $trades_table = Trade::where('user_id', '=', Auth::user()->id)->where('symbol', '=', $symbol)->orderBy('time', 'asc')->get();
+        //dd($myTrades,$trades_table);
         $allTrades[] = $myTrades;
       }
     }
@@ -80,13 +83,16 @@ class TradeController extends Controller
       "symbol" => $symbol
     );
     $myTrades = (new Bhttp)->get_withHeaders('https://api.binance.com/api/v3/myTrades', $array);
-    //dd($myTrades);
+    // if ($myTrades) dd($myTrades);
     foreach ($myTrades as $key => $myTrade) {
       //dd($myTrade);
       //dd(Trade::where('binanceId', '=', $myTrade->id)->count());
       if (!is_object($myTrade)) return null;
       if (Trade::where('binanceId', '=', $myTrade->id)->count() == 0) {
-        //dd($myTrade);
+        /*
+        $dateTime = new DateTime;
+        $dateTime->setTimestamp($myTrade->time / 1000);
+        */
         $trade = new Trade;
         $trade->user_id = Auth::user()->id;
         $trade->symbol = $myTrade->symbol;
@@ -99,10 +105,12 @@ class TradeController extends Controller
         $trade->commission = $myTrade->commission;
         $trade->commissionAsset = $myTrade->commissionAsset;
         $trade->time = $myTrade->time;
+        //$trade->time = $dateTime;
         $trade->isBuyer = $myTrade->isBuyer;
         $trade->isMaker = $myTrade->isMaker;
         $trade->isBestMatch = $myTrade->isBestMatch;
         $trade->save();
+        //dd($myTrade,$trade);
       }
     }
     return $myTrades;
@@ -116,6 +124,7 @@ class TradeController extends Controller
   public function dustLog()
   {
     $dustLog = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/asset/dribblet');
+    $dust = collect([]);
     //dd($dustLog->userAssetDribblets);
     foreach ($dustLog->userAssetDribblets as $key => $myDusts) {
       //dd($myDusts);
@@ -168,9 +177,13 @@ class TradeController extends Controller
           $trade->isBestMatch = true;
           $trade->save();
         }
+        $dust->prepend($myDust);
       }
     }
-    dd($dustLog);
+    //dd($dustLog);
+    $sortedData = $dust->sortByDesc('operateTime');
+    //dd($sortedData);
+    return view('binance.dust')->with(compact('sortedData'));
     return $dustLog;
   }
   /**
@@ -259,13 +272,25 @@ class TradeController extends Controller
     //$symbols = $assets;
     set_time_limit(0);
     foreach ($trades as $trade_key => $trade) {
+      //dd($trade);
+      /*
+      $the_date_time = new DateTime($trade->time);
+      $the_date_time_in_ms = ($the_date_time->format('U') * 1000) + ($the_date_time->format('u') / 1000);
+      $trade->time = $the_date_time_in_ms;
+      */
       $date = gmdate("Y-m-d", $trade->time / 1000);
+
+      //$dateTime = new DateTime;
+      //$dateTime->setTimestamp($trade->time);
+      //$date = gmdate("Y-m-d", $trade->time / 1000);
+      //$dateTime = new DateTime($trade->time);
+      //$date = $dateTime->format('Y-m-d');
       $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
       //dd($trade->eur_kn);
       if (!$hnb_eur_kn) {
         $response = Http::get('https://api.hnb.hr/tecajn/v2?datum-primjene=' . $date);
         $day = $response->json();
-        //dd($day[0]['datum_primjene']);
+        //dd($day,$date,$trade);
         foreach ($day as $key => $valuta) {
           $hnb = new Hnb;
           $hnb->broj_tecajnice = $valuta['broj_tecajnice'];
@@ -281,6 +306,7 @@ class TradeController extends Controller
           $hnb->save();
         }
         $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
+        //dd($hnb_eur_kn);
       }
       $trade->eur_kn = str_replace(',', '.', $hnb_eur_kn->kupovni_tecaj);
       //dd($trade->eur_kn);
