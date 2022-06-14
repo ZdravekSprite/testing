@@ -23,7 +23,7 @@
   <style>
   .floating-tooltip-2 {
     width: 85px;
-    height: 110px;
+    height: 130px;
     position: absolute;
     display: none;
     padding: 8px;
