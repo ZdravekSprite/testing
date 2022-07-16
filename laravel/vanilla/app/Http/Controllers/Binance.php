@@ -20,8 +20,6 @@ class Binance extends Controller
   protected $api2 = 'https://api2.binance.com';
   protected $api3 = 'https://api3.binance.com';
 
-  protected $getSystemStatus = '/sapi/v1/system/status';
-
   /**
    * Show the portfolio.
    *
@@ -45,6 +43,12 @@ class Binance extends Controller
 
       $getall = (new BApi)->allCoinsInformation();
       //dd($getall);
+
+      $getSystemStatus = (new BApi)->systemStatus();
+      if ($getSystemStatus->status == 1 ) {
+        return redirect(route('home'))->with('warning', 'system maintenance');
+      }
+      //dd($getSystemStatus);
 
       $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
       $serverTime = (new BApi)->serverTime();
