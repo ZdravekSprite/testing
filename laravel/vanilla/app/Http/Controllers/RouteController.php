@@ -226,6 +226,64 @@ class RouteController extends Controller
     //return Redirect::to("/route/{$route->uuid}")->with('success', 'Created');
   }
 
+  public function style_string($type) {
+    $gif = $type;
+    if ($type == null) $gif = 'c14';
+    if ($type == 40) $gif = 'b30-40';
+    if (substr($type, 0, 4) == 'b31-') $gif = 'b30-' . substr($type, 4);
+    $string = '
+    <Style id="' . $type . '">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>' . url('/') . '/gif/' . $gif . '</href>
+        </Icon>
+      </IconStyle>
+      <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      <LabelStyle>
+        <color>00ffffff</color>
+      </LabelStyle>
+    </Style>';
+    return $string;
+  }
+  public function sign_placemarker($key, $type, $lng, $lat) {
+    $string = '
+    <Placemark>
+      <name>Oznaka ' . $key . '</name>
+      <description>' . $type . '</description>
+      <styleUrl>#' . $type . '</styleUrl>
+      <Point>
+        <coordinates>' . $lng . ',' . $lat . ',0</coordinates>
+      </Point>
+    </Placemark>';
+    return $string;
+  }
+  public function path_placemarker($title, $route, $lookAtLng, $lookAtLat, $style, $coords) {
+    $string = '
+    <Placemark>
+    <name>Path ' . $title . '</name>
+    <description>' . $route . '</description>
+    <LookAt>
+      <longitude>' . $lookAtLng . '</longitude>
+      <latitude>' . $lookAtLat . '</latitude>
+      <altitude>0</altitude>
+      <heading>-50</heading>
+      <tilt>60</tilt>
+      <range>80</range>
+      <altitudeMode>relativeToGround</altitudeMode>
+    </LookAt>
+    <styleUrl>#' . $style . '</styleUrl>
+    <LineString>
+      <extrude>1</extrude>
+      <tessellate>1</tessellate>
+      <altitudeMode>absolute</altitudeMode>
+      <coordinates>' . $coords . '
+      </coordinates>
+    </LineString>
+  </Placemark>';
+    return $string;
+  }
+
   /**
    * Display the specified resource.
    *
@@ -246,101 +304,59 @@ class RouteController extends Controller
       $types = [];
 
       $speedLimit = null;
-      $cooedinates = '';
+      $coordinates = [];
       if (isset(json_decode($route->data)->path)) {
         foreach (json_decode($route->data)->path as $key => $value) {
-          $cooedinates .= '
-        ' . $value->location->coords->longitude . ',' . $value->location->coords->latitude . ',0';
+          $coordinates[] = [$value->location->coords->longitude, $value->location->coords->latitude , $value->location->coords->heading];
         }
-        $lookAtLng = json_decode($route->data)->path[0]->location->coords->longitude;
-        $lookAtLat = json_decode($route->data)->path[0]->location->coords->latitude;
       } else {
         foreach (json_decode($route->data)->data as $key => $value) {
-          $cooedinates .= '
-        ' . $value->coords->longitude . ',' . $value->coords->latitude . ',0';
+          $coordinates[] = [$value->coords->longitude, $value->coords->latitude , $value->coords->heading];
           if ($speedLimit != $value->speedLimit) {
             $types[] = $value->speedLimit ? 'b30-' . $value->speedLimit : 'c14';
-            $signs .= '
-    <Placemark>
-      <name>Oznaka ' . $key . '</name>
-      <description>' . $value->speedLimit . '</description>
-      <styleUrl>#' . ($value->speedLimit ? 'b30-' . $value->speedLimit : 'c14') . '</styleUrl>
-      <Point>
-        <coordinates>' . $value->coords->longitude . ',' . $value->coords->latitude . ',0</coordinates>
-      </Point>
-    </Placemark>';
+            $signs .= $this->sign_placemarker($key, ($value->speedLimit ? 'b30-' . $value->speedLimit : 'c14'), $value->coords->longitude, $value->coords->latitude);
             $speedLimit = $value->speedLimit;
           }
         }
-        $lookAtLng = json_decode($route->data)->data[0]->coords->longitude;
-        $lookAtLat = json_decode($route->data)->data[0]->coords->latitude;
       }
-      $paths .= '
-    <Placemark>
-      <name>Path ' . json_decode($route->data)->title . '</name>
-      <description>' . json_decode($route->data)->route . '</description>
-      <LookAt>
-        <longitude>' . $lookAtLng . '</longitude>
-        <latitude>' . $lookAtLat . '</latitude>
-        <altitude>0</altitude>
-        <heading>-50</heading>
-        <tilt>60</tilt>
-        <range>80</range>
-        <altitudeMode>relativeToGround</altitudeMode>
-      </LookAt>
-      <styleUrl>#testExample</styleUrl>
-      <LineString>
-        <extrude>1</extrude>
-        <tessellate>1</tessellate>
-        <altitudeMode>absolute</altitudeMode>
-        <coordinates>' . $cooedinates . '
-        </coordinates>
-      </LineString>
-    </Placemark>
-    ';
+      $coords_string = '';
+      $path_style = $coordinates[0][2]*1<180 ? 'test1' : 'test2';
+      $lookAtLng = $coordinates[0][0];
+      $lookAtLat = $coordinates[0][1];
+      foreach ($coordinates as $key => $value) {
+        $new_style = $value[2]*1<180 ? 'test1' : 'test2';
+        if ($new_style != $path_style) {
+          $coords_string .= '
+          ' .$value[0] . ',' . $value[1] . ',0';
+          $paths .= $this->path_placemarker(json_decode($route->data)->title, json_decode($route->data)->route, $lookAtLng, $lookAtLat, $path_style, $coords_string);
+          $path_style = $new_style;
+          $lookAtLng = $value[0];
+          $lookAtLat = $value[1];
+          $coords_string = '';
+          }
+        $coords_string .= '
+        ' .$value[0] . ',' . $value[1] . ',0';
+      }
+      $paths .= $this->path_placemarker(json_decode($route->data)->title, json_decode($route->data)->route, $lookAtLng, $lookAtLat, $path_style, $coords_string);
       if (isset(json_decode($route->data)->signs)) {
         foreach (json_decode($route->data)->signs as $key => $value) {
           $types[] = $value->type;
-          $signs .= '
-    <Placemark>
-      <name>Oznaka ' . $key . '</name>
-      <description>' . $value->type . '</description>
-      <styleUrl>#' . $value->type . '</styleUrl>
-      <Point>
-        <coordinates>' . $value->coords->longitude . ',' . $value->coords->latitude . ',0</coordinates>
-      </Point>
-    </Placemark>';
+          $signs .= $this->sign_placemarker($key, $value->type, $value->coords->longitude, $value->coords->latitude);
         }
       }
       
       //dd(array_unique($types));
       $styles = '';
       foreach (array_unique($types) as $type) {
-        $gif = $type;
-        if ($type == null) $gif = 'c14';
-        if ($type == 40) $gif = 'b30-40';
-        if (substr($type, 0, 4) == 'b31-') $gif = 'b30-' . substr($type, 4);
-        $styles .= '
-    <Style id="' . $type . '">
-      <IconStyle>
-        <scale>1</scale>
-        <Icon>
-          <href>' . url('/') . '/gif/' . $gif . '</href>
-        </Icon>
-      </IconStyle>
-      <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
-      <LabelStyle>
-        <color>00ffffff</color>
-      </LabelStyle>
-    </Style>';
+        $styles .= $this->style_string($type);
       };
 
       $kml_string = '<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
-    <name>Paths.kml</name>
-    <description>All path</description>
-    <Style id="testExample">
+    <name>' . json_decode($route->data)->title . '</name>
+    <description>' . json_decode($route->data)->route . '</description>
+    <Style id="test1">
       <IconStyle>
         <scale>1</scale>
           <Icon>
@@ -353,6 +369,25 @@ class RouteController extends Controller
       </LabelStyle>
       <LineStyle>
         <color>ffff00aa</color>
+        <width>2</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color>
+      </PolyStyle>
+    </Style>
+    <Style id="test2">
+      <IconStyle>
+        <scale>1</scale>
+          <Icon>
+            <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+          </Icon>
+        <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <color>00ffffff</color>
+      </LabelStyle>
+      <LineStyle>
+        <color>aa00ffff</color>
         <width>2</width>
       </LineStyle>
       <PolyStyle>
