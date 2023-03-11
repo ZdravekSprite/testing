@@ -44,7 +44,7 @@ class ArticleController extends Controller
     $article->data = json_encode($request->input('data')) ?? '[]';
     //dd($request,$article);
     $article->save();
-    return redirect(route('articles.show'))->with('success', 'Article Created');
+    return redirect(route('articles.show', $article))->with('success', 'Article Created');
   }
 
   /**
@@ -88,7 +88,7 @@ class ArticleController extends Controller
     $article->data = json_encode($data) ?? '[]';
     //dd($article,$request);
     $article->save();
-    return redirect(route('articles.show'))->with('success', 'Article Updated');
+    return redirect(route('articles.show', $article))->with('success', 'Article Updated');
   }
 
   /**
