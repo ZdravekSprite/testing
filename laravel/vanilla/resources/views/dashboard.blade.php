@@ -43,11 +43,13 @@
           </div>
           @else
           <p>You're logged in!</p>
+          @endhasrole
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
           <form method="POST" action="{{ route('settings.update')}}">
             @csrf
+            @hasrole('user')
             <div class="mt-4">
               <x-label for="start1" :value="__('Početak 1. smjene')" />
               <input id="start1" type="time" name="start1" value="{{ $settings ? $settings->start1->format('H:i') : old('start1')?? '06:00'}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
@@ -78,6 +80,7 @@
               <input id="zaposlen" type="date" name="zaposlen" value="{{ ($settings && $settings->zaposlen) ? $settings->zaposlen->format('Y-m-d') : old('zaposlen')}}" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" />
               <x-p>Da bi se mogao točno izračunati prvi mjesec rada ako se nije zaposlilo prvog u mjesecu.</x-p>
             </div>
+            @endhasrole
             @hasrole('binance')
             <div class="mt-4">
               <x-label for="bkey" :value="__('BINANCE_API_KEY')" />
@@ -95,7 +98,6 @@
               </x-button>
             </div>
           </form>
-          @endhasrole
         </div>
       </div>
     </div>

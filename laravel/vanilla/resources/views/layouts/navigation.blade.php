@@ -39,6 +39,16 @@
             {{ __('Menage Roles') }}
           </x-nav-link>
         </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('routes.index')" :active="request()->routeIs('routes.index')">
+            {{ __('Rute') }}
+          </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('signs.index')" :active="request()->routeIs('routes.index')">
+            {{ __('Znakovi') }}
+          </x-nav-link>
+        </div>
         @endhasrole
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
@@ -123,6 +133,26 @@
               <div class="pt-2 pb-1 border-t border-gray-200">
                 <x-nav-link :href="route('bExchange')" :active="request()->routeIs('bExchange')">
                   {{ __('bExchange') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('bTest')" :active="request()->routeIs('bTest')">
+                  {{ __('test') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('klines.index')" :active="request()->routeIs('klines.index')">
+                  {{ __('klines') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('bDust')" :active="request()->routeIs('bDust')">
+                  {{ __('dustLog') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('trades.index')" :active="request()->routeIs('trades.index')">
+                  {{ __('trades') }}
                 </x-nav-link>
               </div>
             </x-slot>

@@ -16,17 +16,17 @@ class AddSocialiteToUsersTable extends Migration
     Schema::table('users', function (Blueprint $table) {
       $table->string('name')->nullable()->change();
       $table->string('password')->nullable()->change();
-      $table->string('facebook_id')->nullable();
-      $table->string('twitter_id')->nullable();
-      $table->string('linkedin_id')->nullable();
-      $table->string('google_id')->nullable();
-      $table->string('github_id')->nullable();
-      $table->string('avatar')->nullable();
-      $table->string('facebook_avatar')->nullable();
-      $table->string('twitter_avatar')->nullable();
-      $table->string('linkedin_avatar')->nullable();
-      $table->string('google_avatar')->nullable();
-      $table->string('github_avatar')->nullable();
+      $table->string('facebook_id')->nullable()->change();
+      $table->string('twitter_id')->nullable()->change();
+      $table->string('linkedin_id')->nullable()->change();
+      $table->string('google_id')->nullable()->change();
+      $table->string('github_id')->nullable()->change();
+      $table->string('avatar')->nullable()->change();
+      $table->string('facebook_avatar')->nullable()->change();
+      $table->string('twitter_avatar')->nullable()->change();
+      $table->string('linkedin_avatar')->nullable()->change();
+      $table->string('google_avatar')->nullable()->change();
+      $table->string('github_avatar')->nullable()->change();
     });
   }
 

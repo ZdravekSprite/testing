@@ -49,6 +49,7 @@
               @endif
             </tbody>
           </table>
+          {{ $trades->links() }}
         </div>
       </div>
     </div>

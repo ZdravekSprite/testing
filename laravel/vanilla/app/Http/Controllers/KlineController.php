@@ -39,8 +39,8 @@ class KlineController extends Controller
     $kline = Kline::where('symbol', '=', $symbol)->where('start_time', '=', $time)->first();
     if (!$kline) {
       $decode_kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $symbol . '&interval=1m&limit=1&startTime=' . $time));
-      //dd($symbol);
       if (!isset($decode_kline[0])) return null;
+      //dd($symbol,$decode_kline);
       $kline = KlineController::add_kline($symbol, '1m', $decode_kline[0]);
     }
     //dd($kline);
@@ -174,7 +174,7 @@ class KlineController extends Controller
       $trades = Trade::where('user_id', '=', Auth::user()->id)->where('time', '>', ($serverTime - 5000 * 600000))->get();
     }
     //dd($trades);
-    $symbols_list = ['ETH', 'BNB', 'SOL', 'MATIC', 'LUNA', 'ADA', 'DOT', 'FTT', 'XMR'];
+    $symbols_list = ['ETH', 'BNB', 'SOL', 'MATIC', 'ADA', 'DOT', 'FTT', 'XMR'];
     //$symbols_bnb_list = ['DAR', 'QI', 'CITY'];
     //$symbols_usdt_list = ['SANTOS'];
     $symbols = [
@@ -206,14 +206,12 @@ class KlineController extends Controller
     $symbols[] = ['EURBUSD', [], [], [], '1d'];
     $symbols[] = ['EURBUSD', [], [], [], '1h'];
     $symbols[] = ['EURBUSD', [], [], [], '1m'];
-    $symbols[] = ['BTCDAI', [], [], [], '1h'];
-    $symbols[] = ['BUSDDAI', [], [], [], '1d'];
-    $symbols[] = ['BUSDDAI', [], [], [], '1h'];
-    $symbols[] = ['BUSDDAI', [], [], [], '1m'];
     //dd($openOrders,$symbols);
     foreach ($symbols as $key => $symbol) {
-      $symbol_info = Symbol::where('symbol', '=', $symbol)->first() ?? SymbolController::exchangeInfo($symbol);
+      $symbol_info = Symbol::where('symbol', '=', $symbol)->first() ?? SymbolController::exchangeInfo($symbol);      
       $symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->tickSize + 1;
+      if ($symbol_info->symbol == 'LUNABUSD') $symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->tickSize + 5;
+      //dd($symbol_info);
       //$symbols[$key][5] = Symbol::where('symbol', '=', $symbol)->first()->stepSize;
       if (isset($openOrders)) {
         foreach ($openOrders as $order) {

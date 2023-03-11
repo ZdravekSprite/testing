@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Hnb;
 use App\Models\Symbol;
+use App\Http\Controllers\BHttp;
+use App\Http\Controllers\BApi;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -38,24 +40,20 @@ class Binance extends Controller
       }
       $apiKey = Auth::user()->settings->BINANCE_API_KEY;
       $apiSecret = Auth::user()->settings->BINANCE_API_SECRET;
-      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
-      $timeStamp = 'timestamp=' . $serverTime;
-      $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-      $getall = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/capital/config/getall', [
-        'timestamp' => $serverTime,
-        'signature' => $signature
-      ]));
 
+      $http = new BHttp();
+
+      $getall = (new BApi)->allCoinsInformation();
+      //dd($getall);
+
+      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
+      $serverTime = (new BApi)->serverTime();
       $date = gmdate("Y-m-d", $serverTime / 1000);
       $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
 
       if (!$hnb_eur_kn) {
-        
-        try
-        {
+
+        try {
           $response = Http::get('https://api.hnb.hr/tecajn/v2?datum-primjene=' . $date);
           $day = $response->json();
           foreach ($day as $key => $valuta) {
@@ -73,14 +71,12 @@ class Binance extends Controller
             $hnb->save();
           }
           $hnb_eur_kn = Hnb::where('datum_primjene', '=', $date)->where('valuta', '=', 'EUR')->first();
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
           logger()->error('Goutte client error ' . $e->getMessage());
           //dd($e->getMessage());
           $hnb_eur_kn = Hnb::orderBy('datum_primjene', 'desc')->where('valuta', '=', 'EUR')->first();
           //dd($hnb_eur_kn);
-      }
+        }
         //dd($response->json());
       }
       $eur_kn = str_replace(',', '.', $hnb_eur_kn->kupovni_tecaj) / 1.01;
@@ -88,56 +84,37 @@ class Binance extends Controller
       //dd($total_kn);
       //dd('test portfolio');
 
-      $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=EURBUSD');
-      $data = $res->json();
-      $busd_kn = $eur_kn / $data['price'];
-      $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=BUSDUSDT');
-      $data = $res->json();
-      $busd_usdt = $data['price'];
-      $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=EURUSDT');
-      $data = $res->json();
-      $usdt_kn = (1 - 0.0075) * $eur_kn / $data['price'];
+      $symbolPriceTicker = (new BApi)->symbolPriceTicker();
+      $collection = collect($symbolPriceTicker);
+      //dd($symbolPriceTicker);
+      $busd_kn = $eur_kn / $collection->firstWhere('symbol', 'EURBUSD')->price;
+      $busd_usdt = $collection->firstWhere('symbol', 'BUSDUSDT')->price;
+      $usdt_kn = (1 - 0.0075) * $eur_kn / $collection->firstWhere('symbol', 'EURUSDT')->price;
       $busdt_kn =  $busd_kn / $busd_usdt;
       //dd($total_kn, $usdt_kn, $busd_usdt, $busd_kn, $busdt_kn);
 
-      //dd($getall);
-      /*
-      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
-      $timeStamp = 'timestamp=' . $serverTime;
-      $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-      $lendingList = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/lending/daily/product/list', [
-        'timestamp' => $serverTime,
-        'signature' => $signature
-      ]));
-      dd($lendingList);
-      */
-      /* */
-      $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-      $serverTime = $time->serverTime;
-      $timeStamp = 'timestamp=' . $serverTime;
-      $signature = hash_hmac('SHA256', $timeStamp, $apiSecret);
-      $lendingAccount = json_decode(Http::withHeaders([
-        'X-MBX-APIKEY' => $apiKey
-      ])->get('https://api.binance.com/sapi/v1/lending/union/account', [
-        'timestamp' => $serverTime,
-        'signature' => $signature
-      ]));
+      $lendingAccount = (new BApi)->lendingAccount();
       //dd($lendingAccount->positionAmountVos);
-      /* */
+
+      $getStakingProductPosition = (new BApi)->getStakingProductPosition();
+      //dd($getStakingProductPosition);
 
       $balance = [];
       $total = 0;
       foreach ($getall as $coin) {
         $coin->lending = 0;
+        $coin->staking = 0;
         foreach ($lendingAccount->positionAmountVos as $lending) {
           if ($lending->asset == $coin->coin) {
             $coin->lending = $lending->amount;
           }
         }
-        $coin->total = $coin->free + $coin->locked + $coin->freeze + $coin->withdrawing + $coin->ipoing + $coin->ipoable + $coin->storage + $coin->lending;
+        foreach ($getStakingProductPosition as $staking) {
+          if ($staking->asset == $coin->coin) {
+            $coin->staking += $staking->amount;
+          }
+        }
+        $coin->total = $coin->free + $coin->locked + $coin->freeze + $coin->withdrawing + $coin->ipoing + $coin->ipoable + $coin->storage + $coin->lending + $coin->staking;
         if ($coin->total > 0) {
           $coin->price = 0;
           switch ($coin->coin) {
@@ -154,33 +131,21 @@ class Binance extends Controller
               $coin->price = $coin->total * $busdt_kn;
               break;
             default:
-              $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $coin->coin . 'EUR');
-              $data = $res->json();
-              if (isset($data['price'])) {
-                $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn * $data['price'];
+              if ($collection->firstWhere('symbol', $coin->coin . 'EUR')) {
+                $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn * $collection->firstWhere('symbol', $coin->coin . 'EUR')->price;
               } else {
                 //dd('test',$coin,$data);
-                $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=EUR' . $coin->coin);
-                $data = $res->json();
-                if (isset($data['price'])) $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn / $data['price'];
+                if ($collection->firstWhere('symbol', 'EUR' . $coin->coin)) $coin->eur = (1 - 0.0075) * $coin->total * $eur_kn / $collection->firstWhere('symbol', 'EUR' . $coin->coin)->price;
               }
-              $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $coin->coin . 'BUSD');
-              $data = $res->json();
-              if (isset($data['price'])) {
-                $coin->busd = $coin->total * $busd_kn * $data['price'];
+              if ($collection->firstWhere('symbol', $coin->coin . 'BUSD')) {
+                $coin->busd = $coin->total * $busd_kn * $collection->firstWhere('symbol', $coin->coin . 'BUSD')->price;
               } else {
-                $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=BUSD' . $coin->coin);
-                $data = $res->json();
-                if (isset($data['price'])) $coin->busd = $coin->total * $busd_kn / $data['price'];
+                if ($collection->firstWhere('symbol', 'BUSD' . $coin->coin)) $coin->busd = $coin->total * $busd_kn / $collection->firstWhere('symbol', 'BUSD' . $coin->coin)->price;
               }
-              $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=' . $coin->coin . 'USDT');
-              $data = $res->json();
-              if (isset($data['price'])) {
-                $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn * $data['price'];
+              if ($collection->firstWhere('symbol', $coin->coin . 'USDT')) {
+                $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn * $collection->firstWhere('symbol', $coin->coin . 'USDT')->price;
               } else {
-                $res = Http::get('https://api.binance.com/api/v3/ticker/price?symbol=USDT' . $coin->coin);
-                $data = $res->json();
-                if (isset($data['price'])) $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn / $data['price'];
+                if ($collection->firstWhere('symbol', 'USDT' . $coin->coin)) $coin->usdt =  (1 - 0.0075) * $coin->total * $usdt_kn / $collection->firstWhere('symbol', 'USDT' . $coin->coin)->price;
               }
               if (!isset($coin->busd)) {
                 //dd($coin);
@@ -201,20 +166,20 @@ class Binance extends Controller
         if ($coin->coin == 'BUSD') {
           $coin->ATH = null;
         } elseif ($coin->coin == 'DAI') {
-          $binanceSocket .= 'busd'.Str::lower($coin->coin).'@kline_1m/';
+          $binanceSocket .= 'busd' . Str::lower($coin->coin) . '@kline_1m/';
           $coin->ATH = null;
         } elseif ($coin->coin == 'SANTOS') {
-          $binanceSocket .= Str::lower($coin->coin).'usdt@kline_1m/';
+          $binanceSocket .= Str::lower($coin->coin) . 'usdt@kline_1m/';
           $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $coin->coin . 'USDT&interval=1d'));
-          $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2))*1;
+          $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2)) * 1;
         } else {
-          $binanceSocket .= Str::lower($coin->coin).'busd@kline_1m/';
+          $binanceSocket .= Str::lower($coin->coin) . 'busd@kline_1m/';
           if ($coin->coin == 'EUR') {
             $coin->ATH = null;
           } else {
             $kline = json_decode(Http::get('https://api.binance.com/api/v3/klines?symbol=' . $coin->coin . 'BUSD&interval=1d'));
             //dd(max(array_column($kline, 2)));
-            $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2))*1;
+            $coin->ATH = is_object($kline) ? null : max(array_column($kline, 2)) * 1;
           }
         }
       }
@@ -230,21 +195,10 @@ class Binance extends Controller
    */
   public function openOrders($symbol = 'BNBBUSD')
   {
-    $apiKey = Auth::user()->BINANCE_API_KEY;
-    $apiSecret = Auth::user()->BINANCE_API_SECRET;
-    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-    $serverTime = $time->serverTime;
-    $queryArray = array(
-      "symbol" => $symbol,
-      "timestamp" => $serverTime
+    $array = array(
+      "symbol" => $symbol
     );
-    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-    $signatureArray = array("signature" => $signature);
-    $getArray = $queryArray + $signatureArray;
-    $openOrders = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get('https://api.binance.com/api/v3/openOrders', $getArray));
-
+    $openOrders = (new Bhttp)->get_withHeaders('https://api.binance.com/api/v3/openOrders', $array);
     return $openOrders;
   }
 
@@ -252,23 +206,84 @@ class Binance extends Controller
    */
   public function allOrders($symbol = 'BNBBUSD')
   {
-
-    $apiKey = Auth::user()->BINANCE_API_KEY;
-    $apiSecret = Auth::user()->BINANCE_API_SECRET;
-    $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
-    $serverTime = $time->serverTime;
-    $queryArray = array(
-      "symbol" => $symbol,
-      "timestamp" => $serverTime
+    $array = array(
+      "symbol" => $symbol
     );
-    $signature = hash_hmac('SHA256', http_build_query($queryArray), $apiSecret);
-    $signatureArray = array("signature" => $signature);
-    $getArray = $queryArray + $signatureArray;
-    $allOrders = json_decode(Http::withHeaders([
-      'X-MBX-APIKEY' => $apiKey
-    ])->get('https://api.binance.com/api/v3/allOrders', $getArray));
-
+    $allOrders = (new Bhttp)->get_withHeaders('https://api.binance.com/api/v3/allOrders', $array);
     return $allOrders;
+  }
+
+  public function getInterestHistory()
+  {
+    if (!Auth::user()) {
+      return redirect(route('home'))->with('warning', 'not auth');
+    } else {
+      if (!isset(Auth::user()->settings->BINANCE_API_KEY)) {
+        return redirect(route('home'))->with('warning', 'no key');
+      }
+      if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
+        return redirect(route('home'))->with('warning', 'no secret');
+      }
+      $array = array(
+        "lendingType" => "DAILY"
+      );
+      $interestHistory = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/union/interestHistory', $array);
+      return $interestHistory;
+    }
+  }
+
+  public function getPurchaseRecord()
+  {
+    if (!Auth::user()) {
+      return redirect(route('home'))->with('warning', 'not auth');
+    } else {
+      if (!isset(Auth::user()->settings->BINANCE_API_KEY)) {
+        return redirect(route('home'))->with('warning', 'no key');
+      }
+      if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
+        return redirect(route('home'))->with('warning', 'no secret');
+      }
+      $array = array(
+        "lendingType" => "CUSTOMIZED_FIXED"
+      );
+      $purchaseRecord = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/union/purchaseRecord', $array);
+      return $purchaseRecord;
+    }
+  }
+
+  public function getFixedAndActivityProjectList()
+  {
+    if (!Auth::user()) {
+      return redirect(route('home'))->with('warning', 'not auth');
+    } else {
+      if (!isset(Auth::user()->settings->BINANCE_API_KEY)) {
+        return redirect(route('home'))->with('warning', 'no key');
+      }
+      if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
+        return redirect(route('home'))->with('warning', 'no secret');
+      }
+      $array = array(
+        "lendingType" => "CUSTOMIZED_FIXED"
+      );
+      $list = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/project/list', $array);
+      return $list;
+    }
+  }
+
+  public function getProjectPosition()
+  {
+    if (!Auth::user()) {
+      return redirect(route('home'))->with('warning', 'not auth');
+    } else {
+      if (!isset(Auth::user()->settings->BINANCE_API_KEY)) {
+        return redirect(route('home'))->with('warning', 'no key');
+      }
+      if (!isset(Auth::user()->settings->BINANCE_API_SECRET)) {
+        return redirect(route('home'))->with('warning', 'no secret');
+      }
+      $list = (new Bhttp)->get_withHeaders('https://api.binance.com/sapi/v1/lending/project/position/list');
+      return $list;
+    }
   }
 
   /**
@@ -465,7 +480,7 @@ class Binance extends Controller
     */
     $flat_array = '';
     foreach ($assets as $key => $value) {
-      $flat_array .= 'asset='.$value.'&';
+      $flat_array .= 'asset=' . $value . '&';
     }
     //dd($flat_array);
     $ch = curl_init();
@@ -484,9 +499,9 @@ class Binance extends Controller
     ));
     $time = json_decode(Http::get('https://api.binance.com/api/v3/time'));
     $serverTime = $time->serverTime;
-    $queryArray = $flat_array."timestamp=".$serverTime;
+    $queryArray = $flat_array . "timestamp=" . $serverTime;
     $signature = hash_hmac('SHA256', $queryArray, $apiSecret);
-    $query = $queryArray."&signature=".$signature;
+    $query = $queryArray . "&signature=" . $signature;
 
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $query);

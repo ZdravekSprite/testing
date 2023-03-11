@@ -2,22 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\Binance;
-use App\Http\Controllers\TestBinance;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\DayController;
 use App\Http\Controllers\DrawController;
-use App\Http\Controllers\HolidayController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\SymbolController;
-use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\TradeController;
-use App\Http\Controllers\KlineController;
 use App\Http\Controllers\LottoController;
-use App\Http\Controllers\MonthController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RouteController;
+use App\Http\Controllers\SignController;
 use App\Http\Controllers\Admin\ImpersonateController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\BSystem;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
@@ -105,84 +97,28 @@ Route::get('login/{provider}/callback', function ($provider) {
 Route::get('login/{provider}', 'Auth\LoginController@redirectToProvider')->name('{provider}Login');
 Route::get('login/{provider}/callback', 'Auth\LoginController@handleProviderCallback')->name('{provider}Callback');
 */
-//Route::resource('days', DayController::class);
-Route::get('/days', [DayController::class, 'index'])->name('days.index');
-Route::get('/day/create', [DayController::class, 'create'])->name('day.create');
-Route::post('/day', [DayController::class, 'store'])->name('day.store');
-Route::get('/day/{date}', [DayController::class, 'show'])->name('day.show');
-Route::get('/day/edit/{date}', [DayController::class, 'edit'])->name('day.edit');
-Route::post('/day/{date}', [DayController::class, 'update'])->name('day.update');
-Route::delete('/day/{date}', [DayController::class, 'destroy'])->name('day.destroy');
 
-Route::resource('holidays', HolidayController::class);
-
-Route::get('/month', [DayController::class, 'month'])->name('month');
-//Route::get('/platna', [MonthController::class, 'platna_lista'])->name('platna');
-Route::resource('months', MonthController::class)->middleware(['auth']);
-Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
-
-Route::get('/month/print/{month?}', [MonthController::class, 'print'])->name('print');
-Route::get('/month/{month}', [DayController::class, 'month']);
-//Route::get('/month/print/{month}', [DayController::class, 'print'])->name('print');
-Route::get('/days/create/{date}', [DayController::class, 'create']);
-//Route::get('/lista', PlatnaLista::class)->name('lista');
-Route::get('/lista', [MonthController::class, 'platna_lista'])->name('lista');
-Route::get('/lista/{month}', [MonthController::class, 'platna_lista']);
-
-//Route::put('/lista', [PlatnaLista::class, 'data']);
-Route::put('/sick/{date}', [DayController::class, 'sick'])->name('sick');
 Route::get('migrate', function () {
   Artisan::call('migrate');
-  return 'Database migration success.';
+  return redirect(route('dashboard'))->with('success', 'Database migration success.');
 })->middleware(['auth'])->name('migrate');
 Route::get('rollback', function () {
   Artisan::call('migrate:rollback');
-  return 'Database migrate:rollback success.';
+  return redirect(route('dashboard'))->with('success', 'Database migrate:rollback success.');
 })->middleware(['auth'])->name('rollback');
 Route::get('seed', function () {
   Artisan::call('db:seed --class=RoleSeeder');
-  return 'php artisan db:seed --class=RoleSeeder success.';
+  return redirect(route('dashboard'))->with('success', 'php artisan db:seed --class=RoleSeeder success.');
 })->middleware(['auth'])->name('seed');
 Route::get('reset', function () {
   Artisan::call('route:cache');
-  return 'reset success.';
+  return redirect(route('dashboard'))->with('success', 'reset success');
 })->middleware(['auth'])->name('reset');
+Route::get('phpinfo', function () {
+  return phpinfo();
+})->middleware(['auth'])->name('phpinfo');
 
-Route::get('convert', function () {
-  /*
-  Day::where('sick', 1)
-    ->update(['state' => 4]);
-  Day::where('go', 1)
-    ->update(['state' => 2]);
-  Day::where('dopust', 1)
-    ->update(['state' => 3]);
-  Day::where('state', 2)
-    ->update(['end' => '0:00:00']);
-    Day::where('state', 3)
-    ->update(['end' => '0:00:00']);
-    Day::where('state', 4)
-    ->update(['end' => '0:00:00']);
-  
-  Day::where('state', 0)
-  ->where('duration', '22:40:00')
-  ->update(['state' => 1,'end' => '22:40:00']);
-  
-  $days = Day::all();
-  foreach ($days as $day) {
-    //echo $day->name;
-    //if ($day->sick) $day->state = 4;
-    //if ($day->go) $day->state = 2;
-    //if ($day->dopust) $day->state = 3;
-    if ($day->duration) $day->end = $day->duration;
-    if ($day->duration && !$day->state) $day->state = 1;
-    if ($day->night_duration) $day->night = $day->night_duration;
-    $day->save;
-    dd($day);
-  }
-  dd($days, Day::all());
-  */
-  return 'Database days converted.';
-})->middleware(['auth'])->name('convert');
+require __DIR__ . '/ers.php';
 
 Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
 Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->group(function () {
@@ -195,34 +131,7 @@ Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::get('/messages', [ChatController::class, 'fetchAllMessages']);
 Route::post('/messages', [ChatController::class, 'sendMessage']);
 
-Route::resource('trades', TradeController::class);
-Route::resource('symbols', SymbolController::class);
-Route::get('/binance/allMyTrades', [TradeController::class, 'allMyTrades'])->name('allMyTrades');
-Route::get('/binance/dust', [TradeController::class, 'dustLog']);
-Route::get('/binance/prosjek', [TradeController::class, 'prosjek']);
-Route::resource('klines', KlineController::class);
-
-Route::get('/binance/portfolio', [Binance::class, 'portfolio'])->name('bPortfolio');
-//Route::get('/binance/chart', [Binance::class, 'chart']);
-Route::get('/binance/chart/{coin?}', [Binance::class, 'chart']);
-Route::get('/binance/orders', [Binance::class, 'orders']);
-Route::get('/binance/dashboard', [Binance::class, 'dashboard'])->middleware(['auth']);
-/*
-Route::get('/binance/dashboard', function () {
-  return view('/binance/dashboard');
-})->middleware(['auth']);
-*/
-Route::post('/binance/order/test', [Binance::class, 'testNewOrder'])->name('testNewOrder');
-
-Route::post('/binance/dustTransfer', [Binance::class, 'dustTransfer'])->name('dustTransfer');
-Route::get('/binance/test', [TestBinance::class, 'test'])->name('bTest');
-Route::get('/binance/crta', [TradeController::class, 'crta']);
-
-Route::get('/binance/', function () {
-  return view('binance.welcome');
-})->name('bHome');
-Route::get('/binance/exchange', [SymbolController::class, 'exchangeInfo'])->name('bExchange');
-//Route::get('/binance/exchange/info/{symbol?}', [BSystem::class, 'exchangeInfo'])->name('bExchangeInfo');
+require __DIR__ . '/binance.php';
 
 Route::get('/lotto/hl', [LottoController::class, 'hl']);
 Route::get('/lotto/eurojackpot', [LottoController::class, 'eurojackpot'])->name('eurojackpot');
@@ -240,3 +149,7 @@ Route::get('/help/fond', function () {
 })->name('fond');
 
 Route::resource('articles', ArticleController::class);
+Route::resource('routes', RouteController::class);
+Route::resource('signs', SignController::class);
+Route::get('/gif/{sign}', [SignController::class, 'gif']);
+Route::get('/svg/{sign}', [SignController::class, 'svg']);

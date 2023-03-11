@@ -1,16 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>klines</title>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="userId" content="{{ Auth::check() ? Auth::user()->id : '' }}">
+
+  <title>{{ config('app.name', 'Laravel') }}</title>
+  <link rel="icon" type="image/x-icon" href="/img/binance.ico">
+
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+
+  <!-- Scripts -->
+  <script src="{{ asset('js/app.js') }}" defer></script>
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   <style>
   .floating-tooltip-2 {
     width: 85px;
-    height: 110px;
+    height: 130px;
     position: absolute;
     display: none;
     padding: 8px;
@@ -30,6 +43,7 @@
 </head>
 
 <body>
+  @include('layouts.navigation')
   <script>
     var bnb = '';
     var btc = '';

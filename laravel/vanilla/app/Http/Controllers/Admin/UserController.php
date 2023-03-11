@@ -65,11 +65,11 @@ class UserController extends Controller
    */
   public function edit(User $user)
   {
-    if (Auth::user() == $user) {
+    if (Auth::user() == $user && !Auth::user()->hasAnyRole('superadmin')) {
       return redirect()->route('admin.users.index')->with('warning', 'You are not allowed to edit yourself.');
     }
 
-    if (Auth::user()->hasAnyRole('admin') && $user->hasAnyRole('superadmin')) {
+    if (!Auth::user()->hasAnyRole('superadmin') && $user->hasAnyRole('superadmin')) {
       return redirect()->route('admin.users.index')->with('warning', 'You are not allowed to edit superadmin.');
     }
 
@@ -85,11 +85,11 @@ class UserController extends Controller
    */
   public function update(Request $request, User $user)
   {
-    if (Auth::user() == $user) {
+    if (Auth::user() == $user && !Auth::user()->hasAnyRole('superadmin')) {
       return redirect()->route('admin.users.index')->with('warning', 'You are not allowed to update yourself.');
     }
 
-    if (Auth::user()->hasAnyRole('admin') && $user->hasAnyRole('superadmin')) {
+    if (!Auth::user()->hasAnyRole('superadmin') && $user->hasAnyRole('superadmin')) {
       return redirect()->route('admin.users.index')->with('warning', 'You are not allowed to update superadmin.');
     }
 
@@ -110,7 +110,7 @@ class UserController extends Controller
       return redirect()->route('admin.users.index')->with('warning', 'You are not allowed to delete yourself.');
     }
 
-    if (Auth::user()->hasAnyRole('admin') && $user->hasAnyRole('superadmin')) {
+    if (!Auth::user()->hasAnyRole('superadmin') && $user->hasAnyRole('superadmin')) {
       return redirect()->route('admin.users.index')->with('warning', 'You are not allowed to delete superadmin.');
     }
 

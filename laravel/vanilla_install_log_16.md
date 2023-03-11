@@ -24,3 +24,40 @@ php artisan make:model Article -a
 ```bash
 php artisan migrate
 ```
+
+### routes\web.php
+
+```php
+use App\Http\Controllers\ArticleController;
+Route::resource('articles', ArticleController::class);
+```
+
+### resources\views\articles
+
+- resources\views\articles\create.blade.php
+- resources\views\articles\edit.blade.php
+- resources\views\articles\form.blade.php
+- resources\views\articles\index.blade.php
+- resources\views\articles\show.blade.php
+
+### app\Http\Requests
+
+- app\Http\Requests\StoreArticleRequest.php
+- app\Http\Requests\UpdateArticleRequest.php
+
+```php
+  public function authorize()
+  {
+    return true;
+  }
+  public function rules()
+  {
+    return [
+      'name' => 'required|string|min:3|max:255|unique:articles'
+    ];
+  }
+```
+
+### app\Http\Controllers
+
+- app\Http\Controllers\ArticleController.php
