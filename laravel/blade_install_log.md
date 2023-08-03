@@ -17,9 +17,10 @@ npm install && npm run dev
 php artisan serve
 composer require laravel/breeze --dev
 php artisan breeze:install
+php artisan make:model Settings -a
 ```
 
 ```bash
-git add . && git commit -am "blade v001"
+git add . && git commit -am "blade v002"
 git push
 ```
