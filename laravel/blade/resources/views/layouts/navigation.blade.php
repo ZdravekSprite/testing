@@ -15,12 +15,18 @@
           <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
             {{ __('Dashboard') }}
           </x-nav-link>
+          @impersonate
+          <x-nav-link :href="route('admin.impersonate.stop')" :active="true">
+            {{ __('Stop Impersonating') }}
+          </x-nav-link>
+          @endimpersonate
           @hasrole('superadmin')
-          <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-            <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.index')">
-              {{ __('Menage Roles') }}
-            </x-nav-link>
-          </div>
+          <x-nav-link :href="route('admin.roles.index')" :active="request()->routeIs('admin.roles.index')">
+            {{ __('Menage Roles') }}
+          </x-nav-link>
+          <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+            {{ __('Menage Users') }}
+          </x-nav-link>
           @endhasrole
         </div>
       </div>

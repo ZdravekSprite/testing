@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ImpersonateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,7 +63,11 @@ Route::middleware('auth')->group(function () {
   Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 
+Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
+
 Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
+  Route::get('/impersonate/{id}', [ImpersonateController::class, 'start'])->name('impersonate.start');
+  Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);
   Route::resource('/roles', RoleController::class);
 });
 require __DIR__ . '/auth.php';

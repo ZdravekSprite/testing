@@ -1,15 +1,15 @@
 <x-app-layout>
   <x-slot name="header">
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
       {{ __('Manage Users') }}
     </h2>
   </x-slot>
 
   <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6 bg-white border-b border-gray-200">
-          <table class="table-auto w-full">
+      <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+          <table class="table-auto w-full text-gray-900 dark:text-gray-100">
             <thead>
               <tr>
                 <th>{{ __('Name') }}</th>
@@ -21,7 +21,7 @@
             <tbody>
               @foreach ($users as $user)
               <tr>
-                <th class="flex items-center pr-10"><img class="rounded-full shadow-xl" style="box-shadow: " width="20" height="20" src="{{$user->avatar}}" />{{$user->name}}</th>
+                <th class="flex items-center pr-10">{{$user->name}}</th>
                 <td>{{$user->email}}</td>
                 <td>{{ implode(', ', $user->roles()->get()->pluck('name')->toArray()) }}</td>
                 <td>
@@ -37,7 +37,7 @@
                     </svg>
                   </a>
                   @endhasrole
-                  <a class="float-right" style="color:black" href="{{ route('admin.users.destroy', $user) }}" onclick="event.preventDefault();
+                  <a class="float-right" style="color:red" href="{{ route('admin.users.destroy', $user) }}" onclick="event.preventDefault();
     document.getElementById('delete-form-{{ $user->id }}').submit();" title="Izbriši">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                       <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />

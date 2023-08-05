@@ -1,6 +1,6 @@
 <x-app-layout>
   <x-slot name="header">
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
       {{ __('Uredi ulogu') }}
     </h2>
   </x-slot>
@@ -10,12 +10,12 @@
       <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
 
-        <header>
+          <header>
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
               {{ __('Edit') }} {{$role->name}} {{ __('ulogu!') }}
             </h2>
           </header>
-          
+
           <!-- Validation Errors -->
           <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
