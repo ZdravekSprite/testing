@@ -15,10 +15,6 @@ class DatabaseSeeder extends Seeder
   {
     // \App\Models\User::factory(10)->create();
 
-    \App\Models\User::factory()->create([
-      'name' => env('SUPER_ADMIN_NAME', 'admin'),
-      'email' => env('SUPER_ADMIN_EMAIL', 'admin@admin.com'),
-      'password' => Hash::make(env('SUPER_ADMIN_PASS', 'password')),
-    ]);
+    $this->call(RoleSeeder::class);
   }
 }
