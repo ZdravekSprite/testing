@@ -14,7 +14,7 @@ class RoleController extends Controller
   public function index()
   {
     $roles = Role::orderBy('name', 'desc')->get();
-    return view('roles.index')->with(compact('roles'));
+    return view('admin.roles.index')->with(compact('roles'));
   }
 
   /**
@@ -22,7 +22,7 @@ class RoleController extends Controller
    */
   public function create()
   {
-    return view('roles.create');
+    return view('admin.roles.create');
   }
 
   /**
@@ -30,10 +30,6 @@ class RoleController extends Controller
    */
   public function store(StoreRoleRequest $request)
   {
-    $this->validate($request, [
-      'name' => 'required|string|min:3|max:255|unique:roles',
-      'description' => 'string|min:3|max:255'
-    ]);
     $role = new Role;
     $role->name = $request->input('name');
     $role->description = $request->input('description') ?? $role->description;
@@ -46,7 +42,7 @@ class RoleController extends Controller
    */
   public function show(Role $role)
   {
-    return view('roles.show')->with(compact('role'));
+    return view('admin.roles.show')->with(compact('role'));
   }
 
   /**
@@ -54,7 +50,7 @@ class RoleController extends Controller
    */
   public function edit(Role $role)
   {
-    return view('roles.edit')->with(compact('role'));
+    return view('admin.roles.edit')->with(compact('role'));
   }
 
   /**
@@ -62,11 +58,6 @@ class RoleController extends Controller
    */
   public function update(UpdateRoleRequest $request, Role $role)
   {
-    $this->validate($request, [
-      'name' => 'required|string|min:3|max:255|unique:roles,name,' . $role->id,
-      'description' => 'string|min:3|max:255'
-    ]);
-    $role->name = $request->input('name');
     $role->description = $request->input('description') ?? $role->description;
     $role->save();
     return redirect(route('admin.roles.show', $role))->with('success', 'Role Updated');

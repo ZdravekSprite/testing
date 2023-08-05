@@ -61,7 +61,7 @@
               </tr>
               @endforeach
               @else
-              <p> No days found</p>
+              <x-p>{{ __('No roles found') }}</x-p>
               @endif
             </tbody>
           </table>
