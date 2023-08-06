@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ImpersonateController;
+use App\Http\Controllers\DayController;
+use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\MonthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,8 +63,30 @@ Route::middleware('auth')->group(function () {
   Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
   Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+  Route::get('/days', [DayController::class, 'index'])
+    ->name('days.index');
+  Route::get('/days/create/{date}', [DayController::class, 'create']);
+
+  Route::get('/day/create', [DayController::class, 'create'])->name('day.create');
+  Route::post('/day', [DayController::class, 'store'])->name('day.store');
+  Route::get('/day/{date}', [DayController::class, 'show'])->name('day.show');
+  Route::get('/day/edit/{date}', [DayController::class, 'edit'])->name('day.edit');
+  Route::post('/day/{date}', [DayController::class, 'update'])->name('day.update');
+  Route::delete('/day/{date}', [DayController::class, 'destroy'])->name('day.destroy');
+
+  Route::put('/sick/{date}', [DayController::class, 'sick'])->name('sick');
+
+  Route::get('/month', [DayController::class, 'month'])->name('month');
+
+  Route::get('/month/{month}', [DayController::class, 'month']);
+  Route::get('/month/print/{month}', [DayController::class, 'print'])->name('print');
+
   Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
+
+  Route::resource('months', MonthController::class);
 });
+
+Route::resource('holidays', HolidayController::class);
 
 Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
 

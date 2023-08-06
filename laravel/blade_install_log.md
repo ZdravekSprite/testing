@@ -22,12 +22,16 @@ php artisan make:controller Admin\\UserController -mUser
 php artisan make:controller Admin\\ImpersonateController
 php artisan make:middleware Impersonate
 
+php artisan make:model Day -a
+php artisan make:model Holiday -a
+php artisan make:model Month -a
+
 php artisan migrate:fresh --seed
 npm install && npm run dev
 php artisan serve
 ```
 
 ```bash
-git add . && git commit -am "blade v004"
+git add . && git commit -am "blade v005"
 git push
 ```

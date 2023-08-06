@@ -28,6 +28,49 @@
             {{ __('Menage Users') }}
           </x-nav-link>
           @endhasrole
+          <x-nav-link :href="route('holidays.index')" :active="request()->routeIs('holidays.index')">
+            {{ __('Praznici') }}
+          </x-nav-link>
+        </div>
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('month')" :active="request()->routeIs('month', 'days.index', 'days.create', 'days.show', 'days.edit')">
+            {{ __('ERS') }}
+          </x-nav-link>
+        </div>
+        <div class="hidden sm:flex sm:items-center sm:ml-6">
+          <x-dropdown align="left">
+            <x-slot name="trigger">
+              <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                <div class="ml-1">
+                  <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </button>
+            </x-slot>
+            <x-slot name="content">
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('days.index')" :active="request()->routeIs('days.index')">
+                  {{ __('Radni dani') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('day.create')" :active="request()->routeIs('day.create')">
+                  {{ __('Novi dan') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-t border-gray-200">
+                <x-nav-link :href="route('months.index')" :active="request()->routeIs('months.index')">
+                  {{ __('Mjeseci') }}
+                </x-nav-link>
+              </div>
+              <div class="pt-2 pb-1 border-gray-200">
+                <x-nav-link :href="route('months.create')" :active="request()->routeIs('months.create')">
+                  {{ __('Novi mjesec') }}
+                </x-nav-link>
+              </div>
+            </x-slot>
+          </x-dropdown>
         </div>
       </div>
 
