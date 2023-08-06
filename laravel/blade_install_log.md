@@ -20,6 +20,7 @@ php artisan make:provider BladeServiceProvider
 php artisan make:middleware AccessAdmin
 php artisan make:controller Admin\\UserController -mUser
 php artisan make:controller Admin\\ImpersonateController
+php artisan make:controller Admin\\ExportController
 php artisan make:middleware Impersonate
 
 php artisan make:model Day -a

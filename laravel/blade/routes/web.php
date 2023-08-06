@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Settings;
@@ -90,9 +91,14 @@ Route::resource('holidays', HolidayController::class);
 
 Route::get('admin/impersonate/stop', [ImpersonateController::class, 'stop'])->name('admin.impersonate.stop');
 
-Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->group(function () {
   Route::get('/impersonate/{id}', [ImpersonateController::class, 'start'])->name('impersonate.start');
   Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);
   Route::resource('/roles', RoleController::class);
+
+  Route::get('/export/days', [ExportController::class, 'days'])->name('export.days');
+  Route::get('/export/draws', [ExportController::class, 'draws'])->name('export.draws');
+  Route::get('/export/holidays', [ExportController::class, 'holidays'])->name('export.holidays');
+  Route::get('/export/months', [ExportController::class, 'months'])->name('export.months');
 });
 require __DIR__ . '/auth.php';

@@ -47,6 +47,10 @@
           <div class="max-w-xl">
             @hasrole('superadmin')
             <x-p>You're super admin!</x-p>
+            <x-p><a class="hidden sm:-my-px sm:ml-10 sm:flex" href="{{ route('admin.export.days') }}">export days</a></x-p>
+            <x-p><a class="hidden sm:-my-px sm:ml-10 sm:flex" href="{{ route('admin.export.draws') }}">export draws</a></x-p>
+            <x-p><a class="hidden sm:-my-px sm:ml-10 sm:flex" href="{{ route('admin.export.holidays') }}">export holidays</a></x-p>
+            <x-p><a class="hidden sm:-my-px sm:ml-10 sm:flex" href="{{ route('admin.export.months') }}">export months</a></x-p>
             @else
             <x-p>You're logged in!</x-p>
             @endhasrole

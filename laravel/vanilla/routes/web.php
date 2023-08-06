@@ -8,6 +8,8 @@ use App\Http\Controllers\LottoController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\SignController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\ImpersonateController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Artisan;
@@ -42,6 +44,12 @@ Route::get('/dashboard', function () {
   //dd($settings);
   return view('dashboard')->with(compact('settings'));
 })->middleware(['auth'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+  Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+  Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+  Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 require __DIR__ . '/auth.php';
 
@@ -125,6 +133,11 @@ Route::prefix('admin')->middleware(['auth', 'auth.admin'])->name('admin.')->grou
   Route::resource('/users', UserController::class, ['except' => ['show', 'create', 'store']]);
   Route::get('/impersonate/{id}', [ImpersonateController::class, 'start'])->name('impersonate.start');
   Route::resource('/roles', RoleController::class);
+
+  Route::get('/export/days', [ExportController::class, 'days'])->name('export.days');
+  Route::get('/export/draws', [ExportController::class, 'draws'])->name('export.draws');
+  Route::get('/export/holidays', [ExportController::class, 'holidays'])->name('export.holidays');
+  Route::get('/export/months', [ExportController::class, 'months'])->name('export.months');
 });
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
